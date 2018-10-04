@@ -21,7 +21,11 @@
     "url": "https://github.com/Wandalen/wStarter/issues"
   },
   "dependencies": {
-    "wTools": ""
+    "wTools": "",
+    "wCopyable": "",
+    "wFiles": "",
+    "wverbal": "",
+    "wtemplatetreeenvironment": "",
   },
   "devDependencies": {
     "wTesting": "",
