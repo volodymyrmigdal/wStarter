@@ -42,6 +42,10 @@ function trivial( test )
   var srcPath = _.path.resolve( __dirname, '../../..' );
   var tempPath = _.path.dirTempOpen();
 
+  /*
+    ... grab all required files into tmp/dwtools dir ...
+  */
+
   try
   {
 
