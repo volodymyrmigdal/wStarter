@@ -39,7 +39,7 @@ var _ = _global_.wTools;
 
 function trivial( test )
 {
-  var srcPath = _.path.resolve( __dirname, '../../..' );
+  var srcPath = _.path.resolve( __dirname, '../../../..' );
   var tempPath = _.path.join( srcPath, 'out' );
 
   /*
@@ -54,8 +54,8 @@ function trivial( test )
       appName : 'Test',
       inPath : '/',
       outPath : '/',
-      toolsPath : '/tmp/dwtools',
-      initScriptPath : '/Init.s',
+      toolsPath : '/staging/tmp/dwtools',
+      initScriptPath : '/sample/index.js',
       offline : 1,
       verbosity : 5,
       logger : new _.Logger({ output : logger }),
