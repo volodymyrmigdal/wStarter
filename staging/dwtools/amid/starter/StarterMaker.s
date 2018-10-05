@@ -563,6 +563,7 @@ Config.offline = ${_.toStr( !!self.offline )};
   {
     let code = _.fileProvider.fileRead( _.path.join( __dirname, 'StarterPreloadEnd.raw.s' ) );
     dstFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
+    srcFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
   }
 
   /* - */

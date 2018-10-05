@@ -40,7 +40,7 @@ var _ = _global_.wTools;
 function trivial( test )
 {
   var srcPath = _.path.resolve( __dirname, '../../..' );
-  var tempPath = _.path.dirTempOpen();
+  var tempPath = _.path.join( srcPath, 'out' );
 
   /*
     ... grab all required files into tmp/dwtools dir ...
@@ -54,7 +54,8 @@ function trivial( test )
       appName : 'Test',
       inPath : '/',
       outPath : '/',
-      initScriptPath : '{{inPath}}/Init.s',
+      toolsPath : '/tmp/dwtools',
+      initScriptPath : '/Init.s',
       offline : 1,
       verbosity : 5,
       logger : new _.Logger({ output : logger }),
@@ -76,7 +77,7 @@ function trivial( test )
   }
 
   debugger;
-  _.path.dirTempClose( tempPath );
+  // _.fileProvider.filesDelete( tempPath );
 
   test.identical( 1,1 );
 }
