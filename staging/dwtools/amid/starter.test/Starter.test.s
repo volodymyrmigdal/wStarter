@@ -40,7 +40,27 @@ var _ = _global_.wTools;
 function trivial( test )
 {
   var srcPath = _.path.resolve( __dirname, '../../../..' );
-  var tempPath = _.path.join( srcPath, 'out' );
+  var tempPath = _.path.join( srcPath, 'staging/tmp.tmp' );
+  var initScriptPath = _.path.join( tempPath, 'Init.s' );
+  var indexHtmlPath = _.path.join( tempPath, 'Index.html' );
+
+  var indexHtmlSource =
+  `<html>
+    <head>
+      <script src="./Test.raw.filesmap.s" type="text/javascript"></script>
+      <script src="./Test.raw.starter.config.s" type="text/javascript"></script>
+      <script src="./StarterInit.run.s" type="text/javascript"></script>
+      <script src="./StarterStart.run.s" type="text/javascript"></script>
+    </head>
+  </html>`
+  ;
+  var initScriptSource = `console.log( 'Init script' )`;
+
+  /*  */
+
+  _.fileProvider.filesDelete( tempPath );
+  _.fileProvider.fileWrite( indexHtmlPath, indexHtmlSource );
+  _.fileProvider.fileWrite( initScriptPath, initScriptSource );
 
   /*
     ... grab all required files into tmp/dwtools dir ...
@@ -55,7 +75,7 @@ function trivial( test )
       inPath : '/',
       outPath : '/',
       toolsPath : '/staging/tmp/dwtools',
-      initScriptPath : '/sample/index.js',
+      initScriptPath : '/staging/tmp.tmp/Init.s',
       offline : 1,
       verbosity : 5,
       logger : new _.Logger({ output : logger }),
@@ -76,10 +96,21 @@ function trivial( test )
     test.exceptionReport({ err : err });
   }
 
-  debugger;
-  // _.fileProvider.filesDelete( tempPath );
 
-  test.identical( 1,1 );
+  var files = _.fileProvider.directoryRead( tempPath );
+  var expected =
+  [
+    'Index.html',
+    'Init.s',
+    'StarterInit.run.s',
+    'StarterPreloadEnd.run.s',
+    'StarterStart.run.s',
+    'Test.raw.filesmap.s',
+    'Test.raw.starter.config.s'
+  ];
+  test.identical( files, expected )
+
+  _.fileProvider.filesDelete( tempPath );
 }
 
 trivial.timeOut = 60000;

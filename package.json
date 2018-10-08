@@ -28,7 +28,8 @@
     "wtemplatetreeenvironment": ""
   },
   "devDependencies": {
-    "wTesting": ""
+    "wTesting": "",
+    "wstarter": "."
   },
   "keywords": [
     "wTools"

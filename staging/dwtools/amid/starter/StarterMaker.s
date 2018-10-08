@@ -195,7 +195,12 @@ function fromHardDriveRead( o )
   ({
     srcFilter : { basePath : o.srcPath },
     dstFilter : { prefixPath : 'src:///' },
-    filter : { ends : [ '.js', '.s', '.css', '.less', '.jslike' ], maskAll : _.files.regexpMakeSafe() },
+    filter :
+    {
+      ends : [ '.js', '.s', '.css', '.less', '.jslike' ],
+      maskAll : _.files.regexpMakeSafe(),
+      maskTransientAll : _.files.regexpMakeSafe()
+    },
     linking : 'softlink',
     mandatory : 1,
   });
