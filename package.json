@@ -29,7 +29,8 @@
   },
   "devDependencies": {
     "wTesting": "",
-    "wstarter": "."
+    "wstarter": ".",
+    "express": ""
   },
   "keywords": [
     "wTools"
