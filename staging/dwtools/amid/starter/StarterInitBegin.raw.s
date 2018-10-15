@@ -53,7 +53,7 @@ function _starterFormBegin()
 function _starterFormEnd()
 {
 
-  _.accessorReadOnly
+  _.accessor.readOnly
   ({
     object : _starter_,
     names : 'module',
