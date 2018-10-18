@@ -406,7 +406,7 @@ function filesMapMake()
       filePath : 'fmap:///',
       recursive : 1,
       includingTerminals : 1,
-      includingTransients : 0,
+      includingTransient : 0,
       resolvingSoftLink : 0,
       onUp : onUp,
     });
@@ -486,7 +486,7 @@ function starterMake()
     filePath : _.uri.join( 'src://', self.toolsPath ),
     recursive : 1,
     includingTerminals : 1,
-    includingTransients : 0,
+    includingTransient : 0,
     mandatory : 1,
     onUp : onUpInliningToStarter,
     filter :

@@ -42,7 +42,7 @@ function staticRequestHandler_functor( gen )
 {
   var gen = _.routineOptions( staticRequestHandler_functor, arguments );
 
-  _.assert( _.strIsNotEmpty( gen.basePath ) );
+  _.assert( _.strDefined( gen.basePath ) );
 
   var fileProvider = _.FileProvider.HardDrive({ encoding : 'utf8' });
   function staticRequestHandler( request, response, next )
