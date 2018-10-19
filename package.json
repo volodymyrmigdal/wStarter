@@ -10,6 +10,7 @@
     "production"
   ],
   "scripts": {
+    "install": "node ./install.js",
     "test": "wtest staging",
     "make_doc": "./doc.sh"
   },
