@@ -361,7 +361,7 @@ function filesMapMake()
   self.useFile = self.hubFileProvider.fileRead
   ({
     filePath : self.useFilePath,
-    encoding : 'smart.js',
+    encoding : 'js.smart',
     sync : 1,
     resolvingSoftLink : 1,
   });
