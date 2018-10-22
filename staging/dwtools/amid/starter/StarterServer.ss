@@ -138,7 +138,7 @@ function staticRequestHandler_functor( gen )
       filePath : filePath,
     });
 
-    var stream = fileProvider.fileReadStream
+    var stream = fileProvider.streamRead
     ({
       filePath : path,
       throwing : 0,
