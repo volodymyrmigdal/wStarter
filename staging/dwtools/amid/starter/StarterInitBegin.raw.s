@@ -190,7 +190,7 @@ function _starterStartedWith( scriptPath, preload )
 {
   debugger;
   _.assert( !_starter_.started );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( Config.isWorker );
   _starter_.started = true;
   _starter_.initScriptPath = scriptPath;
@@ -368,7 +368,7 @@ function _scriptIncludeInit( scriptFile )
 
 function _scriptRewrite( filePath,routine )
 {
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   let d = _starter_.fileProvider._descriptorScriptMake( filePath, routine );
   _starter_.fileProvider._descriptorWrite( filePath, d );
 }
@@ -379,7 +379,7 @@ function scriptRewrite( filePath, dirPath, routine )
 {
   let scriptFile = _starter_.resourcesMap[ filePath ];
 
-  _.assert( arguments.length === 3, 'expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three argument' );
   _.assert( _.objectIs( scriptFile ) );
 
   _scriptRewrite( filePath, routine );
@@ -590,7 +590,7 @@ function _includeModule( bound,filePath )
 {
   let scriptFile = bound.scriptFile;
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( !_.path.isAbsolute( filePath ) && !_.path.isDotted( filePath ) );
 
   if( !_starter_.modulesMap[ filePath ] )
@@ -657,7 +657,7 @@ function _includeSingleMature( bound,filePath )
 
   /* get from cache */
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   if( _starter_.filesIncludedMap[ filePath ] )
   {
@@ -722,7 +722,7 @@ function _includeMature( bound, filePath )
   let scriptFile = bound.scriptFile;
   let fileProvider = _starter_.fileProvider;
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   if( fileProvider.path.isDotted( filePath ) )
   filePath = fileProvider.path.resolve( scriptFile.dirPath, filePath );
@@ -778,7 +778,7 @@ function _include( bound, filePath )
   let scriptFile = bound.scriptFile;
 
   if( _ && _.assert )
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   if( _starter_.inited )
   return _starter_._includeMature.call( this, bound, filePath );
@@ -846,7 +846,7 @@ function _resolve( bound, filePath )
   let _ = _starterGlobal_.wTools;
   let fileOriginalPath = filePath;
 
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   if( !_.path.isAbsolute( filePath ) )
   {
@@ -1010,7 +1010,7 @@ function _scriptPresetAttach( scriptFile, presetName )
   let preset = _starter_.presets[ presetName ];
 
   _.assert( _.objectIs( preset ), 'unknown preset', presetName );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   _.mapExtendAppendingOnceRecursive( scriptFile.include, preset );
 
@@ -1024,7 +1024,7 @@ function _scriptPresetDetach( scriptFile, presetName )
   let preset = _starter_.presets[ presetName ];
 
   _.assert( _.objectIs( preset ), 'unknown preset', presetName );
-  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
   _.mapSupplementRemovingRecursive( scriptFile.include, preset );
 
