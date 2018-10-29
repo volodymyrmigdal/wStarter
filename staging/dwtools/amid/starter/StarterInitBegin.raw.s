@@ -343,7 +343,7 @@ scriptExecEnd.defaults =
 function _scriptIncludeInit( scriptFile )
 {
   if( _ )
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   let include = scriptFile.include;
   include.resolve = scriptFile.resolve;
@@ -878,7 +878,7 @@ function _includeAny( bound )
 {
   let scriptFile = bound.scriptFile;
 
-  _.assert( arguments.length >= 2, 'expects at least two arguments' );
+  _.assert( arguments.length >= 2, 'Expects at least two arguments' );
 
   for( let a = 1 ; a < arguments.length ; a++ )
   {
@@ -1038,7 +1038,7 @@ function _starterPresetAttach( presetName )
   let preset = _starter_.presets[ presetName ];
 
   _.assert( _.objectIs( preset ), 'unknown preset', presetName );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   _.mapExtendAppendingOnceRecursive( _starter_.includeDefaults, preset );
 
@@ -1052,7 +1052,7 @@ function _starterPresetDetach( presetName )
   let preset = _starter_.presets[ presetName ];
 
   _.assert( _.objectIs( preset ), 'unknown preset', presetName );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   _.mapSupplementRemovingRecursive( _starter_.includeDefaults, preset );
 
@@ -1064,7 +1064,7 @@ function _starterPresetDetach( presetName )
 function presetRefine( preset )
 {
   _.assert( _.strIs( preset ) || _.objectIs( preset ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.containerIs( preset ) || _.objectIs( _starter_.presets[ preset ] ), 'unknown preset', preset );
 
   if( _.strIs( preset ) )
@@ -1081,7 +1081,7 @@ function presetRefine( preset )
 function presetsRefine( presets )
 {
   _.assert( _.containerIs( presets ) );
-  _.assert( arguments.length === 1, 'expects single argument' );
+  _.assert( arguments.length === 1, 'Expects single argument' );
 
   _.each( presets, function( preset )
   {
