@@ -195,7 +195,12 @@ function fromHardDriveRead( o )
   ({
     srcFilter : { basePath : o.srcPath },
     dstFilter : { prefixPath : 'src:///' },
-    filter : { ends : [ '.js', '.s', '.css', '.less', '.jslike' ], maskAll : _.files.regexpMakeSafe() },
+    filter :
+    {
+      ends : [ '.js', '.s', '.css', '.less', '.jslike' ],
+      maskAll : _.files.regexpMakeSafe(),
+      maskTransientAll : _.files.regexpMakeSafe()
+    },
     linking : 'softlink',
     mandatory : 1,
   });
@@ -490,8 +495,8 @@ function starterMake()
     }
   });
 
-  find( 'abase/layer1' );
-  find( 'abase/layer2' );
+  find( 'abase/l1' );
+  find( 'abase/l2' );
   find( 'abase/layer3' );
   find( 'abase/layer4' );
   find( 'abase/layer5' );
@@ -563,6 +568,7 @@ Config.offline = ${_.toStr( !!self.offline )};
   {
     let code = _.fileProvider.fileRead( _.path.join( __dirname, 'StarterPreloadEnd.raw.s' ) );
     dstFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
+    srcFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
   }
 
   /* - */

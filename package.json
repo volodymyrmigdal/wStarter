@@ -10,6 +10,7 @@
     "production"
   ],
   "scripts": {
+    "install": "node ./install.js",
     "test": "wtest staging",
     "make_doc": "./doc.sh"
   },
@@ -29,7 +30,8 @@
   },
   "devDependencies": {
     "wTesting": "",
-    "wstarter": "."
+    "wstarter": ".",
+    "express": ""
   },
   "keywords": [
     "wTools"
