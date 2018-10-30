@@ -495,8 +495,8 @@ function starterMake()
     }
   });
 
-  find( 'abase/layer1' );
-  find( 'abase/layer2' );
+  find( 'abase/l1' );
+  find( 'abase/l2' );
   find( 'abase/layer3' );
   find( 'abase/layer4' );
   find( 'abase/layer5' );

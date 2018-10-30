@@ -39,10 +39,16 @@ var _ = _global_.wTools;
 
 function trivial( test )
 {
-  var srcPath = _.path.resolve( __dirname, '../../../..' );
-  var tempPath = _.path.join( srcPath, 'staging/tmp.tmp' );
+  var srcPath = _.path.resolve( __dirname, '../../..' );
+  var tempPath = _.path.join( srcPath, 'tmp.tmp' );
   var initScriptPath = _.path.join( tempPath, 'Init.s' );
   var indexHtmlPath = _.path.join( tempPath, 'Index.html' );
+  var toolsPath
+
+  if( _.fileProvider.fileExists( _.path.join( srcPath, 'tmp' ) ) )
+  toolsPath = '/tmp/dwtools';
+  else
+  toolsPath = '/dwtools';
 
   var indexHtmlSource =
   `<html>
@@ -74,8 +80,8 @@ function trivial( test )
       appName : 'Test',
       inPath : '/',
       outPath : '/',
-      toolsPath : '/staging/tmp/dwtools',
-      initScriptPath : '/staging/tmp.tmp/Init.s',
+      toolsPath : toolsPath,
+      initScriptPath : '/tmp.tmp/Init.s',
       offline : 1,
       verbosity : 5,
       logger : new _.Logger({ output : logger }),

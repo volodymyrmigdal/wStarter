@@ -10,6 +10,7 @@ let dstPath = _.path.join( __dirname, 'staging/tmp/dwtools' );
 
 let includeList =
 [
+  '**/abase/l?/**',
   '**/abase/layer?/**',
   '**/abase/mixin/**',
   '**/abase/oclass/**',
