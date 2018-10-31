@@ -588,7 +588,7 @@ Config.offline = ${_.toStr( !!self.offline )};
     if( self.verbosity >= 3 )
     logger.log( ' +', 'starter use', file.absolute );
 
-    let read = this.fileCodeRead( file.absoluteEffective );
+    let read = this.fileCodeRead( file.hubAbsolute );
 
     builtinMapCode += read;
 
