@@ -3,7 +3,7 @@ about :
 
   name : wStarter
   description : Collection of tools to generate background service to start and pack application. Starter consists of 3 pieces, maker - generating code for run-time, client run-time piece, and server run-time piece. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.
-  version : 0.3.11
+  version : 0.3.12
   enabled : 1
   interpreters :
   - nodejs >= 6.0.0
@@ -22,30 +22,30 @@ path :
 
   repository : git+https://github.com/Wandalen/wStarter.git
   bugs : https://github.com/Wandalen/wStarter/issues
-  entry.debug : {path::out.debug}/dwtools/abase/____
-  entry.release : {path::out.release}/dwtools/abase/____
+  entry.debug : '{path::out.debug}/dwtools/abase/____'
+  entry.release : '{path::out.release}/dwtools/abase/____'
 
 build :
 
   .debug.raw.export :
     default : 1
+    filesPath : path::out.debug
+    entryPath : path::entry.debug
     setting :
       debug : 1
       raw : 1
       export : 1
-      filesPath : path::out.debug
-      entryPath : path::entry.debug
     steps :
       - build::.debug
       - step::export
 
   .release.compiled.export :
+    filesPath : path::out.release
+    entryPath : path::entry.release
     setting :
       debug : 0
       raw : 0
       export : 1
-      filesPath : path::out.release
-      entryPath : path::entry.release
     steps :
       - build::.release.compiled
       - step::export
