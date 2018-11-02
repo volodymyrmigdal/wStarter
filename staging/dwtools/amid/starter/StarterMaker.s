@@ -497,7 +497,7 @@ function starterMake()
 
   find( 'abase/l1' );
   find( 'abase/l2' );
-  find( 'abase/layer3' );
+  find( 'l3' );
   find( 'abase/layer4' );
   find( 'abase/layer5' );
   find( 'abase/mixin' );
