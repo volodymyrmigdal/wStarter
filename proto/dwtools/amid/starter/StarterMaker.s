@@ -498,8 +498,8 @@ function starterMake()
   find( 'abase/l1' );
   find( 'abase/l2' );
   find( 'l3' );
-  find( 'abase/layer4' );
-  find( 'abase/layer5' );
+  find( 'abase/l4' );
+  find( 'abase/l5' );
   find( 'abase/mixin' );
   find( 'abase/oclass' );
   find( 'abase/printer' );

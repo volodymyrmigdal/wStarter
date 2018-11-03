@@ -6,14 +6,12 @@ if( !_global && typeof Global !== 'undefined' && Global.Global === Global ) _glo
 if( !_global && typeof global !== 'undefined' && global.global === global ) _global = global;
 if( !_global && typeof window !== 'undefined' && window.window === window ) _global = window;
 if( !_global && typeof self   !== 'undefined' && self.self === self ) _global = self;
-let _realGlobal = _global;
-let _globalWas = _global._global_ || _global;
-if( _global._global_ )
-_global = _global._global_;
-_global._global_ = _global;
-_realGlobal._realGlobal_ = _realGlobal;
+let _realGlobal = _global._realGlobal_ = _global;
+let _wasGlobal = _global._global_ || _global;
+_global = _wasGlobal;
+_global._global_ = _wasGlobal;
 
-let _starterGlobal_ = _realGlobal._global_ = Object.create( _globalWas );
+let _starterGlobal_ = _realGlobal._global_ = Object.create( _wasGlobal );
 _realGlobal._starterGlobal_ = _starterGlobal_;
 _starterGlobal_.WTOOLS_PRIVATE = 1;
 _starterGlobal_.WTOOLS_PRIVATE_CONSEQUENCE = 1;
@@ -79,7 +77,7 @@ function _starterFormEnd()
   if( _starter_.usingIncludeHandlers )
   _starter_.modulesWithIncludeHandlersDeclare();
 
-  _realGlobal._global_ = _globalWas;
+  _realGlobal._global_ = _wasGlobal;
 
   _starter_._starterUseFilesForm();
 
