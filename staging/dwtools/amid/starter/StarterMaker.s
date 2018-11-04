@@ -500,9 +500,9 @@ function starterMake()
   find( 'l3' );
   find( 'abase/l4' );
   find( 'abase/l5' );
-  find( 'abase/mixin' );
-  find( 'abase/oclass' );
-  find( 'abase/printer' );
+  find( 'abase/l7' );
+  find( 'abase/l9/consequence' );
+  find( 'abase/l9/printer' );
 
   find( 'amid/amapping/TemplateTreeAresolver.s' );
   find( 'amid/amixin/Verbal.s' );
