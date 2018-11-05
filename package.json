@@ -7,7 +7,7 @@
   "main": "proto/dwtools/amid/starter/StarterMaker.s",
   "files": [
     "proto/dwtools/amid/starter",
-    "production"
+    "proto/dwtools/Tools.s", "production"
   ],
   "scripts": {
     "install": "node ./install.js",
