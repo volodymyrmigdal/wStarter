@@ -4,15 +4,15 @@
   "description": "Collection of tools to generate background service to start and pack application. Starter consists of 3 pieces, maker - generating code for run-time, client run-time piece, and server run-time piece. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.",
   "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
   "license": "MIT",
-  "main": "staging/dwtools/amid/starter/StarterMaker.s",
+  "main": "proto/dwtools/amid/starter/StarterMaker.s",
   "files": [
-    "staging/dwtools/amid/starter",
+    "proto/dwtools/amid/starter",
     "production"
   ],
   "scripts": {
     "install": "node ./install.js",
     "test": "wtest staging",
-    "make_doc": "./doc.sh"
+    "docgen": "wdocgen proto"
   },
   "repository": {
     "type": "git",

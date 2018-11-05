@@ -1,7 +1,7 @@
 
 if( typeof module !== 'undefined' )
 {
-  require( '../staging/dwtools/amid/starter/StarterServer.ss' );
+  require( '../proto/dwtools/amid/starter/StarterServer.ss' );
   var Express = require( 'express' );
 }
 
