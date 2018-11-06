@@ -1,6 +1,6 @@
 {
   "name": "wstarter",
-  "version": "0.3.22",
+  "version": "0.3.23",
   "description": "Collection of tools to generate background service to start and pack application. Starter consists of 3 pieces, maker - generating code for run-time, client run-time piece, and server run-time piece. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.",
   "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
   "license": "MIT",
