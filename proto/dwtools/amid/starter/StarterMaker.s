@@ -183,8 +183,8 @@ function fromHardDriveRead( o )
   if( _.strIs( arguments[ 0 ] ) )
   o = { srcPath : arguments[ 0 ] }
 
-  // let protoPath = _.uri.join( 'file://', this.env.pathGet( '{{path.proto}}' ) );
-  // let stagingPath = _.uri.join( 'file://', this.env.pathGet( '{{path.staging}}' ) );
+  // let protoPath = _.uri.join( 'file://', this.env.pathGet( '{{path/proto}}' ) );
+  // let stagingPath = _.uri.join( 'file://', this.env.pathGet( '{{path/staging}}' ) );
 
   _.assert( arguments.length === 1 );
   _.routineOptions( fromHardDriveRead, o );
