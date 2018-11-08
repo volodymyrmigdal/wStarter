@@ -193,8 +193,8 @@ function fromHardDriveRead( o )
 
   let reflect = self.hubFileProvider.filesReflector
   ({
-    srcFilter : { basePath : o.srcPath },
-    dstFilter : { prefixPath : 'src:///' },
+    srcFilter : { basePath : o.srcPath, prefixPath : o.srcPath },
+    dstFilter : { basePath : 'src:///', prefixPath : 'src:///' },
     filter :
     {
       ends : [ '.js', '.s', '.css', '.less', '.jslike' ],
@@ -228,8 +228,8 @@ function toHardDriveWrite( o )
 
   let reflect = self.hubFileProvider.filesReflector
   ({
-    srcFilter : { basePath : _.uri.join( 'dst://', '/' ) },
-    dstFilter : { prefixPath : _.uri.join( 'file://', o.dstPath ) },
+    srcFilter : { basePath : _.uri.join( 'dst://', '/' ), prefixPath : _.uri.join( 'dst://', '/' ) },
+    dstFilter : { prefixPath : _.uri.join( 'file://', o.dstPath ), basePath : _.uri.join( 'file://', o.dstPath ) },
     mandatory : 1,
   });
 
@@ -383,9 +383,11 @@ function filesMapMake()
     dstFilter :
     {
       prefixPath : _.uri.join( self.inPath, 'fmap://' ),
+      basePath : _.uri.join( self.inPath, 'fmap://' )
     },
     srcFilter :
     {
+      prefixPath : _.uri.join(  self.inPath, 'src://', ),
       basePath : _.uri.join(  self.inPath, 'src://', ),
     },
     linking : 'fileCopy',
@@ -495,9 +497,10 @@ function starterMake()
     }
   });
 
+  find( 'abase/l0' );
   find( 'abase/l1' );
   find( 'abase/l2' );
-  find( 'l3' );
+  find( 'abase/l3' );
   find( 'abase/l4' );
   find( 'abase/l5' );
   find( 'abase/l7' );
@@ -568,7 +571,7 @@ Config.offline = ${_.toStr( !!self.offline )};
   {
     let code = _.fileProvider.fileRead( _.path.join( __dirname, 'StarterPreloadEnd.raw.s' ) );
     dstFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
-    srcFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
+    // srcFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
   }
 
   /* - */
