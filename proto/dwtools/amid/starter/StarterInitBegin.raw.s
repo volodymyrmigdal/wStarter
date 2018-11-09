@@ -710,7 +710,7 @@ function _includeSingleMature( bound,filePath )
     withBeginEnd : 1,
   });
 
-  return result;
+  return result.exports;
 }
 
 //

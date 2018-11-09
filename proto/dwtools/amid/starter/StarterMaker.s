@@ -179,6 +179,7 @@ function fileProviderForm()
 function fromHardDriveRead( o )
 {
   let self = this;
+  let srcFileProvider = self.hubFileProvider.providersWithProtocolMap.src;
 
   if( _.strIs( arguments[ 0 ] ) )
   o = { srcPath : arguments[ 0 ] }
@@ -190,11 +191,12 @@ function fromHardDriveRead( o )
   _.routineOptions( fromHardDriveRead, o );
 
   self.hubFileProvider.verbosity = 1;
+  let srcLocalPath = _.uri.parse( o.srcPath ).localPath;
 
   let reflect = self.hubFileProvider.filesReflector
   ({
-    srcFilter : { basePath : o.srcPath, prefixPath : o.srcPath },
-    dstFilter : { basePath : 'src:///', prefixPath : 'src:///' },
+    srcFilter : { prefixPath : o.srcPath, basePath : srcLocalPath },
+    dstFilter : { prefixPath : 'src:///' },
     filter :
     {
       ends : [ '.js', '.s', '.css', '.less', '.jslike' ],
@@ -416,6 +418,13 @@ function filesMapMake()
     _.sure( !!found.length, 'none script found' );
 
   }
+
+  self.hubFileProvider.softLinksRebase
+  ({
+    filePath : 'fmap:///',
+    oldPath : self.includePath,
+    newPath : 'file:///',
+  })
 
   // debugger;
   hubFileProvider.fileWriteJs
@@ -660,6 +669,7 @@ let Composes =
   outPath : null,
   appName : null,
   useFilePath : null,
+  includePath : null,
   toolsPath : '{{inPath}}/dwtools',
   initScriptPath : '{{outPath}}/index.s',
   starterDirPath : '{{outPath}}',
