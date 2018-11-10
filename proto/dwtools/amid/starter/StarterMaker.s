@@ -179,6 +179,7 @@ function fileProviderForm()
 function fromHardDriveRead( o )
 {
   let self = this;
+  let srcFileProvider = self.hubFileProvider.providersWithProtocolMap.src;
 
   if( _.strIs( arguments[ 0 ] ) )
   o = { srcPath : arguments[ 0 ] }
@@ -190,10 +191,11 @@ function fromHardDriveRead( o )
   _.routineOptions( fromHardDriveRead, o );
 
   self.hubFileProvider.verbosity = 1;
+  let srcLocalPath = _.uri.parse( o.srcPath ).localPath;
 
   let reflect = self.hubFileProvider.filesReflector
   ({
-    srcFilter : { basePath : o.srcPath },
+    srcFilter : { prefixPath : o.srcPath, basePath : srcLocalPath },
     dstFilter : { prefixPath : 'src:///' },
     filter :
     {
@@ -228,8 +230,8 @@ function toHardDriveWrite( o )
 
   let reflect = self.hubFileProvider.filesReflector
   ({
-    srcFilter : { basePath : _.uri.join( 'dst://', '/' ) },
-    dstFilter : { prefixPath : _.uri.join( 'file://', o.dstPath ) },
+    srcFilter : { basePath : _.uri.join( 'dst://', '/' ), prefixPath : _.uri.join( 'dst://', '/' ) },
+    dstFilter : { prefixPath : _.uri.join( 'file://', o.dstPath ), basePath : _.uri.join( 'file://', o.dstPath ) },
     mandatory : 1,
   });
 
@@ -383,9 +385,11 @@ function filesMapMake()
     dstFilter :
     {
       prefixPath : _.uri.join( self.inPath, 'fmap://' ),
+      basePath : _.uri.join( self.inPath, 'fmap://' )
     },
     srcFilter :
     {
+      prefixPath : _.uri.join(  self.inPath, 'src://', ),
       basePath : _.uri.join(  self.inPath, 'src://', ),
     },
     linking : 'fileCopy',
@@ -414,6 +418,13 @@ function filesMapMake()
     _.sure( !!found.length, 'none script found' );
 
   }
+
+  self.hubFileProvider.softLinksRebase
+  ({
+    filePath : 'fmap:///',
+    oldPath : self.includePath,
+    newPath : 'file:///',
+  })
 
   // debugger;
   hubFileProvider.fileWriteJs
@@ -495,9 +506,10 @@ function starterMake()
     }
   });
 
+  find( 'abase/l0' );
   find( 'abase/l1' );
   find( 'abase/l2' );
-  find( 'l3' );
+  find( 'abase/l3' );
   find( 'abase/l4' );
   find( 'abase/l5' );
   find( 'abase/l7' );
@@ -568,7 +580,7 @@ Config.offline = ${_.toStr( !!self.offline )};
   {
     let code = _.fileProvider.fileRead( _.path.join( __dirname, 'StarterPreloadEnd.raw.s' ) );
     dstFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
-    srcFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
+    // srcFileProvider.fileWrite( _.path.join( self.outPath, 'StarterPreloadEnd.run.s' ), code );
   }
 
   /* - */
@@ -657,6 +669,7 @@ let Composes =
   outPath : null,
   appName : null,
   useFilePath : null,
+  includePath : null,
   toolsPath : '{{inPath}}/dwtools',
   initScriptPath : '{{outPath}}/index.s',
   starterDirPath : '{{outPath}}',

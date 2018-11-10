@@ -6,15 +6,12 @@ if( typeof module !== 'undefined' )
 let _ = _global_.wTools;
 
 let srcPath = _.path.join( __dirname, 'node_modules' );
-let dstPath = _.path.join( __dirname, 'staging/tmp/dwtools' );
+let dstPath = _.path.join( __dirname, 'proto/tmp/dwtools' );
 
 let includeList =
 [
   '**/abase/l?/**',
   '**/abase/layer?/**',
-  '**/abase/mixin/**',
-  '**/abase/oclass/**',
-  '**/abase/printer/**',
   '**/amid/amapping/**',
   '**/amid/amixin/**',
   '**/amid/bclass/**',

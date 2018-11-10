@@ -710,7 +710,7 @@ function _includeSingleMature( bound,filePath )
     withBeginEnd : 1,
   });
 
-  return result;
+  return result.exports;
 }
 
 //
@@ -982,7 +982,7 @@ moduleWithIncludeHandlerDeclare.defaults =
 function modulesWithIncludeHandlersDeclare( handlers )
 {
   if( handlers === undefined )
-  handlers = _.IncludeHandlersMap;
+  handlers = _global_.ModulesRegistry;
 
   _.assert( arguments.length === 0 || arguments.length === 1 );
   _.assert( _.objectIs( handlers ) );
@@ -1291,7 +1291,7 @@ let Fields =
   pathPrefix : '',
   initScriptPath : null,
   starterDirPath : null,
-  includeToolsPath : '/dwtools/abase/layer2/fIncludeTools.s',
+  includeToolsPath : '/dwtools/abase/l2/IncludeTools.s',
 
   allowModulling : 1,
   usingIncludeHandlers : 1,
