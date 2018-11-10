@@ -465,7 +465,7 @@ function filesMapMake()
       ({
         srcPath : file.absolute,
         dstPath : file.absolute,
-        allowMissing : 1,
+        allowingMissing : 1,
       });
     }
 
