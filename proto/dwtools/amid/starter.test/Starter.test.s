@@ -103,7 +103,7 @@ function trivial( test )
   }
 
 
-  var files = _.fileProvider.directoryRead( tempPath );
+  var files = _.fileProvider.dirRead( tempPath );
   var expected =
   [
     'Index.html',

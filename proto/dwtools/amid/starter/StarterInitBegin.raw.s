@@ -397,7 +397,7 @@ function _scriptsPreload()
     filePath : '/',
     onUp : onUp,
     includingTransient : 0,
-    includingDirectories : 0,
+    includingDirs : 0,
     resolvingSoftLink : 0,
     resolvingTextLink : 0,
     filter :
@@ -732,7 +732,7 @@ function _includeMature( bound, filePath )
     let o = Object.create( null );
     o.filter = fileProvider.RecordFilter.And( { hubFileProvider : fileProvider }, _starter_.includeDefaults.filter, scriptFile.include.filter );
     o.includingTransient = 0;
-    o.includingDirectories = 0;
+    o.includingDirs = 0;
     o.resolvingSoftLink = 0;
     o.resolvingTextLink = 0;
     o.filePath = filePath;
