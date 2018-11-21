@@ -1,0 +1,693 @@
+format: willfile-1.0.0
+about:
+  name: wStarter
+  description: >-
+    Collection of tools to generate background service to start and pack
+    application. Starter consists of 3 pieces, maker - generating code for
+    run-time, client run-time piece, and server run-time piece. Use the module
+    to keep files structure of the application and make code aware wherein the
+    file system is it executed.
+  version: 0.3.28
+  enabled: 1
+  interpreters:
+    - nodejs >= 6.0.0
+    - chrome >= 60.0.0
+    - firefox >= 60.0.0
+  keywords:
+    - wTools
+execution:
+  scripts:
+    test: wtest staging
+    docgen: wdocgen staging
+path:
+  proto:
+    path: ./proto
+  in:
+    path: .
+  out:
+    path: out
+  out.debug:
+    path: ./out.debug
+    criterion:
+      debug: 1
+  out.release:
+    path: ./out.release
+    criterion:
+      debug: 0
+  repository:
+    path: 'git+https://github.com/Wandalen/wStarter.git'
+  bugs:
+    path: 'https://github.com/Wandalen/wStarter/issues'
+  exportedDir.0:
+    path: ./proto
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+  baseDir:
+    path: ..
+  exportedFiles.0:
+    path:
+      - .
+      - ./dwtools
+      - ./dwtools/Tools.s
+      - ./dwtools/abase
+      - ./dwtools/amid
+      - ./dwtools/amid/Tools.s
+      - ./dwtools/amid/starter
+      - ./dwtools/amid/starter/StarterConfigBegin.raw.s
+      - ./dwtools/amid/starter/StarterInitBegin.raw.s
+      - ./dwtools/amid/starter/StarterInitEnd.raw.s
+      - ./dwtools/amid/starter/StarterMaker.s
+      - ./dwtools/amid/starter/StarterPreloadEnd.raw.s
+      - ./dwtools/amid/starter/StarterServer.ss
+      - ./dwtools/amid/starter/StarterStart.raw.s
+      - ./dwtools/amid/starter.test
+      - ./dwtools/amid/starter.test/Starter.test.s
+      - ./dwtools/atop
+      - ./tmp
+      - ./tmp/dwtools
+      - ./tmp/dwtools/abase
+      - ./tmp/dwtools/abase/l0
+      - ./tmp/dwtools/abase/l0/aPredefined.s
+      - ./tmp/dwtools/abase/l0/fBool.s
+      - ./tmp/dwtools/abase/l0/fChecker.s
+      - ./tmp/dwtools/abase/l0/fEntity.s
+      - ./tmp/dwtools/abase/l0/fErr.s
+      - ./tmp/dwtools/abase/l0/fLong.s
+      - ./tmp/dwtools/abase/l0/fMap.s
+      - ./tmp/dwtools/abase/l0/fNumber.s
+      - ./tmp/dwtools/abase/l0/fRange.s
+      - ./tmp/dwtools/abase/l0/fRegexp.s
+      - ./tmp/dwtools/abase/l0/fRoutine.s
+      - ./tmp/dwtools/abase/l0/fString.s
+      - ./tmp/dwtools/abase/l0/fTime.s
+      - ./tmp/dwtools/abase/l0/iArrayDescriptor.s
+      - ./tmp/dwtools/abase/l0/iCompose.s
+      - ./tmp/dwtools/abase/l0/iField.s
+      - ./tmp/dwtools/abase/l1
+      - ./tmp/dwtools/abase/l1/cErr.s
+      - ./tmp/dwtools/abase/l1/gBool.s
+      - ./tmp/dwtools/abase/l1/gEntity.s
+      - ./tmp/dwtools/abase/l1/gLong.s
+      - ./tmp/dwtools/abase/l1/gMap.s
+      - ./tmp/dwtools/abase/l1/gNumber.s
+      - ./tmp/dwtools/abase/l1/gRange.s
+      - ./tmp/dwtools/abase/l1/gRegexp.s
+      - ./tmp/dwtools/abase/l1/gRoutine.s
+      - ./tmp/dwtools/abase/l1/gString.s
+      - ./tmp/dwtools/abase/l1/gTime.s
+      - ./tmp/dwtools/abase/l1/rFundamental.s
+      - ./tmp/dwtools/abase/l1/zSetup.s
+      - ./tmp/dwtools/abase/l2
+      - ./tmp/dwtools/abase/l2/IncludeTools.s
+      - ./tmp/dwtools/abase/l2/ModulesRegistry.s
+      - ./tmp/dwtools/abase/l2/NameTools.s
+      - ./tmp/dwtools/abase/l2/StringTools.s
+      - ./tmp/dwtools/abase/l3
+      - ./tmp/dwtools/abase/l3/Looker.s
+      - ./tmp/dwtools/abase/l3/Path.s
+      - ./tmp/dwtools/abase/l3/Proto.s
+      - ./tmp/dwtools/abase/l3/ProtoAccessor.s
+      - ./tmp/dwtools/abase/l3/ProtoLike.s
+      - ./tmp/dwtools/abase/l3/Selector.s
+      - ./tmp/dwtools/abase/l3/Stringer.s
+      - ./tmp/dwtools/abase/l4
+      - ./tmp/dwtools/abase/l4/ArraySorted.s
+      - ./tmp/dwtools/abase/l4/ArraySparse.s
+      - ./tmp/dwtools/abase/l4/External.s
+      - ./tmp/dwtools/abase/l4/LookerComparator.s
+      - ./tmp/dwtools/abase/l4/Paths.s
+      - ./tmp/dwtools/abase/l4/Traverser.s
+      - ./tmp/dwtools/abase/l4/Uri.s
+      - ./tmp/dwtools/abase/l5
+      - ./tmp/dwtools/abase/l5/Cloner.s
+      - ./tmp/dwtools/abase/l5/StringTools.s
+      - ./tmp/dwtools/abase/l5/Uris.s
+      - ./tmp/dwtools/abase/l5/WebUri.s
+      - ./tmp/dwtools/abase/l7
+      - ./tmp/dwtools/abase/l7/Glob.s
+      - ./tmp/dwtools/abase/l9
+      - ./tmp/dwtools/abase/l9/consequence
+      - ./tmp/dwtools/abase/l9/consequence/Consequence.s
+      - ./tmp/dwtools/amid
+      - ./tmp/dwtools/amid/amapping
+      - ./tmp/dwtools/amid/amapping/.DS_Store
+      - ./tmp/dwtools/amid/amapping/TemplateTreeAresolver.s
+      - ./tmp/dwtools/amid/amapping/TemplateTreeEnvironment.s
+      - ./tmp/dwtools/amid/amixin
+      - ./tmp/dwtools/amid/amixin/Verbal.s
+      - ./tmp/dwtools/amid/bclass
+      - ./tmp/dwtools/amid/bclass/.DS_Store
+      - ./tmp/dwtools/amid/bclass/RegexpObject.s
+      - ./tmp/dwtools/amid/files
+      - ./tmp/dwtools/amid/files/UseBase.s
+      - ./tmp/dwtools/amid/files/UseMid.s
+      - ./tmp/dwtools/amid/files/UseTop.s
+      - ./tmp/dwtools/amid/files/l1
+      - ./tmp/dwtools/amid/files/l1/Encoders.s
+      - ./tmp/dwtools/amid/files/l1/FileRecord.s
+      - ./tmp/dwtools/amid/files/l1/FileRecordFactory.s
+      - ./tmp/dwtools/amid/files/l1/FileRecordFilter.s
+      - ./tmp/dwtools/amid/files/l1/FileRoutines.s
+      - ./tmp/dwtools/amid/files/l1/FileStat.s
+      - ./tmp/dwtools/amid/files/l1/Path.s
+      - ./tmp/dwtools/amid/files/l1/Path.ss
+      - ./tmp/dwtools/amid/files/l2
+      - ./tmp/dwtools/amid/files/l2/Abstract.s
+      - ./tmp/dwtools/amid/files/l2/Partial.s
+      - ./tmp/dwtools/amid/files/l3
+      - ./tmp/dwtools/amid/files/l3/FindMixin.s
+      - ./tmp/dwtools/amid/files/l3/SecondaryMixin.s
+      - ./tmp/dwtools/amid/files/l5_provider
+      - ./tmp/dwtools/amid/files/l5_provider/Extract.s
+      - ./tmp/dwtools/amid/files/l5_provider/Git.ss
+      - ./tmp/dwtools/amid/files/l5_provider/HardDrive.ss
+      - ./tmp/dwtools/amid/files/l5_provider/HtmlDocument.js
+      - ./tmp/dwtools/amid/files/l5_provider/Http.js
+      - ./tmp/dwtools/amid/files/l5_provider/Http.ss
+      - ./tmp/dwtools/amid/files/l5_provider/Npm.ss
+      - ./tmp/dwtools/amid/files/l5_provider/RemoteClient.s
+      - ./tmp/dwtools/amid/files/l5_provider/RemoteServlet.ss
+      - ./tmp/dwtools/amid/files/l5_provider/Svn.ss
+      - ./tmp/dwtools/amid/files/l7
+      - ./tmp/dwtools/amid/files/l7/Hub.s
+      - ./tmp/dwtools/amid/files/l8_filter
+      - ./tmp/dwtools/amid/files/l8_filter/Reroot.s
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+  exportedTerminals.0:
+    path:
+      - ./dwtools/Tools.s
+      - ./dwtools/amid/Tools.s
+      - ./dwtools/amid/starter/StarterConfigBegin.raw.s
+      - ./dwtools/amid/starter/StarterInitBegin.raw.s
+      - ./dwtools/amid/starter/StarterInitEnd.raw.s
+      - ./dwtools/amid/starter/StarterMaker.s
+      - ./dwtools/amid/starter/StarterPreloadEnd.raw.s
+      - ./dwtools/amid/starter/StarterServer.ss
+      - ./dwtools/amid/starter/StarterStart.raw.s
+      - ./dwtools/amid/starter.test/Starter.test.s
+      - ./tmp/dwtools/abase/l0/aPredefined.s
+      - ./tmp/dwtools/abase/l0/fBool.s
+      - ./tmp/dwtools/abase/l0/fChecker.s
+      - ./tmp/dwtools/abase/l0/fEntity.s
+      - ./tmp/dwtools/abase/l0/fErr.s
+      - ./tmp/dwtools/abase/l0/fLong.s
+      - ./tmp/dwtools/abase/l0/fMap.s
+      - ./tmp/dwtools/abase/l0/fNumber.s
+      - ./tmp/dwtools/abase/l0/fRange.s
+      - ./tmp/dwtools/abase/l0/fRegexp.s
+      - ./tmp/dwtools/abase/l0/fRoutine.s
+      - ./tmp/dwtools/abase/l0/fString.s
+      - ./tmp/dwtools/abase/l0/fTime.s
+      - ./tmp/dwtools/abase/l0/iArrayDescriptor.s
+      - ./tmp/dwtools/abase/l0/iCompose.s
+      - ./tmp/dwtools/abase/l0/iField.s
+      - ./tmp/dwtools/abase/l1/cErr.s
+      - ./tmp/dwtools/abase/l1/gBool.s
+      - ./tmp/dwtools/abase/l1/gEntity.s
+      - ./tmp/dwtools/abase/l1/gLong.s
+      - ./tmp/dwtools/abase/l1/gMap.s
+      - ./tmp/dwtools/abase/l1/gNumber.s
+      - ./tmp/dwtools/abase/l1/gRange.s
+      - ./tmp/dwtools/abase/l1/gRegexp.s
+      - ./tmp/dwtools/abase/l1/gRoutine.s
+      - ./tmp/dwtools/abase/l1/gString.s
+      - ./tmp/dwtools/abase/l1/gTime.s
+      - ./tmp/dwtools/abase/l1/rFundamental.s
+      - ./tmp/dwtools/abase/l1/zSetup.s
+      - ./tmp/dwtools/abase/l2/IncludeTools.s
+      - ./tmp/dwtools/abase/l2/ModulesRegistry.s
+      - ./tmp/dwtools/abase/l2/NameTools.s
+      - ./tmp/dwtools/abase/l2/StringTools.s
+      - ./tmp/dwtools/abase/l3/Looker.s
+      - ./tmp/dwtools/abase/l3/Path.s
+      - ./tmp/dwtools/abase/l3/Proto.s
+      - ./tmp/dwtools/abase/l3/ProtoAccessor.s
+      - ./tmp/dwtools/abase/l3/ProtoLike.s
+      - ./tmp/dwtools/abase/l3/Selector.s
+      - ./tmp/dwtools/abase/l3/Stringer.s
+      - ./tmp/dwtools/abase/l4/ArraySorted.s
+      - ./tmp/dwtools/abase/l4/ArraySparse.s
+      - ./tmp/dwtools/abase/l4/External.s
+      - ./tmp/dwtools/abase/l4/LookerComparator.s
+      - ./tmp/dwtools/abase/l4/Paths.s
+      - ./tmp/dwtools/abase/l4/Traverser.s
+      - ./tmp/dwtools/abase/l4/Uri.s
+      - ./tmp/dwtools/abase/l5/Cloner.s
+      - ./tmp/dwtools/abase/l5/StringTools.s
+      - ./tmp/dwtools/abase/l5/Uris.s
+      - ./tmp/dwtools/abase/l5/WebUri.s
+      - ./tmp/dwtools/abase/l7/Glob.s
+      - ./tmp/dwtools/abase/l9/consequence/Consequence.s
+      - ./tmp/dwtools/amid/amapping/.DS_Store
+      - ./tmp/dwtools/amid/amapping/TemplateTreeAresolver.s
+      - ./tmp/dwtools/amid/amapping/TemplateTreeEnvironment.s
+      - ./tmp/dwtools/amid/amixin/Verbal.s
+      - ./tmp/dwtools/amid/bclass/.DS_Store
+      - ./tmp/dwtools/amid/bclass/RegexpObject.s
+      - ./tmp/dwtools/amid/files/UseBase.s
+      - ./tmp/dwtools/amid/files/UseMid.s
+      - ./tmp/dwtools/amid/files/UseTop.s
+      - ./tmp/dwtools/amid/files/l1/Encoders.s
+      - ./tmp/dwtools/amid/files/l1/FileRecord.s
+      - ./tmp/dwtools/amid/files/l1/FileRecordFactory.s
+      - ./tmp/dwtools/amid/files/l1/FileRecordFilter.s
+      - ./tmp/dwtools/amid/files/l1/FileRoutines.s
+      - ./tmp/dwtools/amid/files/l1/FileStat.s
+      - ./tmp/dwtools/amid/files/l1/Path.s
+      - ./tmp/dwtools/amid/files/l1/Path.ss
+      - ./tmp/dwtools/amid/files/l2/Abstract.s
+      - ./tmp/dwtools/amid/files/l2/Partial.s
+      - ./tmp/dwtools/amid/files/l3/FindMixin.s
+      - ./tmp/dwtools/amid/files/l3/SecondaryMixin.s
+      - ./tmp/dwtools/amid/files/l5_provider/Extract.s
+      - ./tmp/dwtools/amid/files/l5_provider/Git.ss
+      - ./tmp/dwtools/amid/files/l5_provider/HardDrive.ss
+      - ./tmp/dwtools/amid/files/l5_provider/HtmlDocument.js
+      - ./tmp/dwtools/amid/files/l5_provider/Http.js
+      - ./tmp/dwtools/amid/files/l5_provider/Http.ss
+      - ./tmp/dwtools/amid/files/l5_provider/Npm.ss
+      - ./tmp/dwtools/amid/files/l5_provider/RemoteClient.s
+      - ./tmp/dwtools/amid/files/l5_provider/RemoteServlet.ss
+      - ./tmp/dwtools/amid/files/l5_provider/Svn.ss
+      - ./tmp/dwtools/amid/files/l7/Hub.s
+      - ./tmp/dwtools/amid/files/l8_filter/Reroot.s
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+submodule: {}
+reflector:
+  reflect.proto.0:
+    reflectMap:
+      ./proto: ./out.release
+    srcFilter:
+      maskAll:
+        excludeAny:
+          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
+          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
+          - !<tag:yaml.org,2002:js/regexp> /\.git$/
+          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
+          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
+          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
+          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
+          - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.debug($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.test($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.experiment($|\.|\/)/i
+      prefixPath: .
+    dstFilter:
+      prefixPath: .
+    criterion:
+      debug: 0
+    inherit:
+      - predefined.*
+  reflect.proto.1:
+    reflectMap:
+      ./proto: ./out.debug
+    srcFilter:
+      maskAll:
+        excludeAny:
+          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
+          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
+          - !<tag:yaml.org,2002:js/regexp> /\.git$/
+          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
+          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
+          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
+          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
+          - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.debug($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.test($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.experiment($|\.|\/)/i
+      prefixPath: .
+    dstFilter:
+      prefixPath: .
+    criterion:
+      debug: 1
+    inherit:
+      - predefined.*
+  reflect.submodules:
+    srcFilter:
+      maskAll:
+        excludeAny:
+          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
+          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
+          - !<tag:yaml.org,2002:js/regexp> /\.git$/
+          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
+          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
+          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
+          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
+          - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.debug($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.test($|\.|\/)/i
+          - !<tag:yaml.org,2002:js/regexp> /\.experiment($|\.|\/)/i
+      prefixPath: .
+    dstFilter:
+      prefixPath: .
+    criterion:
+      debug: 1
+    inherit:
+      - predefined.*
+  exported.0:
+    reflectMap:
+      ./proto: true
+    srcFilter:
+      prefixPath: .
+    dstFilter:
+      prefixPath: .
+  exportedFiles.0:
+    recursive: 0
+    reflectMap:
+      ./dwtools/Tools.s: true
+      ./dwtools/amid/Tools.s: true
+      ./dwtools/amid/starter/StarterConfigBegin.raw.s: true
+      ./dwtools/amid/starter/StarterInitBegin.raw.s: true
+      ./dwtools/amid/starter/StarterInitEnd.raw.s: true
+      ./dwtools/amid/starter/StarterMaker.s: true
+      ./dwtools/amid/starter/StarterPreloadEnd.raw.s: true
+      ./dwtools/amid/starter/StarterServer.ss: true
+      ./dwtools/amid/starter/StarterStart.raw.s: true
+      ./dwtools/amid/starter.test/Starter.test.s: true
+      ./tmp/dwtools/abase/l0/aPredefined.s: true
+      ./tmp/dwtools/abase/l0/fBool.s: true
+      ./tmp/dwtools/abase/l0/fChecker.s: true
+      ./tmp/dwtools/abase/l0/fEntity.s: true
+      ./tmp/dwtools/abase/l0/fErr.s: true
+      ./tmp/dwtools/abase/l0/fLong.s: true
+      ./tmp/dwtools/abase/l0/fMap.s: true
+      ./tmp/dwtools/abase/l0/fNumber.s: true
+      ./tmp/dwtools/abase/l0/fRange.s: true
+      ./tmp/dwtools/abase/l0/fRegexp.s: true
+      ./tmp/dwtools/abase/l0/fRoutine.s: true
+      ./tmp/dwtools/abase/l0/fString.s: true
+      ./tmp/dwtools/abase/l0/fTime.s: true
+      ./tmp/dwtools/abase/l0/iArrayDescriptor.s: true
+      ./tmp/dwtools/abase/l0/iCompose.s: true
+      ./tmp/dwtools/abase/l0/iField.s: true
+      ./tmp/dwtools/abase/l1/cErr.s: true
+      ./tmp/dwtools/abase/l1/gBool.s: true
+      ./tmp/dwtools/abase/l1/gEntity.s: true
+      ./tmp/dwtools/abase/l1/gLong.s: true
+      ./tmp/dwtools/abase/l1/gMap.s: true
+      ./tmp/dwtools/abase/l1/gNumber.s: true
+      ./tmp/dwtools/abase/l1/gRange.s: true
+      ./tmp/dwtools/abase/l1/gRegexp.s: true
+      ./tmp/dwtools/abase/l1/gRoutine.s: true
+      ./tmp/dwtools/abase/l1/gString.s: true
+      ./tmp/dwtools/abase/l1/gTime.s: true
+      ./tmp/dwtools/abase/l1/rFundamental.s: true
+      ./tmp/dwtools/abase/l1/zSetup.s: true
+      ./tmp/dwtools/abase/l2/IncludeTools.s: true
+      ./tmp/dwtools/abase/l2/ModulesRegistry.s: true
+      ./tmp/dwtools/abase/l2/NameTools.s: true
+      ./tmp/dwtools/abase/l2/StringTools.s: true
+      ./tmp/dwtools/abase/l3/Looker.s: true
+      ./tmp/dwtools/abase/l3/Path.s: true
+      ./tmp/dwtools/abase/l3/Proto.s: true
+      ./tmp/dwtools/abase/l3/ProtoAccessor.s: true
+      ./tmp/dwtools/abase/l3/ProtoLike.s: true
+      ./tmp/dwtools/abase/l3/Selector.s: true
+      ./tmp/dwtools/abase/l3/Stringer.s: true
+      ./tmp/dwtools/abase/l4/ArraySorted.s: true
+      ./tmp/dwtools/abase/l4/ArraySparse.s: true
+      ./tmp/dwtools/abase/l4/External.s: true
+      ./tmp/dwtools/abase/l4/LookerComparator.s: true
+      ./tmp/dwtools/abase/l4/Paths.s: true
+      ./tmp/dwtools/abase/l4/Traverser.s: true
+      ./tmp/dwtools/abase/l4/Uri.s: true
+      ./tmp/dwtools/abase/l5/Cloner.s: true
+      ./tmp/dwtools/abase/l5/StringTools.s: true
+      ./tmp/dwtools/abase/l5/Uris.s: true
+      ./tmp/dwtools/abase/l5/WebUri.s: true
+      ./tmp/dwtools/abase/l7/Glob.s: true
+      ./tmp/dwtools/abase/l9/consequence/Consequence.s: true
+      ./tmp/dwtools/amid/amapping/.DS_Store: true
+      ./tmp/dwtools/amid/amapping/TemplateTreeAresolver.s: true
+      ./tmp/dwtools/amid/amapping/TemplateTreeEnvironment.s: true
+      ./tmp/dwtools/amid/amixin/Verbal.s: true
+      ./tmp/dwtools/amid/bclass/.DS_Store: true
+      ./tmp/dwtools/amid/bclass/RegexpObject.s: true
+      ./tmp/dwtools/amid/files/UseBase.s: true
+      ./tmp/dwtools/amid/files/UseMid.s: true
+      ./tmp/dwtools/amid/files/UseTop.s: true
+      ./tmp/dwtools/amid/files/l1/Encoders.s: true
+      ./tmp/dwtools/amid/files/l1/FileRecord.s: true
+      ./tmp/dwtools/amid/files/l1/FileRecordFactory.s: true
+      ./tmp/dwtools/amid/files/l1/FileRecordFilter.s: true
+      ./tmp/dwtools/amid/files/l1/FileRoutines.s: true
+      ./tmp/dwtools/amid/files/l1/FileStat.s: true
+      ./tmp/dwtools/amid/files/l1/Path.s: true
+      ./tmp/dwtools/amid/files/l1/Path.ss: true
+      ./tmp/dwtools/amid/files/l2/Abstract.s: true
+      ./tmp/dwtools/amid/files/l2/Partial.s: true
+      ./tmp/dwtools/amid/files/l3/FindMixin.s: true
+      ./tmp/dwtools/amid/files/l3/SecondaryMixin.s: true
+      ./tmp/dwtools/amid/files/l5_provider/Extract.s: true
+      ./tmp/dwtools/amid/files/l5_provider/Git.ss: true
+      ./tmp/dwtools/amid/files/l5_provider/HardDrive.ss: true
+      ./tmp/dwtools/amid/files/l5_provider/HtmlDocument.js: true
+      ./tmp/dwtools/amid/files/l5_provider/Http.js: true
+      ./tmp/dwtools/amid/files/l5_provider/Http.ss: true
+      ./tmp/dwtools/amid/files/l5_provider/Npm.ss: true
+      ./tmp/dwtools/amid/files/l5_provider/RemoteClient.s: true
+      ./tmp/dwtools/amid/files/l5_provider/RemoteServlet.ss: true
+      ./tmp/dwtools/amid/files/l5_provider/Svn.ss: true
+      ./tmp/dwtools/amid/files/l7/Hub.s: true
+      ./tmp/dwtools/amid/files/l8_filter/Reroot.s: true
+    srcFilter:
+      basePath: ./proto
+      prefixPath: proto
+    dstFilter:
+      basePath: .
+      prefixPath: .
+step:
+  reflect.proto.0:
+    criterion:
+      debug: 0
+      raw: 0
+    opts:
+      reflector: 'reflector::reflect.proto.*=1'
+    inherit:
+      - predefined.reflect
+  reflect.proto.1:
+    criterion:
+      debug: 1
+      raw: 0
+    opts:
+      reflector: 'reflector::reflect.proto.*=1'
+    inherit:
+      - predefined.reflect
+  reflect.proto.2:
+    criterion:
+      debug: 0
+      raw: 1
+    opts:
+      reflector: 'reflector::reflect.proto.*=1'
+    inherit:
+      - predefined.reflect
+  reflect.proto.3:
+    criterion:
+      debug: 1
+      raw: 1
+    opts:
+      reflector: 'reflector::reflect.proto.*=1'
+    inherit:
+      - predefined.reflect
+  reflect.submodules.0:
+    criterion:
+      debug: 1
+      raw: 0
+    opts:
+      reflector: 'reflector::reflect.submodules*=1'
+    inherit:
+      - predefined.reflect
+  reflect.submodules.1:
+    criterion:
+      debug: 1
+      raw: 1
+    opts:
+      reflector: 'reflector::reflect.submodules*=1'
+    inherit:
+      - predefined.reflect
+  export.proto:
+    criterion:
+      debug: 1
+      proto: 1
+    opts:
+      export: 'path::proto'
+      tar: 0
+    inherit:
+      - export
+build:
+  debug.raw:
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+    steps:
+      - 'step::reflect.proto.*=1'
+  debug.compiled:
+    criterion:
+      debug: 1
+      raw: 0
+    steps:
+      - 'step::reflect.proto.*=1'
+  release.raw:
+    criterion:
+      debug: 0
+      raw: 1
+    steps:
+      - 'step::reflect.proto.*=1'
+  release.compiled:
+    criterion:
+      debug: 0
+      raw: 0
+    steps:
+      - 'step::reflect.proto.*=1'
+  all:
+    steps:
+      - 'build::debug.raw'
+      - 'build::release.compiled'
+  proto.export:
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+    steps:
+      - 'build::debug.raw'
+      - 'step::export.proto'
+exported:
+  proto.export:
+    version: 0.3.28
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+    exportedReflector: 'reflector::exported.0'
+    exportedFilesReflector: 'reflector::exportedFiles.0'
+    exportedDirPath: 'path::exportedDir.0'
+    exportedFilesPath: 'path::exportedFiles.0'
+    exportedTerminalsPath:
+      path:
+        - ./dwtools/Tools.s
+        - ./dwtools/amid/Tools.s
+        - ./dwtools/amid/starter/StarterConfigBegin.raw.s
+        - ./dwtools/amid/starter/StarterInitBegin.raw.s
+        - ./dwtools/amid/starter/StarterInitEnd.raw.s
+        - ./dwtools/amid/starter/StarterMaker.s
+        - ./dwtools/amid/starter/StarterPreloadEnd.raw.s
+        - ./dwtools/amid/starter/StarterServer.ss
+        - ./dwtools/amid/starter/StarterStart.raw.s
+        - ./dwtools/amid/starter.test/Starter.test.s
+        - ./tmp/dwtools/abase/l0/aPredefined.s
+        - ./tmp/dwtools/abase/l0/fBool.s
+        - ./tmp/dwtools/abase/l0/fChecker.s
+        - ./tmp/dwtools/abase/l0/fEntity.s
+        - ./tmp/dwtools/abase/l0/fErr.s
+        - ./tmp/dwtools/abase/l0/fLong.s
+        - ./tmp/dwtools/abase/l0/fMap.s
+        - ./tmp/dwtools/abase/l0/fNumber.s
+        - ./tmp/dwtools/abase/l0/fRange.s
+        - ./tmp/dwtools/abase/l0/fRegexp.s
+        - ./tmp/dwtools/abase/l0/fRoutine.s
+        - ./tmp/dwtools/abase/l0/fString.s
+        - ./tmp/dwtools/abase/l0/fTime.s
+        - ./tmp/dwtools/abase/l0/iArrayDescriptor.s
+        - ./tmp/dwtools/abase/l0/iCompose.s
+        - ./tmp/dwtools/abase/l0/iField.s
+        - ./tmp/dwtools/abase/l1/cErr.s
+        - ./tmp/dwtools/abase/l1/gBool.s
+        - ./tmp/dwtools/abase/l1/gEntity.s
+        - ./tmp/dwtools/abase/l1/gLong.s
+        - ./tmp/dwtools/abase/l1/gMap.s
+        - ./tmp/dwtools/abase/l1/gNumber.s
+        - ./tmp/dwtools/abase/l1/gRange.s
+        - ./tmp/dwtools/abase/l1/gRegexp.s
+        - ./tmp/dwtools/abase/l1/gRoutine.s
+        - ./tmp/dwtools/abase/l1/gString.s
+        - ./tmp/dwtools/abase/l1/gTime.s
+        - ./tmp/dwtools/abase/l1/rFundamental.s
+        - ./tmp/dwtools/abase/l1/zSetup.s
+        - ./tmp/dwtools/abase/l2/IncludeTools.s
+        - ./tmp/dwtools/abase/l2/ModulesRegistry.s
+        - ./tmp/dwtools/abase/l2/NameTools.s
+        - ./tmp/dwtools/abase/l2/StringTools.s
+        - ./tmp/dwtools/abase/l3/Looker.s
+        - ./tmp/dwtools/abase/l3/Path.s
+        - ./tmp/dwtools/abase/l3/Proto.s
+        - ./tmp/dwtools/abase/l3/ProtoAccessor.s
+        - ./tmp/dwtools/abase/l3/ProtoLike.s
+        - ./tmp/dwtools/abase/l3/Selector.s
+        - ./tmp/dwtools/abase/l3/Stringer.s
+        - ./tmp/dwtools/abase/l4/ArraySorted.s
+        - ./tmp/dwtools/abase/l4/ArraySparse.s
+        - ./tmp/dwtools/abase/l4/External.s
+        - ./tmp/dwtools/abase/l4/LookerComparator.s
+        - ./tmp/dwtools/abase/l4/Paths.s
+        - ./tmp/dwtools/abase/l4/Traverser.s
+        - ./tmp/dwtools/abase/l4/Uri.s
+        - ./tmp/dwtools/abase/l5/Cloner.s
+        - ./tmp/dwtools/abase/l5/StringTools.s
+        - ./tmp/dwtools/abase/l5/Uris.s
+        - ./tmp/dwtools/abase/l5/WebUri.s
+        - ./tmp/dwtools/abase/l7/Glob.s
+        - ./tmp/dwtools/abase/l9/consequence/Consequence.s
+        - ./tmp/dwtools/amid/amapping/.DS_Store
+        - ./tmp/dwtools/amid/amapping/TemplateTreeAresolver.s
+        - ./tmp/dwtools/amid/amapping/TemplateTreeEnvironment.s
+        - ./tmp/dwtools/amid/amixin/Verbal.s
+        - ./tmp/dwtools/amid/bclass/.DS_Store
+        - ./tmp/dwtools/amid/bclass/RegexpObject.s
+        - ./tmp/dwtools/amid/files/UseBase.s
+        - ./tmp/dwtools/amid/files/UseMid.s
+        - ./tmp/dwtools/amid/files/UseTop.s
+        - ./tmp/dwtools/amid/files/l1/Encoders.s
+        - ./tmp/dwtools/amid/files/l1/FileRecord.s
+        - ./tmp/dwtools/amid/files/l1/FileRecordFactory.s
+        - ./tmp/dwtools/amid/files/l1/FileRecordFilter.s
+        - ./tmp/dwtools/amid/files/l1/FileRoutines.s
+        - ./tmp/dwtools/amid/files/l1/FileStat.s
+        - ./tmp/dwtools/amid/files/l1/Path.s
+        - ./tmp/dwtools/amid/files/l1/Path.ss
+        - ./tmp/dwtools/amid/files/l2/Abstract.s
+        - ./tmp/dwtools/amid/files/l2/Partial.s
+        - ./tmp/dwtools/amid/files/l3/FindMixin.s
+        - ./tmp/dwtools/amid/files/l3/SecondaryMixin.s
+        - ./tmp/dwtools/amid/files/l5_provider/Extract.s
+        - ./tmp/dwtools/amid/files/l5_provider/Git.ss
+        - ./tmp/dwtools/amid/files/l5_provider/HardDrive.ss
+        - ./tmp/dwtools/amid/files/l5_provider/HtmlDocument.js
+        - ./tmp/dwtools/amid/files/l5_provider/Http.js
+        - ./tmp/dwtools/amid/files/l5_provider/Http.ss
+        - ./tmp/dwtools/amid/files/l5_provider/Npm.ss
+        - ./tmp/dwtools/amid/files/l5_provider/RemoteClient.s
+        - ./tmp/dwtools/amid/files/l5_provider/RemoteServlet.ss
+        - ./tmp/dwtools/amid/files/l5_provider/Svn.ss
+        - ./tmp/dwtools/amid/files/l7/Hub.s
+        - ./tmp/dwtools/amid/files/l8_filter/Reroot.s
+      criterion:
+        default: 1
+        debug: 1
+        raw: 1
+        proto: 1
+        export: 1
+        tar: 1
