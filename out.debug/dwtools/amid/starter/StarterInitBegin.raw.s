@@ -377,7 +377,7 @@ function scriptRewrite( filePath, dirPath, routine )
 {
   let scriptFile = _starter_.resourcesMap[ filePath ];
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( _.objectIs( scriptFile ) );
 
   _scriptRewrite( filePath, routine );
