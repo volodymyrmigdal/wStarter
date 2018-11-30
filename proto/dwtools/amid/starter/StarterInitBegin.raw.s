@@ -163,7 +163,11 @@ function _starterStartWaiting()
   console.log( 'loadingCounter', _starter_.loadingCounter );
   _.assert( _starter_.loadingCounter >= 0 );
   if( _starter_.loadingCounter > 0 || !_starter_.preloaded )
-  return _.timeOut( 500, () => _starter_._starterStartWaiting() )
+  return _.timeOut( 500, () =>
+  {
+    _starter_._starterStartWaiting();
+    return null;
+  })
   _starter_._starterStart();
 }
 

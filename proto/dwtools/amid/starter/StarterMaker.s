@@ -497,6 +497,7 @@ function starterMake()
   find( 'abase/l3' );
   find( 'abase/l4' );
   find( 'abase/l5' );
+  find( 'abase/l7' );
   find( 'abase/l7_mixin' );
   find( 'abase/l9/consequence' );
   find( 'abase/l9/printer' );
@@ -637,8 +638,8 @@ function _verbosityChange()
 
   if( self.logger )
   {
-    self.logger.verbosity = self.verbosity;
     // self.logger.verbosity = self._verbosityForLogger();
+    self.logger.verbosity = self.verbosity;
     self.logger.outputGray = self.coloring ? 0 : 1;
   }
 
