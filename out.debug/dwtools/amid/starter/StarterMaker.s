@@ -13,24 +13,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-
-  let _ = _global_.wTools;
+  let _ = require( '../../Tools.s' );
 
   _.include( 'wCopyable' );
   _.include( 'wVerbal' );
@@ -57,6 +40,8 @@ function init( o )
   let self = this;
 
   _.assert( arguments.length === 0 || arguments.length === 1 );
+
+  self.logger = new _.Logger({ output : logger });
 
   _.instanceInit( self );
   Object.preventExtensions( self );
@@ -394,7 +379,7 @@ function filesMapMake()
     },
     linking : 'fileCopy',
     resolvingSrcSoftLink : 0,
-    recursive : 1,
+    recursive : '2',
   });
   // debugger;
 
@@ -408,7 +393,7 @@ function filesMapMake()
     let found = self.hubFileProvider.filesFind
     ({
       filePath : 'fmap:///',
-      recursive : 1,
+      recursive : '2',
       includingTerminals : 1,
       includingTransient : 0,
       resolvingSoftLink : 0,
@@ -495,7 +480,7 @@ function starterMake()
   let find = self.hubFileProvider.filesFinder
   ({
     filePath : _.uri.join( 'src://', self.toolsPath ),
-    recursive : 1,
+    recursive : '2',
     includingTerminals : 1,
     includingTransient : 0,
     mandatory : 1,
@@ -512,11 +497,11 @@ function starterMake()
   find( 'abase/l3' );
   find( 'abase/l4' );
   find( 'abase/l5' );
-  find( 'abase/l7' );
+  find( 'abase/l7_mixin' );
   find( 'abase/l9/consequence' );
   find( 'abase/l9/printer' );
 
-  find( 'amid/amapping/TemplateTreeAresolver.s' );
+  find( 'amid/l5_mapper/TemplateTreeAresolver.s' );
   find( 'amid/amixin/Verbal.s' );
   find( 'amid/bclass/RegexpObject.s' );
 
@@ -652,7 +637,8 @@ function _verbosityChange()
 
   if( self.logger )
   {
-    self.logger.verbosity = self._verbosityForLogger();
+    self.logger.verbosity = self.verbosity;
+    // self.logger.verbosity = self._verbosityForLogger();
     self.logger.outputGray = self.coloring ? 0 : 1;
   }
 
@@ -694,7 +680,7 @@ let Associates =
 {
 
   hubFileProvider : null,
-  logger : _.define.own( new _.Logger({ output : console }) ),
+  logger : null,
 
 }
 

@@ -7,7 +7,7 @@ about:
     run-time, client run-time piece, and server run-time piece. Use the module
     to keep files structure of the application and make code aware wherein the
     file system is it executed.
-  version: 0.3.28
+  version: 0.3.29
   enabled: 1
   interpreters:
     - nodejs >= 6.0.0
@@ -292,7 +292,7 @@ path:
 submodule: {}
 reflector:
   reflect.proto.0:
-    reflectMap:
+    filePath:
       ./proto: ./out.release
     srcFilter:
       maskAll:
@@ -316,7 +316,7 @@ reflector:
     inherit:
       - predefined.*
   reflect.proto.1:
-    reflectMap:
+    filePath:
       ./proto: ./out.debug
     srcFilter:
       maskAll:
@@ -362,15 +362,14 @@ reflector:
     inherit:
       - predefined.*
   exported.0:
-    reflectMap:
-      ./proto: true
+    filePath: ./proto
     srcFilter:
       prefixPath: .
     dstFilter:
       prefixPath: .
   exportedFiles.0:
     recursive: 0
-    reflectMap:
+    filePath:
       ./dwtools/Tools.s: true
       ./dwtools/amid/Tools.s: true
       ./dwtools/amid/starter/StarterConfigBegin.raw.s: true
@@ -468,7 +467,7 @@ reflector:
       ./tmp/dwtools/amid/files/l7/Hub.s: true
       ./tmp/dwtools/amid/files/l8_filter/Reroot.s: true
     srcFilter:
-      basePath: ./proto
+      basePath: .
       prefixPath: proto
     dstFilter:
       basePath: .
@@ -574,7 +573,7 @@ build:
       - 'step::export.proto'
 exported:
   proto.export:
-    version: 0.3.28
+    version: 0.3.29
     criterion:
       default: 1
       debug: 1
