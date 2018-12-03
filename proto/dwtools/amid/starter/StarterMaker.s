@@ -446,7 +446,7 @@ function filesMapMake()
     }
     else if( file.isSoftLink )
     {
-      fmap.linkSoft
+      fmap.softLink
       ({
         srcPath : file.absolute,
         dstPath : file.absolute,
