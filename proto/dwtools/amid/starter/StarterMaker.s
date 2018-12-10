@@ -428,7 +428,7 @@ function filesMapMake()
 
   function onUp( file, op )
   {
-    let resolvedPath = hubFileProvider.pathResolveLink( file.absoluteUri );
+    let resolvedPath = hubFileProvider.pathResolveLink( file.absoluteGlobal );
     let prefixToRemove = /^#\!\s*\/.+/;
 
     if( self.offline && _.arrayHas( [ 's','js','ss' ], file.ext ) )
@@ -586,7 +586,7 @@ Config.offline = ${_.toStr( !!self.offline )};
     if( self.verbosity >= 3 )
     logger.log( ' +', 'starter use', file.absolute );
 
-    let read = this.fileCodeRead( file.hubAbsolute );
+    let read = this.fileCodeRead( file.absoluteGlobalOrLocal );
 
     builtinMapCode += read;
 
