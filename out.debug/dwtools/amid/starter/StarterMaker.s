@@ -428,7 +428,7 @@ function filesMapMake()
 
   function onUp( file, op )
   {
-    let resolvedPath = hubFileProvider.pathResolveLink( file.absoluteGlobal );
+    let resolvedPath = hubFileProvider.pathResolveLinkFull( file.absoluteGlobal );
     let prefixToRemove = /^#\!\s*\/.+/;
 
     if( self.offline && _.arrayHas( [ 's','js','ss' ], file.ext ) )
