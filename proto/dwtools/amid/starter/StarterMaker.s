@@ -188,7 +188,7 @@ function fromHardDriveRead( o )
       maskAll : _.files.regexpMakeSafe(),
       maskTransientAll : _.files.regexpMakeSafe()
     },
-    linking : 'softlink',
+    linking : 'softLink',
     mandatory : 1,
   });
 
@@ -586,7 +586,7 @@ Config.offline = ${_.toStr( !!self.offline )};
     if( self.verbosity >= 3 )
     logger.log( ' +', 'starter use', file.absolute );
 
-    let read = this.fileCodeRead( file.absoluteGlobalOrLocal );
+    let read = this.fileCodeRead( file.absoluteGlobalMaybe );
 
     builtinMapCode += read;
 
