@@ -381,7 +381,7 @@ build:
       tar: 1
       public: 1
     steps:
-      - 'build::debug.raw'
+      - 'build::debug.compiled'
       - 'step::export.proto'
 exported:
   proto.export:
