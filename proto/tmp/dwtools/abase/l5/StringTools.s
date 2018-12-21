@@ -32,7 +32,7 @@ let _ObjectHasOwnProperty = Object.hasOwnProperty;
 
 // let __assert = _.assert;
 let _arraySlice = _.longSlice;
-let strTypeOf = _.strTypeOf;
+let strType = _.strType;
 
 _.assert( _.routineIs( _.sorted.addOnce ) );
 
@@ -357,12 +357,14 @@ function strSearch( o )
     }
 
     if( o.nearestLines )
+    debugger;
+    if( o.nearestLines )
     it.nearest = _.strLinesNearest
     ({
       src : o.src,
       charsRange : it.charsRange,
       numberOfLines : o.nearestLines,
-    });
+    }).splits;
 
     if( o.determiningLineNumber )
     it.linesOffsets = [ first - _.strLinesCount( it.nearest[ 0 ] ) + 1, first, first + _.strLinesCount( it.nearest[ 1 ] ) ];
@@ -1463,14 +1465,29 @@ function strToConfig( src,o )
 
 //
 
-function strParseMap( o )
+function strToNumberMaybe( src )
+{
+  _.assert( _.strIs( src ) || _.numberIs( src ) );
+  if( _.numberIs( src ) )
+  return src;
+
+  let prased = parseFloat( src );
+  if( !isNaN( prased ) )
+  return prased;
+
+  return src
+}
+
+//
+
+function strToMap( o )
 {
 
   if( _.strIs( o ) || _.arrayIs( o ) )
   o = { src : o }
 
-  _.routineOptions( strParseMap, o );
-  _.assert( !!o.valKeyDelimeter );
+  _.routineOptions( strToMap, o );
+  _.assert( !!o.keyValDelimeter );
   _.assert( _.strIs( o.entryDelimeter ) );
   _.assert( _.strIs( o.src ) || _.arrayIs( o.src ) );
   _.assert( arguments.length === 1 );
@@ -1481,7 +1498,7 @@ function strParseMap( o )
   src = _.strSplit
   ({
     src : src,
-    delimeter : o.valKeyDelimeter,
+    delimeter : o.keyValDelimeter,
     stripping : 1,
     preservingEmpty : 1,
     preservingDelimeters : 0,
@@ -1504,29 +1521,155 @@ function strParseMap( o )
       src[ a+0 ] = cuts[ 2 ];
     }
 
-    if( !isNaN( parseFloat( val ) ) )
-    val = parseFloat( val );
+    // if( !isNaN( parseFloat( val ) ) )
+    // val = parseFloat( val );
 
     result[ left ] = val;
+
+    if( o.toNumberMaybe )
+    result[ left ] = _.strToNumberMaybe( result[ left ] );
+
+    if( o.parsingArrays )
+    result[ left ] = strToArrayMaybe( result[ left ] );
+
+  }
+
+  /**/
+
+  function strToArrayMaybe( str )
+  {
+    let result = str;
+    if( !_.strIs( result ) )
+    return result;
+    let inside = _.strInsideOf( result, '[', ']' );
+    if( inside !== false )
+    {
+      let splits = _.strSplit
+      ({
+        src : inside,
+        delimeter : [ ' ', ',' ],
+        stripping : 1,
+        quoting : 1,
+        preservingDelimeters : 0,
+        preservingEmpty : 0,
+      });
+      if( o.toNumberMaybe )
+      result = splits.map( ( e ) => _.strToNumberMaybe( e ) );
+    }
+    return result;
   }
 
   return result;
 }
 
-strParseMap.defaults =
+strToMap.defaults =
 {
   src : null,
-  valKeyDelimeter : ':',
+  keyValDelimeter : ':',
   entryDelimeter : ' ',
+  parsingArrays : 0,
+  toNumberMaybe : 1,
 }
+
+//
+
+function strRequestParse( o )
+{
+
+  if( _.strIs( o ) )
+  o = { src : o }
+
+  _.assert( arguments.length === 0 || arguments.length === 1 );
+  _.assert( _.strIs( o.src ) );
+  o = _.routineOptions( strRequestParse, arguments );
+
+  let result = Object.create( null );
+
+  result.subject = '';
+  result.map = Object.create( null );
+  result.subjects = [];
+  result.maps = [];
+  result.keyValDelimeter = o.keyValDelimeter;
+  result.subjectsDelimeter = o.subjectsDelimeter;
+
+  if( !o.src )
+  return result;
+
+  /* should be strSplit, but not strIsolateBeginOrAll because of quoting */
+
+  let commands = _.strSplit
+  ({
+    src : o.src,
+    delimeter : o.subjectsDelimeter,
+    stripping : 1,
+    quoting : 1,
+    preservingDelimeters : 0,
+    preservingEmpty : 0,
+  });
+
+  /* */
+
+  for( let c = 0 ; c < commands.length ; c++ )
+  {
+
+    let mapEntries = _.strSplit
+    ({
+      src : commands[ c ],
+      delimeter : o.keyValDelimeter,
+      stripping : 1,
+      quoting : 1,
+      preservingDelimeters : 1,
+      preservingEmpty : 0,
+    });
+
+    let subject, map;
+
+    if( mapEntries.length === 1 )
+    {
+      subject = mapEntries[ 0 ];
+      map = Object.create( null );
+    }
+    else
+    {
+      let subjectAndKey = _.strIsolateEndOrAll( mapEntries[ 0 ], ' ' );
+      subject = subjectAndKey[ 0 ];
+      mapEntries[ 0 ] = subjectAndKey[ 2 ];
+
+      map = _.strToMap
+      ({
+        src : mapEntries.join( '' ),
+        keyValDelimeter : o.keyValDelimeter,
+        parsingArrays : o.parsingArrays,
+      });
+
+    }
+
+    result.subjects.push( subject );
+    result.maps.push( map );
+  }
+
+  if( result.subjects.length )
+  result.subject = result.subjects[ 0 ];
+  if( result.maps.length )
+  result.map = result.maps[ 0 ];
+
+  return result;
+}
+
+var defaults = strRequestParse.defaults = Object.create( null );
+
+defaults.keyValDelimeter = ':';
+defaults.subjectsDelimeter = ';';
+defaults.parsingArrays = 1;
+defaults.src = null;
 
 //
 
 function strJoinMap( o )
 {
 
-  _.routineOptions( strParseMap, o );
-  _.assert( _.strIs( o.valKeyDelimeter ) );
+  _.routineOptions( strToMap, o );
+  _.assert( _.strIs( o.keyValDelimeter ) );
   _.assert( _.strIs( o.entryDelimeter ) );
   _.assert( _.objectIs( o.src ) );
   _.assert( arguments.length === 1 );
@@ -1537,7 +1680,7 @@ function strJoinMap( o )
   {
     if( c > 0 )
     result += o.entryDelimeter;
-    result += s + o.valKeyDelimeter + o.src[ s ];
+    result += s + o.keyValDelimeter + o.src[ s ];
     c += 1;
   }
 
@@ -1547,7 +1690,7 @@ function strJoinMap( o )
 strJoinMap.defaults =
 {
   src : null,
-  valKeyDelimeter : ':',
+  keyValDelimeter : ':',
   entryDelimeter : ' ',
 }
 
@@ -1878,7 +2021,10 @@ let Proto =
   strToDom : strToDom, /* experimental */
   strToConfig : strToConfig, /* experimental */
 
-  strParseMap : strParseMap, /* qqq : cover it by tests */
+  strToNumberMaybe : strToNumberMaybe,
+  strToMap : strToMap, /* qqq : cover it by tests */
+  strRequestParse : strRequestParse,
+
   strJoinMap : strJoinMap, /* qqq : cover it by tests */
 
   strTable : strTable,

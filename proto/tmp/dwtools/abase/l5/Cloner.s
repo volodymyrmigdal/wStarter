@@ -13,24 +13,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-  var _global = _global_;
-  var _ = _global_.wTools;
+  let _ = require( '../../Tools.s' );
   _.include( 'wTraverser' );
 
 }
@@ -96,7 +79,7 @@ function _cloneMapUp( it )
     (
       'Complex objets should have ' +
       ( it.iterator.technique === 'data' ? 'traverseData' : 'traverseObject' ) +
-      ', but object ' + _.strTypeOf( it.src ) + ' at ' + ( it.path || '.' ), 'does not have such method','\n',
+      ', but object ' + _.strType( it.src ) + ' at ' + ( it.path || '.' ), 'does not have such method','\n',
       it.src,'\n',
       'try to mixin wCopyable'
     );
@@ -169,6 +152,8 @@ function _cloneMapElementDown( it, eit )
     return eit;
   }
 
+  // if( key === 'srcFilter' && val && val.formed === 1 )
+  // debugger;
   it.dst[ key ] = val;
 
   if( eit.cloningWithSetter )
@@ -213,7 +198,7 @@ function _cloneArrayUp( it )
   else
   {
     it.dst = [];
-    // it.dst = _.longMakeSimilar( it.src );
+    // it.dst = _.longMake( it.src );
   }
 
   return it;

@@ -218,7 +218,7 @@ function numberClamp( src,low,high )
 
 function numberMix( ins1, ins2, progress )
 {
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   return ins1*( 1-progress ) + ins2*( progress );
 }
 

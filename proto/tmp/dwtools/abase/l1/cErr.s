@@ -441,7 +441,8 @@ function diagnosticCode( o )
         // debugger;
         // if( _global._starter_ )
         // _global._starter_.fileProvider.fileRead( _.weburi.parse( o.location.path ).localPath );
-
+        // o.location.path = codeProvider.path.normalize( o.location.path );
+        if( codeProvider.path.isAbsolute( codeProvider.path.normalize( o.location.path ) ) )
         o.sourceCode = codeProvider.fileRead
         ({
           filePath : o.location.path,
@@ -472,6 +473,9 @@ function diagnosticCode( o )
       number : 1,
     });
 
+    if( result && _.strIndentation )
+    result = _.strIndentation( result, o.identation );
+
     if( o.withPath )
     result = o.location.full + '\n' + result;
 
@@ -500,6 +504,7 @@ diagnosticCode.defaults =
   numberOfLines : 3,
   withPath : 1,
   selectMode : 'center',
+  identation : '    ',
   stack : null,
   error : null,
   location : null,
@@ -563,13 +568,13 @@ function diagnosticStack( stack, first, last )
   if( !_.numberIs( first ) && first !== undefined )
   {
     debugger;
-    throw Error( 'diagnosticStack : expects number {-first-}, got ' + _.strTypeOf( first ) );
+    throw Error( 'diagnosticStack : expects number {-first-}, got ' + _.strType( first ) );
   }
 
   if( !_.numberIs( last ) && last !== undefined )
   {
     debugger;
-    throw Error( 'diagnosticStack : expects number {-last-}, got' + _.strTypeOf( last ) );
+    throw Error( 'diagnosticStack : expects number {-last-}, got' + _.strType( last ) );
   }
 
   let errIs = 0;
@@ -602,15 +607,10 @@ function diagnosticStack( stack, first, last )
 
   if( errIs )
   {
-    // debugger;
     while( stack.length )
     {
       let splice = 0;
-      // if( stack[ 0 ].indexOf( '@' ) !== -1 )
-      // debugger;
-      // if( stack[ 0 ].indexOf( '@' ) !== -1 )
-      // return '';
-      splice |= ( stack[ 0 ].indexOf( 'at ' ) === -1 && stack[ 0 ].indexOf( '@' ) === -1 );
+      splice |= ( stack[ 0 ].indexOf( '  at ' ) === -1 && stack[ 0 ].indexOf( '@' ) === -1 );
       splice |= stack[ 0 ].indexOf( '(vm.js:' ) !== -1;
       splice |= stack[ 0 ].indexOf( '(module.js:' ) !== -1;
       splice |= stack[ 0 ].indexOf( '(internal/module.js:' ) !== -1;
@@ -618,7 +618,6 @@ function diagnosticStack( stack, first, last )
       stack.splice( 0,1 );
       else break;
     }
-    // debugger;
   }
 
   // if( stack[ 0 ].indexOf( '@' ) === -1 )
@@ -677,7 +676,7 @@ function diagnosticStack( stack, first, last )
 
 //
 
-function diagnosticStackPurify( stack )
+function diagnosticStackCondense( stack )
 {
 
   if( arguments.length !== 1 )
@@ -886,40 +885,164 @@ diagnosticProxyFields.defaults.__proto__ == diagnosticWatchFields.defaults
 
 //
 
-function beep()
+function diasgnosticEachLongType( o )
+{
+  let result = Object.create( null );
+
+  if( _.routineIs( o ) )
+  o = { onEach : o }
+  o = _.routineOptions( diasgnosticEachLongType, o );
+
+  if( o.onEach === null )
+  o.onEach = function onEach( make, descriptor )
+  {
+    return make;
+  }
+
+  _.assert( arguments.length === 0 || arguments.length === 1 );
+  _.assert( _.routineIs( o.onEach ) )
+
+  // debugger;
+
+  for( let l in _.LongDescriptor )
+  {
+    let Long = _.LongDescriptor[ l ];
+    result[ Long.name ] = o.onEach( Long.make, Long );
+  }
+
+  // debugger;
+
+  return result;
+}
+
+diasgnosticEachLongType.defaults =
+{
+  onEach : null,
+}
+
+//
+
+function diasgnosticEachElementComparator( o )
+{
+  let result = [];
+
+  if( arguments[ 1 ] !== undefined )
+  o = { onMake : arguments[ 0 ], onEach : arguments[ 1 ] }
+  else if( _.routineIs( arguments[ 0 ] ) )
+  o = { onEach : arguments[ 1 ] }
+
+  o = _.routineOptions( diasgnosticEachElementComparator, o );
+
+  if( o.onEach === null )
+  o.onEach = function onEach( make, evaluate, description )
+  {
+    return evaluate;
+  }
+
+  if( o.onMake === null )
+  o.onMake = function onMake( src )
+  {
+    return src;
+  }
+
+  _.assert( arguments.length === 1 || arguments.length === 2 );
+  _.assert( _.routineIs( o.onEach ) );
+  _.assert( _.routineIs( o.onMake ) );
+
+  result.push( o.onEach( o.onMake, undefined, 'no evaluator' ) );
+  result.push( o.onEach( make, evaluator, 'evaluator' ) );
+  result.push( o.onEach( make, [ evaluator, evaluator ], 'tandem of evaluators' ) );
+  result.push( o.onEach( make, equalizer, 'equalizer' ) );
+
+  return result;
+
+  /* */
+
+  function evaluator( e )
+  {
+    _.assert( e.length === 1 );
+    return e[ 0 ];
+  }
+
+  /* */
+
+  function equalizer( e1, e2 )
+  {
+    _.assert( e1.length === 1 );
+    _.assert( e2.length === 1 );
+    return e1[ 0 ] === e2[ 0 ];
+  }
+
+  /* */
+
+  function make( long )
+  {
+    _.assert( _.longIs( long ) );
+    let result = [];
+    for( let l = 0 ; l < long.length ; l++ )
+    result[ l ] = [ long[ l ] ];
+    return o.onMake( result );
+  }
+
+}
+
+diasgnosticEachElementComparator.defaults =
+{
+  onMake : null,
+  onEach : null,
+}
+
+//
+
+function diagnosticBeep()
 {
   // console.log( _.diagnosticStack() );
   console.log( '\x07' );
 }
 
 // --
+// errrors
+// --
+
+let ErrorAbort = _.error_functor( 'ErrorAbort' );
+
+// --
 // declare
 // --
 
-let Proto =
+let error =
+{
+  ErrorAbort : ErrorAbort,
+}
+
+let Extend =
 {
 
   _diagnosticStripPath : _diagnosticStripPath,
   diagnosticLocation : diagnosticLocation,
   diagnosticCode : diagnosticCode,
   diagnosticStack : diagnosticStack,
-  diagnosticStackPurify : diagnosticStackPurify,
+  diagnosticStackCondense : diagnosticStackCondense,
   diagnosticWatchFields : diagnosticWatchFields, /* experimental */
   diagnosticProxyFields : diagnosticProxyFields, /* experimental */
 
-  beep : beep,
+  diasgnosticEachLongType : diasgnosticEachLongType,
+  diasgnosticEachElementComparator : diasgnosticEachElementComparator,
+
+  diagnosticBeep : diagnosticBeep,
 
 }
 
-Object.assign( Self, Proto );
+Object.assign( Self, Extend );
+Object.assign( Self.error, error );
 
 // --
 // export
 // --
 
-if( typeof module !== 'undefined' )
-if( _global_.WTOOLS_PRIVATE )
-{ /* delete require.cache[ module.id ]; */ }
+// if( typeof module !== 'undefined' )
+// if( _global_.WTOOLS_PRIVATE )
+// { /* delete require.cache[ module.id ]; */ }
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;

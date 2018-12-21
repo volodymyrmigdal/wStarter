@@ -385,7 +385,7 @@ let _ObjectHasOwnProperty = Object.hasOwnProperty;
 // //   _.assert( _.objectIs( o ) )
 // //   _.assert( _.arrayIs( o.ranges ) || _.objectIs( o.ranges ),'eachInMultiRange :','Expects o.ranges as array or object' )
 // //   _.assert( _.routineIs( o.onEach ),'eachInMultiRange :','Expects o.onEach as routine' )
-// //   _.assert( !o.delta || _.strTypeOf( o.delta ) === _.strTypeOf( o.ranges ),'eachInMultiRange :','o.delta must be same type as ranges' );
+// //   _.assert( !o.delta || _.strType( o.delta ) === _.strType( o.ranges ),'eachInMultiRange :','o.delta must be same type as ranges' );
 // //
 // //   /* */
 // //
@@ -1112,14 +1112,14 @@ let _ObjectHasOwnProperty = Object.hasOwnProperty;
 // //   onEach = _._filter_functor( onEach, 1 );
 // //
 // //   _.assert( arguments.length === 2 );
-// //   _.assert( _.objectLike( src ) || _.longIs( src ), () => 'Expects objectLike or longIs src, but got ' + _.strTypeOf( src ) );
+// //   _.assert( _.objectLike( src ) || _.longIs( src ), () => 'Expects objectLike or longIs src, but got ' + _.strType( src ) );
 // //   _.assert( _.routineIs( onEach ) );
 // //
 // //   /* */
 // //
 // //   if( _.longIs( src ) )
 // //   {
-// //     result = _.longMakeSimilar( src,0 );
+// //     result = _.longMake( src,0 );
 // //     for( let s = 0, d = 0 ; s < src.length ; s++, d++ )
 // //     {
 // //       let r = onEach.call( src,src[ s ],s,src );
@@ -1156,14 +1156,14 @@ let _ObjectHasOwnProperty = Object.hasOwnProperty;
 // //   let onEach = _._filter_functor( o.onEach,o.conditionLevels );
 // //
 // //   _.assert( arguments.length === 1, 'Expects single argument' );
-// //   _.assert( _.objectLike( o.src ) || _.longIs( o.src ),'entityFilter : expects objectLike or longIs src, but got',_.strTypeOf( o.src ) );
+// //   _.assert( _.objectLike( o.src ) || _.longIs( o.src ),'entityFilter : expects objectLike or longIs src, but got',_.strType( o.src ) );
 // //   _.assert( _.routineIs( onEach ) );
 // //
 // //   /* */
 // //
 // //   if( _.longIs( o.src ) )
 // //   {
-// //     result = _.longMakeSimilar( o.src,0 );
+// //     result = _.longMake( o.src,0 );
 // //     for( let s = 0, d = 0 ; s < o.src.length ; s++, d++ )
 // //     {
 // //       let r = onEach.call( o.src,o.src[ s ],s,o.src );
@@ -1223,7 +1223,7 @@ let _ObjectHasOwnProperty = Object.hasOwnProperty;
 // //   return _.mapShallowClone( src )
 // //   else if( _.longIs( src ) )
 // //   return _.longShallowClone( src );
-// //   else _.assert( 0, 'Not clear how to shallow clone', _.strTypeOf( src ) );
+// //   else _.assert( 0, 'Not clear how to shallow clone', _.strType( src ) );
 // //
 // // }
 //
@@ -1616,7 +1616,7 @@ let _ObjectHasOwnProperty = Object.hasOwnProperty;
 //     return _.boolFrom( src );
 //
 //   }
-//   else _.assert( 0,'unknown type to coerce to : ' + _.strTypeOf( ins ) );
+//   else _.assert( 0,'unknown type to coerce to : ' + _.strType( ins ) );
 //
 // }
 //
@@ -1783,7 +1783,7 @@ function entityValueWithIndex( src,index )
   {
     return src[ index ];
   }
-  else _.assert( 0,'unknown kind of argument',_.strTypeOf( src ) );
+  else _.assert( 0,'unknown kind of argument',_.strType( src ) );
 
 }
 
@@ -1835,7 +1835,7 @@ function entityKeyWithValue( src,value )
   {
     result = src.indexOf( value );
   }
-  else _.assert( 0,'unknown kind of argument',_.strTypeOf( src ) );
+  else _.assert( 0,'unknown kind of argument',_.strType( src ) );
 
   if( result === -1 )
   result = null;
@@ -1906,7 +1906,7 @@ function _entityMost( src, onEvaluate, returnMax )
   if( onEvaluate === undefined )
   onEvaluate = function( element ){ return element; }
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( onEvaluate.length === 1,'not mplemented' );
 
   let onCompare = null;

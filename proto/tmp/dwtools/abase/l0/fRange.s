@@ -99,7 +99,7 @@ function rangeFirstGet( range,options )
   {
     return range.first
   }
-  _.assert( 0, 'unexpected type of range',_.strTypeOf( range ) );
+  _.assert( 0, 'unexpected type of range',_.strType( range ) );
 
 }
 
@@ -122,8 +122,17 @@ function rangeLastGet( range,options )
   {
     return range.last
   }
-  _.assert( 0, 'unexpected type of range',_.strTypeOf( range ) );
+  _.assert( 0, 'unexpected type of range',_.strType( range ) );
 
+}
+
+//
+
+function rangeToStr( range )
+{
+  _.assert( _.rangeIs( range ) );
+  _.assert( arguments.length === 1 );
+  return range[ 0 ] + '..' + range[ 1 ];
 }
 
 // --
@@ -149,6 +158,8 @@ let Routines =
   rangeNumberElements : rangeNumberElements,
   rangeFirstGet : rangeFirstGet,
   rangeLastGet : rangeLastGet,
+
+  rangeToStr : rangeToStr,
 
 }
 

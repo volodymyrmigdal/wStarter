@@ -65,21 +65,21 @@ function timeReady( onReady )
     function handleReady()
     {
       if( _.Consequence )
-      return _.timeOut( time,onReady ).doThen( con );
+      return _.timeOut( time, onReady ).finally( con );
       else if( onReady )
-      setTimeout( onReady,time );
+      setTimeout( onReady, time );
       else _.assert( 0 );
     }
 
-    window.addEventListener( 'load',handleReady );
+    window.addEventListener( 'load', handleReady );
     return con;
   }
   else
   {
     if( _.Consequence )
-    return _.timeOut( time,onReady );
+    return _.timeOut( time, onReady );
     else if( onReady )
-    setTimeout( onReady,time );
+    setTimeout( onReady, time );
     else _.assert( 0 );
   }
 
@@ -87,17 +87,17 @@ function timeReady( onReady )
 
 //
 
-function timeReadyJoin( context,routine,args )
+function timeReadyJoin( context, routine, args )
 {
 
-  routine = _.routineJoin( context,routine,args );
+  routine = _.routineJoin( context, routine, args );
 
-  let result = _.routineJoin( undefined,_.timeReady,[ routine ] );
+  let result = _.routineJoin( undefined, _.timeReady, [ routine ] );
 
   function _timeReady()
   {
     let args = arguments;
-    routine = _.routineJoin( context === undefined ? this : this,routine,args );
+    routine = _.routineJoin( context === undefined ? this : this, routine, args );
     return _.timeReady( routine );
   }
 
@@ -106,7 +106,7 @@ function timeReadyJoin( context,routine,args )
 
 //
 
-function timeOnce( delay,onBegin,onEnd )
+function timeOnce( delay, onBegin, onEnd )
 {
   let con = _.Consequence ? new _.Consequence() : undefined;
   let taken = false;
@@ -122,7 +122,7 @@ function timeOnce( delay,onBegin,onEnd )
   {
     options = delay;
     _.assert( arguments.length === 1, 'Expects single argument' );
-    _.assertMapHasOnly( options,optionsDefault );
+    _.assertMapHasOnly( options, optionsDefault );
     delay = options.delay;
     onBegin = options.onBegin;
     onEnd = options.onEnd;
@@ -141,28 +141,28 @@ function timeOnce( delay,onBegin,onEnd )
 
     if( taken )
     {
-      /*console.log( 'timeOnce :','was taken' );*/
+      /*console.log( 'timeOnce :', 'was taken' );*/
       return;
     }
     taken = true;
 
     if( onBegin )
     {
-      if( _.routineIs( onBegin ) ) onBegin.apply( this,arguments );
-      else if( _.objectIs( onBegin ) ) onBegin.give( arguments );
+      if( _.routineIs( onBegin ) ) onBegin.apply( this, arguments );
+      else if( _.objectIs( onBegin ) ) onBegin.take( arguments );
       if( con )
-      con.give();
+      con.take( null );
     }
 
-    _.timeOut( delay,function()
+    _.timeOut( delay, function()
     {
 
       if( onEnd )
       {
-        if( _.routineIs( onEnd ) ) onEnd.apply( this,arguments );
-        else if( _.objectIs( onEnd ) ) onEnd.give( arguments );
+        if( _.routineIs( onEnd ) ) onEnd.apply( this, arguments );
+        else if( _.objectIs( onEnd ) ) onEnd.take( arguments );
         if( con )
-        con.give();
+        con.take( null );
       }
       taken = false;
 
@@ -208,7 +208,7 @@ function timeOnce( delay,onBegin,onEnd )
  *
  * @example
  * // Routine returns consequence
- * let routine = () => new _.Consequence().give( 'msg' );
+ * let routine = () => new _.Consequence().take( 'msg' );
  * let t = _.timeOut( 1000, routine );
  * t.got( ( err, got ) => console.log( 'Message from routine : ', got ) );
  * console.log( 'Normal message' )
@@ -255,22 +255,35 @@ function timeOut( delay, onEnd )
 
   /* */
 
-  if( con )
-  con.got( function timeGot( err,arg )
+  if( onEnd !== undefined && !_.routineIs( onEnd ) && !_.consequenceIs( onEnd ) )
   {
-    // if( err )
-    // debugger;
+    _.assert( arguments.length === 2, 'Expects two arguments if second one is not callable' );
 
+    let returnOnEnd = onEnd;
+    onEnd = function onEnd()
+    {
+      return returnOnEnd;
+    }
+
+  }
+  else if( _.routineIs( onEnd ) && !_.consequenceIs( onEnd ) )
+  {
+    let _onEnd = onEnd;
+    onEnd = function onEnd()
+    {
+      let result = _onEnd.apply( this, arguments );
+      return result === undefined ? null : result;
+    }
+  }
+
+  /* */
+
+  if( con )
+  con.got( function timeGot( err, arg )
+  {
     if( err )
     clearTimeout( timer );
-
-    // if( err && !handleCalled )
-    // {
-    //   arg = err;
-    //   err = undefined;
-    // }
-
-    con.give( err,arg );
+    con.take( err, arg );
   });
 
   /* */
@@ -283,6 +296,20 @@ function timeOut( delay, onEnd )
   else if( arguments[ 2 ] !== undefined || arguments[ 3 ] !== undefined )
   _.assert( _.routineIs( arguments[ 2 ] ) );
 
+  if( arguments[ 2 ] !== undefined || arguments[ 3 ] !== undefined )
+  {
+    onEnd = _.routineJoin.call( _, arguments[ 1 ], arguments[ 2 ], arguments[ 3 ] );
+  }
+
+  if( delay > 0 )
+  timer = setTimeout( timeEnd, delay );
+  else
+  timeSoon( timeEnd );
+
+  return con;
+
+  /* */
+
   function timeEnd()
   {
     let result;
@@ -294,7 +321,7 @@ function timeOut( delay, onEnd )
       if( onEnd )
       con.first( onEnd );
       else
-      con.give( timeOut );
+      con.take( timeOut );
     }
     else
     {
@@ -303,22 +330,11 @@ function timeOut( delay, onEnd )
 
   }
 
-  if( arguments[ 2 ] !== undefined || arguments[ 3 ] !== undefined )
-  {
-    onEnd = _.routineJoin.call( _,arguments[ 1 ],arguments[ 2 ],arguments[ 3 ] );
-  }
-
-  if( delay > 0 )
-  timer = setTimeout( timeEnd,delay );
-  else
-  timeSoon( timeEnd );
-
-  return con;
 }
 
 //
 
-let timeSoon = typeof process === 'undefined' ? function( h ){ return setTimeout( h,0 ) } : process.nextTick;
+let timeSoon = typeof process === 'undefined' ? function( h ){ return setTimeout( h, 0 ) } : process.nextTick;
 
 //
 
@@ -345,11 +361,11 @@ let timeSoon = typeof process === 'undefined' ? function( h ){ return setTimeout
  * {
  *   return _.timeOut( time );
  * }
- * // eitherThenSplit waits until one of provided consequences will resolve the message.
- * // In our example single timeOutError consequence was added, so eitherThenSplit adds own context consequence to the queue.
+ * // eitherKeepSplit waits until one of provided consequences will resolve the message.
+ * // In our example single timeOutError consequence was added, so eitherKeepSplit adds own context consequence to the queue.
  * // Consequence returned by 'routine' resolves message in 5000 ms, but timeOutError will do the same in 2500 ms and 'timeOut'.
  * routine()
- * .eitherThenSplit( _.timeOutError( timeOut ) )
+ * .eitherKeepSplit( _.timeOutError( timeOut ) )
  * .got( function( err, got )
  * {
  *   if( err )
@@ -368,11 +384,10 @@ function timeOutError( delay, onReady )
 {
   _.assert( _.routineIs( _.Consequence ) );
 
-  let result = _.timeOut.apply( this,arguments );
+  let result = _.timeOut.apply( this, arguments );
 
-  result.doThen( function( err,arg )
+  result.finally( function( err, arg )
   {
-
     if( err )
     return _.Consequence().error( err );
 
@@ -394,7 +409,7 @@ function timeOutError( delay, onReady )
 
 //
 
-function timePeriodic( delay,onReady )
+function timePeriodic( delay, onReady )
 {
   _.assert( _.routineIs( _.Consequence ) );
   let con = new _.Consequence();
@@ -406,7 +421,7 @@ function timePeriodic( delay,onReady )
   // {
   //   throw _.err( 'Not tested' );
   //   _.assert( arguments.length <= 4 );
-  //   onReady = _.routineJoin( arguments[ 2 ],onReady[ 3 ],arguments[ 4 ] );
+  //   onReady = _.routineJoin( arguments[ 2 ], onReady[ 3 ], arguments[ 4 ] );
   // }
 
   _.assert( _.numberIs( delay ) );
@@ -424,8 +439,8 @@ function timePeriodic( delay,onReady )
     let result = onReady.call();
     if( result === false )
     clearInterval( id );
-    _.Consequence.give( con, undefined );
-    con.doThen( handlePeriodicCon );
+    _.Consequence.take( con, undefined );
+    con.finally( handlePeriodicCon );
   }
   else if( onReady instanceof wConsquence )
   _onReady = function()
@@ -433,18 +448,18 @@ function timePeriodic( delay,onReady )
     let result = onReady.ping();
     if( result === false )
     clearInterval( id );
-    _.Consequence.give( con, undefined );
-    con.doThen( handlePeriodicCon );
+    _.Consequence.take( con, undefined );
+    con.finally( handlePeriodicCon );
   }
   else if( onReady === undefined )
   _onReady = function()
   {
-    _.Consequence.give( con, undefined );
-    con.doThen( handlePeriodicCon );
+    _.Consequence.take( con, undefined );
+    con.finally( handlePeriodicCon );
   }
   else throw _.err( 'unexpected type of onReady' );
 
-  id = setInterval( _onReady,delay );
+  id = setInterval( _onReady, delay );
 
   return con;
 }
@@ -458,9 +473,9 @@ function _timeNow_functor()
   // _.assert( arguments.length === 0 );
 
   if( typeof performance !== 'undefined' && performance.now !== undefined )
-  now = _.routineJoin( performance,performance.now );
+  now = _.routineJoin( performance, performance.now );
   else if( Date.now )
-  now = _.routineJoin( Date,Date.now );
+  now = _.routineJoin( Date, Date.now );
   else
   now = function(){ return Date().getTime() };
 
@@ -498,7 +513,7 @@ function timeFrom( time )
   return time;
   if( _.dateIs( time ) )
   return time.getTime()
-  _.assert( 0, 'Not clear how to coerce to time', _.strTypeOf( time ) );
+  _.assert( 0, 'Not clear how to coerce to time', _.strType( time ) );
 }
 
 //
@@ -548,7 +563,7 @@ function dateToStr( date )
   let d = date.getDate();
   if( m < 10 ) m = '0' + m;
   if( d < 10 ) d = '0' + d;
-  let result = [ y,m,d ].join( '.' );
+  let result = [ y, m, d ].join( '.' );
   return result;
 }
 

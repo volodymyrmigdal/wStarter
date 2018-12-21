@@ -14,24 +14,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-
-  let _ = _global_.wTools;
+  let _ = require( '../../Tools.s' );
 
   _.include( 'wPathFundamentals' );
 
@@ -68,7 +51,7 @@ function _filterNoInnerArray( arr )
 }
 
 // --
-// uri checker
+// checker
 // --
 
   // '^(https?:\\/\\/)?'                                     // protocol
@@ -99,17 +82,17 @@ function is( path )
 
 //
 
-function isSafe( path )
+function isSafe( path, level )
 {
   let parent = this.path;
 
-  _.assert( arguments.length === 1, 'Expects single argument' );
+  _.assert( arguments.length === 1 || arguments.length === 2, 'Expects single argument' );
   _.assert( _.strDefined( path ) );
 
   if( this.isGlobal( path ) )
   path = this.parseConsecutive( path ).longPath;
 
-  return parent.isSafe.call( this, path );
+  return parent.isSafe.call( this, path, level );
 }
 
 //
@@ -117,7 +100,7 @@ function isSafe( path )
 function isNormalized( path )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ) );
+  _.assert( _.strIs( path ), 'Expects string' );
   return this.normalize( path ) === path;
 }
 
@@ -128,7 +111,7 @@ function isAbsolute( path )
   let parent = this.path;
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strDefined( path ) );
+  _.assert( _.strIs( path ), () => 'Expects string {-path-}, but got ' + _.strType( path ) );
 
   if( this.isGlobal( path ) )
   path = this.parseConsecutive( path ).longPath;
@@ -136,8 +119,22 @@ function isAbsolute( path )
   return parent.isAbsolute.call( this, path );
 }
 
+//
+
+function isRoot( path )
+{
+  let parent = this.path;
+
+  _.assert( arguments.length === 1, 'Expects single argument' );
+
+  if( this.isGlobal( path ) )
+  path = this.parseConsecutive( path ).longPath;
+
+  return parent.isRoot.call( this, path );
+}
+
 // --
-// uri
+// transformer
 // --
 
 /**
@@ -223,14 +220,14 @@ let _uriParseRegexp = new RegExp( _uriParseRegexpStr );
 
 // let _uriParseRegexp = new RegExp( '^(?:([^:/\\?#]*):)?(?:\/\/(([^:/\\?#]*)(?::([^/\\?#]*))?))?([^\\?#]*)(?:\\?([^#]*))?(?:#(.*))?$' );
 
-function _uriParse( o )
+function parse_body( o )
 {
   let result = Object.create( null );
 
-  _.routineOptions( this._uriParse, o );
+  _.routineOptions( this.parse_body, o );
   _.assert( _.strIs( o.srcPath ) || _.mapIs( o.srcPath ) );
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.arrayHas( _uriParse.Kind, o.kind ) );
+  _.assert( _.arrayHas( parse_body.Kind, o.kind ), () => 'Unknown kind of parsing ' + o.kind );
 
   if( _.mapIs( o.srcPath ) )
   {
@@ -262,7 +259,7 @@ function _uriParse( o )
   if( _.strIs( e[ 7 ] ) )
   result.hash = e[ 7 ];
 
-  /**/
+  /* */
 
   if( o.kind === 'all' )
   {
@@ -291,15 +288,15 @@ function _uriParse( o )
   return result;
 }
 
-_uriParse.defaults =
+parse_body.defaults =
 {
   srcPath : null,
   kind : 'all',
 }
 
-_uriParse.components = UriComponents;
+parse_body.components = UriComponents;
 
-_uriParse.Kind = [ 'all', 'atomic', 'consecutive' ];
+parse_body.Kind = [ 'all', 'atomic', 'consecutive' ];
 
 //
 
@@ -334,7 +331,7 @@ _uriParse.Kind = [ 'all', 'atomic', 'consecutive' ];
 function parse( srcPath )
 {
 
-  let result = this._uriParse
+  let result = this.parse_body
   ({
     srcPath : srcPath,
     kind : 'all',
@@ -351,7 +348,7 @@ parse.components = UriComponents;
 
 function parseAtomic( srcPath )
 {
-  let result = this._uriParse
+  let result = this.parse_body
   ({
     srcPath : srcPath,
     kind : 'atomic',
@@ -368,7 +365,7 @@ parseAtomic.components = UriComponents;
 
 function parseConsecutive( srcPath )
 {
-  let result = this._uriParse
+  let result = this.parse_body
   ({
     srcPath : srcPath,
     kind : 'consecutive',
@@ -880,27 +877,28 @@ function refine( fileUri )
 }
 
 //
-
-let urisRefine = _.routineVectorize_functor
-({
-  routine : refine,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
-
-let urisOnlyRefine = _.routineVectorize_functor
-({
-  routine : refine,
-  fieldFilter : _filterOnlyUrl,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
-
+//
+// let urisRefine = _.routineVectorize_functor
+// ({
+//   routine : refine,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
+//
+// let urisOnlyRefine = _.routineVectorize_functor
+// ({
+//   routine : refine,
+//   fieldFilter : _filterOnlyUrl,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
+//
 //
 
 function normalize( fileUri )
 {
   let parent = this.path;
+  _.assert( _.strIs( fileUri ), 'Expects string {-fileUri-}' );
   if( _.strIs( fileUri ) )
   {
     if( this.isGlobal( fileUri ) )
@@ -916,22 +914,22 @@ function normalize( fileUri )
 
 //
 
-let urisNormalize = _.routineVectorize_functor
-({
-  routine : normalize,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
-
+// let urisNormalize = _.routineVectorize_functor
+// ({
+//   routine : normalize,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
 //
-
-let urisOnlyNormalize = _.routineVectorize_functor
-({
-  routine : normalize,
-  fieldFilter : _._filterOnlyPath,
-  vectorizingArray : 1,
-  vectorizingMap : 1,
-});
+// //
+//
+// let urisOnlyNormalize = _.routineVectorize_functor
+// ({
+//   routine : normalize,
+//   fieldFilter : _._filterOnlyPath,
+//   vectorizingArray : 1,
+//   vectorizingMap : 1,
+// });
 
 //
 
@@ -952,163 +950,41 @@ function normalizeTolerant( fileUri )
 }
 
 //
-//
-// /**
-//  * Joins filesystem paths fragments or uris fragment into one path/URI. Uses '/' level delimeter.
-//  * @param {Object} o join o.
-//  * @param {String[]} p.paths - Array with paths to join.
-//  * @param {boolean} [o.isUri=false] If true, method returns URI which consists from joined fragments, beginning
-//  * from element that contains '//' characters. Else method will join elements in `paths` array as os path names.
-//  * @param {boolean} [o.reroot=false] If this parameter set to false (by default), method joins all elements in
-//  * `paths` array, starting from element that begins from '/' character, or '* :', where '*' is any drive name. If it
-//  * is set to true, method will join all elements in array. Result
-//  * @returns {string}
-//  * @private
-//  * @throws {Error} If missed arguments.
-//  * @throws {Error} If elements of `paths` are not strings
-//  * @throws {Error} If o has extra parameters.
-//  * @method _uriJoin_body
-//  * @memberof wTools.uri
-//  */
-//
-// function _uriJoin_body( o )
-// {
-//   let self = this;
-//   let result = null;
-//   let prepending = true;
-//
-//   /* */
-//
-//   debugger;
-//   _.assert( Object.keys( o ).length === 4 );
-//   _.assert( o.paths.length > 0 );
-//   _.assert( _.boolLike( o.reroot ) );
-//
-//   /* */
-//
-//   for( let a = o.paths.length-1 ; a >= 0 ; a-- )
-//   {
-//     let src = o.paths[ a ];
-//     _.sure( _.strIs( src ) || src === null, () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
-//   }
-//
-//   /* */
-//
-//   for( let a = o.paths.length-1 ; a >= 0 ; a-- )
-//   {
-//     let src = o.paths[ a ];
-//
-//     if( o.allowingNull )
-//     if( src === null )
-//     break;
-//
-//     if( result === null )
-//     result = '';
-//
-//     // _.assert( _.strIs( src ), () => 'Expects strings as path arguments, but #' + a + ' argument is ' + _.strTypeOf( src ) );
-//
-//     prepending = prepend( src );
-//     if( prepending === false && !o.isUri )
-//     break;
-//
-//   }
-//
-//   /* */
-//
-//   if( result === '' )
-//   return '.';
-//
-//   return result;
-//
-//   /* */
-//
-//   function prepend( src )
-//   {
-//
-//     if( o.isUri )
-//     src = self.refine( src );
-//     else
-//     src = self.refine( src );
-//
-//     if( !src )
-//     return prepending;
-//
-//     let doPrepend = prepending;
-//     if( !doPrepend && o.isUri )
-//     {
-//       if( src.indexOf( '//' ) !== -1 )
-//       {
-//         let i = src.indexOf( '//' );
-//         i = src.indexOf( '/', i+2 );
-//         if( i >= 0 )
-//         {
-//           src = src.substr( 0,i );
-//         }
-//         doPrepend = 1;
-//       }
-//     }
-//
-//     if( doPrepend )
-//     {
-//
-//       if( !o.isUri )
-//       src = src.replace( /\\/g,'/' );
-//
-//       if( result && src[ src.length-1 ] === '/' && !_.strEnds( src, '//' ) )
-//       if( src.length > 1 || result[ 0 ] === '/' )
-//       src = src.substr( 0,src.length-1 );
-//
-//       if( src && src[ src.length-1 ] !== '/' && result && result[ 0 ] !== '/' )
-//       result = '/' + result;
-//
-//       result = src + result;
-//
-//     }
-//
-//     if( o.isUri )
-//     {
-//       if( src.indexOf( '//' ) !== -1 )
-//       {
-//         return false;
-//       }
-//     }
-//
-//     if( !o.reroot )
-//     {
-//       if( src[ 0 ] === '/' )
-//       return false;
-//       // if( src[ 1 ] === ':' )
-//       // console.warn( 'WARNING : Path could be native for windows, but should not',src );
-//       // if( src[ 1 ] === ':' )
-//       // debugger;
-//       // if( src[ 1 ] === ':' )
-//       // if( src[ 2 ] !== '/' || src[ 3 ] !== '/' )
-//       // return false;
-//     }
-//
-//     return prepending;
-//   }
-//
-// }
-//
-// _uriJoin_body.defaults =
-// {
-//   paths : null,
-//   reroot : 0,
-//   isUri : 0,
-//   allowingNull : 1,
-// }
+
+function trail( srcPath )
+{
+  _.assert( arguments.length === 1 );
+  return this.path.trail( srcPath );
+}
 
 //
 
-function _joining_functor( gen )
+function detrail( srcPath )
+{
+  _.assert( this.is( srcPath ) );
+  _.assert( arguments.length === 1 );
+
+  // debugger;
+  if( _.strIs( srcPath ) )
+  srcPath = this.parseConsecutive( srcPath );
+
+  srcPath.longPath = this.path.detrail( srcPath.longPath );
+
+  return this.str( srcPath );
+}
+
+// --
+// joiner
+// --
+
+function join_functor( gen )
 {
 
   if( arguments.length === 2 )
   gen = { routineName : arguments[ 0 ], web : arguments[ 1 ] }
 
   _.assert( arguments.length === 1 || arguments.length === 2 );
-  _.routineOptions( _joining_functor, gen );
+  _.routineOptions( join_functor, gen );
 
   let routineName = gen.routineName;
   let web = gen.web;
@@ -1244,7 +1120,7 @@ function _joining_functor( gen )
 
 }
 
-_joining_functor.defaults =
+join_functor.defaults =
 {
   routineName : null,
   web : 0,
@@ -1252,14 +1128,15 @@ _joining_functor.defaults =
 
 //
 
-let join = _joining_functor( 'join', 0 );
+let join = join_functor( 'join', 0 );
+let joinRaw = join_functor( 'joinRaw', 0 );
 
 //
-
-let urisJoin = _.path._pathMultiplicator_functor
-({
-  routine : join
-});
+//
+// let urisJoin = _.path._pathMultiplicator_functor
+// ({
+//   routine : join
+// });
 
 //
 
@@ -1317,7 +1194,8 @@ function common()
   let self = this;
   let uris = _.longSlice( arguments );
 
-  _.assert( _.strsAre( arguments ) );
+  _.assert( uris.length, 'Expects at least one argument' );
+  _.assert( _.strsAre( arguments ), 'Expects only strings as arguments' );
 
   /* */
 
@@ -1369,7 +1247,7 @@ function common()
   for( let i = 1, len = uris.length; i < len; i++ )
   {
     let uri = uris[ i ];
-    result.longPath = parent._common.call( this, uri.longPath, result.longPath );
+    result.longPath = parent._commonSingle.call( this, uri.longPath, result.longPath );
   }
 
   /* */
@@ -1402,7 +1280,7 @@ function common()
 function rebase( srcPath, oldPath, newPath )
 {
   let parent = this.path;
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 
   srcPath = this.parseConsecutive( srcPath );
   oldPath = this.parseConsecutive( oldPath );
@@ -1459,7 +1337,7 @@ function ext( path )
   let parent = this.path;
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( path ) );
+  _.assert( _.strIs( path ), 'Expects string' );
 
   if( this.isGlobal( path ) )
   path = this.parseConsecutive( path ).longPath;
@@ -1724,57 +1602,63 @@ let Routines =
 
   // internal
 
-  _filterOnlyUrl : _filterOnlyUrl,
-  _filterNoInnerArray : _filterNoInnerArray,
+  _filterOnlyUrl,
+  _filterNoInnerArray,
 
-  // uri checker
+  // checker
 
-  is : is,
-  isSafe : isSafe,
-  isNormalized : isNormalized,
-  isAbsolute : isAbsolute,
+  is,
+  isSafe,
+  isNormalized,
+  isAbsolute,
+  isRoot,
 
-  // uri
+  // transformer
 
-  _uriParse : _uriParse,
-  parse : parse,
-  parseAtomic : parseAtomic,
-  parseConsecutive : parseConsecutive,
+  parse_body,
+  parse,
+  parseAtomic,
+  parseConsecutive,
 
-  str : str,
-  full : full,
+  str,
+  full,
 
-  refine : refine,
-  urisRefine : urisRefine,
-  urisOnlyRefine : urisOnlyRefine,
+  refine,
+  // urisRefine,
+  // urisOnlyRefine,
 
-  normalize : normalize,
-  urisNormalize : urisNormalize,
-  urisOnlyNormalize : urisOnlyNormalize,
+  normalize,
+  // urisNormalize,
+  // urisOnlyNormalize,
 
-  normalizeTolerant : normalizeTolerant,
+  normalizeTolerant,
 
-  // _uriJoin_body : _uriJoin_body,
-  _joining_functor : _joining_functor,
+  trail,
+  detrail,
 
-  join : join,
-  urisJoin : urisJoin,
-  resolve : resolve,
+  // joiner
 
-  relative : relative,
-  common : common,
-  rebase : rebase,
+  join_functor,
 
-  name : name,
-  ext : ext,
-  exts : exts,
-  changeExt : changeExt,
-  dir : dir,
+  join,
+  joinRaw,
+  // urisJoin,
+  resolve,
 
-  documentGet : documentGet,
-  server : server,
-  query : query,
-  dequery : dequery,
+  relative,
+  common,
+  rebase,
+
+  name,
+  ext,
+  exts,
+  changeExt,
+  dir,
+
+  documentGet,
+  server,
+  query,
+  dequery,
 
 }
 
@@ -1787,9 +1671,9 @@ Self.Init();
 // export
 // --
 
-if( typeof module !== 'undefined' )
-if( _global_.WTOOLS_PRIVATE )
-{ /* delete require.cache[ module.id ]; */ }
+// if( typeof module !== 'undefined' )
+// if( _global_.WTOOLS_PRIVATE )
+// { /* delete require.cache[ module.id ]; */ }
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;

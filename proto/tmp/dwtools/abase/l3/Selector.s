@@ -68,7 +68,7 @@ function errDoesNotExistThrow( it )
       'Cant select', _.strQuote( c.query ),
       '\nbecause', _.strQuote( it.query ), 'does not exist',
       '\nat', _.strQuote( it.path ),
-      '\nin container', _.toStr( c.container )
+      '\nin container\n', _.toStr( c.container )
     );
     // debugger;
     it.result = undefined;
@@ -97,7 +97,7 @@ function errNoDownThrow( it )
       'Cant go down', _.strQuote( c.query ),
       '\nbecause', _.strQuote( it.query ), 'does not exist',
       '\nat', _.strQuote( it.path ),
-      '\nin container', _.toStr( c.container )
+      '\nin container\n', _.toStr( c.container )
     );
     debugger;
     it.result = undefined;
@@ -109,20 +109,19 @@ function errNoDownThrow( it )
 
 //
 
-function errCantSetThrow( it )
+function errCantSetThrow( container, query )
 {
-  let c = it.context;
   debugger;
   throw _.err
   (
-    'Cant set', _.strQuote( c.query ),
-    'of container', _.toStr( c.container )
+    'Cant set', _.strQuote( query ),
+    'of container', _.toStrShort( container )
   );
 }
 
 //
 
-function _select_pre( routine, args )
+function selectSingle_pre( routine, args )
 {
 
   let o = args[ 0 ]
@@ -157,17 +156,13 @@ function _select_pre( routine, args )
     o.prevContext = o.it.context;
   }
 
+  // if( _.strIs( o.query ) && _.strHas( o.query, 'commonDir' ) )
+  // debugger;
+
   if( _.numberIs( o.query ) )
   o.aquery = [ o.query ];
   else
-  o.aquery = _.strSplit
-  ({
-    src : o.query,
-    delimeter : o.upToken,
-    preservingDelimeters : 0,
-    preservingEmpty : 0,
-    stripping : 1,
-  });
+  o.aquery = split( o.query );
 
   if( o.setting === null && o.set !== null )
   o.setting = 1;
@@ -181,6 +176,21 @@ function _select_pre( routine, args )
   _.assert( it.context === o );
 
   return it;
+
+  /* */
+
+  function split( query )
+  {
+    return _.strSplit
+    ({
+      src : query,
+      delimeter : o.upToken,
+      preservingDelimeters : 0,
+      preservingEmpty : 0,
+      preservingQuoting : 0,
+      stripping : 1,
+    });
+  }
 
   /* */
 
@@ -287,10 +297,10 @@ function _select_pre( routine, args )
 
     if( c.setting && it.isFinal )
     {
-      if( it.down && it.down.src )
+      if( it.down && !_.primitiveIs( it.down.src ) )
       it.down.src[ it.key ] = c.set;
       else
-      errCantSetThrow( it );
+      errCantSetThrow( it.down.src, it.key );
     }
 
     if( c.onDownEnd )
@@ -432,7 +442,6 @@ function _select_pre( routine, args )
       dit = dit.down;
       if( !dit )
       return errNoDownThrow( it );
-
     }
 
     _.assert( _.iterationIs( dit ) );
@@ -549,7 +558,7 @@ function _select_pre( routine, args )
 
 //
 
-function _selectAct_body( it )
+function selectAct_body( it )
 {
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.objectIs( it.looker ) );
@@ -558,7 +567,7 @@ function _selectAct_body( it )
   return it;
 }
 
-_selectAct_body.defaults =
+selectAct_body.defaults =
 {
   it : null,
   container : null,
@@ -581,11 +590,11 @@ _selectAct_body.defaults =
 
 //
 
-let selectAct = _.routineFromPreAndBody( _select_pre, _selectAct_body );
+let selectAct = _.routineFromPreAndBody( selectSingle_pre, selectAct_body );
 
 //
 
-function _select_body( it )
+function selectSingle_body( it )
 {
   let it2 = _.selectAct.body( it );
   _.assert( it2 === it )
@@ -595,15 +604,58 @@ function _select_body( it )
   return it.result;
 }
 
-_.routineExtend( _select_body, selectAct );
+_.routineExtend( selectSingle_body, selectAct );
 
 //
 
-let select = _.routineFromPreAndBody( _select_pre, _select_body );
+let selectSingle = _.routineFromPreAndBody( selectSingle_pre, selectSingle_body );
 
 //
 
-let selectSet = _.routineFromPreAndBody( select.pre, select.body );
+function select_pre( routine, args )
+{
+
+  let o = args[ 0 ]
+  if( args.length === 2 )
+  {
+    if( _.iterationIs( args[ 0 ] ) )
+    o = { it : args[ 0 ], query : args[ 1 ] }
+    else
+    o = { container : args[ 0 ], query : args[ 1 ] }
+  }
+
+  _.routineOptionsPreservingUndefines( routine, o );
+
+  return o;
+}
+
+//
+
+function select_body( o )
+{
+
+  if( _.arrayIs( o.query ) )
+  {
+    let result = [];
+    for( let q = 0 ; q < o.query.length ; q++ )
+    {
+      let o2 = _.mapExtend( null, o );
+      o2.query = o2.query[ q ];
+      result[ q ] = _.select.body.call( _, o2 );
+    }
+    return result;
+  }
+
+  return _.selectSingle( o );
+}
+
+_.routineExtend( select_body, selectSingle.body );
+
+let select = _.routineFromPreAndBody( select_pre, select_body );
+
+//
+
+let selectSet = _.routineFromPreAndBody( selectSingle.pre, selectSingle.body );
 
 var defaults = selectSet.defaults;
 
@@ -612,20 +664,20 @@ defaults.setting = 1;
 
 //
 
-function _selectUnique_body( o )
+function selectUnique_body( o )
 {
   _.assert( arguments.length === 1 );
 
-  let result = _.select.body( o );
+  let result = _.selectSingle.body( o );
   if( _.arrayHas( o.aquery, '*' ) )
   result = _.arrayUnique( result );
 
   return result;
 }
 
-_.routineExtend( _selectUnique_body, select.body );
+_.routineExtend( selectUnique_body, selectSingle.body );
 
-let selectUnique2 = _.routineFromPreAndBody( select.pre, _selectUnique_body );
+let selectUnique = _.routineFromPreAndBody( selectSingle.pre, selectUnique_body );
 
 //
 
@@ -860,18 +912,19 @@ entityProbe.defaults =
 let Proto =
 {
 
-  errDoesNotExistThrow : errDoesNotExistThrow,
-  errNoDownThrow : errNoDownThrow,
-  errCantSetThrow : errCantSetThrow,
+  errDoesNotExistThrow,
+  errNoDownThrow,
+  errCantSetThrow,
 
-  selectAct : selectAct,
-  select : select,
-  selectSet : selectSet,
-  selectUnique : selectUnique2,
+  selectAct,
+  selectSingle,
+  select,
+  selectSet,
+  selectUnique,
 
-  _entityProbeReport : _entityProbeReport,
-  entityProbeField : entityProbeField,
-  entityProbe : entityProbe,
+  _entityProbeReport,
+  entityProbeField,
+  entityProbe,
 
 }
 

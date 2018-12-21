@@ -55,7 +55,6 @@ path:
       - .
       - ./dwtools
       - ./dwtools/Tools.s
-      - ./dwtools/abase
       - ./dwtools/amid
       - ./dwtools/amid/Tools.s
       - ./dwtools/amid/starter
@@ -68,12 +67,12 @@ path:
       - ./dwtools/amid/starter/StarterStart.raw.s
       - ./dwtools/amid/starter.test
       - ./dwtools/amid/starter.test/Starter.test.s
-      - ./dwtools/atop
       - ./tmp
       - ./tmp/dwtools
       - ./tmp/dwtools/abase
       - ./tmp/dwtools/abase/l0
       - ./tmp/dwtools/abase/l0/aPredefined.s
+      - ./tmp/dwtools/abase/l0/aSetup.s
       - ./tmp/dwtools/abase/l0/fBool.s
       - ./tmp/dwtools/abase/l0/fChecker.s
       - ./tmp/dwtools/abase/l0/fEntity.s
@@ -119,9 +118,12 @@ path:
       - ./tmp/dwtools/abase/l4
       - ./tmp/dwtools/abase/l4/ArraySorted.s
       - ./tmp/dwtools/abase/l4/ArraySparse.s
+      - ./tmp/dwtools/abase/l4/Encoder.s
       - ./tmp/dwtools/abase/l4/External.s
       - ./tmp/dwtools/abase/l4/LookerComparator.s
+      - ./tmp/dwtools/abase/l4/LookerExtra.s
       - ./tmp/dwtools/abase/l4/Paths.s
+      - ./tmp/dwtools/abase/l4/RoutineTransform.s
       - ./tmp/dwtools/abase/l4/Traverser.s
       - ./tmp/dwtools/abase/l4/Uri.s
       - ./tmp/dwtools/abase/l5
@@ -131,9 +133,27 @@ path:
       - ./tmp/dwtools/abase/l5/WebUri.s
       - ./tmp/dwtools/abase/l7
       - ./tmp/dwtools/abase/l7/Glob.s
+      - ./tmp/dwtools/abase/l7_mixin
+      - ./tmp/dwtools/abase/l7_mixin/Copyable.s
+      - ./tmp/dwtools/abase/l7_mixin/EventHandler.s
+      - ./tmp/dwtools/abase/l7_mixin/FieldsStack.s
+      - ./tmp/dwtools/abase/l7_mixin/Instancing.s
       - ./tmp/dwtools/abase/l9
       - ./tmp/dwtools/abase/l9/consequence
       - ./tmp/dwtools/abase/l9/consequence/Consequence.s
+      - ./tmp/dwtools/abase/l9/printer
+      - ./tmp/dwtools/abase/l9/printer/aChainer.s
+      - ./tmp/dwtools/abase/l9/printer/aChainingMixin.s
+      - ./tmp/dwtools/abase/l9/printer/aColoredMixin.s
+      - ./tmp/dwtools/abase/l9/printer/PrinterBase.s
+      - ./tmp/dwtools/abase/l9/printer/PrinterMid.s
+      - ./tmp/dwtools/abase/l9/printer/PrinterTop.s
+      - ./tmp/dwtools/abase/l9/printer/top
+      - ./tmp/dwtools/abase/l9/printer/top/Logger.s
+      - ./tmp/dwtools/abase/l9/printer/top/LoggerExtra.s
+      - ./tmp/dwtools/abase/l9/printer/top/ToJs.s
+      - ./tmp/dwtools/abase/l9/printer/top/ToLayeredHtml.s
+      - ./tmp/dwtools/abase/l9/printer/top/ToString.s
       - ./tmp/dwtools/amid
       - ./tmp/dwtools/amid/amapping
       - ./tmp/dwtools/amid/amapping/.DS_Store
@@ -178,6 +198,13 @@ path:
       - ./tmp/dwtools/amid/files/l7/Hub.s
       - ./tmp/dwtools/amid/files/l8_filter
       - ./tmp/dwtools/amid/files/l8_filter/Reroot.s
+      - ./tmp/dwtools/amid/l5_mapper
+      - ./tmp/dwtools/amid/l5_mapper/Bitmask.s
+      - ./tmp/dwtools/amid/l5_mapper/NameMapper.s
+      - ./tmp/dwtools/amid/l5_mapper/PathTranslator.s
+      - ./tmp/dwtools/amid/l5_mapper/TemplateFileWriter.s
+      - ./tmp/dwtools/amid/l5_mapper/TemplateTreeAresolver.s
+      - ./tmp/dwtools/amid/l5_mapper/TemplateTreeEnvironment.s
     criterion:
       default: 1
       debug: 1
@@ -199,6 +226,7 @@ path:
       - ./dwtools/amid/starter/StarterStart.raw.s
       - ./dwtools/amid/starter.test/Starter.test.s
       - ./tmp/dwtools/abase/l0/aPredefined.s
+      - ./tmp/dwtools/abase/l0/aSetup.s
       - ./tmp/dwtools/abase/l0/fBool.s
       - ./tmp/dwtools/abase/l0/fChecker.s
       - ./tmp/dwtools/abase/l0/fEntity.s
@@ -240,9 +268,12 @@ path:
       - ./tmp/dwtools/abase/l3/Stringer.s
       - ./tmp/dwtools/abase/l4/ArraySorted.s
       - ./tmp/dwtools/abase/l4/ArraySparse.s
+      - ./tmp/dwtools/abase/l4/Encoder.s
       - ./tmp/dwtools/abase/l4/External.s
       - ./tmp/dwtools/abase/l4/LookerComparator.s
+      - ./tmp/dwtools/abase/l4/LookerExtra.s
       - ./tmp/dwtools/abase/l4/Paths.s
+      - ./tmp/dwtools/abase/l4/RoutineTransform.s
       - ./tmp/dwtools/abase/l4/Traverser.s
       - ./tmp/dwtools/abase/l4/Uri.s
       - ./tmp/dwtools/abase/l5/Cloner.s
@@ -250,7 +281,22 @@ path:
       - ./tmp/dwtools/abase/l5/Uris.s
       - ./tmp/dwtools/abase/l5/WebUri.s
       - ./tmp/dwtools/abase/l7/Glob.s
+      - ./tmp/dwtools/abase/l7_mixin/Copyable.s
+      - ./tmp/dwtools/abase/l7_mixin/EventHandler.s
+      - ./tmp/dwtools/abase/l7_mixin/FieldsStack.s
+      - ./tmp/dwtools/abase/l7_mixin/Instancing.s
       - ./tmp/dwtools/abase/l9/consequence/Consequence.s
+      - ./tmp/dwtools/abase/l9/printer/aChainer.s
+      - ./tmp/dwtools/abase/l9/printer/aChainingMixin.s
+      - ./tmp/dwtools/abase/l9/printer/aColoredMixin.s
+      - ./tmp/dwtools/abase/l9/printer/PrinterBase.s
+      - ./tmp/dwtools/abase/l9/printer/PrinterMid.s
+      - ./tmp/dwtools/abase/l9/printer/PrinterTop.s
+      - ./tmp/dwtools/abase/l9/printer/top/Logger.s
+      - ./tmp/dwtools/abase/l9/printer/top/LoggerExtra.s
+      - ./tmp/dwtools/abase/l9/printer/top/ToJs.s
+      - ./tmp/dwtools/abase/l9/printer/top/ToLayeredHtml.s
+      - ./tmp/dwtools/abase/l9/printer/top/ToString.s
       - ./tmp/dwtools/amid/amapping/.DS_Store
       - ./tmp/dwtools/amid/amapping/TemplateTreeAresolver.s
       - ./tmp/dwtools/amid/amapping/TemplateTreeEnvironment.s
@@ -284,6 +330,12 @@ path:
       - ./tmp/dwtools/amid/files/l5_provider/Svn.ss
       - ./tmp/dwtools/amid/files/l7/Hub.s
       - ./tmp/dwtools/amid/files/l8_filter/Reroot.s
+      - ./tmp/dwtools/amid/l5_mapper/Bitmask.s
+      - ./tmp/dwtools/amid/l5_mapper/NameMapper.s
+      - ./tmp/dwtools/amid/l5_mapper/PathTranslator.s
+      - ./tmp/dwtools/amid/l5_mapper/TemplateFileWriter.s
+      - ./tmp/dwtools/amid/l5_mapper/TemplateTreeAresolver.s
+      - ./tmp/dwtools/amid/l5_mapper/TemplateTreeEnvironment.s
     criterion:
       default: 1
       debug: 1
@@ -377,6 +429,7 @@ reflector:
       ./dwtools/amid/starter/StarterStart.raw.s: true
       ./dwtools/amid/starter.test/Starter.test.s: true
       ./tmp/dwtools/abase/l0/aPredefined.s: true
+      ./tmp/dwtools/abase/l0/aSetup.s: true
       ./tmp/dwtools/abase/l0/fBool.s: true
       ./tmp/dwtools/abase/l0/fChecker.s: true
       ./tmp/dwtools/abase/l0/fEntity.s: true
@@ -418,9 +471,12 @@ reflector:
       ./tmp/dwtools/abase/l3/Stringer.s: true
       ./tmp/dwtools/abase/l4/ArraySorted.s: true
       ./tmp/dwtools/abase/l4/ArraySparse.s: true
+      ./tmp/dwtools/abase/l4/Encoder.s: true
       ./tmp/dwtools/abase/l4/External.s: true
       ./tmp/dwtools/abase/l4/LookerComparator.s: true
+      ./tmp/dwtools/abase/l4/LookerExtra.s: true
       ./tmp/dwtools/abase/l4/Paths.s: true
+      ./tmp/dwtools/abase/l4/RoutineTransform.s: true
       ./tmp/dwtools/abase/l4/Traverser.s: true
       ./tmp/dwtools/abase/l4/Uri.s: true
       ./tmp/dwtools/abase/l5/Cloner.s: true
@@ -428,7 +484,22 @@ reflector:
       ./tmp/dwtools/abase/l5/Uris.s: true
       ./tmp/dwtools/abase/l5/WebUri.s: true
       ./tmp/dwtools/abase/l7/Glob.s: true
+      ./tmp/dwtools/abase/l7_mixin/Copyable.s: true
+      ./tmp/dwtools/abase/l7_mixin/EventHandler.s: true
+      ./tmp/dwtools/abase/l7_mixin/FieldsStack.s: true
+      ./tmp/dwtools/abase/l7_mixin/Instancing.s: true
       ./tmp/dwtools/abase/l9/consequence/Consequence.s: true
+      ./tmp/dwtools/abase/l9/printer/aChainer.s: true
+      ./tmp/dwtools/abase/l9/printer/aChainingMixin.s: true
+      ./tmp/dwtools/abase/l9/printer/aColoredMixin.s: true
+      ./tmp/dwtools/abase/l9/printer/PrinterBase.s: true
+      ./tmp/dwtools/abase/l9/printer/PrinterMid.s: true
+      ./tmp/dwtools/abase/l9/printer/PrinterTop.s: true
+      ./tmp/dwtools/abase/l9/printer/top/Logger.s: true
+      ./tmp/dwtools/abase/l9/printer/top/LoggerExtra.s: true
+      ./tmp/dwtools/abase/l9/printer/top/ToJs.s: true
+      ./tmp/dwtools/abase/l9/printer/top/ToLayeredHtml.s: true
+      ./tmp/dwtools/abase/l9/printer/top/ToString.s: true
       ./tmp/dwtools/amid/amapping/.DS_Store: true
       ./tmp/dwtools/amid/amapping/TemplateTreeAresolver.s: true
       ./tmp/dwtools/amid/amapping/TemplateTreeEnvironment.s: true
@@ -462,6 +533,12 @@ reflector:
       ./tmp/dwtools/amid/files/l5_provider/Svn.ss: true
       ./tmp/dwtools/amid/files/l7/Hub.s: true
       ./tmp/dwtools/amid/files/l8_filter/Reroot.s: true
+      ./tmp/dwtools/amid/l5_mapper/Bitmask.s: true
+      ./tmp/dwtools/amid/l5_mapper/NameMapper.s: true
+      ./tmp/dwtools/amid/l5_mapper/PathTranslator.s: true
+      ./tmp/dwtools/amid/l5_mapper/TemplateFileWriter.s: true
+      ./tmp/dwtools/amid/l5_mapper/TemplateTreeAresolver.s: true
+      ./tmp/dwtools/amid/l5_mapper/TemplateTreeEnvironment.s: true
     srcFilter:
       basePath: .
       prefixPath: proto
@@ -596,6 +673,7 @@ exported:
         - ./dwtools/amid/starter/StarterStart.raw.s
         - ./dwtools/amid/starter.test/Starter.test.s
         - ./tmp/dwtools/abase/l0/aPredefined.s
+        - ./tmp/dwtools/abase/l0/aSetup.s
         - ./tmp/dwtools/abase/l0/fBool.s
         - ./tmp/dwtools/abase/l0/fChecker.s
         - ./tmp/dwtools/abase/l0/fEntity.s
@@ -637,9 +715,12 @@ exported:
         - ./tmp/dwtools/abase/l3/Stringer.s
         - ./tmp/dwtools/abase/l4/ArraySorted.s
         - ./tmp/dwtools/abase/l4/ArraySparse.s
+        - ./tmp/dwtools/abase/l4/Encoder.s
         - ./tmp/dwtools/abase/l4/External.s
         - ./tmp/dwtools/abase/l4/LookerComparator.s
+        - ./tmp/dwtools/abase/l4/LookerExtra.s
         - ./tmp/dwtools/abase/l4/Paths.s
+        - ./tmp/dwtools/abase/l4/RoutineTransform.s
         - ./tmp/dwtools/abase/l4/Traverser.s
         - ./tmp/dwtools/abase/l4/Uri.s
         - ./tmp/dwtools/abase/l5/Cloner.s
@@ -647,7 +728,22 @@ exported:
         - ./tmp/dwtools/abase/l5/Uris.s
         - ./tmp/dwtools/abase/l5/WebUri.s
         - ./tmp/dwtools/abase/l7/Glob.s
+        - ./tmp/dwtools/abase/l7_mixin/Copyable.s
+        - ./tmp/dwtools/abase/l7_mixin/EventHandler.s
+        - ./tmp/dwtools/abase/l7_mixin/FieldsStack.s
+        - ./tmp/dwtools/abase/l7_mixin/Instancing.s
         - ./tmp/dwtools/abase/l9/consequence/Consequence.s
+        - ./tmp/dwtools/abase/l9/printer/aChainer.s
+        - ./tmp/dwtools/abase/l9/printer/aChainingMixin.s
+        - ./tmp/dwtools/abase/l9/printer/aColoredMixin.s
+        - ./tmp/dwtools/abase/l9/printer/PrinterBase.s
+        - ./tmp/dwtools/abase/l9/printer/PrinterMid.s
+        - ./tmp/dwtools/abase/l9/printer/PrinterTop.s
+        - ./tmp/dwtools/abase/l9/printer/top/Logger.s
+        - ./tmp/dwtools/abase/l9/printer/top/LoggerExtra.s
+        - ./tmp/dwtools/abase/l9/printer/top/ToJs.s
+        - ./tmp/dwtools/abase/l9/printer/top/ToLayeredHtml.s
+        - ./tmp/dwtools/abase/l9/printer/top/ToString.s
         - ./tmp/dwtools/amid/amapping/.DS_Store
         - ./tmp/dwtools/amid/amapping/TemplateTreeAresolver.s
         - ./tmp/dwtools/amid/amapping/TemplateTreeEnvironment.s
@@ -681,6 +777,12 @@ exported:
         - ./tmp/dwtools/amid/files/l5_provider/Svn.ss
         - ./tmp/dwtools/amid/files/l7/Hub.s
         - ./tmp/dwtools/amid/files/l8_filter/Reroot.s
+        - ./tmp/dwtools/amid/l5_mapper/Bitmask.s
+        - ./tmp/dwtools/amid/l5_mapper/NameMapper.s
+        - ./tmp/dwtools/amid/l5_mapper/PathTranslator.s
+        - ./tmp/dwtools/amid/l5_mapper/TemplateFileWriter.s
+        - ./tmp/dwtools/amid/l5_mapper/TemplateTreeAresolver.s
+        - ./tmp/dwtools/amid/l5_mapper/TemplateTreeEnvironment.s
       criterion:
         default: 1
         debug: 1

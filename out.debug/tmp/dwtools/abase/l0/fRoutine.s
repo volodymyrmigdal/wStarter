@@ -162,13 +162,13 @@ function constructorJoin( routine, args )
 
   _.assert( _.routineIs( routine ), 'Expects routine in the first argument' );
   _.assert( _.longIs( args ), 'Expects array-like in the second argument' );
-  _.assert( arguments.length === 2, 'Expects exactly 2 arguments' );
+  _.assert( arguments.length === 1 || arguments.length === 2 );
 
   return _routineJoin
   ({
     routine : routine,
     context : routine,
-    args : args,
+    args : args || [],
     sealing : false,
     extending : false,
   });
@@ -547,7 +547,7 @@ function _routinesCompose_body( o )
     let args = _.unrollAppend( null, arguments );
     for( let k = 0 ; k < elements.length ; k++ )
     {
-      _.assert( _.unrollIs( args ), () => 'Expects unroll, but got', _.strTypeOf( args ) );
+      _.assert( _.unrollIs( args ), () => 'Expects unroll, but got', _.strType( args ) );
       let routine = elements[ k ];
       let r = routine.apply( this, args );
       _.assert( r !== false /* && r !== undefined */, 'Temporally forbidden type of result', r );
@@ -649,6 +649,7 @@ function routineExtend( dst )
     let src = arguments[ a ];
     if( src === null )
     continue;
+    _.assert( !_.primitiveIs( src ) );
     for( let s in src )
     {
       let property = src[ s ];
@@ -677,11 +678,11 @@ function routineFromPreAndBody_pre( routine, args )
 
   if( args[ 1 ] !== undefined )
   {
-    o = { pre : args[ 0 ], body : args[ 1 ] };
+    o = { pre : args[ 0 ], body : args[ 1 ], name : args[ 2 ] };
   }
 
   _.routineOptions( routine, o );
-  _.assert( args.length === 1 || args.length === 2, 'Expects exactly two arguments' );
+  _.assert( args.length === 1 || args.length === 2 || args.length === 3 );
   _.assert( arguments.length === 2 );
   _.assert( _.routineIs( o.pre ) || _.routinesAre( o.pre ), 'Expects routine or routines {-o.pre-}' );
   _.assert( _.routineIs( o.body ), 'Expects routine {-o.body-}' );
@@ -718,35 +719,48 @@ function routineFromPreAndBody_body( o )
   let pre = o.pre;
   let body = o.body;
 
+  if( !o.name )
+  {
+    _.assert( _.strDefined( o.body.name ), 'Body routine should have anme' );
+    o.name = o.body.name;
+    if( o.name.indexOf( '_body' ) === o.name.length-5 && o.name.length > 5 )
+    o.name = o.name.substring( 0, o.name.length-5 );
+  }
+
+  let r =
+  {
+    [ o.name ] : function()
+    {
+      let result;
+      let o = pre.call( this, callPreAndBody, arguments );
+      _.assert( !_.argumentsArrayIs( o ), 'does not expect arguments array' );
+      if( _.unrollIs( o ) )
+      result = body.apply( this, o );
+      else
+      result = body.call( this, o );
+      return result;
+    }
+  }
+
+  let callPreAndBody = r[ o.name ];
+
+  _.assert( _.strDefined( callPreAndBody.name ), 'Looks like your interpreter does not support dynamice naming of functions. Please use ES2015 or later interpreter.' );
+
   _.routineExtend( callPreAndBody, o.body );
 
   callPreAndBody.pre = o.pre;
   callPreAndBody.body = o.body;
 
   return callPreAndBody;
-
-  /* */
-
-  function callPreAndBody()
-  {
-    let result;
-    let o = pre.call( this, callPreAndBody, arguments );
-    _.assert( !_.argumentsArrayIs( o ), 'does not expect arguments array' );
-    if( _.unrollIs( o ) )
-    result = body.apply( this, o );
-    else
-    result = body.call( this, o );
-    return result;
-  }
-
 }
 
 routineFromPreAndBody_body.defaults =
 {
   pre : null,
   body : null,
-  preProperties : {},
-  bodyProperties : { defaults : null },
+  name : null,
+  // preProperties : {},
+  // bodyProperties : { defaults : null },
 }
 
 //
@@ -785,9 +799,9 @@ function routineVectorize_functor( o )
   let selectAll = o.select === Infinity;
   let multiply = select > 1 ? multiplyReally : multiplyNo;
 
-  routine = normalizeRoutine( routine );
+  routine = routineNormalize( routine );
 
-  _.assert( _.routineIs( routine ), 'Expects routine {-o.routine-}, but got', _.strTypeOf( routine ) );
+  _.assert( _.routineIs( routine ), 'Expects routine {-o.routine-}, but got', _.strType( routine ) );
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( select >= 1 || _.strIs( select ) || _.arrayIs( select ), 'Expects {-o.select-} as number >= 1, string or array, but got', select );
 
@@ -803,7 +817,7 @@ function routineVectorize_functor( o )
     resultRoutine = vectorizeWithFilters;
     else if( vectorizingKeys )
     {
-      _.assert( !vectorizingMap, '{-o.vectorizingKeys-} and {-o.vectorizingMap-} should not be enabled at same time' );
+      _.assert( !vectorizingMap, '{-o.vectorizingKeys-} and {-o.vectorizingMap-} should not be enabled at the same time' );
       resultRoutine = vectorizeKeysOrArray;
     }
     else if( !vectorizingArray || vectorizingMap )
@@ -852,13 +866,14 @@ function routineVectorize_functor( o )
 
   /* - */
 
-  function normalizeRoutine( routine )
+  function routineNormalize( routine )
   {
 
     if( _.strIs( routine ) )
     {
       return function methodCall()
       {
+        _.assert( _.routineIs( this[ routine ] ), () => 'Context ' + _.toStrShort( this ) + ' does not have routine ' + routine );
         return this[ routine ].apply( this, arguments );
       }
     }
@@ -868,6 +883,7 @@ function routineVectorize_functor( o )
       return function methodCall()
       {
         let c = this[ routine[ 0 ] ];
+        _.assert( _.routineIs( c[ routine[ 1 ] ] ), () => 'Context ' + _.toStrShort( c ) + ' does not have routine ' + routine );
         return c[ routine[ 1 ] ].apply( c, arguments );
       }
     }
@@ -1053,7 +1069,6 @@ function routineVectorize_functor( o )
       {
         for( let m = 0 ; m < select ; m++ )
         args2[ m ] = args[ m ][ r ];
-        // args2[ 0 ] = src[ r ];
         result[ r ] = routine.apply( this, args2 );
       }
       return result;
@@ -1061,16 +1076,12 @@ function routineVectorize_functor( o )
     else if( vectorizingMap && _.mapIs( src ) )
     {
       let args2 = _.longSlice( args );
-      // debugger;
-      // _.assert( 0, 'not tested' );
-      // _.assert( select === 1, 'not implemented' );
       let result = Object.create( null );
       for( let r in src )
       {
         for( let m = 0 ; m < select ; m++ )
         args2[ m ] = args[ m ][ r ];
 
-        // args2[ 0 ] = src[ r ];
         result[ r ] = routine.apply( this, args2 );
       }
       return result;
@@ -1088,11 +1099,6 @@ function routineVectorize_functor( o )
     _.assert( arguments.length === 1, 'Expects single argument' );
 
     let args = multiply( arguments );
-
-    // {
-    //   args[ 0 ] = src[ r ];
-    //   result[ r ] = routine.apply( this, args );
-    // }
 
     if( vectorizingArray && _.longIs( src ) )
     {
@@ -1205,7 +1211,6 @@ function routineVectorize_functor( o )
       {
         for( let m = 0 ; m < select ; m++ )
         args2[ m ] = args[ m ][ r ];
-        // args2[ 0 ] = src[ r ];
         result[ r ] = routine.apply( this, args2 );
       }
       return result;

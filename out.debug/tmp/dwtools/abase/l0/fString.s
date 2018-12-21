@@ -84,15 +84,15 @@ function strsAreNotEmpty( src )
 /**
   * Return type of src.
   * @example
-      let str = _.strTypeOf( 'testing' );
+      let str = _.strType( 'testing' );
   * @param {*} src
   * @return {string}
   * string name of type src
-  * @function strTypeOf
+  * @function strType
   * @memberof wTools
   */
 
-function strTypeOf( src )
+function strType( src )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
@@ -134,8 +134,48 @@ function strPrimitiveTypeOf( src )
   let result = /\[(\w+) (\w+)\]/.exec( name );
 
   if( !result )
-  throw _.err( 'strTypeOf :','unknown type',name );
+  throw _.err( 'strType :','unknown type',name );
   return result[ 2 ];
+}
+
+//
+
+function strQuote( o )
+{
+
+  if( !_.mapIs( o ) )
+  o = { src : o };
+
+  if( o.quote === undefined || o.quote === null )
+  o.quote = strQuote.defaults.quote;
+
+  _.assertMapHasOnly( o, strQuote.defaults );
+  _.assert( arguments.length === 1, 'Expects single argument' );
+
+  if( _.arrayIs( o.src ) )
+  {
+    let result = [];
+    for( let s = 0 ; s < o.src.length ; s++ )
+    result.push( _.strQuote({ src : o.src[ s ], quote : o.quote }) );
+    return result;
+  }
+
+  let src = o.src;
+
+  if( !_.primitiveIs( src ) )
+  src = _.toStr( src );
+
+  _.assert( _.primitiveIs( src ) );
+
+  let result = o.quote + String( src ) + o.quote;
+
+  return result;
+}
+
+strQuote.defaults =
+{
+  src : null,
+  quote : '"',
 }
 
 //
@@ -170,7 +210,7 @@ function str()
     }
     catch( err )
     {
-      line = _.strTypeOf( src );
+      line = _.strType( src );
     }
 
     result += line + ' ';
@@ -697,7 +737,7 @@ function strInsideOf( src, begin, end )
 {
 
   _.assert( _.strIs( src ), 'Expects string {-src-}' );
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 
   let beginOf, endOf;
 
@@ -724,7 +764,7 @@ function strOutsideOf( src, begin, end )
 {
 
   _.assert( _.strIs( src ), 'Expects string {-src-}' );
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 
   let beginOf, endOf;
 
@@ -741,6 +781,175 @@ function strOutsideOf( src, begin, end )
   return result;
 }
 
+//
+
+/**
+ * Finds substring prefix ( begin ) occurrence from the very begining of source ( src ) and removes it.
+ * Returns original string if source( src ) does not have occurrence of ( prefix ).
+ *
+ * @param { String } src - Source string to parse.
+ * @param { String } prefix - String that is to be dropped.
+ * @returns { String } Returns string with result of prefix removement.
+ *
+ * @example
+ * //returns mple
+ * _.strRemoveBegin( 'example','exa' );
+ *
+ * @example
+ * //returns example
+ * _.strRemoveBegin( 'example','abc' );
+ *
+ * @function strRemoveBegin
+ * @throws { Exception } Throws a exception if( src ) is not a String.
+ * @throws { Exception } Throws a exception if( prefix ) is not a String.
+ * @throws { Exception } Throws a exception if( arguments.length ) is not equal 2.
+ * @memberof wTools
+ *
+ */
+
+function strRemoveBegin( src,begin )
+{
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
+  _.assert( _.strIs( src ), 'Expects string {-src-}' );
+  _.assert( _.strIs( begin ) || _.regexpIs( begin ), 'Expects string/regexp {-begin-}'  );
+
+  let result = src;
+  let beginOf = _._strBeginOf( result, begin );
+  if( beginOf !== false )
+  result = result.substr( beginOf.length, result.length );
+  return result;
+}
+
+//
+
+/**
+ * Removes occurrence of postfix ( end ) from the very end of string( src ).
+ * Returns original string if no occurrence finded.
+ * @param { String } src - Source string to parse.
+ * @param { String } postfix - String that is to be dropped.
+ * @returns { String } Returns string with result of postfix removement.
+ *
+ * @example
+ * //returns examp
+ * _.strRemoveEnd( 'example','le' );
+ *
+ * @example
+ * //returns example
+ * _.strRemoveEnd( 'example','abc' );
+ *
+ * @function strRemoveEnd
+ * @throws { Exception } Throws a exception if( src ) is not a String.
+ * @throws { Exception } Throws a exception if( postfix ) is not a String.
+ * @throws { Exception } Throws a exception if( arguments.length ) is not equal 2.
+ * @memberof wTools
+ *
+ */
+
+function strRemoveEnd( src, end )
+{
+  _.assert( arguments.length === 2, 'Expects exactly two arguments' );
+  _.assert( _.strIs( src ), 'Expects string {-src-}' );
+  _.assert( _.strIs( end ) || _.regexpIs( end ), 'Expects string/regexp {-end-}' );
+
+  let result = src;
+  let endOf = _._strEndOf( result, end );
+  if( endOf !== false )
+  result = result.substr( 0, result.length - endOf.length );
+
+  return result;
+}
+
+/**
+* Finds substring or regexp ( insStr ) first occurrence from the source string ( srcStr ) and removes it.
+* Returns original string if source( src ) does not have occurrence of ( insStr ).
+*
+* @param { String } srcStr - Source string to parse.
+* @param { String } insStr - String/RegExp that is to be dropped.
+* @returns { String } Returns string with result of substring removement.
+*
+* @example
+* //returns ource tring
+* _.strRemove( 'source string','s' );
+*
+* @example
+* //returns example
+* _.strRemove( 'example','s' );
+*
+* @function strRemove
+* @throws { Exception } Throws a exception if( srcStr ) is not a String.
+* @throws { Exception } Throws a exception if( insStr ) is not a String or a RegExp.
+* @throws { Exception } Throws a exception if( arguments.length ) is not equal 2.
+* @memberof wTools
+*
+*/
+
+function strRemove( srcStr, insStr )
+{
+  _.assert( arguments.length === 2, 'expects exactly two arguments' );
+  _.assert( _.strIs( srcStr ), 'expects string {-src-}' );
+  _.assert( _.strIs( insStr ) || _.regexpIs( insStr ), 'expects string/regexp {-begin-}' );
+
+  let result = srcStr;
+  debugger;
+
+  result = result.replace( insStr, '' );
+
+  return result;
+}
+
+//
+
+function strReplaceBegin( src, begin, ins )
+{
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
+  _.assert( _.strIs( ins ),'Expects {-ins-} as string' );
+  _.assert( _.strIs( src ) );
+
+  let result = src;
+  if( _.strBegins( result , begin ) )
+  {
+    let prefix = ins;
+    result = prefix + _.strRemoveBegin( result, begin );
+  }
+
+  return result;
+}
+
+//
+
+function strReplaceEnd( src, end, ins )
+{
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
+  _.assert( _.strIs( ins ),'Expects {-ins-} as string' );
+  _.assert( _.strIs( src ) );
+
+  let result = src;
+  if( _.strEnds( result, end ) )
+  {
+    let postfix = ins;
+    result = _.strRemoveEnd( result , end ) + postfix;
+  }
+
+  return result;
+}
+
+//
+
+function strReplace( srcStr, insStr, subStr )
+{
+  _.assert( arguments.length === 3, 'expects exactly three arguments' );
+  _.assert( _.strIs( srcStr ), 'expects string {-src-}' );
+  _.assert( _.strIs( subStr ), 'expects string {-sub-}' );
+
+  let result = srcStr;
+  debugger;
+
+  result = result.replace( insStr, subStr );
+
+  return result;
+}
+
+
 // --
 // fields
 // --
@@ -756,35 +965,45 @@ let Fields =
 let Routines =
 {
 
-  strIs : strIs,
-  strsAre : strsAre,
-  strDefined : strDefined,
-  strsAreNotEmpty : strsAreNotEmpty,
+  strIs,
+  strsAre,
+  strDefined,
+  strsAreNotEmpty,
 
-  strTypeOf : strTypeOf,
-  strPrimitiveTypeOf : strPrimitiveTypeOf,
+  strType,
+  strPrimitiveTypeOf,
+  strQuote,
 
-  str : str,
-  toStr : toStr,
+  str,
+  toStr,
   toStrShort : toStr,
   strFrom : toStr,
 
-  _strFirst : _strFirst,
-  strFirst : strFirst,
-  _strLast : _strLast,
-  strLast : strLast,
+  _strFirst,
+  strFirst,
+  _strLast,
+  strLast,
 
-  _strBeginOf : _strBeginOf,
-  _strEndOf : _strEndOf,
+  _strBeginOf,
+  _strEndOf,
 
-  strBegins : strBegins,
-  strEnds : strEnds,
+  strBegins,
+  strEnds,
 
-  strBeginOf : strBeginOf,
-  strEndOf : strEndOf,
+  strBeginOf,
+  strEndOf,
 
-  strInsideOf : strInsideOf,
-  strOutsideOf : strOutsideOf,
+  strInsideOf,
+  strOutsideOf,
+
+
+  strRemoveBegin : strRemoveBegin,
+  strRemoveEnd : strRemoveEnd,
+  strRemove : strRemove,
+
+  strReplaceBegin : strReplaceBegin,
+  strReplaceEnd : strReplaceEnd,
+  strReplace : strReplace,
 
 }
 

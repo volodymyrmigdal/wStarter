@@ -145,8 +145,19 @@ function iteratorSelect( k )
   _.assert( it.level >= 0 );
   _.assert( _.objectIs( it.down ) );
 
+  // if( _.strIs( k ) && _.strHas( k, 'commonDir' ) )
+  // debugger;
+
   it.level = it.level+1;
-  it.path = it.path !== it.upToken ? it.path + it.upToken + k : it.path + k;
+  // debugger;
+
+  let k2 = k;
+
+  if( _.strIs( k2 ) && _.strHas( k2, it.upToken ) )
+  k2 = '"' + k2 + '"';
+
+  it.path = it.path !== it.upToken ? it.path + it.upToken + k2 : it.path + k2;
+  // debugger
   it.iterator.lastPath = it.path;
   it.iterator.lastSelect = it;
   it.key = k;
@@ -246,7 +257,7 @@ function iteratorLookUp()
     it.looking = r;
     if( it.looking === _.dont )
     it.looking = false;
-    _.assert( _.boolIs( it.looking ), () => 'Expects it.onUp returns boolean, but got ' + _.strTypeOf( it.looking ) );
+    _.assert( _.boolIs( it.looking ), () => 'Expects it.onUp returns boolean, but got ' + _.strType( it.looking ) );
   }
 
   it.visitBeginMaybe()
@@ -632,27 +643,30 @@ Object.freeze( IterationPreserve );
 
 //
 
-function ErrorLooking()
-{
+let ErrorLooking = _.error_functor( 'ErrorLooking' );
 
-  if( !( this instanceof ErrorLooking ) )
-  {
-    let err1 = new ErrorLooking();
-    let err2 = _.err.apply( _, _.arrayAppendArray( [ err1, '\n' ], arguments ) );
-
-    _.assert( err2 instanceof Error );
-    _.assert( err2 instanceof ErrorLooking );
-    _.assert( !!err2.stack );
-
-    return err2;
-  }
-
-  _.assert( arguments.length === 0 );
-  return this;
-}
-
-ErrorLooking.prototype = Object.create( Error.prototype );
-ErrorLooking.prototype.constructor = ErrorLooking;
+// function ErrorLooking()
+// {
+//
+//   if( !( this instanceof ErrorLooking ) )
+//   {
+//     let err1 = new ErrorLooking();
+//     let err2 = _.err.apply( _, _.arrayAppendArray( [ err1, '\n' ], arguments ) );
+//
+//     _.assert( err2 instanceof Error );
+//     _.assert( err2 instanceof ErrorLooking );
+//     _.assert( !!err2.stack );
+//
+//     return err2;
+//   }
+//
+//   _.assert( arguments.length === 0 );
+//   return this;
+// }
+//
+// ErrorLooking.prototype = Object.create( Error.prototype );
+// ErrorLooking.prototype.constructor = ErrorLooking;
+// ErrorLooking.constructor = ErrorLooking;
 
 // --
 // expose

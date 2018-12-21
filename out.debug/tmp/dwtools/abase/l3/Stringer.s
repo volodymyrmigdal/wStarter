@@ -30,7 +30,7 @@ var _ObjectHasOwnProperty = Object.hasOwnProperty;
 
 // var __assert = _.assert;
 var _arraySlice = _.longSlice;
-var strTypeOf = _.strTypeOf;
+var strType = _.strType;
 
 //
 
@@ -732,13 +732,13 @@ function _toStrShort( src,o )
     else if( src && !_.objectIs( src ) && _.numberIs( src.length ) )
     {
 
-      result += '[ ' + strTypeOf( src ) + ' with ' + src.length + ' elements ]';
+      result += '[ ' + strType( src ) + ' with ' + src.length + ' elements ]';
 
     }
     else if( _.objectIs( src ) || _.objectLike( src ) )
     {
 
-      result += '[ ' + strTypeOf( src ) + ' with ' + _.entityLength( src ) + ' elements' + ' ]';
+      result += '[ ' + strType( src ) + ' with ' + _.entityLength( src ) + ' elements' + ' ]';
 
     }
     else if( src instanceof Date )
@@ -1092,7 +1092,7 @@ function _toStrFromStr( src,o )
 
   if( o.limitStringLength )
   {
-    result = _.strShortSrt({ src : src, limit : o.limitStringLength, wrap : q, escaping : 1 });
+    result = _.strStrShort({ src : src, limit : o.limitStringLength, wrap : q, escaping : 1 });
     if( result.length > o.limitStringLength )
     {
       result = '[ ' + result + ' ]';
@@ -1250,7 +1250,7 @@ function _toStrFromArrayFiltered( src,o )
   {
     var i2 = 0;
     var i = 0;
-    var src2 = _.longMakeSimilar( src,v );
+    var src2 = _.longMake( src,v );
     while( i < length )
     {
       if( _toStrIsVisibleElement( src[ i ],optionsItem ) )

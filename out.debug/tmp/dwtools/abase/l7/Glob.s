@@ -11,6 +11,8 @@ if( typeof module !== 'undefined' )
 
   let _ = require( '../../Tools.s' );
 
+  require( '../l3/Path.s' );
+
   _.include( 'wStringsExtra' );
 
 }
@@ -62,38 +64,43 @@ _pathIsGlobRegexpStr += '|(?:\\{(.*)\\})'; /* curly brackets */
 _pathIsGlobRegexpStr += '|(?:\0)'; /* zero */
 
 let _pathIsGlobRegexp = new RegExp( _pathIsGlobRegexpStr );
-function isGlob( src )
-{
-  _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.strIs( src ) );
 
-  /* let regexp = /(\*\*)|([!?*])|(\[.*\])|(\(.*\))|\{.*\}+(?![^[]*\])/g; */
-
-  return _pathIsGlobRegexp.test( src );
-}
-
-//
-
-function fromGlob( glob )
+function _fromGlob( glob )
 {
   let result;
 
   // glob = this.globNormalize( glob );
 
-  let i = glob.search( _pathIsGlobRegexp );
-  while( i > 0 && glob[ i ] !== this._upStr )
-  i -= 1;
-
-  if( i === -1 )
-  result = glob;
-  else
-  result = glob.substr( 0, i+1 );
-
-  /* replace urlNormalize by detrail */
-  result = this.normalize( result );
-
-  _.assert( _.strIs( glob ) );
+  _.assert( _.strIs( glob ), 'Expects string {-glob-}' );
   _.assert( arguments.length === 1, 'Expects single argument' );
+
+  // if( glob === 'dst:///' )
+  // debugger;
+  // if( glob === '**b**' )
+  // debugger;
+  // result = _.strReplaceAll( glob, _pathIsGlobRegexp, '' );
+
+  let i = glob.search( _pathIsGlobRegexp );
+
+  if( i >= 0 )
+  {
+
+    while( i >= 0 && glob[ i ] !== this._upStr )
+    i -= 1;
+
+    if( i === -1 )
+    result = '';
+    else
+    result = glob.substr( 0, i+1 );
+
+  }
+  else
+  {
+    result = glob;
+  }
+
+  result = this.detrail( result || '.' );
+
   _.assert( !this.isGlob( result ) );
 
   return result;
@@ -111,7 +118,7 @@ function globNormalize( glob )
 
 function globSplit( glob )
 {
-  _.assert( _.strIs( glob ) );
+  _.assert( _.strIs( glob ), 'Expects string {-glob-}' );
 
   let splits = this.split( glob );
 
@@ -176,7 +183,7 @@ function globRegexpsForTerminalSimple( _glob )
 
     let result = '';
     _.assert( arguments.length === 1, 'Expects single argument' );
-    _.assert( _.strIs( _glob ) );
+    _.assert( _.strIs( _glob ), 'Expects string {-glob-}' );
 
     let w = 0;
     _glob.replace( /(\*\*[\/\\]?)|\?|\*/g, function( matched,a,offset,str )
@@ -393,7 +400,7 @@ function _globRegexpFor2( glob, filePath, basePath )
 {
   let self = this;
 
-  _.assert( _.strIs( glob ) );
+  _.assert( _.strIs( glob ), 'Expects string {-glob-}' );
   _.assert( _.strIs( filePath ) && !_.path.isGlob( filePath ) );
   _.assert( _.strIs( basePath ) && !_.path.isGlob( basePath ) );
   _.assert( arguments.length === 3 );
@@ -768,9 +775,9 @@ function relateForGlob( glob, filePath, basePath )
   let self = this;
   let result = [];
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
-  _.assert( _.strIs( glob ) );
-  _.assert( _.strIs( filePath ) );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
+  _.assert( _.strIs( glob ), 'Expects string {-glob-}' );
+  _.assert( _.strIs( filePath ), 'Expects string' );
   _.assert( _.strIs( basePath ) );
 
   let glob0 = this.globNormalize( glob );
@@ -834,7 +841,7 @@ function pathsRelateForGlob( filePath, oldPath, newPath )
   oldPath = multiplied[ 1 ];
   newPath = multiplied[ 2 ];
 
-  _.assert( arguments.length === 3, 'Expects exactly three argument' );
+  _.assert( arguments.length === 3, 'Expects exactly three arguments' );
 
   if( _.arrayIs( filePath ) )
   {
@@ -1073,7 +1080,7 @@ function globMapToRegexps( o )
     r.transient = [];
     r.notActual = [];
 
-    _.assert( _.strDefined( basePath ), 'no base path for', p );
+    _.assert( _.strDefined( basePath ), 'No base path for', p );
 
     for( let g in group )
     {
@@ -1235,42 +1242,41 @@ let Routines =
 
   // glob
 
-  isGlob : isGlob,
+  _fromGlob,
+  fromGlob : _.routineVectorize_functor( _fromGlob ),
+  globNormalize,
+  globSplit,
 
-  fromGlob : fromGlob,
-  globNormalize : globNormalize,
-  globSplit : globSplit,
+  globRegexpsForTerminalSimple,
+  globRegexpsForTerminalOld,
 
-  globRegexpsForTerminalSimple : globRegexpsForTerminalSimple,
-  globRegexpsForTerminalOld : globRegexpsForTerminalOld,
+  _globRegexpForTerminal,
+  _globRegexpsForTerminal,
+  globRegexpsForTerminal,
 
-  _globRegexpForTerminal : _globRegexpForTerminal,
-  _globRegexpsForTerminal : _globRegexpsForTerminal,
-  globRegexpsForTerminal : globRegexpsForTerminal,
+  _globRegexpForDirectory,
+  _globRegexpsForDirectory,
+  globRegexpsForDirectory,
 
-  _globRegexpForDirectory : _globRegexpForDirectory,
-  _globRegexpsForDirectory : _globRegexpsForDirectory,
-  globRegexpsForDirectory : globRegexpsForDirectory,
+  _globRegexpFor2,
+  _globRegexpsFor2,
+  globRegexpsFor2,
 
-  _globRegexpFor2 : _globRegexpFor2,
-  _globRegexpsFor2 : _globRegexpsFor2,
-  globRegexpsFor2 : globRegexpsFor2,
-
-  globToRegexp : globToRegexp,
+  globToRegexp,
   globsToRegexp : _.routineVectorize_functor( globToRegexp ),
-  globFilter : globFilter,
+  globFilter,
 
-  _globSplitsToRegexpSourceGroups : _globSplitsToRegexpSourceGroups,
-  _globSplitToRegexpSource : _globSplitToRegexpSource,
-  _globRegexpSourceSplitsJoinForTerminal : _globRegexpSourceSplitsJoinForTerminal,
-  _globRegexpSourceSplitsJoinForDirectory : _globRegexpSourceSplitsJoinForDirectory,
+  _globSplitsToRegexpSourceGroups,
+  _globSplitToRegexpSource,
+  _globRegexpSourceSplitsJoinForTerminal,
+  _globRegexpSourceSplitsJoinForDirectory,
 
-  relateForGlob : relateForGlob,
-  pathsRelateForGlob : pathsRelateForGlob,
+  relateForGlob,
+  pathsRelateForGlob,
 
-  globMapExtend : globMapExtend,
-  globMapGroupByDst : globMapGroupByDst,
-  globMapToRegexps : globMapToRegexps,
+  globMapExtend,
+  globMapGroupByDst,
+  globMapToRegexps,
 
 }
 

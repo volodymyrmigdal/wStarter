@@ -9,24 +9,9 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
+  let _ = require( '../../Tools.s' );
 
-  let _ = _global_.wTools;
+  require( '../l3/Path.s' );
 
 }
 
@@ -98,10 +83,11 @@ function vectorizeAsArray( routine, select )
 
   function wrap( srcs )
   {
-    _.assert( arguments.length === 1 );
+    // _.assert( arguments.length === 1 );
     if( _.mapIs( srcs ) )
     srcs = _.mapKeys( srcs );
-    return after.call( this, srcs );
+    arguments[ 0 ] = srcs;
+    return after.apply( this, arguments );
   }
 
 }
@@ -281,12 +267,14 @@ let Routines =
   onlyTrail : vectorizeOnly( 'trail' ),
   onlyDetrail : vectorizeOnly( 'detrail' ),
 
-  // path join
+  // joiner
 
   join : vectorize( 'join', Infinity ),
+  joinRaw : vectorize( 'joinRaw', Infinity ),
   joinIfDefined : vectorize( 'joinIfDefined', Infinity ),
   reroot : vectorize( 'reroot', Infinity ),
   resolve : vectorize( 'resolve', Infinity ),
+  joinNames : vectorize( 'joinNames', Infinity ),
 
   // path cut off
 
@@ -322,9 +310,9 @@ _.path.s = Self;
 // export
 // --
 
-if( typeof module !== 'undefined' )
-if( _global_.WTOOLS_PRIVATE )
-{ /* delete require.cache[ module.id ]; */ }
+// if( typeof module !== 'undefined' )
+// if( _global_.WTOOLS_PRIVATE )
+// { /* delete require.cache[ module.id ]; */ }
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;

@@ -725,6 +725,9 @@ function dstNotOwnFromDefinition()
     if( _ObjectHasOwnProperty.call( dstContainer, key ) )
     return;
 
+    if( _ObjectHasOwnProperty.call( dstContainer, Symbol.for( key ) ) )
+    return;
+
     let srcElement = srcContainer[ key ];
     if( _.definitionIs( srcElement ) )
     dstContainer[ key ] = srcElement.valueGet();
@@ -746,6 +749,9 @@ function dstNotOwnFromDefinitionStrictlyPrimitive()
   {
 
     if( _ObjectHasOwnProperty.call( dstContainer, key ) )
+    return;
+
+    if( _ObjectHasOwnProperty.call( dstContainer, Symbol.for( key ) ) )
     return;
 
     let srcElement = srcContainer[ key ];
@@ -1048,7 +1054,7 @@ function mapperFromFilter( routine )
 {
 
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.routineIs( routine ), 'Expects routine but got', _.strTypeOf( routine ) );
+  _.assert( _.routineIs( routine ), 'Expects routine but got', _.strType( routine ) );
   _.assert( _.strIs( routine.functionFamily ) );
 
   if( routine.functionFamily === 'field-filter' )

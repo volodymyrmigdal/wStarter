@@ -13,25 +13,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-
-  let _global = _global_;
-  let _ = _global_.wTools;
+  let _ = require( '../../Tools.s' );
 
   _.include( 'wPathFundamentals' );
 
@@ -65,6 +47,11 @@ _.assert( !!_realGlobal_ );
 // exec
 // --
 
+/*
+qqq : implement multiple commands
+qqq : implement option timeOut
+*/
+
 function shell( o )
 {
 
@@ -75,18 +62,37 @@ function shell( o )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( o.args === null || _.arrayIs( o.args ) );
   _.assert( _.arrayHas( [ 'fork', 'exec', 'spawn', 'shell' ], o.mode ) );
-
-  o.con = o.con || new _.Consequence().give();
-  o.logger = o.logger || _global_.logger;
+  _.assert( _.strIs( o.path ) || _.strsAre( o.path ), 'Expects string or strings {-o.path-}, but got', _.strType( o.path ) );
 
   let done = false;
   let currentExitCode;
-  let currentPath = o.currentPath || _.path.current();
+  let currentPath;
+
+  o.con = o.con || new _.Consequence().take( null );
+
+  /* xxx qqq : problem */
+
+  if( _.arrayIs( o.path ) )
+  {
+    for( let p = 0 ; p < o.path.length ; p++ )
+    {
+      let o2 = _.mapExtend( null, o );
+      o2.path = o.path[ p ];
+      _.shell( o2 );
+    }
+    return o.con;
+  }
 
   /* */
 
   o.con.ifNoErrorGot( function()
   {
+
+    let done = false;
+    let currentExitCode;
+    currentPath = o.currentPath || _.path.current();
+
+    o.logger = o.logger || _global_.logger;
 
     prepare();
 
@@ -114,6 +120,9 @@ function shell( o )
       o.logger.log( prefix + o.argsStr );
     }
 
+    // let prefix = ' > ';
+    // o.logger.log( prefix + o.argsStr ); // xxx
+
     /* create process */
 
     try
@@ -128,13 +137,13 @@ function shell( o )
 
     /* piping out channel */
 
-    if( o.outputPiping )
+    if( o.outputPiping || o.outputCollecting )
     if( o.process.stdout )
     o.process.stdout.on( 'data', handleStdout );
 
     /* piping error channel */
 
-    if( o.outputPiping )
+    if( o.outputPiping || o.outputCollecting )
     if( o.process.stderr )
     o.process.stderr.on( 'data', handleStderr );
 
@@ -147,6 +156,14 @@ function shell( o )
     o.process.on( 'close', handleClose );
 
   });
+
+  // o.con.finally( ( err, arg ) =>
+  // {
+  //   debugger;
+  //   if( err )
+  //   throw err;
+  //   return arg;
+  // });
 
   return o.con;
 
@@ -162,9 +179,13 @@ function shell( o )
     if( o.verbosity < 0 )
     o.verbosity = 0;
     if( o.outputPiping === null )
-    o.outputPiping = o.verbosity >= 1;
+    o.outputPiping = o.verbosity >= 2;
     if( o.outputCollecting && !o.output )
     o.output = '';
+
+    // _.assert( !o.outputCollecting || !!o.outputPiping, 'If {-o.outputCollecting-} enabled then {-o.outputPiping-} either should be' );
+
+    // console.log( 'o.outputCollecting', o.outputCollecting );
 
     /* ipc */
 
@@ -182,7 +203,7 @@ function shell( o )
     {
       let argumentsManual = process.argv.slice( 2 );
       if( argumentsManual.length )
-      o.args = _.arrayAppendArray( o.args || [],argumentsManual );
+      o.args = _.arrayAppendArray( o.args || [], argumentsManual );
     }
 
     /* etc */
@@ -207,9 +228,13 @@ function shell( o )
     if( o.currentPath )
     optionsForSpawn.cwd = _.path.nativize( o.currentPath );
 
+    if( _.strIs( o.interpreterArgs ) )
+    o.interpreterArgs = _.strSplitNonPreserving({ src : o.interpreterArgs, preservingDelimeters : 0 });
+
     if( o.mode === 'fork')
     {
-      o.process = ChildProcess.fork( o.path,{ silent : false, env : o.env, cwd : optionsForSpawn.cwd } );
+      let interpreterArgs = o.interpreterArgs || process.execArgv;
+      o.process = ChildProcess.fork( o.path, o.args, { silent : false, env : o.env, cwd : optionsForSpawn.cwd, stdio : optionsForSpawn.stdio, execArgv : interpreterArgs } );
     }
     else if( o.mode === 'exec' )
     {
@@ -244,7 +269,7 @@ function shell( o )
       if( o.args && o.args.length )
       arg2 = arg2 + ' ' + '"' + o.args.join( '" "' ) + '"';
 
-      o.process = ChildProcess.spawn( app,[ arg1,arg2 ],optionsForSpawn );
+      o.process = ChildProcess.spawn( app, [ arg1, arg2 ], optionsForSpawn );
     }
     else _.assert( 0,'Unknown mode', _.strQuote( o.mode ), 'to shell path', _.strQuote( o.paths ) );
 
@@ -265,6 +290,16 @@ function shell( o )
 
   /* */
 
+  function infoGet()
+  {
+    let result = '';
+    result += 'Launched as ' + _.strQuote( o.argsStr ) + '\n';
+    result += 'Launched at ' + _.strQuote( currentPath ) + '\n';
+    return result;
+  }
+
+  /* */
+
   function handleClose( exitCode, signal )
   {
 
@@ -273,11 +308,10 @@ function shell( o )
 
     if( o.verbosity >= 5 )
     {
-      o.logger.log( 'Process returned error code :', exitCode );
+      o.logger.log( 'Process returned error code', exitCode );
       if( exitCode )
       {
-        o.logger.log( 'Launched as :', _.strQuote( o.path ) );
-        o.logger.log( 'Launched at :', _.strQuote( currentPath ) );
+        o.logger.log( infoGet() );
       }
     }
 
@@ -292,14 +326,15 @@ function shell( o )
     {
       debugger;
       if( _.numberIs( exitCode ) )
-      o.con.error( _.err( 'Process returned error code :', exitCode, '\nLaunched as :', _.strQuote( o.argsStr ) ) );
+      o.con.error( _.err( 'Process returned error code', exitCode, '\n', infoGet() ) );
       else
-      o.con.error( _.err( 'Process wass killed by signal :', signal, '\nLaunched as :', _.strQuote( o.argsStr ) ) );
+      o.con.error( _.err( 'Process wass killed by signal', signal, '\n', infoGet() ) );
     }
     else
     {
-      o.con.give( o );
+      o.con.take( o );
     }
+
   }
 
   /* */
@@ -328,6 +363,11 @@ function shell( o )
     if( _.bufferAnyIs( data ) )
     data = _.bufferToStr( data );
 
+    if( o.outputCollecting )
+    o.output += data;
+    if( !o.outputPiping )
+    return;
+
     if( _.strEnds( data,'\n' ) )
     data = _.strRemoveEnd( data,'\n' );
 
@@ -337,7 +377,7 @@ function shell( o )
     if( _.color && !o.outputGray )
     data = _.color.strFormat( data,'pipe.negative' );
 
-    o.logger.warn( data );
+    o.logger.error( data );
   }
 
   /* */
@@ -348,11 +388,13 @@ function shell( o )
     if( _.bufferAnyIs( data ) )
     data = _.bufferToStr( data );
 
-    if( _.strEnds( data,'\n' ) )
-    data = _.strRemoveEnd( data,'\n' );
-
     if( o.outputCollecting )
     o.output += data;
+    if( !o.outputPiping )
+    return;
+
+    if( _.strEnds( data,'\n' ) )
+    data = _.strRemoveEnd( data,'\n' );
 
     if( o.outputPrefixing )
     data = 'stdout :\n' + _.strIndentation( data,'  ' );
@@ -376,6 +418,7 @@ shell.defaults =
   currentPath : null,
 
   args : null,
+  interpreterArgs : null,
   mode : 'shell', /* 'fork', 'exec', 'spawn', 'shell' */
   con : null,
   logger : null,
@@ -389,7 +432,7 @@ shell.defaults =
   throwingExitCode : 1, /* must be on by default */
   applyingExitCode : 0,
 
-  verbosity : 1,
+  verbosity : 2,
   outputGray : 0,
   outputGrayStdout : 0,
   outputPrefixing : 0,
@@ -407,20 +450,40 @@ function sheller( o0 )
   if( _.strIs( o0 ) )
   o0 = { path : o0 }
   o0 = _.routineOptions( sheller, o0 );
-  o0.con = o0.con || new _.Consequence().give();
+  o0.con = o0.con || new _.Consequence().take( null );
+
   return function er()
   {
     let o = _.mapExtend( null, o0 );
     for( let a = 0 ; a < arguments.length ; a++ )
     {
       let o1 = arguments[ 0 ];
-      if( _.strIs( o1 ) )
+      if( _.strIs( o1 ) || _.arrayIs( o1 ) )
       o1 = { path : o1 }
       _.assertMapHasOnly( o1, sheller.defaults );
       _.mapExtend( o, o1 );
     }
+
+    if( _.arrayIs( o.path ) )
+    {
+      // debugger;
+      let os = o.path.map( ( path ) =>
+      {
+        let o2 = _.mapExtend( null, o );
+        o2.path = path;
+        o2.con = null;
+        return function onPath()
+        {
+          return _.shell( o2 );
+        }
+      });
+      // debugger;
+      return o.con.andKeep( os );
+    }
+
     return _.shell( o );
   }
+
 }
 
 sheller.defaults = Object.create( shell.defaults );
@@ -452,21 +515,24 @@ function shellNode( o )
       implementation of nodejs for other OSs could be able to use more memory
   */
 
-  let argumentsForNode = '';
+  let interpreterArgs = '';
   if( o.maximumMemory )
   {
     let totalmem = System.totalmem();
     if( o.verbosity )
-    logger.log( 'System.totalmem()',_.strMetricFormatBytes( totalmem ) );
-    // if( totalmem < 1024*1024*1024 )
-    // Math.floor( ( totalmem / ( 1024*1024*1.4 ) - 1 ) / 256 ) * 256;
-    // else
-    // Math.floor( ( totalmem / ( 1024*1024*1.1 ) - 1 ) / 256 ) * 256;
-    argumentsForNode = '--expose-gc --stack-trace-limit=999 --max_old_space_size=' + totalmem;
+    logger.log( 'System.totalmem()', _.strMetricFormatBytes( totalmem ) );
+    if( totalmem < 1024*1024*1024 )
+    Math.floor( ( totalmem / ( 1024*1024*1.4 ) - 1 ) / 256 ) * 256;
+    else
+    Math.floor( ( totalmem / ( 1024*1024*1.1 ) - 1 ) / 256 ) * 256;
+    interpreterArgs = '--expose-gc --stack-trace-limit=999 --max_old_space_size=' + totalmem;
   }
 
   let path = _.fileProvider.path.nativize( o.path );
-  path = _.strConcat([ 'node', argumentsForNode, path ]);
+  if( o.mode === 'fork' )
+  o.interpreterArgs = interpreterArgs;
+  else
+  path = _.strConcat([ 'node', interpreterArgs, path ]);
 
   let shellOptions = _.mapOnly( o, _.shell.defaults );
   shellOptions.path = path;
@@ -474,9 +540,11 @@ function shellNode( o )
   let result = _.shell( shellOptions )
   .got( function( err,arg )
   {
+    // if( shellOptions.exitCode )
+    // _.appExit( -1 );
     o.exitCode = shellOptions.exitCode;
     o.signal = shellOptions.signal;
-    this.give( err,arg );
+    this.take( err,arg );
   });
 
   o.con = shellOptions.con;
@@ -488,7 +556,8 @@ function shellNode( o )
 var defaults = shellNode.defaults = Object.create( shell.defaults );
 
 defaults.passingThrough = 0;
-defaults.maximumMemory = 1;
+defaults.maximumMemory = 0;
+defaults.applyingExitCode = 1;
 defaults.stdio = 'inherit';
 
 //
@@ -510,10 +579,54 @@ var defaults = shellNodePassingThrough.defaults = Object.create( shellNode.defau
 
 defaults.passingThrough = 1;
 defaults.maximumMemory = 1;
+defaults.applyingExitCode = 1;
 
 // --
 //
 // --
+
+function jsonParse( o )
+{
+  let result;
+
+  if( _.strIs( o ) )
+  o = { src : o }
+  _.routineOptions( jsonParse, o );
+  _.assert( arguments.length === 1 );
+
+  try
+  {
+    result = JSON.parse( o.src );
+  }
+  catch( err )
+  {
+    // debugger;
+    let src = o.src;
+    let position = /at position (\d+)/.exec( err.message );
+    if( position )
+    position = Number( position[ 1 ] );
+    // debugger;
+    let first = 0;
+    if( !isNaN( position ) )
+    {
+      let nearest = _.strLinesNearest( src, position );
+      // debugger;
+      first = _.strLinesCount( src.substring( 0, nearest.spans[ 0 ] ) );
+      src = nearest.splits.join( '' );
+    }
+    let err2 = _.err( 'Error parsing JSON\n', err, '\n', _.strLinesNumber( src, first ) );
+    throw err2;
+  }
+
+  return result;
+}
+
+jsonParse.defaults =
+{
+  src : null,
+}
+
+//
 
 function routineSourceGet( o )
 {
@@ -625,8 +738,12 @@ function routineMake( o )
     }
     catch( err )
     {
-      code = prefix + o.code;
-      result = make( code );
+      if( o.fallingBack )
+      {
+        code = prefix + o.code;
+        result = make( code );
+      }
+      else throw err;
     }
     else
     {
@@ -707,6 +824,7 @@ routineMake.defaults =
   filePath : null,
   // prependingReturn : 1,
   prependingReturn : 0,
+  fallingBack : 1,
   usingStrict : 0,
   externals : null,
   name : null,
@@ -850,7 +968,7 @@ function execStages( stages,o )
 
   /* validation */
 
-  _.assert( _.objectIs( stages ) || _.longIs( stages ),'Expects array or object ( stages ), but got',_.strTypeOf( stages ) );
+  _.assert( _.objectIs( stages ) || _.longIs( stages ),'Expects array or object ( stages ), but got',_.strType( stages ) );
 
   for( let s in stages )
   {
@@ -876,14 +994,14 @@ function execStages( stages,o )
   /* begin */
 
   if( o.onBegin )
-  con.doThen( o.onBegin );
+  con.finally( o.onBegin );
 
   /* end */
 
   function handleEnd()
   {
 
-    con.doThen( function( err,data )
+    con.finally( function( err,data )
     {
 
       if( err )
@@ -894,7 +1012,7 @@ function execStages( stages,o )
     });
 
     if( o.onEnd )
-    con.doThen( o.onEnd );
+    con.finally( o.onEnd );
 
   }
 
@@ -942,7 +1060,7 @@ function execStages( stages,o )
     if( !o.manual )
     con.ifNoErrorThen( routineCall );
 
-    con.timeOutThen( o.delay );
+    con.timeOut( o.delay );
 
     handleStage();
 
@@ -994,11 +1112,12 @@ function moduleRequire( filePath )
 //
 // --
 
-let _appArgsInSamFormatCache;
+let _appArgsCache;
 let _appArgsInSamFormat = Object.create( null )
 var defaults = _appArgsInSamFormat.defaults = Object.create( null );
 
-defaults.delimeter = ':';
+defaults.keyValDelimeter = ':';
+defaults.subjectsDelimeter = ';';
 defaults.argv = null;
 defaults.caching = true;
 defaults.parsingArrays = true;
@@ -1012,92 +1131,115 @@ function _appArgsInSamFormatNodejs( o )
   o = _.routineOptions( _appArgsInSamFormatNodejs,arguments );
 
   if( o.caching )
-  if( _appArgsInSamFormatCache && o.delimeter === _appArgsInSamFormatCache.delimeter )
-  return _appArgsInSamFormatCache;
+  if( _appArgsCache && o.keyValDelimeter === _appArgsCache.keyValDelimeter && o.subjectsDelimeter === _appArgsCache.subjectsDelimeter )
+  return _appArgsCache;
 
   let result = Object.create( null );
 
   if( o.caching )
-  if( o.delimeter === _appArgsInSamFormatNodejs.defaults.delimeter )
-  _appArgsInSamFormatCache = result;
+  if( o.keyValDelimeter === _appArgsInSamFormatNodejs.defaults.keyValDelimeter )
+  _appArgsCache = result;
 
-  if( _global.process )
+  if( !_global.process )
   {
-    o.argv = o.argv || process.argv;
-
-    _.assert( _.longIs( o.argv ) );
-
-    result.interpreterPath = _.path.normalize( o.argv[ 0 ] );
-    result.mainPath = _.path.normalize( o.argv[ 1 ] );
-    result.interpreterArgs = process.execArgv;
-    result.delimeter = o.delimeter;
-    result.map = Object.create( null );
     result.subject = '';
-
-    result.scriptArgs = o.argv.slice( 2 );
-    result.scriptString = result.scriptArgs.join( ' ' );
-    result.scriptString = result.scriptString.trim();
-
-    if( !result.scriptString )
+    result.map = Object.create( null );
+    result.subjects = [];
+    result.maps = [];
     return result;
-
-    /* should be strSplit, but not strIsolateBeginOrAll because of quoting */
-
-    let cuts1 = _.strSplit
-    ({
-      src : result.scriptString,
-      delimeter : o.delimeter,
-      stripping : 1,
-      quoting : 1,
-      preservingDelimeters : 1,
-      preservingEmpty : 0,
-    });
-
-    if( cuts1.length === 1 )
-    {
-      result.subject = cuts1[ 0 ];
-      return result;
-    }
-
-    let cuts2 = _.strIsolateEndOrAll( cuts1[ 0 ], ' ' );
-    result.subject = cuts2[ 0 ];
-    cuts1[ 0 ] = cuts2[ 2 ];
-    result.map = _.strParseMap( cuts1.join( '' ) );
-
-    if( o.parsingArrays )
-    for( let m in result.map )
-    {
-      result.map[ m ] = parseArrayMaybe( result.map[ m ] );
-    }
-
   }
+
+  o.argv = o.argv || process.argv;
+
+  _.assert( _.longIs( o.argv ) );
+
+  result.interpreterPath = _.path.normalize( o.argv[ 0 ] );
+  result.mainPath = _.path.normalize( o.argv[ 1 ] );
+  result.interpreterArgs = process.execArgv;
+
+  // result.keyValDelimeter = o.keyValDelimeter;
+  // result.subjectsDelimeter = o.subjectsDelimeter;
+  // result.map = Object.create( null );
+  // result.subject = '';
+
+  result.scriptArgs = o.argv.slice( 2 );
+  result.scriptString = result.scriptArgs.join( ' ' );
+  result.scriptString = result.scriptString.trim();
+
+  let r = _.strRequestParse
+  ({
+    src : result.scriptString,
+    keyValDelimeter : o.keyValDelimeter,
+    subjectsDelimeter : o.subjectsDelimeter,
+    parsingArrays : o.parsingArrays,
+  });
+
+  _.mapExtend( result, r );
 
   return result;
 
-  /**/
-
-  function parseArrayMaybe( str )
-  {
-    let result = str;
-    if( !_.strIs( result ) )
-    return result;
-    let inside = _.strInsideOf( result, '[', ']' );
-    if( inside !== false )
-    {
-      let splits = _.strSplit
-      ({
-        src : inside,
-        delimeter : [ ' ', ',' ],
-        stripping : 1,
-        quoting : 1,
-        preservingDelimeters : 0,
-        preservingEmpty : 0,
-      });
-      result = splits;
-    }
-    return result;
-  }
-
+  // // if( !result.scriptString )
+  // // return result;
+  //
+  // /* should be strSplit, but not strIsolateBeginOrAll because of quoting */
+  //
+  // let commands = _.strSplit
+  // ({
+  //   src : result.scriptString,
+  //   delimeter : o.subjectsDelimeter,
+  //   stripping : 1,
+  //   quoting : 1,
+  //   preservingDelimeters : 0,
+  //   preservingEmpty : 0,
+  // });
+  //
+  // /* */
+  //
+  // for( let c = 0 ; c < commands.length ; c++ )
+  // {
+  //
+  //   let mapEntries = _.strSplit
+  //   ({
+  //     src : commands[ c ],
+  //     delimeter : o.keyValDelimeter,
+  //     stripping : 1,
+  //     quoting : 1,
+  //     preservingDelimeters : 1,
+  //     preservingEmpty : 0,
+  //   });
+  //
+  //   let subject, map;
+  //
+  //   if( mapEntries.length === 1 )
+  //   {
+  //     subject = mapEntries[ 0 ];
+  //     map = Object.create( null );
+  //   }
+  //   else
+  //   {
+  //     let subjectAndKey = _.strIsolateEndOrAll( mapEntries[ 0 ], ' ' );
+  //     subject = subjectAndKey[ 0 ];
+  //     mapEntries[ 0 ] = subjectAndKey[ 2 ];
+  //
+  //     map = _.strToMap
+  //     ({
+  //       src : mapEntries.join( '' ),
+  //       keyValDelimeter : o.keyValDelimeter,
+  //       parsingArrays : o.parsingArrays,
+  //     });
+  //
+  //   }
+  //
+  //   result.subjects.push( subject );
+  //   result.maps.push( map );
+  // }
+  //
+  // if( result.subjects.length )
+  // result.subject = result.subjects[ 0 ];
+  // if( result.maps.length )
+  // result.map = result.maps[ 0 ];
+  //
+  // return result;
 }
 
 _appArgsInSamFormatNodejs.defaults = Object.create( _appArgsInSamFormat.defaults );
@@ -1117,16 +1259,16 @@ function _appArgsInSamFormatBrowser( o )
   o = _.routineOptions( _appArgsInSamFormatNodejs,arguments );
 
   if( o.caching )
-  if( _appArgsInSamFormatCache && o.delimeter === _appArgsInSamFormatCache.delimeter )
-  return _appArgsInSamFormatCache;
+  if( _appArgsCache && o.keyValDelimeter === _appArgsCache.keyValDelimeter )
+  return _appArgsCache;
 
   let result = Object.create( null );
 
   result.map =  Object.create( null );
 
   if( o.caching )
-  if( o.delimeter === _appArgsInSamFormatNodejs.defaults.delimeter )
-  _appArgsInSamFormatCache = result;
+  if( o.keyValDelimeter === _appArgsInSamFormatNodejs.defaults.keyValDelimeter )
+  _appArgsCache = result;
 
   /* xxx */
 
@@ -1148,6 +1290,14 @@ function appArgsReadTo( o )
   if( !o.propertiesMap )
   o.propertiesMap = _.appArgs().map;
 
+  if( _.arrayIs( o.namesMap ) )
+  {
+    let namesMap = Object.create( null );
+    for( let n = 0 ; n < o.namesMap.length ; n++ )
+    namesMap[ o.namesMap[ n ] ] = o.namesMap[ n ];
+    o.namesMap = namesMap;
+  }
+
   _.assert( arguments.length === 1 || arguments.length === 2 )
   _.assert( _.objectIs( o.dst ), 'Expects map {-o.dst-}' );
   _.assert( _.objectIs( o.namesMap ), 'Expects map {-o.namesMap-}' );
@@ -1168,9 +1318,6 @@ function appArgsReadTo( o )
     if( but.length )
     {
       throw _.err( 'Unknown application arguments : ' + _.strQuote( but ).join( ', ' ) );
-      // o.appArgs.err = _.err( 'Unknown application arguments : ' + _.strQuote( but ).join( ', ' ) );
-      // if( o.throwing )
-      // throw o.appArgs.err;
     }
   }
 
@@ -1203,12 +1350,10 @@ function appArgsReadTo( o )
 appArgsReadTo.defaults =
 {
   dst : null,
-  // appArgs : null,
   propertiesMap : null,
   namesMap : null,
   removing : 1,
   only : 1,
-  // throwing : 1,
 }
 
 //
@@ -1219,10 +1364,10 @@ function appAnchor( o )
 
   _.routineOptions( appAnchor,arguments );
 
-  let a = _.strParseMap
+  let a = _.strToMap
   ({
     src : _.strRemoveBegin( window.location.hash,'#' ),
-    valKeyDelimeter : ':',
+    keyValDelimeter : ':',
     entryDelimeter : ';',
   });
 
@@ -1242,7 +1387,7 @@ function appAnchor( o )
     let newHash = '#' + _.mapToStr
     ({
       src : a,
-      valKeyDelimeter : ':',
+      keyValDelimeter : ':',
       entryDelimeter : ';',
     });
 
@@ -1317,10 +1462,10 @@ function appExitWithBeep( exitCode )
   _.assert( arguments.length === 0 || arguments.length === 1 );
   _.assert( exitCode === undefined || _.numberIs( exitCode ) );
 
-  _.beep();
+  _.diagnosticBeep();
 
   if( exitCode )
-  _.beep();
+  _.diagnosticBeep();
 
   _.appExit( exitCode );
 }
@@ -1424,6 +1569,8 @@ let Proto =
 
   //
 
+  jsonParse : jsonParse,
+
   routineSourceGet : routineSourceGet,
 
   routineMake : routineMake,
@@ -1463,9 +1610,9 @@ _.mapExtend( Self, Proto );
 // export
 // --
 
-if( typeof module !== 'undefined' )
-if( _global_.WTOOLS_PRIVATE )
-{ /* delete require.cache[ module.id ]; */ }
+// if( typeof module !== 'undefined' )
+// if( _global_.WTOOLS_PRIVATE )
+// { /* delete require.cache[ module.id ]; */ }
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;

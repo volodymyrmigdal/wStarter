@@ -13,24 +13,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-
-  let _ = _global_.wTools;
+  let _ = require( '../../Tools.s' );
 
   _.include( 'wPathFundamentals' );
   _.include( 'wUriFundamentals' );
@@ -52,7 +35,7 @@ function isAbsolute( path )
 {
   let parent = this.path;
   _.assert( arguments.length === 1 );
-  _.assert( _.strIs( path ) );
+  _.assert( _.strIs( path ), 'Expects string' );
   if( this.isGlobal( path ) )
   return true;
   return parent.isAbsolute( path );
@@ -60,14 +43,15 @@ function isAbsolute( path )
 
 //
 
-let join = Parent._joining_functor( 'join', 1 );
+let join = Parent.join_functor( 'join', 1 );
+let joinRaw = Parent.join_functor( 'joinRaw', 1 );
 
 //
 
-let urisJoin = _.path._pathMultiplicator_functor
-({
-  routine : join,
-});
+// let urisJoin = _.path._pathMultiplicator_functor
+// ({
+//   routine : join,
+// });
 
 //
 //
@@ -144,10 +128,10 @@ function resolve()
 
 //
 
-let urisResolve = _.path._pathMultiplicator_functor
-({
-  routine : resolve,
-});
+// let urisResolve = _.path._pathMultiplicator_functor
+// ({
+//   routine : resolve,
+// });
 
 // --
 // declare Fields
@@ -165,13 +149,14 @@ let Fields =
 let Routines =
 {
 
-  isAbsolute : isAbsolute,
+  isAbsolute,
 
-  join : join,
-  urisJoin : urisJoin,
+  join,
+  joinRaw,
+  // urisJoin : urisJoin,
 
-  resolve : resolve,
-  urisResolve : urisResolve,
+  resolve,
+  // urisResolve : urisResolve,
 
 }
 

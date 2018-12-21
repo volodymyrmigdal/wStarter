@@ -71,7 +71,7 @@ let _ObjectHasOwnProperty = Object.hasOwnProperty;
 let _propertyIsEumerable = Object.propertyIsEnumerable;
 let _nameFielded = _.nameFielded;
 
-_.assert( _.objectIs( _.field ),'wProto needs wTools/staging/dwtools/abase/layer1/FieldMapper.s' );
+_.assert( _.objectIs( _.field ),'wProto needs wTools/staging/dwtools/abase/l1/FieldMapper.s' );
 _.assert( _.routineIs( _nameFielded ),'wProto needs wTools/staging/dwtools/l3/NameTools.s' );
 
 // --
@@ -80,7 +80,7 @@ _.assert( _.routineIs( _nameFielded ),'wProto needs wTools/staging/dwtools/l3/Na
 
 function fieldsGroupsGet( src )
 {
-  _.assert( _.objectIs( src ), () => 'Expects map {-src-}, but got ' + _.strTypeOf( src ) );
+  _.assert( _.objectIs( src ), () => 'Expects map {-src-}, but got ' + _.strType( src ) );
   _.assert( src.Groups === undefined || _.objectIs( src.Groups ) );
 
   if( src.Groups )
@@ -156,7 +156,7 @@ function fieldsGroupDeclare( o )
 
   _.routineOptions( fieldsGroupDeclare,o );
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( o.srcMap === null || !_.primitiveIs( o.srcMap ),'Expects object {-o.srcMap-}, got', _.strTypeOf( o.srcMap ) );
+  _.assert( o.srcMap === null || !_.primitiveIs( o.srcMap ),'Expects object {-o.srcMap-}, got', _.strType( o.srcMap ) );
   _.assert( _.strIs( o.fieldsGroupName ) );
   _.assert( _.routineIs( o.filter ) && _.strIs( o.filter.functionFamily ) );
 
@@ -448,7 +448,7 @@ function fieldsGroupsDeclare( o )
 
   _.routineOptions( fieldsGroupsDeclare,o );
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( o.srcMap === null || !_.primitiveIs( o.srcMap ),'Expects object {-o.srcMap-}, got', _.strTypeOf( o.srcMap ) );
+  _.assert( o.srcMap === null || !_.primitiveIs( o.srcMap ),'Expects object {-o.srcMap-}, got', _.strType( o.srcMap ) );
 
   if( !o.srcMap )
   return;
@@ -794,7 +794,7 @@ function proxyReadOnly( ins )
   {
     set : function( obj, k, e )
     {
-      throw _.err( 'Read only',_.strTypeOf( ins ),ins );
+      throw _.err( 'Read only',_.strType( ins ),ins );
     }
   }
 
@@ -816,29 +816,49 @@ function ifDebugProxyReadOnly( ins )
 
 //
 
-function proxyMap( dst,original )
+function proxyMap( dst, original )
 {
 
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( !!dst );
   _.assert( !!original );
 
+  // let handler =
+  // {
+  //   get : function( obj, k )
+  //   {
+  //     if( obj[ k ] !== undefined )
+  //     return obj[ k ];
+  //     return original[ k ];
+  //   },
+  //   set : function( obj, k, val, target )
+  //   {
+  //     if( obj[ k ] !== undefined )
+  //     obj[ k ] = val;
+  //     else if( original[ k ] !== undefined )
+  //     original[ k ] = val;
+  //     else
+  //     obj[ k ] = val;
+  //     return true;
+  //   },
+  // }
+
   let handler =
   {
-    get : function( obj, k )
+    get : function( dst, k, proxy )
     {
-      if( obj[ k ] !== undefined )
-      return obj[ k ];
+      if( dst[ k ] !== undefined )
+      return dst[ k ];
       return original[ k ];
     },
-    set : function( obj, k, val, target )
+    set : function( dst, k, val, proxy )
     {
-      if( obj[ k ] !== undefined )
-      obj[ k ] = val;
+      if( dst[ k ] !== undefined )
+      dst[ k ] = val;
       else if( original[ k ] !== undefined )
       original[ k ] = val;
       else
-      obj[ k ] = val;
+      dst[ k ] = val;
       return true;
     },
   }
@@ -864,7 +884,7 @@ function _mixinDelcare( o )
 
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.mapIs( o ) || _.routineIs( o ) );
-  _.assert( _.routineIs( o.onMixin ) || o.onMixin === undefined || o.onMixin === null, 'Expects routine {-o.onMixin-}, but got', _.strTypeOf( o ) );
+  _.assert( _.routineIs( o.onMixin ) || o.onMixin === undefined || o.onMixin === null, 'Expects routine {-o.onMixin-}, but got', _.strType( o ) );
   _.assert( _.strDefined( o.name ), 'mixin should have name' );
   _.assert( _.objectIs( o.extend ) || o.extend === undefined || o.extend === null );
   _.assert( _.objectIs( o.supplementOwn ) || o.supplementOwn === undefined || o.supplementOwn === null );
@@ -1015,7 +1035,7 @@ function mixinApply( mixinDescriptor, dstPrototype )
 {
 
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
-  _.assert( _.objectIs( dstPrototype ), () => 'second argument {-dstPrototype-} does not look like prototype, got ' + _.strTypeOf( dstPrototype ) );
+  _.assert( _.objectIs( dstPrototype ), () => 'second argument {-dstPrototype-} does not look like prototype, got ' + _.strType( dstPrototype ) );
   _.assert( _.routineIs( mixinDescriptor.mixin ), 'first argument does not look like mixin descriptor' );
   _.assert( _.objectIs( mixinDescriptor ) );
   _.assert( Object.isFrozen( mixinDescriptor ), 'first argument does not look like mixin descriptor' );
@@ -1072,8 +1092,8 @@ function mixinHas( proto,mixin )
   }
   else
   {
-    _.assert( _.routineIs( mixin.mixin ),'Expects mixin, but got not mixin',_.strTypeOf( mixin ) );
-    _.assert( _.strDefined( mixin.name ),'Expects mixin, but got not mixin',_.strTypeOf( mixin ) );
+    _.assert( _.routineIs( mixin.mixin ),'Expects mixin, but got not mixin',_.strType( mixin ) );
+    _.assert( _.strDefined( mixin.name ),'Expects mixin, but got not mixin',_.strType( mixin ) );
     return proto._mixinsMap && proto._mixinsMap[ mixin.name ];
   }
 
@@ -1222,7 +1242,7 @@ function classDeclare( o )
     _.assert( !o.cls );
   }
 
-  _.assert( _.routineIs( o.parent ) || o.parent === undefined || o.parent === null, () => 'Wrong type of parent : ' + _.strTypeOf( 'o.parent' ) );
+  _.assert( _.routineIs( o.parent ) || o.parent === undefined || o.parent === null, () => 'Wrong type of parent : ' + _.strType( 'o.parent' ) );
   _.assert( _.objectIs( o.extend ) || o.extend === undefined );
   _.assert( _.objectIs( o.supplement ) || o.supplement === undefined );
   _.assert( o.parent !== o.extend || o.extend === undefined );
@@ -2831,7 +2851,7 @@ function common( src )
 {
   let definition = new Definition({ value : src });
 
-  _.assert( src !== undefined, () => 'Expects object-like or long, but got ' + _.strTypeOf( src ) );
+  _.assert( src !== undefined, () => 'Expects object-like or long, but got ' + _.strType( src ) );
   _.assert( arguments.length === 1 );
 
   definition.valueGet = function get() { return this.value }
@@ -2848,7 +2868,7 @@ function own( src )
 {
   let definition = new Definition({ value : src });
 
-  _.assert( src !== undefined, () => 'Expects object-like or long, but got ' + _.strTypeOf( src ) );
+  _.assert( src !== undefined, () => 'Expects object-like or long, but got ' + _.strType( src ) );
   _.assert( arguments.length === 1 );
 
   // definition.valueGet = function get() { return _.entityShallowClone( this.value ) }

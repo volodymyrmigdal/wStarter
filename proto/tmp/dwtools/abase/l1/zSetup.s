@@ -10,49 +10,45 @@ let Self = _global.wTools;
 // setup
 // --
 
-function _setupConfig()
+function _setupUnhandledErrorHandler1()
 {
 
-  if( _global.WTOOLS_PRIVATE )
+  if( !_global._setupUnhandledErrorHandlerDone )
+  {
+    debugger;
+    throw 'setup0 should be called first';
+  }
+
+  if( _global._setupUnhandledErrorHandlerDone > 1 )
   return;
 
-  /* config */
+  _global._setupUnhandledErrorHandlerDone = 2;
 
-  if( !_global.Config )
-  _global.Config = Object.create( null );
-
-  if( _global.Config.debug === undefined )
-  _global.Config.debug = true;
-
-  _global.Config.debug = !!_global.Config.debug;
-
-}
-
-//
-
-function _setupUnhandledErrorHandler()
-{
-
-  if( _global._setupUnhandledErrorHandlerDone )
-  return;
-
-  _global._setupUnhandledErrorHandlerDone = true;
-
-  let handlerWas = null;
-
+  // let handlerWas = null;
   // console.info( 'REMINDER : fix unhandled error handler' );
+
+  // if( _global.process && _.routineIs( _global.process.on ) )
+  // {
+  //   _global.process.on( 'uncaughtException', handleError );
+  // }
+  // else if( Object.hasOwnProperty.call( _global,'onerror' ) )
+  // {
+  //   // handlerWas = _global.onerror;
+  //   _global.onerror = handleBrowserError;
+  // }
+
+  /* */
 
   if( _global.process && _.routineIs( _global.process.on ) )
   {
-    _global.process.on( 'uncaughtException', handleError );
+    Self._handleUnhandledError1 = handleNodeError;
   }
   else if( Object.hasOwnProperty.call( _global,'onerror' ) )
   {
-    handlerWas = _global.onerror;
-    _global.onerror = handleBrowserError;
+    Self._handleUnhandledError1 = handleBrowserError;
   }
 
-  /**/
+  /* */
 
   function handleBrowserError( message, sourcePath, lineno, colno, error )
   {
@@ -72,16 +68,27 @@ function _setupUnhandledErrorHandler()
       },
     });
 
-    handleError( err );
+    return handleError( err );
 
-    if( handlerWas )
-    handlerWas.call( this, message, sourcePath, lineno, colno, error );
+    // if( handlerWas )
+    // handlerWas.call( this, message, sourcePath, lineno, colno, error );
+  }
+
+  /* */
+
+  function handleNodeError( err )
+  {
+    return handleError( err );
   }
 
   /* */
 
   function handleError( err )
   {
+    let prefix = '------------------------------- unhandled errorr ------------------------------->\n';
+    let postfix = '------------------------------- unhandled errorr -------------------------------<\n';
+
+    /* */
 
     try
     {
@@ -90,61 +97,79 @@ function _setupUnhandledErrorHandler()
     }
     catch( err2 )
     {
-      console.error( err2.toString() );
+      debugger;
+      console.error( err2 );
     }
 
-    console.error( '------------------------------- unhandled errorr ------------------------------->' );
+    /* */
 
+    if( _.appExitCode )
     try
     {
-
-      if( _.appExitCode )
       _.appExitCode( -1 )
-
-      if( !err.originalMessage )
-      {
-        if( _.objectLike( err ) )
-        {
-          if( _.toStr && _.field )
-          console.error( _.toStr.fields( err,{ errorAsMap : 1 } ) );
-          else
-          console.error( err );
-        }
-        debugger;
-        if( _.errLog )
-        _.errLog( 'Uncaught exception\n', err );
-        else
-        console.error( 'Uncaught exception\n', err );
-      }
-      else
-      {
-        if( _.errLog )
-        _.errLog( 'Uncaught exception\n', err );
-        else
-        console.error( 'Uncaught exception\n', err );
-      }
-
     }
     catch( err2 )
     {
       debugger;
-
-      if( err2 && _.routineIs( err2.toString ) )
-      console.error( err2.toString() );
-      else
-      console.error( err2 );
-
-      if( err && _.routineIs( err.toString ) )
-      console.error( err.toString() + '\n' + err.stack );
-      else
-      console.error( err );
-
+      console.log( err2 );
     }
 
-    console.error( '------------------------------- unhandled errorr -------------------------------<' );
+    /* */
+
+    console.error( prefix );
+
+    /* */
+
+    if( !err.originalMessage && _.objectLike && _.objectLike( err ) )
+    try
+    {
+      let serr = _.toStr && _.field ? _.toStr.fields( err,{ errorAsMap : 1 } ) : err;
+      console.error( err );
+    }
+    catch( err2 )
+    {
+      debugger;
+      console.error( err2 );
+    }
+
+    try
+    {
+      if( _.errLog )
+      _.errLog( err );
+      else
+      console.error( err );
+    }
+    catch( err2 )
+    {
+      debugger;
+      console.error( err2 );
+      console.error( err );
+    }
+
+    console.error( postfix );
     debugger;
 
   }
+
+}
+
+//
+
+function _setupConfig()
+{
+
+  if( _global.WTOOLS_PRIVATE )
+  return;
+
+  /* config */
+
+  if( !_global.Config )
+  _global.Config = Object.create( null );
+
+  if( _global.Config.debug === undefined )
+  _global.Config.debug = true;
+
+  _global.Config.debug = !!_global.Config.debug;
 
 }
 
@@ -247,16 +272,18 @@ function _setupTesterPlaceholder()
 
 //
 
-function _setup()
+function _setup1()
 {
 
   // Self.timeNow = Self._timeNow_functor();
   Self._sourcePath = _.diagnosticStack( 1 );
 
+  _.assert( _global._WTOOLS_SETUP_EXPECTED_ !== false );
+
   if( _global._WTOOLS_SETUP_EXPECTED_ !== false )
   {
     _._setupConfig();
-    _._setupUnhandledErrorHandler();
+    _._setupUnhandledErrorHandler1();
     _._setupLoggerPlaceholder();
     _._setupTesterPlaceholder();
     // _._setupLater();
@@ -273,21 +300,19 @@ function _setup()
 let Routines =
 {
 
-  _setupConfig : _setupConfig,
-  _setupUnhandledErrorHandler : _setupUnhandledErrorHandler,
+  _setupUnhandledErrorHandler1 : _setupUnhandledErrorHandler1,
 
+  _setupConfig : _setupConfig,
   _setupLoggerPlaceholder : _setupLoggerPlaceholder,
   _setupTesterPlaceholder : _setupTesterPlaceholder,
 
-  // _setupLater : _setupLater,
-
-  _setup : _setup,
+  _setup1 : _setup1,
 
 }
 
 Object.assign( Self,Routines );
 
-Self._setup();
+Self._setup1();
 
 // --
 // export

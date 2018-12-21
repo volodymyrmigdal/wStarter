@@ -10,7 +10,7 @@ let _ObjectHasOwnProperty = Object.hasOwnProperty;
 let _propertyIsEumerable = Object.propertyIsEnumerable;
 let _nameFielded = _.nameFielded;
 
-_.assert( _.objectIs( _.field ), 'wProto needs wTools/staging/dwtools/abase/layer1/FieldMapper.s' );
+_.assert( _.objectIs( _.field ), 'wProto needs wTools/staging/dwtools/abase/l1/FieldMapper.s' );
 _.assert( _.routineIs( _nameFielded ), 'wProto needs wTools/staging/dwtools/l3/NameTools.s' );
 
 // --
@@ -1226,7 +1226,7 @@ function setterFriend_functor( o )
   {
 
     let self = this;
-    _.assert( src === null || _.objectIs( src ),'setterFriend : expects null or object, but got ' + _.strTypeOf( src ) );
+    _.assert( src === null || _.objectIs( src ),'setterFriend : expects null or object, but got ' + _.strType( src ) );
 
     if( !src )
     {

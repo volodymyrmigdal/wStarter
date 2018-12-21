@@ -13,22 +13,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    let toolsPath = '../../../dwtools/Base.s';
-    let toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
+  let _ = require( '../../Tools.s' );
 
 }
 
@@ -377,6 +362,9 @@ function _traverseMap( it )
     if( c === false || c === _.dont )
     continue;
 
+    // if( _.strEnds( newIteration.path, 'srcFilter' ) && it.compact )
+    // debugger;
+
     _traverseAct( newIteration );
 
     // if( _.strEnds( newIteration.path, 'srcFilter' ) && it.compact )
@@ -511,7 +499,7 @@ function _traverseAct( it )
   if( !( it.level <= it.iterator.levels ) )
   throw _.err
   (
-    'failed to traverse structure',_.strTypeOf( it.iterator.rootSrc ) +
+    'failed to traverse structure',_.strType( it.iterator.rootSrc ) +
     '\nat ' + it.path +
     '\ntoo deep structure' +
     '\nrootSrc : ' + _.toStr( it.iterator.rootSrc ) +
@@ -628,7 +616,7 @@ function _traverseAct( it )
   if( !handled && it.copyingDegree > 1 )
   {
     debugger;
-    _.assert( 0,'unknown type of src : ' + _.strTypeOf( it.src ) );
+    _.assert( 0,'unknown type of src : ' + _.strType( it.src ) );
   }
 
   /* */

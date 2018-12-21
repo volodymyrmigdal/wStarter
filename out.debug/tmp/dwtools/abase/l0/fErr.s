@@ -23,16 +23,18 @@ let _propertyIsEumerable = Object.propertyIsEnumerable;
 
 function diagnosticStack( stack )
 {
-  // return '-- diagnosticStack -';
-  return stack || new Error().stack;
+  if( stack )
+  return stack.stack || stack;
+  return new Error().stack;
 }
 
 //
 
-function diagnosticStackPurify( stack )
+function diagnosticStackCondense( stack )
 {
-  // return '-- diagnosticStackPurify -';
-  return stack || new Error().stack;
+  if( stack )
+  return stack.stack || stack;
+  return new Error().stack;
 }
 
 //
@@ -73,7 +75,7 @@ function errIsAttended( src )
 {
   if( _.errIs( src ) === false )
   return false;
-  return src.attentionGiven;
+  return !!src.attended;
 }
 
 //
@@ -90,9 +92,12 @@ function errIsAttentionRequested( src )
 function errAttentionRequest( err )
 {
 
-  _.assert( _.errIs( err ) );
+  if( arguments.length !== 1 )
+  throw 'errAttentionRequest : Expects one argument';
+  if( !_.errIs( err ) )
+  throw 'errAttentionRequest : Expects error as the first argument';
 
-  Object.defineProperty( err, 'attentionGiven',
+  Object.defineProperty( err, 'attended',
   {
     enumerable : false,
     configurable : true,
@@ -140,10 +145,11 @@ function _err( o )
   if( o.usingSourceCode === undefined )
   o.usingSourceCode = _err.defaults.usingSourceCode;
 
-  if( o.purifingStack === undefined )
-  o.purifingStack = _err.defaults.purifingStack;
+  if( o.condensingStack === undefined )
+  o.condensingStack = _err.defaults.condensingStack;
 
   if( o.args[ 0 ] === 'not implemented' || o.args[ 0 ] === 'not tested' || o.args[ 0 ] === 'unexpected' )
+  if( _.debuggerEnabled )
   debugger;
 
   /* let */
@@ -152,7 +158,7 @@ function _err( o )
   let catches = '';
   let sourceCode = '';
   let errors = [];
-  let attentionGiven = 0;
+  let attended = 0;
 
   /* Error.stackTraceLimit = 99; */
 
@@ -187,7 +193,7 @@ function _err( o )
         catches = result.catches || '';
         sourceCode = result.sourceCode || '';
         if( o.args.length === 1 )
-        attentionGiven = result.attentionGiven;
+        attended = result.attended;
       }
 
       if( arg.attentionRequested === undefined )
@@ -249,7 +255,7 @@ function _err( o )
   /* make new one if no error in arguments */
 
   let stack = o.stack;
-  let stackPurified = '';
+  let stackCondensed = '';
 
   if( !result )
   {
@@ -270,7 +276,7 @@ function _err( o )
       if( result.originalMessage !== undefined )
       {
         stack = result.stack;
-        stackPurified = result.stackPurified;
+        stackCondensed = result.stackCondensed;
       }
       else
       {
@@ -286,9 +292,12 @@ function _err( o )
   if( !stack )
   stack = o.fallBackStack;
 
-  if( stack && !stackPurified )
+  if( _.strIs( stack ) && !_.strEnds( stack, '\n' ) )
+  stack = stack + '\n';
+
+  if( stack && !stackCondensed )
   {
-    stackPurified = _.diagnosticStackPurify( stack );
+    stackCondensed = _.diagnosticStackCondense( stack );
   }
 
   /* collect data */
@@ -301,8 +310,10 @@ function _err( o )
     if( argument && !_.primitiveIs( argument ) )
     {
 
-      if( _.primitiveIs( argument ) ) str = String( argument );
-      else if( _.routineIs( argument.toStr ) ) str = argument.toStr();
+      if( _.primitiveIs( argument ) )
+      str = String( argument );
+      else if( _.routineIs( argument.toStr ) )
+      str = argument.toStr();
       else if( _.errIs( argument ) || _.strIs( argument.message ) )
       {
         if( _.strIs( argument.originalMessage ) ) str = argument.originalMessage;
@@ -378,11 +389,12 @@ function _err( o )
       location : o.location,
       sourceCode : o.sourceCode,
     });
+    // debugger;
     if( c && c.length < 400 )
     {
-      sourceCode += '\n';
+      // sourceCode += '\n';
       sourceCode += c;
-      sourceCode += '\n ';
+      // sourceCode += '\n ';
     }
   }
 
@@ -406,16 +418,40 @@ function _err( o )
   }
   else
   {
-    message += '\n* Catches\n' + catches + '\n';
-    message += '* Message\n' + originalMessage + '\n';
-    if( o.purifingStack )
-    message += '\n* Stack ( purified )\n' + stackPurified + '\n';
+    message += ' * Message\n' + originalMessage + '\n';
+    if( o.condensingStack )
+    message += '\n * Condensed calls stack\n' + stackCondensed + '';
     else
-    message += '\n* Stack :\n' + stack + '\n';
+    message += '\n * Functions stack\n' + stack + '';
+    message += '\n * Catches stack\n' + catches + '\n';
+
+    if( sourceCode )
+    message += ' * Source code from ' + sourceCode + '\n';
+
   }
 
-  if( sourceCode && !briefly )
-  message += '\n' + sourceCode;
+  // if( sourceCode && !briefly )
+  // debugger;
+  // if( sourceCode && !briefly )
+  // message += '* Source code ' + sourceCode + '\n';
+
+  try
+  {
+    Object.defineProperty( result, 'toString',
+    {
+      enumerable : false,
+      configurable : true,
+      writable : true,
+      value : function() { return this.message },
+      // value : function() { return '--\n' + this.message + '\n--' },
+    });
+  }
+  catch( e )
+  {
+    if( _.debuggerEnabled )
+    debugger;
+    // result = new Error( message );
+  }
 
   try
   {
@@ -429,8 +465,10 @@ function _err( o )
   }
   catch( e )
   {
+    console.error( e );
+    if( _.debuggerEnabled )
     debugger;
-    result = new Error( message );
+    // result = new Error( message );
   }
 
   /* original message */
@@ -469,12 +507,12 @@ function _err( o )
   {
   }
 
-  Object.defineProperty( result, 'stackPurified',
+  Object.defineProperty( result, 'stackCondensed',
   {
     enumerable : false,
     configurable : true,
     writable : true,
-    value : stackPurified,
+    value : stackCondensed,
   });
 
   /* briefly */
@@ -509,12 +547,15 @@ function _err( o )
     value : o.location,
   });
 
-  Object.defineProperty( result, 'attentionGiven',
+  if( attended === 1 )
+  debugger;
+
+  Object.defineProperty( result, 'attended',
   {
     enumerable : false,
     configurable : true,
     writable : true,
-    value : attentionGiven,
+    value : attended,
   });
 
   /* catches */
@@ -554,7 +595,7 @@ _err.defaults =
   /* to make catch stack work properly it should be 1 */
   level : 1,
   usingSourceCode : 1,
-  purifingStack : 1,
+  condensingStack : 1,
   location : null,
   sourceCode : null,
   briefly : null,
@@ -618,8 +659,24 @@ function errBriefly()
 
 //
 
-function errAttend( err )
+function errAttend( err, val )
 {
+
+  // if( arguments.length < 1 || arguments.length > 2 )
+  // {
+  //   debugger;
+  //   throw 'errAttend : Expects one or two arguments';
+  // }
+  // if( !_.errIs( err ) )
+  // throw 'errAttend : Expects error as the first argument';
+  // if( val !== undefined && !_.boolLike( val ) && !_.strIs( val ) )
+  // throw 'errAttend : Expects bool-like or stack as the second argument'
+  //
+  // if( val === undefined )
+  // val = true;
+  //
+  // if( _.boolLike( val ) )
+  // val = Config.debug ? _.diagnosticStack( 1,-1 ) : 1;
 
   if( arguments.length !== 1 || !_.errIsRefined( err ) )
   err = _err
@@ -633,6 +690,7 @@ function errAttend( err )
   try
   {
 
+    if( val )
     Object.defineProperty( err, 'attentionRequested',
     {
       enumerable : false,
@@ -641,7 +699,7 @@ function errAttend( err )
       value : 0,
     });
 
-    Object.defineProperty( err, 'attentionGiven',
+    Object.defineProperty( err, 'attended',
     {
       enumerable : false,
       configurable : true,
@@ -652,7 +710,7 @@ function errAttend( err )
   }
   catch( err )
   {
-    c.warn( 'cant assign attentionRequested / attentionGiven properties' );
+    logger.warn( 'Cant assign attentionRequested and attended properties to error ' + err.toString() );
   }
 
   /* */
@@ -674,6 +732,106 @@ function errRestack( err,level )
   });
 
   return _.err( err2,err );
+}
+
+//
+
+function error_functor( name, onMake )
+{
+
+  if( _.strIs( onMake ) || _.arrayIs( onMake ) )
+  {
+    let prepend = onMake;
+    onMake = function onErrorMake()
+    {
+      debugger;
+      let arg = _.arrayAppendArrays( [], [ prepend, arguments ] );
+      return args;
+      // return _.err.apply( _, arguments );
+    }
+  }
+  else if( !onMake )
+  onMake = function onErrorMake()
+  {
+    return arguments;
+    // return _.err.apply( _, arguments );
+  }
+
+  let Error =
+  {
+    [ name ] : function()
+    {
+      // console.log( name );
+      // debugger;
+
+      if( !( this instanceof ErrorConstructor ) )
+      {
+        let err1 = new ErrorConstructor();
+        let args1 = onMake.apply( err1, arguments );
+        _.assert( _.arrayLike( args1 ) );
+        let args2 = _.arrayAppendArrays( [], [ args1, [ ( arguments.length ? '\n' : '' ), err1 ] ] );
+        let err2 = _.err.apply( _, args2 );
+
+        _.assert( err1 === err2 );
+        _.assert( err2 instanceof _global.Error );
+        _.assert( err2 instanceof ErrorConstructor );
+        _.assert( !!err2.stack );
+
+        return err2;
+      }
+      else
+      {
+        // debugger;
+        // let r = Error.call( this );
+        // debugger;
+        _.assert( arguments.length === 0 );
+        return this;
+      }
+    }
+  }
+
+  // let wrap =
+  // {
+  //   [ name ] : function()
+  //   {
+  //     console.log( name );
+  //     debugger;
+  //     return act.apply( this, arguments );
+  //   }
+  // }
+
+  let ErrorConstructor = Error[ name ];
+
+  _.assert( ErrorConstructor.name === name, 'Looks like your interpreter does not support dynamice naming of functions. Please use ES2015 or later interpreter.' );
+
+  ErrorConstructor.prototype = Object.create( _global.Error.prototype );
+  ErrorConstructor.prototype.constructor = ErrorConstructor;
+  ErrorConstructor.constructor = ErrorConstructor;
+
+  return ErrorConstructor;
+
+  /* */
+
+  // function act()
+  // {
+  //
+  //   if( !( this instanceof Error1 ) )
+  //   {
+  //     let err1 = new Error1();
+  //     let args = _.arrayAppendArrays( [], [ arguments, [ ( arguments.length ? '\n' : '' ), err1 ] ] );
+  //     let err2 = onMake.apply( this, args );
+  //
+  //     _.assert( err2 instanceof Error );
+  //     _.assert( err2 instanceof Error1 );
+  //     _.assert( !!err2.stack );
+  //
+  //     return err2;
+  //   }
+  //
+  //   _.assert( arguments.length === 0 );
+  //   return this;
+  // }
+
 }
 
 //
@@ -725,7 +883,7 @@ function errLog()
   {
     let str = err.toString();
     if( _.loggerIs( c ) )
-    c.error( '#inputRaw : 1#\n' + str + '\n#inputRaw : 0#' )
+    c.error( '#inputRaw : 1#' + str + '#inputRaw : 0#' )
     else
     c.error( str );
   }
@@ -756,7 +914,7 @@ function errLogOnce( err )
     level : 2,
   });
 
-  if( err.attentionGiven )
+  if( err.attended )
   return err;
 
   /* */
@@ -810,6 +968,7 @@ function checkOwnNoConstructor( ins )
 
 function _sureDebugger( condition )
 {
+  if( _.debuggerEnabled )
   debugger;
 }
 
@@ -824,7 +983,7 @@ function sure( condition )
     if( arguments.length === 1 )
     throw _err
     ({
-      args : [ 'Assertion failed' ],
+      args : [ 'Assertion fails' ],
       level : 2,
     });
     else if( arguments.length === 2 )
@@ -862,7 +1021,7 @@ function sureBriefly( condition )
     if( arguments.length === 1 )
     throw _err
     ({
-      args : [ 'Assertion failed' ],
+      args : [ 'Assertion fails' ],
       level : 2,
       briefly : 1,
     });
@@ -902,7 +1061,7 @@ function sureWithoutDebugger( condition )
     if( arguments.length === 1 )
     throw _err
     ({
-      args : [ 'Assertion failed' ],
+      args : [ 'Assertion fails' ],
       level : 2,
     });
     else if( arguments.length === 2 )
@@ -953,7 +1112,7 @@ function sureOwnNoConstructor( ins )
 
 /**
  * Checks condition passed by argument( condition ). Works only in debug mode. Uses StackTrace level 2. @see wTools.err
- * If condition is true routine returns without exceptions, otherwise routine generates and throws exception. By default generates error with message 'Assertion failed'.
+ * If condition is true routine returns without exceptions, otherwise routine generates and throws exception. By default generates error with message 'Assertion fails'.
  * Also generates error using message(s) or existing error object(s) passed after first argument.
  *
  * @param {*} condition - condition to check.
@@ -1009,13 +1168,14 @@ function sureOwnNoConstructor( ins )
 
 function _assertDebugger( condition, args )
 {
+  if( !_.debuggerEnabled )
+  return;
   let err = _err
   ({
     args : _.longSlice( args, 1 ),
     level : 3,
   });
-  // console.error( 'Assert failed' );
-  console.error( 'Assert failed :', _.errBriefly( err ).toString() );
+  // console.error( 'Assertion failed' );
   debugger;
 }
 
@@ -1024,17 +1184,11 @@ function _assertDebugger( condition, args )
 function assert( condition )
 {
 
-  /*return;*/
-
   if( Config.debug === false )
   return true;
 
-  /*
-    assert is going to become stricter
-    assert will treat as true only bool like argument
-  */
-  if( !boolLike( condition ) )
-  debugger;
+  // if( !boolLike( condition ) )
+  // debugger;
 
   // if( !condition || !boolLike( condition ) )
   if( !condition )
@@ -1043,7 +1197,7 @@ function assert( condition )
     if( arguments.length === 1 )
     throw _err
     ({
-      args : [ 'Assertion failed' ],
+      args : [ 'Assertion fails' ],
       level : 2,
     });
     else if( arguments.length === 2 )
@@ -1085,7 +1239,7 @@ function assertWithoutBreakpoint( condition )
     if( arguments.length === 1 )
     throw _err
     ({
-      args : [ 'Assertion failed' ],
+      args : [ 'Assertion fails' ],
       level : 2,
     });
     else if( arguments.length === 2 )
@@ -1110,6 +1264,7 @@ function assertWithoutBreakpoint( condition )
 function assertNotTested( src )
 {
 
+  if( _.debuggerEnabled )
   debugger;
   _.assert( false,'not tested : ' + stack( 1 ) );
 
@@ -1179,25 +1334,31 @@ function assertOwnNoConstructor( ins )
  * @memberof wTools
  */
 
-function ErrorAbort()
-{
-  this.message = arguments.length ? _.arrayFrom( arguments ) : 'Aborted';
-}
+// function ErrorAbort()
+// {
+//   this.message = arguments.length ? _.arrayFrom( arguments ) : 'Aborted';
+// }
+//
+// ErrorAbort.prototype = Object.create( Error.prototype );
 
-ErrorAbort.prototype = Object.create( Error.prototype );
-
-let error =
-{
-  ErrorAbort : ErrorAbort,
-}
+// let ErrorAbort = error_functor( 'ErrorAbort' );
+//
+// let error =
+// {
+//   ErrorAbort : ErrorAbort,
+// }
 
 // --
 // fields
 // --
 
+// let error = Object.create( null );
+
 let Fields =
 {
-  error : error,
+  // error : error,
+  error : Object.create( null ),
+  debuggerEnabled : !!Config.debug,
 }
 
 // --
@@ -1210,7 +1371,7 @@ let Routines =
   // stub
 
   diagnosticStack : diagnosticStack,
-  diagnosticStackPurify : diagnosticStackPurify,
+  diagnosticStackCondense : diagnosticStackCondense,
   diagnosticLocation : diagnosticLocation,
   diagnosticCode : diagnosticCode,
 
@@ -1227,6 +1388,8 @@ let Routines =
   errBriefly : errBriefly,
   errAttend : errAttend,
   errRestack : errRestack,
+  error_functor : error_functor,
+
   errLog : errLog,
   errLogOnce : errLogOnce,
 
@@ -1260,16 +1423,15 @@ let Routines =
 Object.assign( Self, Routines );
 Object.assign( Self, Fields );
 
-// if( !_global.WTOOLS_PRIVATE )
 Error.stackTraceLimit = Infinity;
 
 // --
 // export
 // --
 
-if( typeof module !== 'undefined' )
-if( _global.WTOOLS_PRIVATE )
-{ /* delete require.cache[ module.id ]; */ }
+// if( typeof module !== 'undefined' )
+// if( _global.WTOOLS_PRIVATE )
+// { /* delete require.cache[ module.id ]; */ }
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
