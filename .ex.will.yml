@@ -15,8 +15,8 @@ about :
 execution :
 
   scripts :
-    test : wtest staging
-    docgen : wdocgen staging
+    test : wtest out.debug/dwtools/amids/starter.test
+    docgen : wdocgen out.debug/dwtools/amids/starter
 
 path :
 
