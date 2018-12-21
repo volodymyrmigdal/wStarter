@@ -404,6 +404,7 @@ function filesMapMake()
 
   }
 
+  if( self.includePath )
   self.hubFileProvider.softLinksRebase
   ({
     filePath : 'fmap:///',
