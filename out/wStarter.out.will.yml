@@ -55,6 +55,7 @@ path:
       - .
       - ./dwtools
       - ./dwtools/Tools.s
+      - ./dwtools/abase
       - ./dwtools/amid
       - ./dwtools/amid/Tools.s
       - ./dwtools/amid/starter
@@ -67,6 +68,14 @@ path:
       - ./dwtools/amid/starter/StarterStart.raw.s
       - ./dwtools/amid/starter.test
       - ./dwtools/amid/starter.test/Starter.test.s
+      - ./dwtools/atop
+      - ./tmp
+      - ./tmp/dwtools
+      - ./tmp/dwtools/amid
+      - ./tmp/dwtools/amid/amapping
+      - ./tmp/dwtools/amid/amapping/.DS_Store
+      - ./tmp/dwtools/amid/bclass
+      - ./tmp/dwtools/amid/bclass/.DS_Store
     criterion:
       default: 1
       debug: 1
@@ -87,6 +96,8 @@ path:
       - ./dwtools/amid/starter/StarterServer.ss
       - ./dwtools/amid/starter/StarterStart.raw.s
       - ./dwtools/amid/starter.test/Starter.test.s
+      - ./tmp/dwtools/amid/amapping/.DS_Store
+      - ./tmp/dwtools/amid/bclass/.DS_Store
     criterion:
       default: 1
       debug: 1
@@ -164,23 +175,7 @@ submodule:
 reflector:
   reflect.proto.0:
     filePath:
-      ./proto: ./out.release
-    srcFilter:
-      maskAll:
-        excludeAny:
-          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
-          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
-          - !<tag:yaml.org,2002:js/regexp> /\.git$/
-          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
-          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
-          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
-          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
-          - !<tag:yaml.org,2002:js/regexp> /\.debug($|\.|\/)/i
-          - !<tag:yaml.org,2002:js/regexp> /\.test($|\.|\/)/i
-          - !<tag:yaml.org,2002:js/regexp> /\.experiment($|\.|\/)/i
-      prefixPath: .
-    dstFilter:
-      prefixPath: .
+      'path::proto': 'path::out.*=1'
     criterion:
       debug: 0
     inherit:
@@ -208,51 +203,13 @@ reflector:
       - predefined.*
   reflect.submodules:
     filePath:
-      .module/Tools/proto: ./out.debug
-      .module/Logger/proto: ./out.debug
-      .module/LoggerToJs/proto: ./out.debug
-      .module/Consequence/proto: ./out.debug
-      .module/Instancing/proto: ./out.debug
-      .module/EventHandler/proto: ./out.debug
-      .module/Copyable/proto: ./out.debug
-      .module/FieldsStack/proto: ./out.debug
-      .module/Looker/proto: ./out.debug
-      .module/PathFundamentals/proto: ./out.debug
-      .module/Proto/proto: ./out.debug
-      .module/Selector/proto: ./out.debug
-      .module/Stringer/proto: ./out.debug
-      .module/ArraySorted/proto: ./out.debug
-      .module/ArraySparse/proto: ./out.debug
-      .module/ExternalFundamentals/proto: ./out.debug
-      .module/UriFundamentals/proto: ./out.debug
-      .module/Comparator/proto: ./out.debug
-      .module/LookerExtra/proto: ./out.debug
-      .module/Traverser/proto: ./out.debug
-      .module/WebUriFundamentals/proto: ./out.debug
-      .module/Cloner/proto: ./out.debug
-      .module/StringsExtra/proto: ./out.debug
-      .module/RegexpObject/proto: ./out.debug
-      .module/Files/proto: ./out.debug
-      .module/Verbal/proto: ./out.debug
-      .module/TemplateTreeResolver/proto: ./out.debug
-      .module/TemplateTreeEnvironment/proto: ./out.debug
+      'submodule::*/exported::*=1/path::exportedDir*=1': 'path::out.*=1'
     srcFilter:
       maskAll:
         excludeAny:
           - !<tag:yaml.org,2002:js/regexp> /\/\\\.test\//
           - !<tag:yaml.org,2002:js/regexp> /\/\(\^\|\\\/\)-\//
           - !<tag:yaml.org,2002:js/regexp> /\/\(\^\|\\\/\)\\\.\(\?\!\$\|\\\/\)\//
-          - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
-          - !<tag:yaml.org,2002:js/regexp> /\.unique$/
-          - !<tag:yaml.org,2002:js/regexp> /\.git$/
-          - !<tag:yaml.org,2002:js/regexp> /\.svn$/
-          - !<tag:yaml.org,2002:js/regexp> /\.hg$/
-          - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
-          - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
-          - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
-      prefixPath: .
-    dstFilter:
-      prefixPath: .
     criterion:
       debug: 1
     inherit:
@@ -276,6 +233,8 @@ reflector:
       ./dwtools/amid/starter/StarterServer.ss: true
       ./dwtools/amid/starter/StarterStart.raw.s: true
       ./dwtools/amid/starter.test/Starter.test.s: true
+      ./tmp/dwtools/amid/amapping/.DS_Store: true
+      ./tmp/dwtools/amid/bclass/.DS_Store: true
     srcFilter:
       basePath: .
       prefixPath: proto
@@ -410,6 +369,8 @@ exported:
         - ./dwtools/amid/starter/StarterServer.ss
         - ./dwtools/amid/starter/StarterStart.raw.s
         - ./dwtools/amid/starter.test/Starter.test.s
+        - ./tmp/dwtools/amid/amapping/.DS_Store
+        - ./tmp/dwtools/amid/bclass/.DS_Store
       criterion:
         default: 1
         debug: 1
