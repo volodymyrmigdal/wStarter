@@ -43,12 +43,6 @@ function trivial( test )
   var tempPath = _.path.join( srcPath, 'tmp.tmp' );
   var initScriptPath = _.path.join( tempPath, 'Init.s' );
   var indexHtmlPath = _.path.join( tempPath, 'Index.html' );
-  var toolsPath
-
-  if( _.fileProvider.fileExists( _.path.join( srcPath, 'tmp' ) ) )
-  toolsPath = '/tmp/dwtools';
-  else
-  toolsPath = '/dwtools';
 
   var indexHtmlSource =
   `<html>
@@ -80,7 +74,7 @@ function trivial( test )
       appName : 'Test',
       inPath : '/',
       outPath : '/',
-      toolsPath : toolsPath,
+      toolsPath : '/dwtools',
       initScriptPath : '/tmp.tmp/Init.s',
       offline : 1,
       verbosity : 5,

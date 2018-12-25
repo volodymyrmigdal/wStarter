@@ -15,8 +15,8 @@ about :
 execution :
 
   scripts :
-    test : wtest staging
-    docgen : wdocgen staging
+    test : wtest out.debug/dwtools/amids/starter.test
+    docgen : wdocgen out.debug/dwtools/amids/starter
 
 path :
 
@@ -45,6 +45,6 @@ build :
       tar : 1
       public : 1
     steps :
-      - build::debug.raw
+      - build::debug.compiled
       - step::export.proto
 
