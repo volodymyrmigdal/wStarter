@@ -627,14 +627,16 @@ function _verbosityChange()
 {
   let self = this;
 
+  let _verbosityForFileProvider = _.numberClamp( self.verbosity-2, 0, 9 );
+
   if( self.hubFileProvider )
   {
     let hubFileProvider = self.hubFileProvider;
     let srcFileProvider = hubFileProvider.providersWithProtocolMap.src;
     let dstFileProvider = hubFileProvider.providersWithProtocolMap.dst;
-    hubFileProvider.verbosity = self._verbosityForFileProvider();
-    srcFileProvider.verbosity = self._verbosityForFileProvider();
-    dstFileProvider.verbosity = self._verbosityForFileProvider();
+    hubFileProvider.verbosity = _verbosityForFileProvider;
+    srcFileProvider.verbosity = _verbosityForFileProvider;
+    dstFileProvider.verbosity = _verbosityForFileProvider;
   }
 
   if( self.logger )
