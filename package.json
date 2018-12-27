@@ -29,9 +29,8 @@
     "wtemplatetreeenvironment": ""
   },
   "devDependencies": {
-    "wTesting": "",
-    "wstarter": ".",
-    "express": ""
+    "express": "",
+    "wTesting": ""
   },
   "keywords": [
     "wTools"
