@@ -492,7 +492,7 @@ function starterMake()
     }
   });
 
-  debugger;
+  // debugger;
   find( 'abase/l0' );
   find( 'abase/l1' );
   find( 'abase/l2' );
@@ -723,30 +723,30 @@ let Forbids =
 let Proto =
 {
 
-  init : init,
-  exec : exec,
-  form : form,
+  init,
+  exec,
+  form,
 
-  fileProviderForm : fileProviderForm,
-  fromHardDriveRead : fromHardDriveRead,
-  toHardDriveWrite : toHardDriveWrite,
+  fileProviderForm,
+  fromHardDriveRead,
+  toHardDriveWrite,
 
-  fixesFor : fixesFor,
-  filesMapMake : filesMapMake,
-  starterMake : starterMake,
+  fixesFor,
+  filesMapMake,
+  starterMake,
 
-  _verbosityChange : _verbosityChange,
+  _verbosityChange,
 
   // relations
 
-  Composes : Composes,
-  Aggregates : Aggregates,
-  Associates : Associates,
-  Restricts : Restricts,
-  Medials : Medials,
-  Statics : Statics,
-  Events : Events,
-  Forbids : Forbids,
+  Composes,
+  Aggregates,
+  Associates,
+  Restricts,
+  Medials,
+  Statics,
+  Events,
+  Forbids,
 
 }
 
