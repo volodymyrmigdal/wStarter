@@ -501,6 +501,7 @@ function starterMake()
   find( 'abase/l5' );
   find( 'abase/l7' );
   find( 'abase/l7_mixin' );
+  find( 'abase/l8' );
   find( 'abase/l9/consequence' );
   find( 'abase/l9/printer' );
 
