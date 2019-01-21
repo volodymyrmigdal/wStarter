@@ -55,7 +55,6 @@ path:
       - .
       - ./dwtools
       - ./dwtools/Tools.s
-      - ./dwtools/abase
       - ./dwtools/amid
       - ./dwtools/amid/Tools.s
       - ./dwtools/amid/starter
@@ -68,12 +67,6 @@ path:
       - ./dwtools/amid/starter/StarterStart.raw.s
       - ./dwtools/amid/starter.test
       - ./dwtools/amid/starter.test/Starter.test.s
-      - ./dwtools/atop
-      - ./tmp
-      - ./tmp/dwtools
-      - ./tmp/dwtools/amid
-      - ./tmp/dwtools/amid/amapping
-      - ./tmp/dwtools/amid/bclass
     criterion:
       default: 1
       debug: 1
