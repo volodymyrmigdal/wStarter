@@ -3,7 +3,7 @@ about :
 
   name : "wStarter"
   description : "Collection of tools to generate background service to start and pack application. Starter consists of 3 pieces, maker - generating code for run-time, client run-time piece, and server run-time piece. Use the module to keep files structure of the application and make code aware wherein the file system is it executed."
-  version : "0.3.29"
+  version : "0.3.49"
   enabled : 1
   interpreters :
   - nodejs >= 6.0.0
@@ -15,8 +15,8 @@ about :
 execution :
 
   scripts :
-    test : wtest out.debug/dwtools/amids/starter.test
-    docgen : wdocgen out.debug/dwtools/amids/starter
+    test : wtest staging
+    docgen : wdocgen staging
 
 path :
 
@@ -26,7 +26,7 @@ path :
 step :
 
   export.proto :
-    inherit : export
+    inherit : predefined.export
     export : path::proto
     tar : 0
     criterion :
@@ -45,6 +45,6 @@ build :
       tar : 1
       public : 1
     steps :
-      - build::debug.compiled
+      - build::debug.raw
       - step::export.proto
 
