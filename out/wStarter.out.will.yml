@@ -7,7 +7,7 @@ about:
     run-time, client run-time piece, and server run-time piece. Use the module
     to keep files structure of the application and make code aware wherein the
     file system is it executed.
-  version: 0.3.49
+  version: 0.3.50
   enabled: 1
   interpreters:
     - nodejs >= 6.0.0
@@ -317,7 +317,7 @@ build:
       - 'step::export.proto'
 exported:
   proto.export:
-    version: 0.3.49
+    version: 0.3.50
     criterion:
       default: 1
       debug: 1
