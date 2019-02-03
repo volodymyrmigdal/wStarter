@@ -607,7 +607,7 @@ function _includeModule( bound,filePath )
   let module = _starter_.modulesMap[ filePath ];
 
   _.assert( !!module.dependenciesLogic );
-  _.assert( _.strsAre( module.dependenciesLogic.any ) );
+  _.assert( _.strsAreAll( module.dependenciesLogic.any ) );
 
   let result = scriptFile.includeAny.apply( scriptFile, module.dependenciesLogic.any );
 
