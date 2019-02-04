@@ -7,7 +7,7 @@ about:
     run-time, client run-time piece, and server run-time piece. Use the module
     to keep files structure of the application and make code aware wherein the
     file system is it executed.
-  version: 0.3.51
+  version: 0.3.53
   enabled: 1
   interpreters:
     - nodejs >= 6.0.0
@@ -38,7 +38,7 @@ path:
     path: 'git+https://github.com/Wandalen/wStarter.git'
   bugs:
     path: 'https://github.com/Wandalen/wStarter/issues'
-  exportedDir.0:
+  exportedDir.proto.export:
     path: ./proto
     criterion:
       default: 1
@@ -48,7 +48,7 @@ path:
       export: 1
       tar: 1
       public: 1
-  exportedFiles.0:
+  exportedFiles.proto.export:
     path:
       - .
       - ./dwtools
@@ -83,8 +83,6 @@ path:
 submodule: {}
 reflector:
   reflect.proto.:
-    filePath:
-      ./proto: ./out.release
     srcFilter:
       filePath:
         ./proto: ./out.release
@@ -106,8 +104,6 @@ reflector:
     inherit:
       - predefined.*
   reflect.proto.debug:
-    filePath:
-      ./proto: ./out.debug
     srcFilter:
       filePath:
         ./proto: ./out.debug
@@ -143,36 +139,12 @@ reflector:
       debug: 1
     inherit:
       - predefined.*
-  exported.0:
-    filePath: ./proto
+  exported.proto.export:
     srcFilter:
       filePath: ./proto
       prefixPath: .
-  exportedFiles.0:
+  exportedFiles.proto.export:
     recursive: 0
-    filePath:
-      .: true
-      ./dwtools: true
-      ./dwtools/Tools.s: true
-      ./dwtools/abase: true
-      ./dwtools/amid: true
-      ./dwtools/amid/Tools.s: true
-      ./dwtools/amid/starter: true
-      ./dwtools/amid/starter/StarterConfigBegin.raw.s: true
-      ./dwtools/amid/starter/StarterInitBegin.raw.s: true
-      ./dwtools/amid/starter/StarterInitEnd.raw.s: true
-      ./dwtools/amid/starter/StarterMaker.s: true
-      ./dwtools/amid/starter/StarterPreloadEnd.raw.s: true
-      ./dwtools/amid/starter/StarterServer.ss: true
-      ./dwtools/amid/starter/StarterStart.raw.s: true
-      ./dwtools/amid/starter.test: true
-      ./dwtools/amid/starter.test/Starter.test.s: true
-      ./dwtools/atop: true
-      ./tmp: true
-      ./tmp/dwtools: true
-      ./tmp/dwtools/amid: true
-      ./tmp/dwtools/amid/amapping: true
-      ./tmp/dwtools/amid/bclass: true
     srcFilter:
       filePath:
         .: true
@@ -319,7 +291,7 @@ build:
       - 'step::export.proto'
 exported:
   proto.export:
-    version: 0.3.51
+    version: 0.3.53
     criterion:
       default: 1
       debug: 1
@@ -328,7 +300,7 @@ exported:
       export: 1
       tar: 1
       public: 1
-    exportedReflector: 'reflector::exported.0'
-    exportedFilesReflector: 'reflector::exportedFiles.0'
-    exportedDirPath: 'path::exportedDir.0'
-    exportedFilesPath: 'path::exportedFiles.0'
+    exportedReflector: 'reflector::exported.proto.export'
+    exportedFilesReflector: 'reflector::exportedFiles.proto.export'
+    exportedDirPath: 'path::exportedDir.proto.export'
+    exportedFilesPath: 'path::exportedFiles.proto.export'
