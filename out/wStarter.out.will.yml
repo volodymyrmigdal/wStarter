@@ -7,7 +7,7 @@ about:
     run-time, client run-time piece, and server run-time piece. Use the module
     to keep files structure of the application and make code aware wherein the
     file system is it executed.
-  version: 0.3.53
+  version: 0.3.54
   enabled: 1
   interpreters:
     - nodejs >= 6.0.0
@@ -27,11 +27,11 @@ path:
   out:
     path: out
   out.debug:
-    path: ./out.debug
+    path: ./out/debug
     criterion:
       debug: 1
   out.release:
-    path: ./out.release
+    path: ./out/release
     criterion:
       debug: 0
   repository:
@@ -50,28 +50,28 @@ path:
       public: 1
   exportedFiles.proto.export:
     path:
-      - .
-      - ./dwtools
-      - ./dwtools/Tools.s
-      - ./dwtools/abase
-      - ./dwtools/amid
-      - ./dwtools/amid/Tools.s
-      - ./dwtools/amid/starter
-      - ./dwtools/amid/starter/StarterConfigBegin.raw.s
-      - ./dwtools/amid/starter/StarterInitBegin.raw.s
-      - ./dwtools/amid/starter/StarterInitEnd.raw.s
-      - ./dwtools/amid/starter/StarterMaker.s
-      - ./dwtools/amid/starter/StarterPreloadEnd.raw.s
-      - ./dwtools/amid/starter/StarterServer.ss
-      - ./dwtools/amid/starter/StarterStart.raw.s
-      - ./dwtools/amid/starter.test
-      - ./dwtools/amid/starter.test/Starter.test.s
-      - ./dwtools/atop
-      - ./tmp
-      - ./tmp/dwtools
-      - ./tmp/dwtools/amid
-      - ./tmp/dwtools/amid/amapping
-      - ./tmp/dwtools/amid/bclass
+      - proto
+      - proto/dwtools
+      - proto/dwtools/Tools.s
+      - proto/dwtools/abase
+      - proto/dwtools/amid
+      - proto/dwtools/amid/Tools.s
+      - proto/dwtools/amid/starter
+      - proto/dwtools/amid/starter/StarterConfigBegin.raw.s
+      - proto/dwtools/amid/starter/StarterInitBegin.raw.s
+      - proto/dwtools/amid/starter/StarterInitEnd.raw.s
+      - proto/dwtools/amid/starter/StarterMaker.s
+      - proto/dwtools/amid/starter/StarterPreloadEnd.raw.s
+      - proto/dwtools/amid/starter/StarterServer.ss
+      - proto/dwtools/amid/starter/StarterStart.raw.s
+      - proto/dwtools/amid/starter.test
+      - proto/dwtools/amid/starter.test/Starter.test.s
+      - proto/dwtools/atop
+      - proto/tmp
+      - proto/tmp/dwtools
+      - proto/tmp/dwtools/amid
+      - proto/tmp/dwtools/amid/amapping
+      - proto/tmp/dwtools/amid/bclass
     criterion:
       default: 1
       debug: 1
@@ -85,7 +85,7 @@ reflector:
   reflect.proto.:
     srcFilter:
       filePath:
-        ./proto: ./out.release
+        ./proto: ./out/release
       maskAll:
         excludeAny:
           - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
@@ -106,7 +106,7 @@ reflector:
   reflect.proto.debug:
     srcFilter:
       filePath:
-        ./proto: ./out.debug
+        ./proto: ./out/debug
       maskAll:
         excludeAny:
           - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
@@ -141,36 +141,53 @@ reflector:
       - predefined.*
   exported.proto.export:
     srcFilter:
-      filePath: ./proto
+      filePath:
+        ./proto: true
       prefixPath: .
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+      public: 1
   exportedFiles.proto.export:
     recursive: 0
     srcFilter:
       filePath:
         .: true
-        ./dwtools: true
-        ./dwtools/Tools.s: true
-        ./dwtools/abase: true
-        ./dwtools/amid: true
-        ./dwtools/amid/Tools.s: true
-        ./dwtools/amid/starter: true
-        ./dwtools/amid/starter/StarterConfigBegin.raw.s: true
-        ./dwtools/amid/starter/StarterInitBegin.raw.s: true
-        ./dwtools/amid/starter/StarterInitEnd.raw.s: true
-        ./dwtools/amid/starter/StarterMaker.s: true
-        ./dwtools/amid/starter/StarterPreloadEnd.raw.s: true
-        ./dwtools/amid/starter/StarterServer.ss: true
-        ./dwtools/amid/starter/StarterStart.raw.s: true
-        ./dwtools/amid/starter.test: true
-        ./dwtools/amid/starter.test/Starter.test.s: true
-        ./dwtools/atop: true
-        ./tmp: true
-        ./tmp/dwtools: true
-        ./tmp/dwtools/amid: true
-        ./tmp/dwtools/amid/amapping: true
-        ./tmp/dwtools/amid/bclass: true
+        dwtools: true
+        dwtools/Tools.s: true
+        dwtools/abase: true
+        dwtools/amid: true
+        dwtools/amid/Tools.s: true
+        dwtools/amid/starter: true
+        dwtools/amid/starter/StarterConfigBegin.raw.s: true
+        dwtools/amid/starter/StarterInitBegin.raw.s: true
+        dwtools/amid/starter/StarterInitEnd.raw.s: true
+        dwtools/amid/starter/StarterMaker.s: true
+        dwtools/amid/starter/StarterPreloadEnd.raw.s: true
+        dwtools/amid/starter/StarterServer.ss: true
+        dwtools/amid/starter/StarterStart.raw.s: true
+        dwtools/amid/starter.test: true
+        dwtools/amid/starter.test/Starter.test.s: true
+        dwtools/atop: true
+        tmp: true
+        tmp/dwtools: true
+        tmp/dwtools/amid: true
+        tmp/dwtools/amid/amapping: true
+        tmp/dwtools/amid/bclass: true
       basePath: .
       prefixPath: proto
+    criterion:
+      default: 1
+      debug: 1
+      raw: 1
+      proto: 1
+      export: 1
+      tar: 1
+      public: 1
 step:
   clean.out.:
     criterion:
@@ -291,7 +308,7 @@ build:
       - 'step::export.proto'
 exported:
   proto.export:
-    version: 0.3.53
+    version: 0.3.54
     criterion:
       default: 1
       debug: 1
