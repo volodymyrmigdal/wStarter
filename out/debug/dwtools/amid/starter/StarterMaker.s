@@ -177,7 +177,7 @@ function fromHardDriveRead( o )
   _.routineOptions( fromHardDriveRead, o );
 
   self.hubFileProvider.verbosity = 1;
-  let srcLocalPath = _.uri.parse( o.srcPath ).localPath;
+  let srcLocalPath = _.uri.parse( o.srcPath ).longPath;
 
   let reflect = self.hubFileProvider.filesReflector
   ({

@@ -70,7 +70,7 @@ function staticRequestHandler_functor( gen )
     // return next();
 
     var urlParsed = _.uri.parse( url );
-    var filePath = urlParsed.localPath;
+    var filePath = urlParsed.longPath;
     var dirPath = _.path.dir( filePath );
     var path = _.path.normalize( _.path.reroot( gen.basePath, filePath ) );
     var shortName = _.strVarNameFor( _.path.fullName( filePath ) );
