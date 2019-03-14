@@ -88,6 +88,7 @@ reflector:
     src:
       filePath:
         .: .
+      prefixPath: proto
       maskAll:
         excludeAny:
           - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
@@ -100,7 +101,6 @@ reflector:
           - !<tag:yaml.org,2002:js/regexp> /\.debug($|\.|\/)/i
           - !<tag:yaml.org,2002:js/regexp> /\.test($|\.|\/)/i
           - !<tag:yaml.org,2002:js/regexp> /\.experiment($|\.|\/)/i
-      prefixPath: proto
     dst:
       prefixPath: out/release
     criterion:
@@ -111,6 +111,7 @@ reflector:
     src:
       filePath:
         .: .
+      prefixPath: proto
       maskAll:
         excludeAny:
           - !<tag:yaml.org,2002:js/regexp> /(\W|^)node_modules(\W|$)/
@@ -121,7 +122,6 @@ reflector:
           - !<tag:yaml.org,2002:js/regexp> /\.DS_Store$/
           - !<tag:yaml.org,2002:js/regexp> /(^|\/)-/
           - !<tag:yaml.org,2002:js/regexp> /\.release($|\.|\/)/i
-      prefixPath: proto
     dst:
       prefixPath: out/debug
     criterion:
@@ -147,7 +147,7 @@ reflector:
   exported.proto.export:
     src:
       filePath:
-        .: true
+        .: null
       prefixPath: proto
     criterion:
       default: 1
@@ -161,28 +161,28 @@ reflector:
     recursive: 0
     src:
       filePath:
-        .: true
-        dwtools: true
-        dwtools/Tools.s: true
-        dwtools/abase: true
-        dwtools/amid: true
-        dwtools/amid/Tools.s: true
-        dwtools/amid/starter: true
-        dwtools/amid/starter/StarterConfigBegin.raw.s: true
-        dwtools/amid/starter/StarterInitBegin.raw.s: true
-        dwtools/amid/starter/StarterInitEnd.raw.s: true
-        dwtools/amid/starter/StarterMaker.s: true
-        dwtools/amid/starter/StarterPreloadEnd.raw.s: true
-        dwtools/amid/starter/StarterServer.ss: true
-        dwtools/amid/starter/StarterStart.raw.s: true
-        dwtools/amid/starter.test: true
-        dwtools/amid/starter.test/Starter.test.s: true
-        dwtools/atop: true
-        tmp: true
-        tmp/dwtools: true
-        tmp/dwtools/amid: true
-        tmp/dwtools/amid/amapping: true
-        tmp/dwtools/amid/bclass: true
+        .: null
+        dwtools: null
+        dwtools/Tools.s: null
+        dwtools/abase: null
+        dwtools/amid: null
+        dwtools/amid/Tools.s: null
+        dwtools/amid/starter: null
+        dwtools/amid/starter/StarterConfigBegin.raw.s: null
+        dwtools/amid/starter/StarterInitBegin.raw.s: null
+        dwtools/amid/starter/StarterInitEnd.raw.s: null
+        dwtools/amid/starter/StarterMaker.s: null
+        dwtools/amid/starter/StarterPreloadEnd.raw.s: null
+        dwtools/amid/starter/StarterServer.ss: null
+        dwtools/amid/starter/StarterStart.raw.s: null
+        dwtools/amid/starter.test: null
+        dwtools/amid/starter.test/Starter.test.s: null
+        dwtools/atop: null
+        tmp: null
+        tmp/dwtools: null
+        tmp/dwtools/amid: null
+        tmp/dwtools/amid/amapping: null
+        tmp/dwtools/amid/bclass: null
       basePath: .
       prefixPath: proto
     criterion:
