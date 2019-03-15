@@ -500,6 +500,7 @@ function starterMake()
   find( 'abase/l3' );
   find( 'abase/l4' );
   find( 'abase/l5' );
+  find( 'abase/l6' );
   find( 'abase/l7' );
   find( 'abase/l7_mixin' );
   find( 'abase/l8' );
