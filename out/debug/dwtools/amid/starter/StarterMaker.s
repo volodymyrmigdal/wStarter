@@ -110,7 +110,7 @@ function form()
   _.assert( _.strIs( self.starterDirPath ) );
   _.assert( _.strIs( self.starterScriptPath ) );
   _.assert( _.strIs( self.rootPath ) );
-  _.assert( _.strIs( self.pathPrefix ) );
+  _.assert( _.strIs( self.prefixPath ) );
 
   logger.rbegin({ verbosity : -2 });
   logger.log( 'Starter.paths :' );
@@ -123,7 +123,7 @@ function form()
   logger.log( 'starterScriptPath :', self.starterScriptPath );
   logger.log( 'starterConfigPath :', self.starterConfigPath );
   logger.log( 'toolsPath :', self.toolsPath );
-  logger.log( 'pathPrefix :', self.pathPrefix );
+  logger.log( 'prefixPath :', self.prefixPath );
   logger.down();
   logger.rend({ verbosity : -2 });
 
@@ -239,13 +239,13 @@ function fixesFor( o )
   _.assert( arguments.length === 1 );
   _.assert( _.strIs( o.filePath ) );
 
-  if( o.pathPrefix )
-  o.filePath = o.pathPrefix + o.filePath;
-  if( o.pathPrefix && o.dirPath !== null )
-  o.dirPath = o.pathPrefix + o.dirPath;
+  if( o.prefixPath )
+  o.filePath = o.prefixPath + o.filePath;
+  if( o.prefixPath && o.dirPath !== null )
+  o.dirPath = o.prefixPath + o.dirPath;
 
-  // if( o.pathPrefix )
-  // o.rootPath = o.pathPrefix + o.rootPath;
+  // if( o.prefixPath )
+  // o.rootPath = o.prefixPath + o.rootPath;
 
   var result = Object.create( null );
   var exts = _.path.exts( o.filePath );
@@ -321,7 +321,7 @@ function fixesFor( o )
 
 fixesFor.defaults =
 {
-  pathPrefix : '',
+  prefixPath : '',
   filePath : null,
   dirPath : null,
   running : null,
@@ -554,7 +554,7 @@ function starterMake()
     let begin = _.fileProvider.fileRead( _.path.join( __dirname, './StarterConfigBegin.raw.s' ) );
     let settingsCode =
 `
-_realGlobal._starter_.pathPrefix = '${self.pathPrefix}';
+_realGlobal._starter_.prefixPath = '${self.prefixPath}';
 _realGlobal._starter_.initScriptPath = '${self.initScriptPath}';
 _realGlobal._starter_.starterDirPath = '${self.starterDirPath}';
 Config.offline = ${_.toStr( !!self.offline )};
@@ -664,13 +664,14 @@ let Composes =
   appName : null,
   useFilePath : null,
   includePath : null,
+
   toolsPath : '{{inPath}}/dwtools',
   initScriptPath : '{{outPath}}/index.s',
   starterDirPath : '{{outPath}}',
   starterScriptPath : '{{starterDirPath}}/StarterInit.run.s',
   starterConfigPath : '{{starterDirPath}}/{{appName}}.raw.starter.config.s',
   rootPath : '/',
-  pathPrefix : '',
+  prefixPath : '',
 
   offline : 0,
   verbosity : 2,

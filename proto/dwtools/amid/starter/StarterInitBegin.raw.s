@@ -510,9 +510,9 @@ function _scriptPreloadFromServer( filePath )
 {
 
   _.assert( arguments.length === 1 );
-  _.assert( _.strIs( _starter_.pathPrefix ) );
+  _.assert( _.strIs( _starter_.prefixPath ) );
 
-  filePath = _starter_.pathPrefix + filePath;
+  filePath = _starter_.prefixPath + filePath;
 
   if( !Config.isWorker )
   {
@@ -1292,7 +1292,7 @@ let Fields =
   assetsCounter : 0,
   fileProvider : null,
 
-  pathPrefix : '',
+  prefixPath : '',
   initScriptPath : null,
   starterDirPath : null,
   includeToolsPath : '/dwtools/abase/l2/IncludeTools.s',
