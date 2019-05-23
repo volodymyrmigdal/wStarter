@@ -25,6 +25,13 @@ if( typeof module !== 'undefined' )
 
 //
 
+/**
+ * @classdesc Class to generate code for run-time.
+ * @param {Object} o Options map for constructor. {@link module:Tools/mid/Starter.wStarterMaker.Fields Options description }
+ * @class wStarterMaker
+ * @memberof module:Tools/mid/Starter
+*/
+
 let _ = wTools;
 let Parent = null;
 let Self = function wStarterMaker( o )
@@ -54,6 +61,13 @@ function init( o )
 
 //
 
+
+/**
+ * @descriptionNeeded
+ * @function exec
+ * @memberof module:Tools/mid/Starter.wStarterMaker#
+*/
+
 function exec()
 {
 
@@ -67,6 +81,12 @@ function exec()
 }
 
 //
+
+/**
+ * @summary Forms and checks fields of current instance.
+ * @function form
+ * @memberof module:Tools/mid/Starter.wStarterMaker#
+*/
 
 function form()
 {
@@ -132,6 +152,12 @@ function form()
 
 //
 
+/**
+ * @summary Forms hub file provider and registers additional providers on it.
+ * @function fileProviderForm
+ * @memberof module:Tools/mid/Starter.wStarterMaker#
+*/
+
 function fileProviderForm()
 {
   let self = this;
@@ -161,6 +187,14 @@ function fileProviderForm()
 }
 
 //
+
+/**
+ * @summary Reads source files from path `o.srcPath` to inner file provider.
+ * @param {Object} o Options map.
+ * @param {String} o.srcPath Path to directory with source files.
+ * @function fromHardDriveRead
+ * @memberof module:Tools/mid/Starter.wStarterMaker#
+*/
 
 function fromHardDriveRead( o )
 {
@@ -204,6 +238,14 @@ fromHardDriveRead.defaults =
 
 //
 
+/**
+ * @summary Writes source files from inner file provider to path `o.dstPath` on hard drive.
+ * @param {Object} o Options map.
+ * @param {String} o.dstPath Path where to write source files.
+ * @function toHardDriveWrite
+ * @memberof module:Tools/mid/Starter.wStarterMaker#
+*/
+
 function toHardDriveWrite( o )
 {
   let self = this;
@@ -231,6 +273,19 @@ toHardDriveWrite.defaults =
 }
 
 //
+
+
+/**
+ * @summary Generates source code wrapper for a single file. 
+ * @description Wrapper helps to load( require ) source file on a client side.
+ * @param {Object} o Options map.
+ * @param {String} o.prefixPath Prefix for file path
+ * @param {String} o.filePath Path to source file
+ * @param {String} o.dirPath Path to directory with source file
+ * @param {Boolean} o.running
+ * @function fixesFor
+ * @memberof module:Tools/mid/Starter.wStarterMaker#
+*/
 
 function fixesFor( o )
 {
@@ -328,6 +383,13 @@ fixesFor.defaults =
 }
 
 //
+
+/**
+ * @summary Makes files map and saves it to hard drive.
+ * @descriptionNeeded
+ * @function filesMapMake
+ * @memberof module:Tools/mid/Starter.wStarterMaker#
+*/
 
 function filesMapMake()
 {
@@ -462,6 +524,13 @@ function filesMapMake()
 }
 
 //
+
+/**
+ * @summary Prepares starter files and writes them to the hard drive.
+ * @descriptionNeeded
+ * @function starterMake
+ * @memberof module:Tools/mid/Starter.wStarterMaker#
+*/
 
 function starterMake()
 {
@@ -651,6 +720,29 @@ function _verbosityChange()
   }
 
 }
+
+/**
+ * @descriptionNeeded
+ * @typedef {Object} Fields
+ * @property {String} inPath
+ * @property {String} outPath
+ * @property {String} appName
+ * @property {String} useFilePath
+ * @property {String} includePath
+
+ * @property {String} toolsPath='{{inPath}}/dwtools'
+ * @property {String} initScriptPath='{{outPath}}/index.s'
+ * @property {String} starterDirPath='{{outPath}}'
+ * @property {String} starterScriptPath='{{starterDirPath}}/StarterInit.run.s'
+ * @property {String} starterConfigPath='{{starterDirPath}}/{{appName}}.raw.starter.config.s'
+ * @property {String} rootPath='/'
+ * @property {String} prefixPath=''
+
+ * @property {Boolean} offline=0
+ * @property {Number} verbosity=2
+  
+ * @memberof module:Tools/mid/Starter.wStarterMaker
+ */
 
 // --
 // relations
