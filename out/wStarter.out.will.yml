@@ -77,7 +77,6 @@ path:
       - ../proto/dwtools/Tools.s
       - ../proto/dwtools/abase
       - ../proto/dwtools/amid
-      - ../proto/dwtools/amid/Tools.s
       - ../proto/dwtools/amid/starter
       - ../proto/dwtools/amid/starter/StarterConfigBegin.raw.s
       - ../proto/dwtools/amid/starter/StarterInitBegin.raw.s
@@ -89,13 +88,6 @@ path:
       - ../proto/dwtools/amid/starter.test
       - ../proto/dwtools/amid/starter.test/Starter.test.s
       - ../proto/dwtools/atop
-      - ../proto/tmp
-      - ../proto/tmp/dwtools
-      - ../proto/tmp/dwtools/amid
-      - ../proto/tmp/dwtools/amid/amapping
-      - ../proto/tmp/dwtools/amid/amapping/.DS_Store
-      - ../proto/tmp/dwtools/amid/bclass
-      - ../proto/tmp/dwtools/amid/bclass/.DS_Store
     criterion:
       default: 1
       debug: 1
@@ -381,7 +373,6 @@ module:
           - proto/dwtools/Tools.s
           - proto/dwtools/abase
           - proto/dwtools/amid
-          - proto/dwtools/amid/Tools.s
           - proto/dwtools/amid/starter
           - proto/dwtools/amid/starter/StarterConfigBegin.raw.s
           - proto/dwtools/amid/starter/StarterInitBegin.raw.s
@@ -393,13 +384,6 @@ module:
           - proto/dwtools/amid/starter.test
           - proto/dwtools/amid/starter.test/Starter.test.s
           - proto/dwtools/atop
-          - proto/tmp
-          - proto/tmp/dwtools
-          - proto/tmp/dwtools/amid
-          - proto/tmp/dwtools/amid/amapping
-          - proto/tmp/dwtools/amid/amapping/.DS_Store
-          - proto/tmp/dwtools/amid/bclass
-          - proto/tmp/dwtools/amid/bclass/.DS_Store
         criterion:
           default: 1
           debug: 1
