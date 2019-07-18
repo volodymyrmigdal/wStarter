@@ -215,8 +215,8 @@ function fromHardDriveRead( o )
 
   let reflect = self.hubFileProvider.filesReflector
   ({
-    srcFilter : { prefixPath : o.srcPath, basePath : srcLocalPath },
-    dstFilter : { prefixPath : 'src:///' },
+    src : { prefixPath : o.srcPath, basePath : srcLocalPath },
+    dst : { prefixPath : 'src:///' },
     filter :
     {
       ends : [ '.js', '.s', '.css', '.less', '.jslike' ],
@@ -258,8 +258,8 @@ function toHardDriveWrite( o )
 
   let reflect = self.hubFileProvider.filesReflector
   ({
-    srcFilter : { basePath : _.uri.join( 'dst://', '/' ), prefixPath : _.uri.join( 'dst://', '/' ) },
-    dstFilter : { prefixPath : _.uri.join( 'file://', o.dstPath ), basePath : _.uri.join( 'file://', o.dstPath ) },
+    src : { basePath : _.uri.join( 'dst://', '/' ), prefixPath : _.uri.join( 'dst://', '/' ) },
+    dst : { prefixPath : _.uri.join( 'file://', o.dstPath ), basePath : _.uri.join( 'file://', o.dstPath ) },
     mandatory : 1,
   });
 
@@ -430,12 +430,12 @@ function filesMapMake()
   let reflect = self.hubFileProvider.filesReflector
   ({
     // reflectMap : self.useFile || '**',
-    dstFilter :
+    dst :
     {
       prefixPath : _.uri.join( self.inPath, 'fmap://' ),
       basePath : _.uri.join( self.inPath, 'fmap://' )
     },
-    srcFilter :
+    src :
     {
       prefixPath : _.uri.join(  self.inPath, 'src://', ),
       basePath : _.uri.join(  self.inPath, 'src://', ),
