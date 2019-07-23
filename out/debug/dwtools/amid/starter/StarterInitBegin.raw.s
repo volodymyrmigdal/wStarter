@@ -14,7 +14,7 @@ _global._global_ = _wasGlobal;
 let _starterGlobal_ = _realGlobal._global_ = Object.create( _wasGlobal );
 _realGlobal._starterGlobal_ = _starterGlobal_;
 _starterGlobal_.WTOOLS_PRIVATE = 1;
-_starterGlobal_.WTOOLS_PRIVATE_CONSEQUENCE = 1;
+_starterGlobal_.__GLOBAL_PRIVATE_CONSEQUENCE__ = 1;
 
 if( _global_._starterGlobal_ !== _starterGlobal_ )
 throw 'Something wrong with global';
