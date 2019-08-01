@@ -36,7 +36,7 @@ let _ = wTools;
 let Parent = null;
 let Self = function wStarterMaker( o )
 {
-  return _.instanceConstructor( Self, this, arguments );
+  return _.workpiece.construct( Self, this, arguments );
 }
 
 Self.shortName = 'StarterMaker';
@@ -51,7 +51,7 @@ function init( o )
 
   self.logger = new _.Logger({ output : logger });
 
-  _.instanceInit( self );
+  _.workpiece.initFields( self );
   Object.preventExtensions( self );
 
   if( o )
@@ -276,7 +276,7 @@ toHardDriveWrite.defaults =
 
 
 /**
- * @summary Generates source code wrapper for a single file. 
+ * @summary Generates source code wrapper for a single file.
  * @description Wrapper helps to load( require ) source file on a client side.
  * @param {Object} o Options map.
  * @param {String} o.prefixPath Prefix for file path
@@ -740,7 +740,7 @@ function _verbosityChange()
 
  * @property {Boolean} offline=0
  * @property {Number} verbosity=2
-  
+
  * @memberof module:Tools/mid/Starter.wStarterMaker
  */
 
