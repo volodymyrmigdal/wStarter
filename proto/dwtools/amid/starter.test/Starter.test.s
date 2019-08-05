@@ -5,24 +5,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  if( typeof _global_ === 'undefined' || !_global_.wBase )
-  {
-    var toolsPath = '../../../dwtools/Base.s';
-    var toolsExternal = 0;
-    try
-    {
-      toolsPath = require.resolve( toolsPath );
-    }
-    catch( err )
-    {
-      toolsExternal = 1;
-      require( 'wTools' );
-    }
-    if( !toolsExternal )
-    require( toolsPath );
-  }
-
-  var _ = _global_.wTools;
+  let _ = require( '../../Tools.s' );
 
   _.include( 'wTesting' );
 
@@ -128,7 +111,7 @@ var Self =
 
   tests :
   {
-    trivial : trivial,
+    trivial,
   }
 
 }

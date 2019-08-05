@@ -14,7 +14,10 @@
 if( typeof module !== 'undefined' )
 {
 
-  let _ = require( '../../Tools.s' );
+  // let _ = require( '../../Tools.s' );
+  // require( './light/StarterMaker.s' );
+
+  let _ = wTools;
 
   _.include( 'wCopyable' );
   _.include( 'wVerbal' );
