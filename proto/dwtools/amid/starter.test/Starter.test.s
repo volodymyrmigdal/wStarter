@@ -1,4 +1,4 @@
-( function _Starter_test_s_() {
+( function _StarterLegacy_test_s_() {
 
 'use strict';
 
@@ -9,7 +9,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
 
-  require( '../Starter/StarterMaker.s' );
+  require( '../starter/IncludeTop.s' );
 
 }
 
@@ -105,7 +105,7 @@ trivial.timeOut = 60000;
 var Self =
 {
 
-  name : 'Tools/mid/Starter',
+  name : 'Tools/mid/StarterLegacy',
   silencing : 1,
   enabled : 1,
 

@@ -1,95 +1,185 @@
-( function _StarterServer_ss_() {
+( function _Servlet_ss_() {
 
 'use strict';
 
-if( typeof module !== 'undefined' )
+let Express = null;
+let ExpressLogger = null;
+let ExpressDir = null;
+let _ = wTools;
+let Parent = null;
+let Self = function wStarterServlet( o )
 {
-
-  let _ = require( '../../../Tools.s' );
-  var _ = _global_.wTools;
-  _.include( 'wFiles' );
-  require( './StarterMaker.s' );
-
+  return _.workpiece.construct( Self, this, arguments );
 }
 
-var _ = wTools;
-var Self = _.starter = _.starter || Object.create( null );
+Self.shortName = 'Servlet';
 
 // --
 // routine
 // --
 
-function serverStart()
+function unform()
 {
-  var self = this;
-  var url;
+  let servlet = this;
 
-  _.assert( self.Self,'self should be have { Copyable } mixin' );
-  _.assert( self.name !== undefined,'self needs field { name }' );
-  _.assert( self.port !== undefined,'self needs field { port }' );
-  _.assert( self.usingHttps !== undefined,'self needs field { usingHttps }' );
-  _.assert( self.allowCrossDomain !== undefined,'self needs field { allowCrossDomain }' );
-  _.assert( self.verbosity !== undefined,'self needs field { verbosity }' );
-  _.assert( self.server !== undefined,'self needs field { server }' );
-  _.assert( self.express !== undefined,'self needs field { express }' );
-  _.assert( arguments.length === 0,'Expects none argument' );
+  _.assert( 0, 'not implemented' );
 
-  if( !Express )
-  Express = require( 'express' );
+/*
+qqq : implement please
+*/
 
-  if( !self.port )
-  return;
-
-  if( !self.express )
-  self.express = Express();
-
-  if( self.server )
-  return;
-
-  if( self.usingHttps )
-  {
-
-    if( !Https )
-    Https = require( 'https' );
-
-    url = 'https://127.0.0.1:' + self.port;
-
-    var httpsOptions = self.httpsOptions;
-    if( !httpsOptions )
-    {
-      _.assert( self.certificatePath );
-
-      httpsOptions = {};
-      httpsOptions.key = _.fileProvider.fileRead( self.certificatePath + '.rsa' );
-      httpsOptions.cert = _.fileProvider.fileRead( self.certificatePath + '.crt' );
-
-    }
-
-    self.server = Https.createServer( httpsOptions, self.express ).listen( self.port );
-
-  }
-  else
-  {
-
-    if( !Http )
-    Http = require( 'http' );
-
-    url = 'http://127.0.0.1:' + self.port;
-    self.server = Http.createServer( self.express ).listen( self.port );
-
-  }
-
-  logger.log( self.name, ':', 'express.locals :','\n' + _.toStr( self.express.locals,{ wrap : 0 } ) );
-  logger.log( self.name, ':', 'Serving',self.nickName,'on',self.port,'port..','\n' )
-
-  return url;
 }
 
 //
 
-function staticRequestHandler_functor( gen )
+function form()
 {
-  var gen = _.routineOptions( staticRequestHandler_functor, arguments );
+  let servlet = this;
+  let starter = servlet.starter;
+
+  if( starter.servletsMap[ servlet.servePath ] && starter.servletsMap[ servlet.servePath ] !== servlet )
+  throw _.err( 'Servlet at ' + servlet.servePath + ' is already launched' );
+
+  starter.servletsMap[ servlet.servePath ] = servlet;
+
+  let parsedServerPath = _.servlet.serverPathParse({ serverPath : servlet.serverPath });
+  servlet.serverPath = parsedServerPath.full;
+  _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
+
+  /* - */
+
+  if( !servlet.express )
+  {
+    if( !Express )
+    Express = require( 'express' );
+    servlet.express = Express();
+  }
+
+  let express = servlet.express;
+
+  express.use( ( request, response, next ) => servlet.requestPreHandler({ request, response, next }) );
+
+  if( Config.debug && starter.verbosity )
+  {
+    if( !ExpressLogger )
+    ExpressLogger = require( 'morgan' );
+    express.use( ExpressLogger( 'dev' ) );
+  }
+
+  express.use( ( request, response, next ) => servlet.requestMidHandler({ request, response, next }) );
+
+  servlet._requsetScriptWrapHandler = servlet.ScriptWrap_functor
+  ({
+    filterPath : '/',
+    rootPath : servlet.rootPath,
+    verbosity : servlet.verbosity,
+    incudingExts : servlet.incudingExts,
+    excludingExts : servlet.excludingExts,
+    starterMaker : starter.maker,
+  });
+  express.use( ( request, response, next ) => servlet._requsetScriptWrapHandler({ request, response, next }) );
+
+  express.use( parsedServerPath.localWebPath, Express.static( _.path.nativize( servlet.rootPath ) ) );
+
+  if( servlet.servingDirs )
+  {
+    if( !ExpressDir )
+    ExpressDir = require( 'serve-index' );
+    let directoryOptions =
+    {
+      'icons' : true,
+      'hidden' : true,
+    }
+    express.use( parsedServerPath.localWebPath, ExpressDir( _.path.nativize( servlet.rootPath ), directoryOptions ) );
+  }
+
+  express.use( ( request, response, next ) => servlet.requestPostHandler({ request, response, next }) );
+
+  let o3 = _.servlet.controlExpressStart
+  ({
+    name : servlet.nickName,
+    verbosity : starter.verbosity - 1,
+    server : servlet.server,
+    express : servlet.express,
+    serverPath : servlet.serverPath,
+  });
+
+  servlet.server = o3.server;
+  servlet.express = o3.express;
+  servlet.serverPath = o3.serverPath;
+
+  /* - */
+
+  return servlet;
+}
+
+//
+
+function requestPreHandler( o )
+{
+  let servlet = this;
+
+  _.servlet.controlRequestPreHandle
+  ({
+    allowCrossDomain : servlet.allowCrossDomain,
+    verbosity : servlet.verbosity,
+    request : o.request,
+    response : o.response,
+    next : o.next,
+  });
+
+  o.next();
+}
+
+//
+
+function requestMidHandler( o )
+{
+  let servlet = this;
+
+  // debugger;
+  // let filePath = _.uri.reroot( servlet.rootPath, o.request.originalUrl );
+  // _.assert( _.uri.isLocal( filePath ) );
+
+  o.next();
+}
+
+//
+
+function requestPostHandler( o )
+{
+  let servlet = this;
+
+  debugger;
+
+  _.servlet.controlRequestPostHandle
+  ({
+    verbosity : servlet.verbosity,
+    request : o.request,
+    response : o.response,
+    next : o.next,
+  });
+
+  o.next();
+}
+
+//
+
+function _verbosityGet()
+{
+  let servlet = this;
+  if( !servlet.starter )
+  return 9;
+  return servlet.starter.verbosity;
+}
+
+// --
+//
+// --
+
+function ScriptWrap_functor( gen )
+{
+  gen = _.routineOptions( ScriptWrap_functor, arguments );
 
   if( gen.starter === null )
   gen.starter = new _.Starter();
@@ -100,71 +190,93 @@ function staticRequestHandler_functor( gen )
   if( gen.excludingExts === null )
   gen.excludingExts = [ 'raw', 'usefile' ];
 
-  _.assert( _.strDefined( gen.basePath ) );
+  _.assert( _.strDefined( gen.rootPath ) );
 
-  var fileProvider = _.FileProvider.HardDrive({ encoding : 'utf8' });
-  function staticRequestHandler( request, response, next )
+  let ware;
+  let fileProvider = _.FileProvider.HardDrive({ encoding : 'utf8' });
+  function scriptWrap( o )
   {
 
-    var url = request.url;
-    var exts = _.uri.exts( url );
+    _.assertRoutineOptions( scriptWrap, arguments );
 
-    if( !_.strBegins( url, gen.filterPath ) )
-    return next();
+    let uri = o.request.url;
+    let exts = _.uri.exts( uri );
 
-    if( _.arrayHasAny( gen.incudingExts, exts ) )
-    response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
-    else
-    return next();
+    if( uri === '/.starter.raw.js' )
+    {
+      if( !ware )
+      {
+        let splits = gen.starterMaker.filesSplitsFor({ platform : 'browser' });
+        debugger;
+        ware = splits.prefix + splits.ware + splits.browser + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
+      }
+      o.response.write( ware );
+      o.response.end();
+      return null;
+    }
 
-    var isExcluded = _.arrayHasAny( gen.excludingExts, exts );
+    if( !_.strBegins( uri, gen.filterPath ) )
+    return o.next();
 
-    if( isExcluded )
-    return next();
+    if( !_.arrayHasAny( gen.incudingExts, exts ) )
+    return o.next();
 
-    var urlParsed = _.uri.parse( url );
-    var filePath = urlParsed.longPath;
-    var dirPath = _.path.dir( filePath );
-    var path = _.path.normalize( _.path.reroot( gen.basePath, filePath ) );
-    var shortName = _.strVarNameFor( _.path.fullName( filePath ) );
+    if( _.arrayHasAny( gen.excludingExts, exts ) )
+    return o.next();
 
-    var fixes = gen.starter.fixesFor
+    let uriParsed = _.uri.parse( uri );
+    let filePath = _.path.normalize( _.path.reroot( gen.rootPath, uriParsed.longPath ) );
+    let shortName = _.strVarNameFor( _.path.fullName( filePath ) );
+
+    if( !_.fileProvider.isTerminal( filePath ) )
+    return o.next();
+
+    debugger;
+
+    let splits = gen.starterMaker.fileSplitsFor
     ({
+      basePath : gen.rootPath,
       filePath : filePath,
+      running : 1,
     });
 
-    var stream = fileProvider.streamRead
+    let stream = fileProvider.streamRead
     ({
-      filePath : path,
+      filePath : filePath,
       throwing : 0,
     });
 
     if( !stream )
-    return next();
+    return o.next();
 
-    var state = 0;
+    o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
+
+    let state = 0;
 
     if( gen.verbosity )
-    console.log( '- staticRequestHandler', url, 'at', path );
+    console.log( ' . scriptWrap', uri, 'at', filePath );
 
     stream.on( 'open', function()
     {
       state = 1;
-      response.write( fixes.prefix );
+      o.response.write( splits.prefix1 );
+      o.response.write( splits.prefix2 );
     });
 
     stream.on( 'data', function( d )
     {
       state = 1;
-      response.write( d );
+      o.response.write( d );
     });
 
     stream.on( 'end', function()
     {
       if( state < 2 )
       {
-        response.write( fixes.postfix );
-        response.end();
+        o.response.write( splits.postfix2 );
+        o.response.write( splits.ware );
+        o.response.write( splits.postfix1 );
+        o.response.end();
       }
       state = 2;
     });
@@ -173,47 +285,125 @@ function staticRequestHandler_functor( gen )
     {
       if( !state )
       {
-        next();
+        o.next();
       }
       else
       {
         err = _.errLogOnce( err );
-        response.write( err.toString() );
-        response.end();
+        o.response.write( err.toString() );
+        o.response.end();
       }
       state = 2;
     });
 
   }
 
-  return staticRequestHandler;
+  scriptWrap.defaults =
+  {
+    request : null,
+    response : null,
+    next : null,
+  }
+
+  return scriptWrap;
 }
 
-var defaults = staticRequestHandler_functor.defaults = Object.create( null );
+let defaults = ScriptWrap_functor.defaults = Object.create( null );
 
-defaults.basePath = null;
+defaults.rootPath = null;
 defaults.filterPath = '/';
 defaults.verbosity = 0;
 defaults.incudingExts = null;
 defaults.excludingExts = null;
-defaults.starter = null;
+defaults.starterMaker = null;
 
 // --
-// declare
+// relationships
 // --
 
-var Proto =
+let Composes =
 {
 
-  staticRequestHandler_functor : staticRequestHandler_functor,
+  servingDirs : 0,
+  serverPath : 'http://127.0.0.1:5000',
+  rootPath : null,
+
+  incudingExts : _.define.own([ 's', 'js', 'ss' ]),
+  excludingExts : _.define.own([ 'raw', 'usefile' ]),
 
 }
 
-_.mapExtend( Self, Proto );
+let Associates =
+{
+  starter : null,
+  server : null,
+  express : null,
+}
+
+let Restricts =
+{
+  _requsetScriptWrapHandler : null,
+}
+
+let Statics =
+{
+  ScriptWrap_functor,
+}
+
+let Accessor =
+{
+  verbosity : { getter : _verbosityGet, readOnly : 1 }
+}
+
+// --
+// prototype
+// --
+
+let Proto =
+{
+
+  unform,
+  form,
+
+  requestPreHandler,
+  requestMidHandler,
+  requestPostHandler,
+
+  _verbosityGet,
+
+  ScriptWrap_functor,
+
+  /* */
+
+  Composes,
+  Associates,
+  Restricts,
+  Statics,
+  Accessor,
+
+}
 
 //
 
-if( typeof module !== 'undefined' )
+_.classDeclare
+({
+  cls : Self,
+  parent : Parent,
+  extend : Proto,
+});
+
+_.Copyable.mixin( Self );
+
+//
+
+if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
+
+_.staticDeclare
+({
+  prototype : _.Starter.prototype,
+  name : Self.shortName,
+  value : Self,
+});
 
 })();

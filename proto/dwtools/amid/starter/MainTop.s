@@ -10,6 +10,11 @@ if( typeof module !== 'undefined' )
 
 }
 
+/*
+cls && local-starter .html.for builder/include/dwtools/amid/starter/processes.experiment/**
+cls && local-starter .serve .
+*/
+
 //
 
 let _ = wTools;
@@ -48,7 +53,16 @@ function exec()
   let appArgs = _.appArgs();
   let ca = starter.commandsMake();
 
-  return ca.appArgsPerform({ appArgs : appArgs });
+  return _.Consequence
+  .Try( () =>
+  {
+    return ca.appArgsPerform({ appArgs });
+  })
+  .catch( ( err ) =>
+  {
+    _.appExitCode( -1 );
+    return _.errLogOnce( err );
+  });
 }
 
 //
@@ -68,6 +82,8 @@ function commandsMake()
     'help' :              { e : _.routineJoin( starter, starter.commandHelp ),                h : 'Get help' },
     'imply' :             { e : _.routineJoin( starter, starter.commandImply ),               h : 'Change state or imply value of a variable' },
     'html for' :          { e : _.routineJoin( starter, starter.commandHtmlFor ),             h : 'Generate HTML for specified files' },
+    'files wrap' :        { e : _.routineJoin( starter, starter.commandFilesWrap ),           h : 'Wrap script files found at specified directory' },
+    'serve' :             { e : _.routineJoin( starter, starter.commandServe ),               h : 'Run server at specified directory' },
   }
 
   let ca = _.CommandsAggregator
@@ -136,13 +152,67 @@ function commandHtmlFor( e )
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.srcPath = o2.srcPath || request.subject;
-  o2.dstPath = o2.dstPath || path.current();
-  o2.basePath = o2.basePath || path.current();
 
-  debugger;
   let html = starter.htmlFor( o2 );
-  debugger;
-  console.log( html );
+
+  // logger.log( html );
+  if( starter.verbosity )
+  logger.log( ' + html saved to ' + _.color.strFormat( o2.dstPath, 'path' ) )
+
+  return null;
+}
+
+//
+
+function commandFilesWrap( e )
+{
+  let starter = this.form();
+  let ca = e.ca;
+  let fileProvider = starter.fileProvider;
+  let path = starter.fileProvider.path;
+  let logger = starter.logger;
+  let request = _.strRequestParse( e.argument );
+
+  let o2 = _.mapExtend( null, e.propertiesMap );
+  o2.srcPath = o2.srcPath || request.subject;
+
+  if( !o2.srcPath )
+  throw _.errBriefly
+  (
+    'Please specify where to look for script file.\nFor example: '
+    + _.color.strFormat( 'starter .files.wrap ./proto', 'code' )
+  );
+
+  let r = starter.filesWrap( o2 );
+
+  if( starter.verbosity )
+  logger.log( ' + filesWrap to ' + _.color.strFormat( o2.dstPath, 'path' ) )
+
+  return r;
+}
+
+//
+
+function commandServe( e )
+{
+  let starter = this.form();
+  let ca = e.ca;
+  let fileProvider = starter.fileProvider;
+  let path = starter.fileProvider.path;
+  let logger = starter.logger;
+  let request = _.strRequestParse( e.argument );
+
+  let o2 = _.mapExtend( null, e.propertiesMap );
+  o2.rootPath = o2.rootPath || request.subject;
+
+  if( !o2.rootPath )
+  throw _.errBriefly
+  (
+    'Please specify what directory to serve.\nFor example: '
+    + _.color.strFormat( 'starter .serve ./proto', 'code' )
+  );
+
+  starter.serve( o2 );
 
   return null;
 }
@@ -192,6 +262,8 @@ let Extend =
   commandHelp,
   commandImply,
   commandHtmlFor,
+  commandFilesWrap,
+  commandServe,
 
   // relations
 

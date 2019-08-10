@@ -46,27 +46,29 @@ function fileSplitsFor( o )
   let fileName = _.strVarNameFor( _.path.fullName( o.filePath ) );
   let fileNameNaked = fileName + '_naked';
 
-  let prefix1 = `( function ${fileName}() { // == begin of file ${fileName}\n`;
+  let prefix1 = `/* */  /* begin of file ${fileName} */ ( function ${fileName}() { `;
+  let prefix2 = `function ${fileNameNaked}() { `;
 
-  let prefix2 = `function ${fileNameNaked}() {\n`;
-
-  let postfix2 = `};`;
+  let postfix2 = `\n/* */    };`;
 
   let ware =
 `
-
-  let _filePath_ = _starter_._pathResolve( _libraryDirPath_, '${relativeFilePath}' );
-  let _dirPath_ = _starter_._pathResolve( _libraryDirPath_, '${relativeDirPath}' );
-  let __filename = _filePath_;
-  let __dirname = _dirPath_;
-  let module = _starter_._fileCreate( _filePath_, _dirPath_, ${fileNameNaked} );
-  let require = module.include;
-  let include = module.include;
+/* */
+/* */  let _filePath_ = _starter_._pathResolve( _libraryDirPath_, '${relativeFilePath}' );
+/* */  let _dirPath_ = _starter_._pathResolve( _libraryDirPath_, '${relativeDirPath}' );
+/* */  let __filename = _filePath_;
+/* */  let __dirname = _dirPath_;
+/* */  let module = _starter_._fileCreate( _filePath_, _dirPath_, ${fileNameNaked} );
+/* */  let require = module.include;
+/* */  let include = module.include;
 `
+
+  if( o.running )
+  ware += `${fileNameNaked}();`;
 
   let postfix1 =
 `
-})(); // == end of file ${fileName}
+/* */  /* end of file ${fileName} */ })();
 `
 
   let result = Object.create( null );
@@ -82,6 +84,7 @@ fileSplitsFor.defaults =
 {
   filePath : null,
   basePath : null,
+  running : 0,
 }
 
 //
@@ -96,8 +99,8 @@ function fileWrap( o )
   if( o.removingShellPrologue )
   o.fileData = self.fileRemoveShellPrologue( o.fileData );
 
-  let fixes = self.fileSplitsFor({ filePath : o.filePath, basePath : o.basePath });
-  let result = fixes.prefix1 + fixes.prefix2 + o.fileData + fixes.postfix2 + fixes.ware + fixes.postfix1;
+  let splits = self.fileSplitsFor({ filePath : o.filePath, basePath : o.basePath });
+  let result = splits.prefix1 + splits.prefix2 + o.fileData + splits.postfix2 + splits.ware + splits.postfix1;
   return result;
 }
 
@@ -161,13 +164,17 @@ function filesSplitsFor( o )
   let r = Object.create( null );
   r.prefix = '';
   r.ware = '';
+  r.browser = '';
+  r.starter = '';
+  r.env = '';
   r.externalBefore = '';
   r.entry = '';
   r.externalAfter = '';
   r.postfix = '';
   Object.preventExtensions( r );
 
-  _.routineOptions( filesSplitsFor, arguments );
+  o = _.routineOptions( filesSplitsFor, arguments );
+  _.assert( _.arrayHas( [ 'nodejs', 'browser' ], o.platform ) );
 
   if( o.entryPath )
   {
@@ -177,24 +184,20 @@ function filesSplitsFor( o )
     o.entryPath = _.path.s.join( o.basePath, o.entryPath );
   }
 
+  /* prefix */
+
   r.prefix =
 `
-( function _library_() { // begin of library
+/* */  /* begin of library */ ( function _library_() {
 `
+
+  /* ware */
 
   r.ware =
 `
-( function _StarterWare_() { // begin of starterware
+/* */  /* begin of ware */ ( function _StarterWare_() {
 
-  // --
-  // own
-  // --
-
-  ${_.routineParse( self.StarterWare.begin ).bodyUnwrapped};
-
-  // --
-  // imported
-  // --
+  ${_.routineParse( self.WareCode.begin ).bodyUnwrapped};
 
   ${gr( 'strIs' )}
   ${gr( '_strBeginOf' )}
@@ -208,29 +211,76 @@ function filesSplitsFor( o )
   ${gr( 'regexpIs' )}
   ${gr( 'longIs' )}
   ${gr( 'primitiveIs' )}
+
   ${pr( 'refine' )}
   ${pr( '_normalize' )}
   ${pr( 'canonizeTolerant' )}
 
   ${pfs()}
 
-  // --
-  // declare
-  // --
+  ${_.routineParse( self.WareCode.end ).bodyUnwrapped};
 
-  ${_.routineParse( self.StarterWare.end ).bodyUnwrapped};
+/* */  /* end of ware */ })();
 
-})(); // end of starterware
+`
+
+  /* browser */
+
+  r.browser = '';
+  if( o.platform === 'browser' )
+  r.browser =
+`
+/* */  /* end of browser */ ( function _Browser_() {
+
+  ${_.routineParse( self.BrowserCode.begin ).bodyUnwrapped};
+  ${_.routineParse( self.BrowserCode.end ).bodyUnwrapped};
+
+/* */  /* end of browser */ })();
+
+`
+
+  /* starter */
+
+  r.starter =
+`
+/* */  /* begin of starter */ ( function _Starter_() {
+
+  ${_.routineParse( self.StarterCode.begin ).bodyUnwrapped};
+  ${_.routineParse( self.StarterCode.end ).bodyUnwrapped};
+
+/* */  /* end of starter */ })();
+
+`
+
+  /* env */
+
+  r.env = ``;
+
+  if( o.platform === 'browser' )
+  r.env +=
+`
+let __filename = '/index.html'; // xxx
+let __dirname = '/'; // xxx
+`
+
+  r.env +=
+`
 
 let _libraryFilePath_ = _starter_.path.canonizeTolerant( __filename );
 let _libraryDirPath_ = _starter_.path.canonizeTolerant( __dirname );
 
 `
 
-  r.postfix =
+  if( o.platform === 'browser' )
+  r.env +=
 `
-})() // == end of library
+_global_._libraryFilePath_ = _starter_.path.canonizeTolerant( __filename );
+_global_._libraryDirPath_ = _starter_.path.canonizeTolerant( __dirname );
 `
+
+  /* code */
+
+  /* ... code goes here ... */
 
   /* entry */
 
@@ -261,6 +311,13 @@ let _libraryDirPath_ = _starter_.path.canonizeTolerant( __dirname );
     externalPath = _.path.dot( _.path.relative( _.path.dir( o.outputPath ), externalPath ) );
     r.externalAfter += `_starter_._fileInclude( _libraryDirPath_, '${externalPath}' );\n`;
   });
+
+  /* postfix */
+
+  r.postfix =
+`
+/* */  /* end of library */ })()
+`
 
   /* */
 
@@ -314,6 +371,7 @@ filesSplitsFor.defaults =
   outputPath : null,
   externalBeforePath : null,
   externalAfterPath : null,
+  platform : 'nodejs',
 }
 
 //
@@ -342,30 +400,25 @@ function filesWrap( o )
 
   let result = _.mapVals( o.filesMap ).join( '\n' );
 
-  let fixes = self.filesSplitsFor
+  let splits = self.filesSplitsFor
   ({
     entryPath : o.entryPath,
     basePath : o.basePath,
     externalBeforePath : o.externalBeforePath,
     externalAfterPath : o.externalAfterPath,
     outputPath : o.outputPath,
+    platform : o.platform,
   });
 
-  result = fixes.prefix + fixes.ware + result + fixes.externalBefore + fixes.entry + fixes.externalAfter + fixes.postfix;
+  result = splits.prefix + splits.ware + splits.browser + splits.starter + splits.env + result + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
 
   return result;
 }
 
-filesWrap.defaults =
-{
-  outputPath : null,
-  entryPath : null,
-  basePath : null,
-  externalBeforePath : null,
-  externalAfterPath : null,
-  filesMap : null,
-  removingShellPrologue : null,
-}
+var defaults = filesWrap.defaults = Object.create( filesSplitsFor.defaults );
+
+defaults.filesMap = null;
+defaults.removingShellPrologue = null;
 
 // --
 // etc
@@ -378,6 +431,11 @@ function htmlSplitsFor( o )
 
   _.routineOptions( htmlSplitsFor, arguments );
 
+  if( o.starterIncluding === null )
+  o.starterIncluding = htmlSplitsFor.defaults.starterIncluding;
+  _.assert( _.arrayHas( [ 'include', 'inline', 0, false ], o.starterIncluding ) );
+  _.assert( o.starterIncluding !== 'inline', 'not implemented' );
+
   r.prefix =
 `
 <!DOCTYPE html>
@@ -385,7 +443,7 @@ function htmlSplitsFor( o )
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Title</title>
+  <title>${o.title}</title>
 `
 
   r.postfix =
@@ -393,7 +451,7 @@ function htmlSplitsFor( o )
 </head>
 <body>
   <script>
-    //require( 'sample/simple1.js' )
+    //require( '.' )
   </script>
 </body>
 </html>
@@ -406,6 +464,9 @@ function htmlSplitsFor( o )
     r.scripts.push( split );
   }
 
+  if( o.starterIncluding === 'include' )
+  r.starter = `  <script src="/.starter.raw.js"></script>\n`;
+
   return r;
 }
 
@@ -413,6 +474,8 @@ htmlSplitsFor.defaults =
 {
   srcScriptsMap : null,
   dstPath : null,
+  starterIncluding : 'include',
+  title : 'Title',
 }
 
 //
@@ -425,7 +488,7 @@ function htmlFor( o )
 
   let splits = self.htmlSplitsFor( o );
 
-  let result = splits.prefix + splits.scripts.join( '\n' ) + splits.postfix;
+  let result = splits.prefix + splits.starter + splits.scripts.join( '\n' ) + splits.postfix;
 
   return result;
 }
@@ -445,7 +508,7 @@ htmlFor.defaults = Object.create( htmlSplitsFor.defaults );
 </head>
 <body>
   <script>
-    require( 'sample/simple1.js' )
+    require( '.' )
   </script>
 </body>
 </html>
@@ -473,7 +536,9 @@ let Restricts =
 
 let Statics =
 {
-  StarterWare : require( './StarterWare.s' ),
+  WareCode : require( './WareCode.s' ),
+  BrowserCode : require( './BrowserCode.s' ),
+  StarterCode : require( './StarterCode.s' ),
   InstanceDefaults,
 }
 
