@@ -38,11 +38,12 @@ function fileSplitsFor( o )
 {
   let self = this;
 
-  _.assert( arguments.length === 1 );
   _.routineOptions( fileSplitsFor, arguments );
+  _.assert( arguments.length === 1 );
+  _.assert( _.arrayHas( [ 'njs', 'browser' ], o.platform ) );
 
-  let relativeFilePath = _.path.relative( o.basePath, o.filePath );
-  let relativeDirPath = _.path.dir( relativeFilePath );
+  let relativeFilePath = _.path.dot( _.path.relative( o.basePath, o.filePath ) );
+  let relativeDirPath = _.path.dot( _.path.dir( relativeFilePath ) );
   let fileName = _.strVarNameFor( _.path.fullName( o.filePath ) );
   let fileNameNaked = fileName + '_naked';
 
@@ -51,20 +52,32 @@ function fileSplitsFor( o )
 
   let postfix2 = `\n/* */    };`;
 
-  let ware =
+  let ware = '\n';
+
+  if( o.platform === 'browser' )
+  ware +=
 `
-/* */
-/* */  let _filePath_ = _starter_._pathResolve( _libraryDirPath_, '${relativeFilePath}' );
-/* */  let _dirPath_ = _starter_._pathResolve( _libraryDirPath_, '${relativeDirPath}' );
+/* */  let _filePath_ = _starter_._pathResolve( null, '.', '${relativeFilePath}' );
+/* */  let _dirPath_ = _starter_._pathResolve( null, '.', '${relativeDirPath}' );
+`
+  else
+  ware +=
+`
+/* */  let _filePath_ = _starter_._pathResolve( null, _libraryDirPath_, '${relativeFilePath}' );
+/* */  let _dirPath_ = _starter_._pathResolve( null, _libraryDirPath_, '${relativeDirPath}' );
+`
+
+  ware +=
+`
 /* */  let __filename = _filePath_;
 /* */  let __dirname = _dirPath_;
-/* */  let module = _starter_._fileCreate( _filePath_, _dirPath_, ${fileNameNaked} );
+/* */  let module = _starter_._sourceMake( _filePath_, _dirPath_, ${fileNameNaked} );
 /* */  let require = module.include;
 /* */  let include = module.include;
 `
 
   if( o.running )
-  ware += `${fileNameNaked}();`;
+  ware += `/* */  ${fileNameNaked}();`;
 
   let postfix1 =
 `
@@ -85,6 +98,7 @@ fileSplitsFor.defaults =
   filePath : null,
   basePath : null,
   running : 0,
+  platform : 'njs',
 }
 
 //
@@ -143,6 +157,12 @@ fileWrapSimple.defaults =
 
 //
 
+/*
+qqq : investigate and add test case for such case
+  if( fileData.charCodeAt( 0 ) === 0xFEFF )
+  fileData = fileData.slice(1);
+*/
+
 function fileRemoveShellPrologue( fileData )
 {
   let self = this;
@@ -174,7 +194,7 @@ function filesSplitsFor( o )
   Object.preventExtensions( r );
 
   o = _.routineOptions( filesSplitsFor, arguments );
-  _.assert( _.arrayHas( [ 'nodejs', 'browser' ], o.platform ) );
+  _.assert( _.arrayHas( [ 'njs', 'browser' ], o.platform ) );
 
   if( o.entryPath )
   {
@@ -184,11 +204,14 @@ function filesSplitsFor( o )
     o.entryPath = _.path.s.join( o.basePath, o.entryPath );
   }
 
+  if( o.libraryName === null )
+  o.libraryName = _.strVarNameFor( _.path.fullName( o.outPath ) );
+
   /* prefix */
 
   r.prefix =
 `
-/* */  /* begin of library */ ( function _library_() {
+/* */  /* begin of library ${o.libraryName} */ ( function _library_() {
 `
 
   /* ware */
@@ -211,15 +234,35 @@ function filesSplitsFor( o )
   ${gr( 'regexpIs' )}
   ${gr( 'longIs' )}
   ${gr( 'primitiveIs' )}
+  ${gr( 'strBegins' )}
 
   ${pr( 'refine' )}
   ${pr( '_normalize' )}
+  ${pr( 'canonize' )}
   ${pr( 'canonizeTolerant' )}
+  ${pr( '_pathNativizeWindows' )}
+  ${pr( '_pathNativizePosix' )}
 
   ${pfs()}
 
   ${_.routineParse( self.WareCode.end ).bodyUnwrapped};
+  `
 
+  if( o.platform === 'browser' )
+  r.ware +=
+`
+  ${gr( 'objectIs' )}
+  ${gr( 'objectLike' )}
+  ${gr( 'arrayLike' )}
+  ${gr( 'arrayIs' )}
+  ${gr( 'argumentsArrayIs' )}
+  ${gr( 'routineIs' )}
+  ${gr( 'mapSupplementStructureless' )}
+  ${gr( 'routineOptions' )}
+`
+
+  r.ware +=
+`
 /* */  /* end of ware */ })();
 
 `
@@ -246,6 +289,9 @@ function filesSplitsFor( o )
 /* */  /* begin of starter */ ( function _Starter_() {
 
   ${_.routineParse( self.StarterCode.begin ).bodyUnwrapped};
+
+/* */  let _platform_ = '${o.platform}';
+
   ${_.routineParse( self.StarterCode.end ).bodyUnwrapped};
 
 /* */  /* end of starter */ })();
@@ -256,31 +302,28 @@ function filesSplitsFor( o )
 
   r.env = ``;
 
-  if( o.platform === 'browser' )
+  if( o.platform !== 'browser' )
   r.env +=
 `
-let __filename = '/index.html'; // xxx
-let __dirname = '/'; // xxx
-`
-
-  r.env +=
-`
-
-let _libraryFilePath_ = _starter_.path.canonizeTolerant( __filename );
-let _libraryDirPath_ = _starter_.path.canonizeTolerant( __dirname );
+/* */  let _libraryFilePath_ = _starter_.path.canonizeTolerant( __filename );
+/* */  let _libraryDirPath_ = _starter_.path.canonizeTolerant( __filename );
 
 `
 
   if( o.platform === 'browser' )
   r.env +=
 `
-_global_._libraryFilePath_ = _starter_.path.canonizeTolerant( __filename );
-_global_._libraryDirPath_ = _starter_.path.canonizeTolerant( __dirname );
+/* */  if( !_global_._libraryFilePath_ )
+/* */  _global_._libraryFilePath_ = '/Index.html';
+/* */  if( !_global_._libraryDirPath_ )
+/* */  _global_._libraryDirPath_ = '/';
 `
 
   /* code */
 
   /* ... code goes here ... */
+
+  debugger;
 
   /* entry */
 
@@ -289,18 +332,21 @@ _global_._libraryDirPath_ = _starter_.path.canonizeTolerant( __dirname );
   o.entryPath.forEach( ( entryPath ) =>
   {
     entryPath = _.path.relative( o.basePath, entryPath );
-    r.entry += `module.exports = _starter_._fileInclude( _libraryDirPath_, './${entryPath}' );\n`;
+    r.entry += `/* */  module.exports = _starter_._sourceInclude( null, _libraryDirPath_, './${entryPath}' );\n`;
   });
 
   /* external */
+
+  if( o.externalBeforePath || o.externalAfterPath )
+  _.assert( _.strIs( o.outPath ), 'Expects out path' );
 
   r.externalBefore = '\n';
   if( o.externalBeforePath )
   o.externalBeforePath.forEach( ( externalPath ) =>
   {
     if( _.path.isAbsolute( externalPath ) )
-    externalPath = _.path.dot( _.path.relative( _.path.dir( o.outputPath ), externalPath ) );
-    r.externalBefore += `_starter_._fileInclude( _libraryDirPath_, '${externalPath}' );\n`;
+    externalPath = _.path.dot( _.path.relative( _.path.dir( o.outPath ), externalPath ) );
+    r.externalBefore += `/* */  _starter_._sourceInclude( null, _libraryDirPath_, '${externalPath}' );\n`;
   });
 
   r.externalAfter = '\n';
@@ -308,15 +354,15 @@ _global_._libraryDirPath_ = _starter_.path.canonizeTolerant( __dirname );
   o.externalAfterPath.forEach( ( externalPath ) =>
   {
     if( _.path.isAbsolute( externalPath ) )
-    externalPath = _.path.dot( _.path.relative( _.path.dir( o.outputPath ), externalPath ) );
-    r.externalAfter += `_starter_._fileInclude( _libraryDirPath_, '${externalPath}' );\n`;
+    externalPath = _.path.dot( _.path.relative( _.path.dir( o.outPath ), externalPath ) );
+    r.externalAfter += `/* */  _starter_._sourceInclude( null, _libraryDirPath_, '${externalPath}' );\n`;
   });
 
   /* postfix */
 
   r.postfix =
 `
-/* */  /* end of library */ })()
+/* */  /* end of library ${o.libraryName} */ })()
 `
 
   /* */
@@ -368,10 +414,11 @@ filesSplitsFor.defaults =
 {
   basePath : null,
   entryPath : null,
-  outputPath : null,
+  outPath : null,
+  libraryName : null,
   externalBeforePath : null,
   externalAfterPath : null,
-  platform : 'nodejs',
+  platform : 'njs',
 }
 
 //
@@ -406,7 +453,7 @@ function filesWrap( o )
     basePath : o.basePath,
     externalBeforePath : o.externalBeforePath,
     externalAfterPath : o.externalAfterPath,
-    outputPath : o.outputPath,
+    outPath : o.outPath,
     platform : o.platform,
   });
 
@@ -446,6 +493,16 @@ function htmlSplitsFor( o )
   <title>${o.title}</title>
 `
 
+  if( o.starterIncluding === 'include' )
+  r.starter = `  <script src="/.starter.raw.js"></script>\n`;
+
+  r.scripts = [];
+  for( let filePath in o.srcScriptsMap )
+  {
+    let split = `  <script src="${filePath}"></script>`;
+    r.scripts.push( split );
+  }
+
   r.postfix =
 `
 </head>
@@ -457,23 +514,12 @@ function htmlSplitsFor( o )
 </html>
 `
 
-  r.scripts = [];
-  for( let filePath in o.srcScriptsMap )
-  {
-    let split = `  <script src="${filePath}"></script>`;
-    r.scripts.push( split );
-  }
-
-  if( o.starterIncluding === 'include' )
-  r.starter = `  <script src="/.starter.raw.js"></script>\n`;
-
   return r;
 }
 
 htmlSplitsFor.defaults =
 {
   srcScriptsMap : null,
-  dstPath : null,
   starterIncluding : 'include',
   title : 'Title',
 }

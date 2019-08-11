@@ -150,8 +150,6 @@ function requestPostHandler( o )
 {
   let servlet = this;
 
-  debugger;
-
   _.servlet.controlRequestPostHandle
   ({
     verbosity : servlet.verbosity,
@@ -199,14 +197,19 @@ function ScriptWrap_functor( gen )
 
     _.assertRoutineOptions( scriptWrap, arguments );
 
-    let uri = o.request.url;
-    let exts = _.uri.exts( uri );
+    let uri = _.uri.parseFull( o.request.url );
+    let exts = _.uri.exts( uri.localWebPath );
+    let query = uri.query ? _.strWebQueryParse( uri.query ) : Object.create( null );
+    if( query.running === undefined )
+    query.running = 1;
+    query.running = !!query.running;
 
-    if( uri === '/.starter.raw.js' )
+    debugger;
+    if( uri.localWebPath === '/.starter.raw.js' )
     {
       if( !ware )
       {
-        let splits = gen.starterMaker.filesSplitsFor({ platform : 'browser' });
+        let splits = gen.starterMaker.filesSplitsFor({ platform : 'browser', libraryName : 'browser' });
         debugger;
         ware = splits.prefix + splits.ware + splits.browser + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
       }
@@ -215,7 +218,7 @@ function ScriptWrap_functor( gen )
       return null;
     }
 
-    if( !_.strBegins( uri, gen.filterPath ) )
+    if( !_.strBegins( uri.localWebPath, gen.filterPath ) )
     return o.next();
 
     if( !_.arrayHasAny( gen.incudingExts, exts ) )
@@ -224,20 +227,22 @@ function ScriptWrap_functor( gen )
     if( _.arrayHasAny( gen.excludingExts, exts ) )
     return o.next();
 
-    let uriParsed = _.uri.parse( uri );
-    let filePath = _.path.normalize( _.path.reroot( gen.rootPath, uriParsed.longPath ) );
+    // let uriParsed = _.uri.parse( uri );
+    let filePath = _.path.normalize( _.path.reroot( gen.rootPath, uri.longPath ) );
     let shortName = _.strVarNameFor( _.path.fullName( filePath ) );
+
+    // let requestPath = _.uri.reroot( gen.rootPath, o.request.originalUrl );
+    // console.log( 'requestPath', requestPath, query.running );
 
     if( !_.fileProvider.isTerminal( filePath ) )
     return o.next();
-
-    debugger;
 
     let splits = gen.starterMaker.fileSplitsFor
     ({
       basePath : gen.rootPath,
       filePath : filePath,
-      running : 1,
+      running : query.running,
+      platform : 'browser',
     });
 
     let stream = fileProvider.streamRead
@@ -254,7 +259,7 @@ function ScriptWrap_functor( gen )
     let state = 0;
 
     if( gen.verbosity )
-    console.log( ' . scriptWrap', uri, 'at', filePath );
+    console.log( ' . scriptWrap', uri.localWebPath, 'of', filePath );
 
     stream.on( 'open', function()
     {

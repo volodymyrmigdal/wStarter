@@ -150,14 +150,18 @@ function commandHtmlFor( e )
   let logger = starter.logger;
   let request = _.strRequestParse( e.argument );
 
+  request.subject = _.strStructureParse({ src : request.subject, parsingArrays : 1, defaultStructure : 'string' })
+
   let o2 = _.mapExtend( null, e.propertiesMap );
-  o2.srcPath = o2.srcPath || request.subject;
+  o2.inPath = o2.inPath || request.subject;
 
   let html = starter.htmlFor( o2 );
 
-  // logger.log( html );
+  if( starter.verbosity > 3 )
+  logger.log( html );
+
   if( starter.verbosity )
-  logger.log( ' + html saved to ' + _.color.strFormat( o2.dstPath, 'path' ) )
+  logger.log( ' + html saved to ' + _.color.strFormat( o2.outPath, 'path' ) )
 
   return null;
 }
@@ -174,9 +178,9 @@ function commandFilesWrap( e )
   let request = _.strRequestParse( e.argument );
 
   let o2 = _.mapExtend( null, e.propertiesMap );
-  o2.srcPath = o2.srcPath || request.subject;
+  o2.inPath = o2.inPath || request.subject;
 
-  if( !o2.srcPath )
+  if( !o2.inPath )
   throw _.errBriefly
   (
     'Please specify where to look for script file.\nFor example: '
@@ -186,7 +190,7 @@ function commandFilesWrap( e )
   let r = starter.filesWrap( o2 );
 
   if( starter.verbosity )
-  logger.log( ' + filesWrap to ' + _.color.strFormat( o2.dstPath, 'path' ) )
+  logger.log( ' + filesWrap to ' + _.color.strFormat( o2.outPath, 'path' ) )
 
   return r;
 }

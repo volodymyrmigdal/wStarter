@@ -126,68 +126,95 @@ function filesWrap( o )
 
   /* */
 
-  o.basePath = path.resolve( o.basePath || '.' );
+  o.inPath = fileProvider.recordFilter( o.inPath );
+  o.inPath.basePathUse( o.basePath );
+  let basePath = o.inPath.basePath;
 
-  /* */
-
-  o.srcPath = fileProvider.recordFilter( o.srcPath );
-  o.srcPath.basePathUse( o.basePath );
-
-  o.srcPath = fileProvider.filesFind
+  o.inPath = fileProvider.filesFind
   ({
-    filter : o.srcPath,
+    filter : o.inPath,
     mode : 'distinct',
     outputFormat : 'absolute',
   });
 
   /* */
 
-  o.dstPath = o.dstPath || filesWrap.defaults.dstPath;
-  o.dstPath = path.resolve( o.basePath, o.dstPath );
+  o.outPath = o.outPath || filesWrap.defaults.outPath;
+  o.outPath = path.resolve( o.basePath, o.outPath );
 
   /* */
 
   if( o.entryPath )
   {
     o.entryPath = fileProvider.recordFilter( o.entryPath );
-    o.entryPath.basePath = o.entryPath.basePath || o.basePath;
+    o.entryPath.basePath = path.resolve( o.entryPath.basePath || o.basePath || '.' );
     o.entryPath = fileProvider.filesFind
     ({
       filter : o.entryPath,
       mode : 'distinct',
       outputFormat : 'absolute',
     });
-    debugger;
-    if( !_.arrayHasAll( o.srcPath, o.entryPath ) )
+    if( !_.arrayHasAll( o.inPath, o.entryPath ) )
     throw _.errBriefly
     (
       'List of source files should have all entry files' +
-      '\nSource files\n' + _.toStrNice( o.srcPath, { levels : 2 } ) +
+      '\nSource files\n' + _.toStrNice( o.inPath, { levels : 2 } ) +
       '\nEntry files\n' + _.toStrNice( o.entryPath, { levels : 2 } )
     );
   }
 
   /* */
 
-  let srcScriptsMap = Object.create( null );
-  o.srcPath = o.srcPath.map( ( srcPath ) =>
+  if( o.externalBeforePath )
   {
-    let srcRelativePath = srcPath;
-    srcScriptsMap[ srcRelativePath ] = fileProvider.fileRead( srcPath );
+    o.externalBeforePath = fileProvider.recordFilter( o.externalBeforePath );
+    o.externalBeforePath.basePath = path.resolve( o.externalBeforePath.basePath || o.basePath || '.' );
+    o.externalBeforePath = fileProvider.filesFind
+    ({
+      filter : o.externalBeforePath,
+      mode : 'distinct',
+      outputFormat : 'absolute',
+    });
+  }
+
+  /* */
+
+  if( o.externalAfterPath )
+  {
+    o.externalAfterPath = fileProvider.recordFilter( o.externalAfterPath );
+    o.externalAfterPath.basePath = path.resolve( o.externalAfterPath.basePath || o.basePath || '.' );
+    o.externalAfterPath = fileProvider.filesFind
+    ({
+      filter : o.externalAfterPath,
+      mode : 'distinct',
+      outputFormat : 'absolute',
+    });
+  }
+
+  /* */
+
+  o.basePath = path.resolve( basePath || '.' );
+
+  /* */
+
+  let srcScriptsMap = Object.create( null );
+  o.inPath = o.inPath.map( ( inPath ) =>
+  {
+    let srcRelativePath = inPath;
+    srcScriptsMap[ srcRelativePath ] = fileProvider.fileRead( inPath );
   });
 
   let o2 = _.mapExtend( null, o )
-  delete o2.srcPath;
-  delete o2.dstPath;
+  delete o2.inPath;
   o2.filesMap = srcScriptsMap;
   debugger;
   let data = maker.filesWrap( o2 )
 
-  _.sure( !fileProvider.isDir( o.dstPath ), () => 'Can rewrite directory ' + _.color.strFormat( o.dstPath, 'path' ) );
+  _.sure( !fileProvider.isDir( o.outPath ), () => 'Can rewrite directory ' + _.color.strFormat( o.outPath, 'path' ) );
 
   fileProvider.fileWrite
   ({
-    filePath : o.dstPath,
+    filePath : o.outPath,
     data : data,
   });
 
@@ -195,8 +222,8 @@ function filesWrap( o )
 }
 
 var defaults = filesWrap.defaults = _.mapBut( _.StarterMakerLight.prototype.filesWrap.defaults, { filesMap : null } );
-defaults.srcPath = null;
-defaults.dstPath = 'Index.js';
+defaults.inPath = null;
+defaults.outPath = 'Index.js';
 
 //
 
@@ -212,62 +239,54 @@ function htmlFor( o )
 
   /* */
 
-  o.basePath = path.resolve( o.basePath || '.' );
+  let basePath = o.basePath;
+  if( !_.arrayIs( o.inPath ) || o.inPath.length )
+  {
+    o.inPath = fileProvider.recordFilter( o.inPath );
+    o.inPath.basePathUse( o.basePath );
+    let basePath = o.inPath.basePath;
+    o.inPath = fileProvider.filesFind
+    ({
+      filter : o.inPath,
+      mode : 'distinct',
+      outputFormat : 'absolute',
+    });
+  }
 
   /* */
 
-  o.srcPath = fileProvider.recordFilter( o.srcPath );
-  o.srcPath.basePathUse( o.basePath );
-
-  o.srcPath = fileProvider.filesFind
-  ({
-    filter : o.srcPath,
-    mode : 'distinct',
-    outputFormat : 'absolute',
-  });
+  o.outPath = o.outPath || filesWrap.defaults.outPath;
+  o.outPath = path.resolve( o.basePath, o.outPath );
 
   /* */
 
-  o.dstPath = o.dstPath || filesWrap.defaults.dstPath;
-  o.dstPath = path.resolve( o.basePath, o.dstPath );
+  o.basePath = path.resolve( basePath || '.' );
 
   /* */
-
-  // debugger;
-  // o.basePath = o.basePath || path.current();
-  // o.dstPath = o.dstPath || htmlFor.defaults.dstPath;
-  // if( o.basePath )
-  // o.dstPath = path.resolve( o.basePath, o.dstPath );
-  //
-  // o.srcPath = fileProvider.recordFilter( o.srcPath );
-  // o.srcPath.basePath = o.srcPath.basePath || o.basePath;
-  // o.srcPath = fileProvider.filesFind
-  // ({
-  //   filter : o.srcPath,
-  //   mode : 'distinct',
-  //   outputFormat : 'absolute',
-  // });
 
   let srcScriptsMap = Object.create( null );
-  o.srcPath = o.srcPath.map( ( srcPath ) =>
+  o.inPath = o.inPath.map( ( inPath ) =>
   {
-    let srcRelativePath = srcPath;
+    let srcRelativePath = inPath;
     if( o.relative && o.basePath )
-    srcRelativePath = path.relative( o.basePath, srcRelativePath );
+    srcRelativePath = path.dot( path.relative( o.basePath, srcRelativePath ) );
     if( o.nativize )
     srcRelativePath = path.nativize( srcRelativePath );
-    srcScriptsMap[ srcRelativePath ] = fileProvider.fileRead( srcPath );
+    if( o.starterIncluding === 'inline' )
+    srcScriptsMap[ srcRelativePath ] = fileProvider.fileRead( inPath );
+    else
+    srcScriptsMap[ srcRelativePath ] = null;
   });
 
   let o2 = _.mapOnly( o, maker.htmlFor.defaults );
   o2.srcScriptsMap = srcScriptsMap;
   let data = maker.htmlFor( o2 );
 
-  _.sure( !fileProvider.isDir( o.dstPath ), () => 'Can rewrite directory ' + _.color.strFormat( o.dstPath, 'path' ) );
+  _.sure( !fileProvider.isDir( o.outPath ), () => 'Can rewrite directory ' + _.color.strFormat( o.outPath, 'path' ) );
 
   fileProvider.fileWrite
   ({
-    filePath : o.dstPath,
+    filePath : o.outPath,
     data : data,
   });
 
@@ -275,8 +294,8 @@ function htmlFor( o )
 }
 
 var defaults = htmlFor.defaults = _.mapBut( _.StarterMakerLight.prototype.htmlFor.defaults, { srcScriptsMap : null } );
-defaults.srcPath = null;
-defaults.dstPath = 'Index.html';
+defaults.inPath = null;
+defaults.outPath = 'Index.html';
 defaults.basePath = null;
 defaults.relative = 1;
 defaults.nativize = 0;

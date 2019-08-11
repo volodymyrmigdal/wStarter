@@ -18,6 +18,8 @@ let _ = wTools;
 function _Begin()
 {
 
+  'use strict';
+
   let _global = undefined;
   if( !_global && typeof Global !== 'undefined' && Global.Global === Global ) _global = Global;
   if( !_global && typeof global !== 'undefined' && global.global === global ) _global = global;
@@ -52,6 +54,41 @@ function _Begin()
 
   function assertRoutineOptions()
   {
+    return arguments[ 0 ];
+  }
+
+  //
+
+  function assertMapHasOnly()
+  {
+  }
+
+  //
+
+  function assertMapHasNoUndefine()
+  {
+  }
+
+  //
+
+  function dir( filePath )
+  {
+    let canonized = this.canonize( filePath );
+    let splits = canonized.split( '/' );
+    if( splits[ splits.length-1 ] )
+    splits.pop();
+    return splits.join( '/' );
+  }
+
+  //
+
+  function nativize()
+  {
+    if( _global.process && _global.process.platform === 'win32' )
+    this.nativize = this._pathNativizeWindows;
+    else
+    this.nativize = this._pathNativizePosix;
+    return this.nativize.apply( this, arguments );
   }
 
 }
@@ -68,12 +105,24 @@ function _End()
 
     assert,
     assertRoutineOptions,
+    assertMapHasOnly,
+    assertMapHasNoUndefine,
 
     path,
 
   }
 
   Object.assign( _starter_, Extend );
+
+  let ExtendPath =
+  {
+
+    dir,
+    nativize,
+
+  }
+
+  Object.assign( _starter_.path, ExtendPath );
 
 }
 
