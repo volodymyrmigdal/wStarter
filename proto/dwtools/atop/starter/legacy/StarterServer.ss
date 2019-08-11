@@ -7,8 +7,6 @@ if( typeof module !== 'undefined' )
 
   let _ = require( '../../../Tools.s' );
 
-  var _ = _global_.wTools;
-
   _.include( 'wFiles' );
   require( './StarterMaker.s' );
 
