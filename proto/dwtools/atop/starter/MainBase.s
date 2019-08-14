@@ -3,7 +3,7 @@
 'use strict';
 
 /**
- * ...
+ * Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.
   @module Tools/mid/Starter
 */
 
