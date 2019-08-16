@@ -507,9 +507,6 @@ function htmlSplitsFor( o )
 `
 </head>
 <body>
-  <script>
-    //require( '.' )
-  </script>
 </body>
 </html>
 `
