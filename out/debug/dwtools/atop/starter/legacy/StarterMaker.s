@@ -93,7 +93,7 @@ function form()
 
   _.assert( arguments.length === 0 );
   _.assert( !self.formed );
-  _.assert( !!self.hubFileProvider );
+  _.assert( !!self.system );
 
   self.formed = 1;
 
@@ -114,12 +114,12 @@ function form()
   // /* !!! temp fix, should be replaced but fixing pathsNormalize */
   // self.toolsPath = _.strReplaceAll( self.toolsPath, '//', '/' );
 
-  if( !self.hubFileProvider.providersWithProtocolMap.dst )
-  self.hubFileProvider.providerRegister( new _.FileProvider.Extract({ protocol : 'dst'/*, encoding : 'utf8'*/ }) );
+  if( !self.system.providersWithProtocolMap.dst )
+  self.system.providerRegister( new _.FileProvider.Extract({ protocol : 'dst'/*, encoding : 'utf8'*/ }) );
 
-  _.assert( !!self.hubFileProvider );
-  _.assert( !!self.hubFileProvider.providersWithProtocolMap.src );
-  _.assert( !!self.hubFileProvider.providersWithProtocolMap.dst );
+  _.assert( !!self.system );
+  _.assert( !!self.system.providersWithProtocolMap.src );
+  _.assert( !!self.system.providersWithProtocolMap.dst );
 
   _.assert( _.strIs( self.inPath ) );
   _.assert( _.strIs( self.outPath ) );
@@ -166,20 +166,20 @@ function fileProviderForm()
   let dstFileProvider = new _.FileProvider.Extract({ protocol : 'dst'  });
   let hdFileProvider = new _.FileProvider.HardDrive({});
 
-  self.hubFileProvider = self.hubFileProvider || new _.FileProvider.Hub
+  self.system = self.system || new _.FileProvider.System
   ({
     verbosity : 2,
     providers : [],
   });
 
-  if( !self.hubFileProvider.providersWithProtocolMap.src )
-  self.hubFileProvider.providerRegister( new _.FileProvider.Extract({ protocol : 'src'  }) );
+  if( !self.system.providersWithProtocolMap.src )
+  self.system.providerRegister( new _.FileProvider.Extract({ protocol : 'src'  }) );
 
-  if( !self.hubFileProvider.providersWithProtocolMap.dst )
-  self.hubFileProvider.providerRegister( new _.FileProvider.Extract({ protocol : 'dst'  }) );
+  if( !self.system.providersWithProtocolMap.dst )
+  self.system.providerRegister( new _.FileProvider.Extract({ protocol : 'dst'  }) );
 
-  if( !self.hubFileProvider.providersWithProtocolMap.file )
-  self.hubFileProvider.providerRegister( new _.FileProvider.HardDrive({}) );
+  if( !self.system.providersWithProtocolMap.file )
+  self.system.providerRegister( new _.FileProvider.HardDrive({}) );
 
   return self;
 }
@@ -197,7 +197,7 @@ function fileProviderForm()
 function fromHardDriveRead( o )
 {
   let self = this;
-  let srcFileProvider = self.hubFileProvider.providersWithProtocolMap.src;
+  let srcFileProvider = self.system.providersWithProtocolMap.src;
 
   if( _.strIs( arguments[ 0 ] ) )
   o = { srcPath : arguments[ 0 ] }
@@ -208,10 +208,10 @@ function fromHardDriveRead( o )
   _.assert( arguments.length === 1 );
   _.routineOptions( fromHardDriveRead, o );
 
-  self.hubFileProvider.verbosity = 1;
+  self.system.verbosity = 1;
   let srcLocalPath = _.uri.parse( o.srcPath ).longPath;
 
-  let reflect = self.hubFileProvider.filesReflector
+  let reflect = self.system.filesReflector
   ({
     src : { prefixPath : o.srcPath, basePath : srcLocalPath },
     dst : { prefixPath : 'src:///' },
@@ -254,7 +254,7 @@ function toHardDriveWrite( o )
   _.assert( arguments.length === 1 );
   _.routineOptions( toHardDriveWrite, o );
 
-  let reflect = self.hubFileProvider.filesReflector
+  let reflect = self.system.filesReflector
   ({
     src : { basePath : _.uri.join( 'dst://', '/' ), prefixPath : _.uri.join( 'dst://', '/' ) },
     dst : { prefixPath : _.uri.join( 'file://', o.dstPath ), basePath : _.uri.join( 'file://', o.dstPath ) },
@@ -393,9 +393,9 @@ function filesMapMake()
 {
   let self = this;
   let logger = self.logger;
-  let hubFileProvider = self.hubFileProvider;
-  let srcFileProvider = hubFileProvider.providersWithProtocolMap.src;
-  // let dstFileProvider = hubFileProvider.providersWithProtocolMap.dst;
+  let system = self.system;
+  let srcFileProvider = system.providersWithProtocolMap.src;
+  // let dstFileProvider = system.providersWithProtocolMap.dst;
 
   _.assert( _.strIs( self.appName ) );
   _.assert( arguments.length === 0 );
@@ -405,13 +405,13 @@ function filesMapMake()
   logger.rend({ verbosity : -2 });
 
   let fmap = new _.FileProvider.Extract({ protocol : 'fmap' });
-  hubFileProvider.providerRegister( fmap );
+  system.providerRegister( fmap );
 
   /* */
 
   debugger;
   if( self.useFile === null && self.useFilePath )
-  self.useFile = self.hubFileProvider.fileRead
+  self.useFile = self.system.fileRead
   ({
     filePath : self.useFilePath,
     encoding : 'js.smart',
@@ -425,7 +425,7 @@ function filesMapMake()
   /* */
 
   // debugger;
-  let reflect = self.hubFileProvider.filesReflector
+  let reflect = self.system.filesReflector
   ({
     // reflectMap : self.useFile || '**',
     dst :
@@ -437,10 +437,11 @@ function filesMapMake()
     {
       prefixPath : _.uri.join(  self.inPath, 'src://', ),
       basePath : _.uri.join(  self.inPath, 'src://', ),
+      recursive : 2,
     },
     linking : 'fileCopy',
     resolvingSrcSoftLink : 0,
-    recursive : 2,
+    // recursive : 2,
   });
   // debugger;
 
@@ -451,10 +452,13 @@ function filesMapMake()
   if( self.offline )
   {
 
-    let found = self.hubFileProvider.filesFind
+    let found = self.system.filesFind
     ({
-      filePath : 'fmap:///',
-      recursive : 2,
+      filter :
+      {
+        filePath : 'fmap:///',
+        recursive : 2,
+      },
       includingTerminals : 1,
       includingTransient : 0,
       resolvingSoftLink : 0,
@@ -466,7 +470,7 @@ function filesMapMake()
   }
 
   if( self.includePath )
-  self.hubFileProvider.softLinksRebase
+  self.system.softLinksRebase
   ({
     filePath : 'fmap:///',
     oldPath : self.includePath,
@@ -474,7 +478,7 @@ function filesMapMake()
   })
 
   // debugger;
-  hubFileProvider.fileWriteJs
+  system.fileWriteJs
   ({
     filePath : _.uri.join( 'dst://', self.outPath, self.appName + '.raw.filesmap.s' ),
     prefix : 'FilesMap = \n',
@@ -482,15 +486,15 @@ function filesMapMake()
   });
   // debugger;
 
-  // hubFileProvider.providerUnregister( fmap );
+  // system.providerUnregister( fmap );
   fmap.finit();
-  _.assert( hubFileProvider.providersWithProtocolMap.fmap === undefined );
+  _.assert( system.providersWithProtocolMap.fmap === undefined );
 
   /* */
 
   function onUp( file, op )
   {
-    let resolvedPath = hubFileProvider.pathResolveLinkFull( file.absoluteGlobal );
+    let resolvedPath = system.pathResolveLinkFull( file.absoluteGlobal ).filePath;
     let prefixToRemove = /^#\!\s*\/.+/;
 
     if( self.offline && _.arrayHas( [ 's','js','ss' ], file.ext ) )
@@ -501,7 +505,7 @@ function filesMapMake()
         filePath : file.absolute,
       });
 
-      let data = hubFileProvider.fileRead( resolvedPath );
+      let data = system.fileRead( resolvedPath );
       data = _.strRemoveBegin( data,prefixToRemove );
       data = fixes.prefix + data + fixes.postfix;
       fmap._descriptorWrite( file.absolute, fmap._descriptorScriptMake( file.absolute, data ) );
@@ -536,9 +540,9 @@ function starterMake()
   let requireCode = '';
   let builtinMapCode = '';
   let logger = self.logger;
-  let hubFileProvider = self.hubFileProvider;
-  let srcFileProvider = hubFileProvider.providersWithProtocolMap.src;
-  let dstFileProvider = hubFileProvider.providersWithProtocolMap.dst;
+  let system = self.system;
+  let srcFileProvider = system.providersWithProtocolMap.src;
+  let dstFileProvider = system.providersWithProtocolMap.dst;
 
   logger.rbegin({ verbosity : -2 });
   logger.log( 'Making starter..' );
@@ -546,16 +550,16 @@ function starterMake()
 
   _.assert( arguments.length === 0 );
 
-  let find = self.hubFileProvider.filesFinder
+  let find = self.system.filesFinder
   ({
-    filePath : _.uri.join( 'src://', self.toolsPath ),
-    recursive : 2,
     includingTerminals : 1,
     includingTransient : 0,
     mandatory : 1,
     onUp : onUpInliningToStarter,
     filter :
     {
+      filePath : _.uri.join( 'src://', self.toolsPath ),
+      recursive : 2,
       ends : [ '.js','.s' ],
     }
   });
@@ -585,7 +589,7 @@ function starterMake()
   find( 'amid/files/l5_provider/Extract.s' );
   find( 'amid/files/l5_provider/HtmlDocument.js' );
   find( 'amid/files/l5_provider/Http.js' );
-  find( 'amid/files/l7/Hub.s' );
+  find( 'amid/files/l7/System.s' );
 
   _.sure( _.strIs( builtinMapCode ), 'None source script' );
 
@@ -658,7 +662,7 @@ Config.offline = ${_.toStr( !!self.offline )};
     if( self.verbosity >= 3 )
     logger.log( ' +', 'starter use', file.absolute );
 
-    let read = this.fileCodeRead( file.absoluteGlobalMaybe );
+    let read = this.fileCodeRead( file.absolutePreferred );
 
     builtinMapCode += read;
 
@@ -700,12 +704,12 @@ function _verbosityChange()
 
   let _verbosityForFileProvider = _.numberClamp( self.verbosity-2, 0, 9 );
 
-  if( self.hubFileProvider )
+  if( self.system )
   {
-    let hubFileProvider = self.hubFileProvider;
-    let srcFileProvider = hubFileProvider.providersWithProtocolMap.src;
-    let dstFileProvider = hubFileProvider.providersWithProtocolMap.dst;
-    hubFileProvider.verbosity = _verbosityForFileProvider;
+    let system = self.system;
+    let srcFileProvider = system.providersWithProtocolMap.src;
+    let dstFileProvider = system.providersWithProtocolMap.dst;
+    system.verbosity = _verbosityForFileProvider;
     srcFileProvider.verbosity = _verbosityForFileProvider;
     dstFileProvider.verbosity = _verbosityForFileProvider;
   }
@@ -778,7 +782,7 @@ let Aggregates =
 let Associates =
 {
 
-  hubFileProvider : null,
+  system : null,
   logger : null,
 
 }

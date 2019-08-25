@@ -79,11 +79,12 @@ function commandsMake()
 
   let commands =
   {
-    'help' :              { e : _.routineJoin( starter, starter.commandHelp ),                h : 'Get help' },
-    'imply' :             { e : _.routineJoin( starter, starter.commandImply ),               h : 'Change state or imply value of a variable' },
-    'html for' :          { e : _.routineJoin( starter, starter.commandHtmlFor ),             h : 'Generate HTML for specified files' },
-    'files wrap' :        { e : _.routineJoin( starter, starter.commandFilesWrap ),           h : 'Wrap script files found at specified directory' },
-    'serve' :             { e : _.routineJoin( starter, starter.commandServe ),               h : 'Run server at specified directory' },
+    'help' :              { e : _.routineJoin( starter, starter.commandHelp ),                h : 'Get help.' },
+    'imply' :             { e : _.routineJoin( starter, starter.commandImply ),               h : 'Change state or imply value of a variable.' },
+    'html for' :          { e : _.routineJoin( starter, starter.commandHtmlFor ),             h : 'Generate HTML for specified files.' },
+    'sources join' :      { e : _.routineJoin( starter, starter.commandSourcesJoin ),         h : 'Join source files found at specified directory.' },
+    'http open' :         { e : _.routineJoin( starter, starter.commandHttpOpen ),            h : 'Run HTTP server to serve files in a specified directory.' },
+    'start' :             { e : _.routineJoin( starter, starter.commandStart ),               h : 'Launch executable file. By default in browser.' },
   }
 
   let ca = _.CommandsAggregator
@@ -166,9 +167,15 @@ function commandHtmlFor( e )
   return null;
 }
 
+commandHtmlFor.commandProperties =
+{
+  inPath : 'Path to files to include into HTML file to generate.',
+  outPath : 'Path to save generated HTML file.',
+}
+
 //
 
-function commandFilesWrap( e )
+function commandSourcesJoin( e )
 {
   let starter = this.form();
   let ca = e.ca;
@@ -183,21 +190,27 @@ function commandFilesWrap( e )
   if( !o2.inPath )
   throw _.errBriefly
   (
-    'Please specify where to look for script file.\nFor example: '
+    'Please specify where to look for source file.\nFor example: '
     + _.color.strFormat( 'starter .files.wrap ./proto', 'code' )
   );
 
-  let r = starter.filesWrap( o2 );
+  let r = starter.sourcesWrap( o2 );
 
   if( starter.verbosity )
-  logger.log( ' + filesWrap to ' + _.color.strFormat( o2.outPath, 'path' ) )
+  logger.log( ' + sourcesWrap to ' + _.color.strFormat( o2.outPath, 'path' ) )
 
   return r;
 }
 
+commandSourcesJoin.commandProperties =
+{
+  inPath : 'Path to files to use for merging and wrapping.',
+  outPath : 'Path to save merged file.',
+}
+
 //
 
-function commandServe( e )
+function commandHttpOpen( e )
 {
   let starter = this.form();
   let ca = e.ca;
@@ -207,18 +220,57 @@ function commandServe( e )
   let request = _.strRequestParse( e.argument );
 
   let o2 = _.mapExtend( null, e.propertiesMap );
-  o2.rootPath = o2.rootPath || request.subject;
+  o2.basePath = o2.basePath || request.subject;
 
-  if( !o2.rootPath )
+  if( !o2.basePath )
   throw _.errBriefly
   (
     'Please specify what directory to serve.\nFor example: '
-    + _.color.strFormat( 'starter .serve ./proto', 'code' )
+    + _.color.strFormat( 'starter .http.open ./proto', 'code' )
   );
 
-  starter.serve( o2 );
+  starter.httpOpen( o2 );
 
   return null;
+}
+
+commandHttpOpen.commandProperties =
+{
+  basePath : 'Path to make available over HTTP.',
+  allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
+}
+
+//
+
+function commandStart( e )
+{
+  let starter = this.form();
+  let ca = e.ca;
+  let fileProvider = starter.fileProvider;
+  let path = starter.fileProvider.path;
+  let logger = starter.logger;
+  let request = _.strRequestParse( e.argument );
+
+  let o2 = _.mapExtend( null, e.propertiesMap );
+  o2.entryPath = o2.entryPath || request.subject;
+
+  if( !o2.entryPath )
+  throw _.errBriefly
+  (
+    'Please specify where to look for source file.\nFor example: '
+    + _.color.strFormat( 'starter .start Index.js', 'code' )
+  );
+
+  starter.start( o2 );
+
+  return null;
+}
+
+commandStart.commandProperties =
+{
+  entryPath : 'Path to enty source file to launch.',
+  basePath : 'Path to make available over HTTP.',
+  allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
 }
 
 // --
@@ -266,8 +318,9 @@ let Extend =
   commandHelp,
   commandImply,
   commandHtmlFor,
-  commandFilesWrap,
-  commandServe,
+  commandSourcesJoin,
+  commandHttpOpen,
+  commandStart,
 
   // relations
 

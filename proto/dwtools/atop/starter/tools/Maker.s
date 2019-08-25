@@ -34,11 +34,11 @@ function instanceOptions( o )
 // file
 // --
 
-function fileSplitsFor( o )
+function sourceSplitsFor( o )
 {
   let self = this;
 
-  _.routineOptions( fileSplitsFor, arguments );
+  _.routineOptions( sourceSplitsFor, arguments );
   _.assert( arguments.length === 1 );
   _.assert( _.arrayHas( [ 'njs', 'browser' ], o.platform ) );
 
@@ -57,8 +57,8 @@ function fileSplitsFor( o )
   if( o.platform === 'browser' )
   ware +=
 `
-/* */  let _filePath_ = _starter_._pathResolve( null, '.', '${relativeFilePath}' );
-/* */  let _dirPath_ = _starter_._pathResolve( null, '.', '${relativeDirPath}' );
+/* */  let _filePath_ = _starter_._pathResolve( null, '/', '${relativeFilePath}' );
+/* */  let _dirPath_ = _starter_._pathResolve( null, '/', '${relativeDirPath}' );
 `
   else
   ware +=
@@ -93,7 +93,7 @@ function fileSplitsFor( o )
   return result;
 }
 
-fileSplitsFor.defaults =
+sourceSplitsFor.defaults =
 {
   filePath : null,
   basePath : null,
@@ -103,36 +103,36 @@ fileSplitsFor.defaults =
 
 //
 
-function fileWrap( o )
+function sourceWrap( o )
 {
   let self = this;
   _.assert( arguments.length === 1 );
-  _.routineOptions( fileWrap, arguments );
+  _.routineOptions( sourceWrap, arguments );
   self.instanceOptions( o );
 
   if( o.removingShellPrologue )
-  o.fileData = self.fileRemoveShellPrologue( o.fileData );
+  o.fileData = self.sourcesRemoveShellPrologue( o.fileData );
 
-  let splits = self.fileSplitsFor({ filePath : o.filePath, basePath : o.basePath });
+  let splits = self.sourceSplitsFor({ filePath : o.filePath, basePath : o.basePath });
   let result = splits.prefix1 + splits.prefix2 + o.fileData + splits.postfix2 + splits.ware + splits.postfix1;
   return result;
 }
 
-var defaults = fileWrap.defaults = Object.create( fileSplitsFor.defaults );
+var defaults = sourceWrap.defaults = Object.create( sourceSplitsFor.defaults );
 defaults.fileData = null;
 defaults.removingShellPrologue = null;
 
 //
 
-function fileWrapSimple( o )
+function sourcesWrapSimple( o )
 {
   let self = this;
   _.assert( arguments.length === 1 );
-  _.routineOptions( fileWrapSimple, arguments );
+  _.routineOptions( sourcesWrapSimple, arguments );
   self.instanceOptions( o );
 
   if( o.removingShellPrologue )
-  o.fileData = self.fileRemoveShellPrologue( o.fileData );
+  o.fileData = self.sourcesRemoveShellPrologue( o.fileData );
 
   let fileName = _.strCamelize( _.path.fullName( o.filePath ) );
 
@@ -148,7 +148,7 @@ function fileWrapSimple( o )
   return result;
 }
 
-fileWrapSimple.defaults =
+sourcesWrapSimple.defaults =
 {
   filePath : null,
   fileData : null,
@@ -163,7 +163,7 @@ qqq : investigate and add test case for such case
   fileData = fileData.slice(1);
 */
 
-function fileRemoveShellPrologue( fileData )
+function sourcesRemoveShellPrologue( fileData )
 {
   let self = this;
   let splits = _.strSplitFast( fileData, /^\s*\#\![^\n]*\n/ );
@@ -178,7 +178,7 @@ function fileRemoveShellPrologue( fileData )
 // files
 // --
 
-function filesSplitsFor( o )
+function sourcesSplitsFor( o )
 {
   let self = this;
   let r = Object.create( null );
@@ -193,7 +193,7 @@ function filesSplitsFor( o )
   r.postfix = '';
   Object.preventExtensions( r );
 
-  o = _.routineOptions( filesSplitsFor, arguments );
+  o = _.routineOptions( sourcesSplitsFor, arguments );
   _.assert( _.arrayHas( [ 'njs', 'browser' ], o.platform ) );
 
   if( o.entryPath )
@@ -242,6 +242,9 @@ function filesSplitsFor( o )
   ${pr( 'canonizeTolerant' )}
   ${pr( '_pathNativizeWindows' )}
   ${pr( '_pathNativizePosix' )}
+  ${pr( 'isGlob' )}
+  ${pr( 'isRelative' )}
+  ${pr( 'isAbsolute' )}
 
   ${pfs()}
 
@@ -255,10 +258,32 @@ function filesSplitsFor( o )
   ${gr( 'objectLike' )}
   ${gr( 'arrayLike' )}
   ${gr( 'arrayIs' )}
+  ${gr( 'numberIs' )}
   ${gr( 'argumentsArrayIs' )}
   ${gr( 'routineIs' )}
   ${gr( 'mapSupplementStructureless' )}
   ${gr( 'routineOptions' )}
+  ${gr( 'arrayAppendArrays' )}
+  ${gr( 'arrayAppendedArrays' )}
+
+  ${gr( 'err' )}
+  ${gr( '_err' )}
+  ${gr( 'errIs' )}
+  ${gr( 'unrollIs' )}
+  ${gr( 'arrayLeft' )}
+  ${gr( 'arrayLeftIndex' )}
+  ${gr( 'arrayLeftDefined' )}
+  ${gr( 'diagnosticStack' )}
+  ${gr( 'diagnosticStackCondense' )}
+  ${gr( 'diagnosticLocation' )}
+  ${gr( 'strType' )}
+  ${gr( 'strPrimitiveType' )}
+  ${gr( 'strHas' )}
+  ${gr( 'strLike' )}
+  ${gr( 'rangeIs' )}
+  ${gr( 'numbersAre' )}
+  ${gr( 'bufferTypedIs' )}
+
 `
 
   r.ware +=
@@ -323,8 +348,6 @@ function filesSplitsFor( o )
 
   /* ... code goes here ... */
 
-  debugger;
-
   /* entry */
 
   r.entry = '\n';
@@ -379,9 +402,16 @@ function filesSplitsFor( o )
     );
     let str = '';
     if( _.routineIs( e ) )
-    str = e.toString();
+    {
+      if( e.functor )
+      str = '(' + e.functor.toString() + ')();';
+      else
+      str = e.toString();
+    }
     else
-    str = _.toJs( e );
+    {
+      str = _.toJs( e );
+    }
     let r = dstContainerName + '.' + name + ' = ' + _.strIndentation( str, '  ' ) + ';\n\n//\n';
     return r;
   }
@@ -410,7 +440,7 @@ function filesSplitsFor( o )
 
 }
 
-filesSplitsFor.defaults =
+sourcesSplitsFor.defaults =
 {
   basePath : null,
   entryPath : null,
@@ -423,18 +453,18 @@ filesSplitsFor.defaults =
 
 //
 
-function filesWrap( o )
+function sourcesWrap( o )
 {
   let self = this;
 
-  _.routineOptions( filesWrap, arguments );
+  _.routineOptions( sourcesWrap, arguments );
   self.instanceOptions( o );
 
   /* */
 
   o.filesMap = _.map( o.filesMap, ( fileData, filePath ) =>
   {
-    return self.fileWrap
+    return self.sourceWrap
     ({
       filePath,
       fileData,
@@ -447,7 +477,7 @@ function filesWrap( o )
 
   let result = _.mapVals( o.filesMap ).join( '\n' );
 
-  let splits = self.filesSplitsFor
+  let splits = self.sourcesSplitsFor
   ({
     entryPath : o.entryPath,
     basePath : o.basePath,
@@ -462,7 +492,7 @@ function filesWrap( o )
   return result;
 }
 
-var defaults = filesWrap.defaults = Object.create( filesSplitsFor.defaults );
+var defaults = sourcesWrap.defaults = Object.create( sourcesSplitsFor.defaults );
 
 defaults.filesMap = null;
 defaults.removingShellPrologue = null;
@@ -494,7 +524,7 @@ function htmlSplitsFor( o )
 `
 
   if( o.starterIncluding === 'include' )
-  r.starter = `  <script src="/.starter.raw.js"></script>\n`;
+  r.starter = `  <script src="/.starter"></script>\n`;
 
   r.scripts = [];
   for( let filePath in o.srcScriptsMap )
@@ -594,13 +624,13 @@ let Proto =
 
   instanceOptions,
 
-  fileSplitsFor,
-  fileWrap,
-  fileWrapSimple,
-  fileRemoveShellPrologue,
+  sourceSplitsFor,
+  sourceWrap,
+  sourcesWrapSimple,
+  sourcesRemoveShellPrologue,
 
-  filesSplitsFor,
-  filesWrap,
+  sourcesSplitsFor,
+  sourcesWrap,
 
   htmlSplitsFor,
   htmlFor,

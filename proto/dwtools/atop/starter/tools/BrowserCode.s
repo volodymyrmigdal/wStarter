@@ -51,7 +51,12 @@ function _Begin()
     request = o.request = new Reqeust();
 
     if( !o.sync )
-    request.responseType = 'text';
+    {
+      if( o.encoding === 'buffer.bytes' )
+      request.responseType = 'arraybuffer';
+      else if( o.encoding === 'json' )
+      request.responseType = 'json';
+    }
 
     request.addEventListener( 'progress', handleProgress );
     request.addEventListener( 'load', handleEnd );
@@ -120,6 +125,7 @@ function _Begin()
         result = getData( request );
         o.ended = 1;
 
+        if( !_.strBegins( o.filePath, '.resolve/' ) )
         FilesCache[ o.filePath ] = result;
 
         // con.take( result );
@@ -205,6 +211,7 @@ function _Begin()
   var defaults = fileReadAct.defaults = Object.create( null );
   defaults.sync = 1;
   defaults.filePath = null;
+  defaults.encoding = 'utf8';
 
   var advanced = fileReadAct.advanced = Object.create( null );
   advanced.send = null;
@@ -226,10 +233,59 @@ function _Begin()
 
   //
 
+  function _browserRemoteResolve( filePath )
+  {
+    let starter = this;
+
+    if( _.path.isGlob( filePath ) )
+    {
+      filePath = starter.fileRead
+      ({
+        filePath : '/.resolve/' + filePath,
+        encoding : 'json',
+      });
+      filePath = JSON.parse( filePath );
+      return filePath;
+    }
+    else if( _.path.isRelative( filePath ) )
+    {
+      filePath = starter.fileRead
+      ({
+        filePath : '/.resolve/' + filePath,
+        encoding : 'json',
+      });
+      filePath = JSON.parse( filePath );
+      return filePath;
+    }
+
+    return filePath;
+  }
+
+  //
+
   function _browserInclude( parentSource, basePath, filePath )
   {
-    let resolvedFilePath = this._pathResolve( parentSource, basePath, filePath );
-    let read = this.fileRead
+    let starter = this;
+    let joinedFilePath = this._pathResolve( parentSource, basePath, filePath );
+    let resolvedFilePath = starter._browserRemoteResolve( joinedFilePath );
+
+    if( _.arrayIs( resolvedFilePath ) )
+    {
+      if( resolvedFilePath !== joinedFilePath && !resolvedFilePath.length )
+      throw _.err( `No source file found for "${joinedFilePath}"` );
+      let result = [];
+      for( let f = 0 ; f < resolvedFilePath.length ; f++ )
+      {
+        let r = starter._sourceInclude( parentSource, basePath, resolvedFilePath[ f ] );
+        if( r !== undefined )
+        _.arrayAppendArrays( result, r );
+        else
+        result.push( r );
+      }
+      return result;
+    }
+
+    let read = starter.fileRead
     ({
       filePath : resolvedFilePath + '?running:0',
       sync : 1,
@@ -243,8 +299,8 @@ function _Begin()
     script.appendChild( scriptCode );
     document.head.appendChild( script );
 
-    let childSource = this._sourceForPathGet( resolvedFilePath );
-    return this._sourceIncludeAct( parentSource, childSource );
+    let childSource = starter._sourceForPathGet( resolvedFilePath );
+    return starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
   }
 
   //
@@ -252,7 +308,6 @@ function _Begin()
   function _browserResolve( parentSource, basePath, filePath )
   {
     let resolvedFilePath = this._pathResolve( parentSource, basePath, filePath );
-    debugger;
     try
     {
       let read = this.fileRead
@@ -284,6 +339,7 @@ function _End()
   {
     fileReadAct,
     fileRead,
+    _browserRemoteResolve,
     _browserInclude,
     _browserResolve,
   }

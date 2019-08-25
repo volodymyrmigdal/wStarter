@@ -91,6 +91,25 @@ function _Begin()
     return this.nativize.apply( this, arguments );
   }
 
+  //
+
+  function toStr( src )
+  {
+    return String( src );
+  }
+
+  //
+
+  function mapFields( src )
+  {
+    let result = Object.create( null );
+    if( !src )
+    return result;
+    for( let s in src )
+    result[ s ] = src[ s ];
+    return result;
+  }
+
 }
 
 // --
@@ -107,6 +126,8 @@ function _End()
     assertRoutineOptions,
     assertMapHasOnly,
     assertMapHasNoUndefine,
+    toStr,
+    mapFields,
 
     path,
 

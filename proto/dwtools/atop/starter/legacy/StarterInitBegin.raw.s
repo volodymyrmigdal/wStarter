@@ -101,7 +101,7 @@ function _starterUseFilesForm()
 
   let src = new _.FileProvider.Extract({ protocol : 'src', encoding : 'utf8', filesTree : AllFilesMap });
   let dst = new _.FileProvider.Extract({ protocol : 'dst', encoding : 'utf8', filesTree : FilesMap });
-  let hub = new _.FileProvider.Hub
+  let hub = new _.FileProvider.System
   ({
     verbosity : 2,
     encoding : 'utf8',
@@ -734,7 +734,7 @@ function _includeMature( bound, filePath )
     let result = Object.create( null );
 
     let o = Object.create( null );
-    o.filter = fileProvider.RecordFilter.And( { hubFileProvider : fileProvider }, _starter_.includeDefaults.filter, scriptFile.include.filter );
+    o.filter = fileProvider.RecordFilter.And( { system : fileProvider }, _starter_.includeDefaults.filter, scriptFile.include.filter );
     o.includingTransient = 0;
     o.includingDirs = 0;
     o.resolvingSoftLink = 0;

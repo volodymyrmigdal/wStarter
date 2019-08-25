@@ -7,12 +7,9 @@
   @module Tools/mid/Starter
 */
 
-if( typeof module !== 'undefined' )
-{
+let Open;
 
-  require( './IncludeBase.s' );
-
-}
+require( './IncludeBase.s' );
 
 //
 
@@ -114,7 +111,7 @@ function formAssociates()
 
 //
 
-function filesWrap( o )
+function sourcesWrap( o )
 {
   let starter = this;
   let fileProvider = starter.fileProvider;
@@ -122,13 +119,13 @@ function filesWrap( o )
   let logger = starter.logger;
   let maker = starter.maker;
 
-  o = _.routineOptions( filesWrap, arguments );
+  o = _.routineOptions( sourcesWrap, arguments );
 
   /* */
 
   o.inPath = fileProvider.recordFilter( o.inPath );
   o.inPath.basePathUse( o.basePath );
-  let basePath = o.inPath.basePath;
+  let basePath = o.inPath.basePathSimplest();
 
   o.inPath = fileProvider.filesFind
   ({
@@ -139,7 +136,7 @@ function filesWrap( o )
 
   /* */
 
-  o.outPath = o.outPath || filesWrap.defaults.outPath;
+  o.outPath = o.outPath || sourcesWrap.defaults.outPath;
   o.outPath = path.resolve( o.basePath, o.outPath );
 
   /* */
@@ -208,7 +205,7 @@ function filesWrap( o )
   delete o2.inPath;
   o2.filesMap = srcScriptsMap;
   debugger;
-  let data = maker.filesWrap( o2 )
+  let data = maker.sourcesWrap( o2 )
 
   _.sure( !fileProvider.isDir( o.outPath ), () => 'Can rewrite directory ' + _.color.strFormat( o.outPath, 'path' ) );
 
@@ -221,7 +218,7 @@ function filesWrap( o )
   return data;
 }
 
-var defaults = filesWrap.defaults = _.mapBut( _.StarterMakerLight.prototype.filesWrap.defaults, { filesMap : null } );
+var defaults = sourcesWrap.defaults = _.mapBut( _.StarterMakerLight.prototype.sourcesWrap.defaults, { filesMap : null } );
 defaults.inPath = null;
 defaults.outPath = 'Index.js';
 
@@ -244,7 +241,7 @@ function htmlFor( o )
   {
     o.inPath = fileProvider.recordFilter( o.inPath );
     o.inPath.basePathUse( o.basePath );
-    let basePath = o.inPath.basePath;
+    let basePath = o.inPath.basePathSimplest();
     o.inPath = fileProvider.filesFind
     ({
       filter : o.inPath,
@@ -255,7 +252,7 @@ function htmlFor( o )
 
   /* */
 
-  o.outPath = o.outPath || filesWrap.defaults.outPath;
+  o.outPath = o.outPath || sourcesWrap.defaults.outPath;
   o.outPath = path.resolve( o.basePath, o.outPath );
 
   /* */
@@ -302,7 +299,7 @@ defaults.nativize = 0;
 
 //
 
-function serve( o )
+function httpOpen( o )
 {
   let starter = this;
   let fileProvider = starter.fileProvider;
@@ -310,7 +307,10 @@ function serve( o )
   let logger = starter.logger;
   let maker = starter.maker;
 
-  o.rootPath = path.resolve( o.rootPath );
+  _.routineOptions( httpOpen, arguments );
+
+  o.basePath = path.resolve( o.basePath );
+  o.allowedPath = path.resolve( o.allowedPath );
   o.starter = starter;
 
   let servlet = new starter.Servlet( o );
@@ -320,10 +320,64 @@ function serve( o )
   return servlet;
 }
 
-serve.defaults =
+httpOpen.defaults =
 {
-  rootPath : null,
+  basePath : null,
+  allowedPath : '/',
 }
+
+//
+
+function start( o )
+{
+  let starter = this;
+  let fileProvider = starter.fileProvider;
+  let path = starter.fileProvider.path;
+  let logger = starter.logger;
+  let maker = starter.maker;
+
+  _.routineOptions( start, arguments );
+
+  o.entryPath = path.resolve( o.entryPath );
+  if( !o.basePath )
+  o.basePath = path.resolve( '.' );
+  o.allowedPath = path.resolve( o.allowedPath );
+
+  /* */
+
+  let filter = { filePath : o.entryPath, basePath : o.basePath };
+  let found = _.fileProvider.filesFind
+  ({
+    filter,
+    mode : 'distinct',
+    mandatory : 0,
+    includingDirs : 0,
+    includingDefunct : 0,
+  });
+
+  if( !found.length )
+  throw _.errBriefly( `Found no ${o.entryPath}` );
+
+  /* */
+
+  let servlet = starter.httpOpen
+  ({
+    allowedPath : o.allowedPath,
+    basePath : o.basePath,
+  });
+
+  if( !Open )
+  Open = require( 'open' );
+
+  debugger;
+  Open( _.uri.join( servlet.serverPath, found[ 0 ].relative, '?entry:1' ) );
+
+  return servlet;
+}
+
+var defaults = start.defaults = _.mapExtend( null, httpOpen.defaults );
+
+defaults.entryPath = null;
 
 // --
 // relations
@@ -378,9 +432,10 @@ let Proto =
   form,
   formAssociates,
 
-  filesWrap,
+  sourcesWrap,
   htmlFor,
-  serve,
+  httpOpen,
+  start,
 
   // ident
 
@@ -411,11 +466,6 @@ if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
 _global_[ Self.name ] = wTools[ Self.shortName ] = Self;
 
-if( typeof module !== 'undefined' )
-{
-
-  require( './IncludeMid.s' );
-
-}
+require( './IncludeMid.s' );
 
 })();
