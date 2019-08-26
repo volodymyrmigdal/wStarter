@@ -84,7 +84,7 @@ function commandsMake()
     'html for' :          { e : _.routineJoin( starter, starter.commandHtmlFor ),             h : 'Generate HTML for specified files.' },
     'sources join' :      { e : _.routineJoin( starter, starter.commandSourcesJoin ),         h : 'Join source files found at specified directory.' },
     'http open' :         { e : _.routineJoin( starter, starter.commandHttpOpen ),            h : 'Run HTTP server to serve files in a specified directory.' },
-    'start' :             { e : _.routineJoin( starter, starter.commandStart ),               h : 'Launch executable file. By default in browser.' },
+    'start' :             { e : _.routineJoin( starter, starter.commandStart ),               h : 'Run executable file. By default in browser.' },
   }
 
   let ca = _.CommandsAggregator
@@ -194,10 +194,10 @@ function commandSourcesJoin( e )
     + _.color.strFormat( 'starter .files.wrap ./proto', 'code' )
   );
 
-  let r = starter.sourcesWrap( o2 );
+  let r = starter.sourcesJoin( o2 );
 
   if( starter.verbosity )
-  logger.log( ' + sourcesWrap to ' + _.color.strFormat( o2.outPath, 'path' ) )
+  logger.log( ' + sourcesJoin to ' + _.color.strFormat( o2.outPath, 'path' ) )
 
   return r;
 }

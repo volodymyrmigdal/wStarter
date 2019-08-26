@@ -34,11 +34,11 @@ function instanceOptions( o )
 // file
 // --
 
-function sourceSplitsFor( o )
+function sourceWrapSplits( o )
 {
   let self = this;
 
-  _.routineOptions( sourceSplitsFor, arguments );
+  _.routineOptions( sourceWrapSplits, arguments );
   _.assert( arguments.length === 1 );
   _.assert( _.arrayHas( [ 'njs', 'browser' ], o.platform ) );
 
@@ -93,7 +93,7 @@ function sourceSplitsFor( o )
   return result;
 }
 
-sourceSplitsFor.defaults =
+sourceWrapSplits.defaults =
 {
   filePath : null,
   basePath : null,
@@ -111,28 +111,28 @@ function sourceWrap( o )
   self.instanceOptions( o );
 
   if( o.removingShellPrologue )
-  o.fileData = self.sourcesRemoveShellPrologue( o.fileData );
+  o.fileData = self.sourceRemoveShellPrologue( o.fileData );
 
-  let splits = self.sourceSplitsFor({ filePath : o.filePath, basePath : o.basePath });
+  let splits = self.sourceWrapSplits({ filePath : o.filePath, basePath : o.basePath });
   let result = splits.prefix1 + splits.prefix2 + o.fileData + splits.postfix2 + splits.ware + splits.postfix1;
   return result;
 }
 
-var defaults = sourceWrap.defaults = Object.create( sourceSplitsFor.defaults );
+var defaults = sourceWrap.defaults = Object.create( sourceWrapSplits.defaults );
 defaults.fileData = null;
 defaults.removingShellPrologue = null;
 
 //
 
-function sourcesWrapSimple( o )
+function sourceWrapSimple( o )
 {
   let self = this;
   _.assert( arguments.length === 1 );
-  _.routineOptions( sourcesWrapSimple, arguments );
+  _.routineOptions( sourceWrapSimple, arguments );
   self.instanceOptions( o );
 
   if( o.removingShellPrologue )
-  o.fileData = self.sourcesRemoveShellPrologue( o.fileData );
+  o.fileData = self.sourceRemoveShellPrologue( o.fileData );
 
   let fileName = _.strCamelize( _.path.fullName( o.filePath ) );
 
@@ -148,7 +148,7 @@ function sourcesWrapSimple( o )
   return result;
 }
 
-sourcesWrapSimple.defaults =
+sourceWrapSimple.defaults =
 {
   filePath : null,
   fileData : null,
@@ -163,7 +163,7 @@ qqq : investigate and add test case for such case
   fileData = fileData.slice(1);
 */
 
-function sourcesRemoveShellPrologue( fileData )
+function sourceRemoveShellPrologue( fileData )
 {
   let self = this;
   let splits = _.strSplitFast( fileData, /^\s*\#\![^\n]*\n/ );
@@ -178,7 +178,7 @@ function sourcesRemoveShellPrologue( fileData )
 // files
 // --
 
-function sourcesSplitsFor( o )
+function sourcesJoinSplits( o )
 {
   let self = this;
   let r = Object.create( null );
@@ -193,7 +193,7 @@ function sourcesSplitsFor( o )
   r.postfix = '';
   Object.preventExtensions( r );
 
-  o = _.routineOptions( sourcesSplitsFor, arguments );
+  o = _.routineOptions( sourcesJoinSplits, arguments );
   _.assert( _.arrayHas( [ 'njs', 'browser' ], o.platform ) );
 
   if( o.entryPath )
@@ -235,6 +235,34 @@ function sourcesSplitsFor( o )
   ${gr( 'longIs' )}
   ${gr( 'primitiveIs' )}
   ${gr( 'strBegins' )}
+  ${gr( 'objectIs' )}
+  ${gr( 'objectLike' )}
+  ${gr( 'arrayLike' )}
+  ${gr( 'arrayIs' )}
+  ${gr( 'numberIs' )}
+  ${gr( 'argumentsArrayIs' )}
+  ${gr( 'routineIs' )}
+  ${gr( 'mapSupplementStructureless' )}
+  ${gr( 'routineOptions' )}
+  ${gr( 'arrayAppendArrays' )}
+  ${gr( 'arrayAppendedArrays' )}
+  ${gr( 'arrayLeft' )}
+  ${gr( 'arrayLeftIndex' )}
+  ${gr( 'arrayLeftDefined' )}
+  ${gr( 'err' )}
+  ${gr( '_err' )}
+  ${gr( 'errIs' )}
+  ${gr( 'unrollIs' )}
+  ${gr( 'diagnosticStack' )}
+  ${gr( 'diagnosticStackCondense' )}
+  ${gr( 'diagnosticLocation' )}
+  ${gr( 'strType' )}
+  ${gr( 'strPrimitiveType' )}
+  ${gr( 'strHas' )}
+  ${gr( 'strLike' )}
+  ${gr( 'rangeIs' )}
+  ${gr( 'numbersAre' )}
+  ${gr( 'bufferTypedIs' )}
 
   ${pr( 'refine' )}
   ${pr( '_normalize' )}
@@ -254,35 +282,6 @@ function sourcesSplitsFor( o )
   if( o.platform === 'browser' )
   r.ware +=
 `
-  ${gr( 'objectIs' )}
-  ${gr( 'objectLike' )}
-  ${gr( 'arrayLike' )}
-  ${gr( 'arrayIs' )}
-  ${gr( 'numberIs' )}
-  ${gr( 'argumentsArrayIs' )}
-  ${gr( 'routineIs' )}
-  ${gr( 'mapSupplementStructureless' )}
-  ${gr( 'routineOptions' )}
-  ${gr( 'arrayAppendArrays' )}
-  ${gr( 'arrayAppendedArrays' )}
-
-  ${gr( 'err' )}
-  ${gr( '_err' )}
-  ${gr( 'errIs' )}
-  ${gr( 'unrollIs' )}
-  ${gr( 'arrayLeft' )}
-  ${gr( 'arrayLeftIndex' )}
-  ${gr( 'arrayLeftDefined' )}
-  ${gr( 'diagnosticStack' )}
-  ${gr( 'diagnosticStackCondense' )}
-  ${gr( 'diagnosticLocation' )}
-  ${gr( 'strType' )}
-  ${gr( 'strPrimitiveType' )}
-  ${gr( 'strHas' )}
-  ${gr( 'strLike' )}
-  ${gr( 'rangeIs' )}
-  ${gr( 'numbersAre' )}
-  ${gr( 'bufferTypedIs' )}
 
 `
 
@@ -440,7 +439,7 @@ function sourcesSplitsFor( o )
 
 }
 
-sourcesSplitsFor.defaults =
+sourcesJoinSplits.defaults =
 {
   basePath : null,
   entryPath : null,
@@ -453,11 +452,11 @@ sourcesSplitsFor.defaults =
 
 //
 
-function sourcesWrap( o )
+function sourcesJoin( o )
 {
   let self = this;
 
-  _.routineOptions( sourcesWrap, arguments );
+  _.routineOptions( sourcesJoin, arguments );
   self.instanceOptions( o );
 
   /* */
@@ -477,7 +476,7 @@ function sourcesWrap( o )
 
   let result = _.mapVals( o.filesMap ).join( '\n' );
 
-  let splits = self.sourcesSplitsFor
+  let splits = self.sourcesJoinSplits
   ({
     entryPath : o.entryPath,
     basePath : o.basePath,
@@ -492,7 +491,7 @@ function sourcesWrap( o )
   return result;
 }
 
-var defaults = sourcesWrap.defaults = Object.create( sourcesSplitsFor.defaults );
+var defaults = sourcesJoin.defaults = Object.create( sourcesJoinSplits.defaults );
 
 defaults.filesMap = null;
 defaults.removingShellPrologue = null;
@@ -624,13 +623,14 @@ let Proto =
 
   instanceOptions,
 
-  sourceSplitsFor,
+  sourceWrapSplits,
   sourceWrap,
-  sourcesWrapSimple,
-  sourcesRemoveShellPrologue,
 
-  sourcesSplitsFor,
-  sourcesWrap,
+  sourceWrapSimple,
+  sourceRemoveShellPrologue,
+
+  sourcesJoinSplits,
+  sourcesJoin,
 
   htmlSplitsFor,
   htmlFor,

@@ -317,7 +317,7 @@ function ScriptWrap_functor( fop )
     if( !_.fileProvider.isTerminal( filePath ) )
     return o.next();
 
-    let splits = fop.starterMaker.sourceSplitsFor
+    let splits = fop.starterMaker.sourceWrapSplits
     ({
       basePath : fop.basePath,
       filePath : filePath,
@@ -486,7 +486,7 @@ function ScriptWrap_functor( fop )
     {
       if( !ware )
       {
-        let splits = fop.starterMaker.sourcesSplitsFor({ platform : 'browser', libraryName : 'browser' });
+        let splits = fop.starterMaker.sourcesJoinSplits({ platform : 'browser', libraryName : 'browser' });
         ware = splits.prefix + splits.ware + splits.browser + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
       }
       o.response.write( ware );

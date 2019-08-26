@@ -56,7 +56,7 @@ function onSuiteEnd()
 // tests
 // --
 
-function sourcesWrap( test )
+function sourcesJoin( test )
 {
   let self = this;
   let originalDirPath = _.path.join( self.assetDirPath, 'several' );
@@ -75,7 +75,7 @@ function sourcesWrap( test )
 
   _.fileProvider.filesReflect({ reflectMap : { [ originalDirPath ] : routinePath } })
 
-  starter.sourcesWrap
+  starter.sourcesJoin
   ({
     inPath : '**',
     entryPath : 'File2.js',
@@ -113,7 +113,7 @@ function sourcesWrap( test )
 
 //
 
-function shellFilesWrap( test )
+function shellSourcesJoin( test )
 {
   let self = this;
   let originalDirPath = _.path.join( self.assetDirPath, 'several' );
@@ -133,11 +133,11 @@ function shellFilesWrap( test )
 
   _.fileProvider.filesReflect({ reflectMap : { [ originalDirPath ] : routinePath } })
 
-  shell( `${execPath} .files.wrap ${routinePath}/** entryPath:File2.js` )
+  shell( `${execPath} .sources.join ${routinePath}/** entryPath:File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesWrap to .*shellFilesWrap\/Index\.js/ ), 1 )
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoin\/Index\.js/ ), 1 )
 
     var files = self.find( routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.js' ] );
@@ -173,7 +173,7 @@ function shellFilesWrap( test )
 
 //
 
-function shellFilesWrapWithEntry( test )
+function shellSourcesJoinWithEntry( test )
 {
   let self = this;
   let originalDirPath = _.path.join( self.assetDirPath, 'dep' );
@@ -203,11 +203,11 @@ function shellFilesWrapWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .files.wrap app0/** entryPath:app0/File2.js outPath:out/app0.js` )
+  shell( `${execPath} .sources.join app0/** entryPath:app0/File2.js outPath:out/app0.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesWrap to .*shellFilesWrapWithEntry\/out\/app0\.js/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
 
     var files = self.find( routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0.js' ] );
@@ -229,11 +229,11 @@ function shellFilesWrapWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .files.wrap app0/** entryPath:app0/File2.js outPath:out/app0.js basePath:.` )
+  shell( `${execPath} .sources.join app0/** entryPath:app0/File2.js outPath:out/app0.js basePath:.` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesWrap to .*shellFilesWrapWithEntry\/out\/app0\.js/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
 
     var files = self.find( routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0.js' ] );
@@ -255,11 +255,11 @@ function shellFilesWrapWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .files.wrap ** entryPath:File2.js outPath:../out/app0.js basePath:app0` )
+  shell( `${execPath} .sources.join ** entryPath:File2.js outPath:../out/app0.js basePath:app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesWrap to .*shellFilesWrapWithEntry\/out\/app0\.js/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
 
     var files = self.find( routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0.js' ] );
@@ -281,7 +281,7 @@ function shellFilesWrapWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .files.wrap app0/** entryPath:File2.js outPath:out/app0.js` )
+  shell( `${execPath} .sources.join app0/** entryPath:File2.js outPath:out/app0.js` )
   .then( ( op ) =>
   {
     test.notIdentical( op.exitCode, 0 );
@@ -304,7 +304,7 @@ function shellFilesWrapWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .files.wrap ** entryPath:app0/File2.js outPath:../out/app0.js basePath:app0` )
+  shell( `${execPath} .sources.join ** entryPath:app0/File2.js outPath:../out/app0.js basePath:app0` )
   .then( ( op ) =>
   {
     test.notIdentical( op.exitCode, 0 );
@@ -323,7 +323,7 @@ function shellFilesWrapWithEntry( test )
 
 //
 
-function shellFilesWrapDep( test )
+function shellSourcesJoinDep( test )
 {
   let self = this;
   let originalDirPath = _.path.join( self.assetDirPath, 'dep' );
@@ -366,12 +366,12 @@ app0/File1.js:timeout numberIs:true
   })
 
   shell( `npm i` )
-  shell( `node ${execPath} .files.wrap app2/** outPath:out/app2` )
-  shell( `node ${execPath} .files.wrap app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:out/app2` )
+  shell( `node ${execPath} .sources.join app2/** outPath:out/app2` )
+  shell( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:out/app2` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesWrap to .*shellFilesWrapDep\/out\/app0/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinDep\/out\/app0/ ), 1 );
 
     var files = self.find( routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0', './out/app2' ] );
@@ -402,7 +402,7 @@ app0/File1.js:timeout numberIs:true
 
 //
 
-function shellFilesWrapRequireInternal( test )
+function shellSourcesJoinRequireInternal( test )
 {
   let self = this;
   let originalDirPath = _.path.join( self.assetDirPath, 'dep' );
@@ -442,12 +442,12 @@ app0/File1.js:timeout numberIs:true
   })
 
   shell( `npm i` )
-  shell( `node ${execPath} .files.wrap app0/** outPath:out/dir/app0` )
-  shell( `node ${execPath} .files.wrap app2/** outPath:out/dir/app2` )
+  shell( `node ${execPath} .sources.join app0/** outPath:out/dir/app0` )
+  shell( `node ${execPath} .sources.join app2/** outPath:out/dir/app2` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesWrap to .*shellFilesWrapRequireInternal\/out\/dir\/app2/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinRequireInternal\/out\/dir\/app2/ ), 1 );
 
     var files = self.find( routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/dir', './out/dir/app0', './out/dir/app2' ] );
@@ -470,7 +470,7 @@ app0/File1.js:timeout numberIs:true
 
 //
 
-function shellFilesWrapComplex( test )
+function shellSourcesJoinComplex( test )
 {
   let self = this;
   let originalDirPath = _.path.join( self.assetDirPath, 'complex' );
@@ -520,13 +520,13 @@ app0/File1.js:timeout true
   })
 
   shell( `npm i` )
-  shell( `node ${execPath} .files.wrap app2/** outPath:out/app2` )
-  shell( `node ${execPath} .files.wrap app1/** outPath:out/app1` )
-  shell( `node ${execPath} .files.wrap app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:[out/app1, out/app2]` )
+  shell( `node ${execPath} .sources.join app2/** outPath:out/app2` )
+  shell( `node ${execPath} .sources.join app1/** outPath:out/app1` )
+  shell( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:[out/app1, out/app2]` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesWrap to .*shellFilesWrapComplex\/out\/app0/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinComplex\/out\/app0/ ), 1 );
 
     var files = self.find( routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app1', './app1/File1.js', './app1/File2.js', './app2', './app2/File1.js', './app2/File2.js', './out', './out/app0', './out/app1', './out/app2' ] );
@@ -586,7 +586,7 @@ function htmlFor( test )
 
   var read = _.fileProvider.fileRead( outputPath );
   test.identical( _.strCount( read, '<html' ), 1 );
-  test.identical( _.strCount( read, 'src="/.starter.raw.js"' ), 1 );
+  test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
   test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
   test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
   test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
@@ -612,7 +612,7 @@ function htmlFor( test )
 
   var read = _.fileProvider.fileRead( outputPath );
   test.identical( _.strCount( read, '<html' ), 1 );
-  test.identical( _.strCount( read, 'src="/.starter.raw.js"' ), 0 );
+  test.identical( _.strCount( read, 'src="/.starter"' ), 0 );
   test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
   test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
   test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
@@ -664,7 +664,7 @@ function shellHtmlFor( test )
 
     var read = _.fileProvider.fileRead( outputPath );
     test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter.raw.js"' ), 1 );
+    test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
     test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
     test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
     test.identical( _.strCount( read, '<title>' ), 1 );
@@ -694,7 +694,7 @@ function shellHtmlFor( test )
 
     var read = _.fileProvider.fileRead( outputPath );
     test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter.raw.js"' ), 1 );
+    test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
     test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
     test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
     test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
@@ -725,7 +725,7 @@ function shellHtmlFor( test )
 
     var read = _.fileProvider.fileRead( outputPath );
     test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter.raw.js"' ), 0 );
+    test.identical( _.strCount( read, 'src="/.starter"' ), 0 );
     test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
     test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
     test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
@@ -755,7 +755,7 @@ function shellHtmlFor( test )
 
     var read = _.fileProvider.fileRead( outputPath );
     test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter.raw.js"' ), 1 );
+    test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
     test.identical( _.strCount( read, './src="File1.js"' ), 0 );
     test.identical( _.strCount( read, './src="File2.js"' ), 0 );
     test.identical( _.strCount( read, '<script src' ), 1 );
@@ -792,12 +792,12 @@ var Self =
   tests :
   {
 
-    sourcesWrap,
-    shellFilesWrap,
-    shellFilesWrapWithEntry,
-    shellFilesWrapDep,
-    shellFilesWrapRequireInternal,
-    shellFilesWrapComplex,
+    sourcesJoin,
+    shellSourcesJoin,
+    shellSourcesJoinWithEntry,
+    shellSourcesJoinDep,
+    shellSourcesJoinRequireInternal,
+    shellSourcesJoinComplex,
 
     htmlFor,
     shellHtmlFor,

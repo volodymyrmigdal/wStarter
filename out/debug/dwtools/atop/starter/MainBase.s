@@ -111,7 +111,7 @@ function formAssociates()
 
 //
 
-function sourcesWrap( o )
+function sourcesJoin( o )
 {
   let starter = this;
   let fileProvider = starter.fileProvider;
@@ -119,7 +119,7 @@ function sourcesWrap( o )
   let logger = starter.logger;
   let maker = starter.maker;
 
-  o = _.routineOptions( sourcesWrap, arguments );
+  o = _.routineOptions( sourcesJoin, arguments );
 
   /* */
 
@@ -136,7 +136,7 @@ function sourcesWrap( o )
 
   /* */
 
-  o.outPath = o.outPath || sourcesWrap.defaults.outPath;
+  o.outPath = o.outPath || sourcesJoin.defaults.outPath;
   o.outPath = path.resolve( o.basePath, o.outPath );
 
   /* */
@@ -205,7 +205,7 @@ function sourcesWrap( o )
   delete o2.inPath;
   o2.filesMap = srcScriptsMap;
   debugger;
-  let data = maker.sourcesWrap( o2 )
+  let data = maker.sourcesJoin( o2 )
 
   _.sure( !fileProvider.isDir( o.outPath ), () => 'Can rewrite directory ' + _.color.strFormat( o.outPath, 'path' ) );
 
@@ -218,7 +218,7 @@ function sourcesWrap( o )
   return data;
 }
 
-var defaults = sourcesWrap.defaults = _.mapBut( _.StarterMakerLight.prototype.sourcesWrap.defaults, { filesMap : null } );
+var defaults = sourcesJoin.defaults = _.mapBut( _.StarterMakerLight.prototype.sourcesJoin.defaults, { filesMap : null } );
 defaults.inPath = null;
 defaults.outPath = 'Index.js';
 
@@ -252,7 +252,7 @@ function htmlFor( o )
 
   /* */
 
-  o.outPath = o.outPath || sourcesWrap.defaults.outPath;
+  o.outPath = o.outPath || sourcesJoin.defaults.outPath;
   o.outPath = path.resolve( o.basePath, o.outPath );
 
   /* */
@@ -432,7 +432,7 @@ let Proto =
   form,
   formAssociates,
 
-  sourcesWrap,
+  sourcesJoin,
   htmlFor,
   httpOpen,
   start,
