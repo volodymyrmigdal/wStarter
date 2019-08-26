@@ -33,7 +33,8 @@
     "wCopyable": "",
     "wFiles": "",
     "wverbal": "",
-    "wtemplatetreeenvironment": ""
+    "wtemplatetreeenvironment": "",
+    "open": ""
   },
   "devDependencies": {
     "express": "",

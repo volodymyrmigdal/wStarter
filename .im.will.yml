@@ -16,6 +16,12 @@ submodule :
   wTemplateTreeEnvironment :
     path : npm:///wtemplatetreeenvironment
     enabled : 0 # submodule
+  wTemplateTreeEnvironment :
+    path : npm:///wtemplatetreeenvironment
+    enabled : 0 # submodule
+  open:
+    Path : npm:///open
+    enabled : 0 # submodule
   wstarter :
     path : hd://.
     enabled : 0 # submodule
