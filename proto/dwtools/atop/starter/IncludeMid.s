@@ -11,7 +11,7 @@ if( typeof module !== 'undefined' )
 
   require( './legacy/StarterMaker.s' );
 
-  if( Config.platform === 'nodejs' )
+  if( Config.interpreter === 'njs' )
   require( './light/Servlet.ss' );
 
 }

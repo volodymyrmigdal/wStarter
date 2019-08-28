@@ -1,4 +1,4 @@
-( function _StarterWare_s_() {
+( function _WareCode_s_() {
 
 'use strict';
 
@@ -31,18 +31,19 @@ function _Begin()
   _global._global_ = _wasGlobal;
 
   if( !_global_.Config )
-  _global_.Config = {}
-  if( _global_.Config.platform === undefined )
-  _global_.Config.platform = ( ( typeof module !== 'undefined' ) && ( typeof process !== 'undefined' ) ) ? 'nodejs' : 'browser';
+  _global_.Config = Object.create( null );
+  if( _global_.Config.interpreter === undefined )
+  _global_.Config.interpreter = ( ( typeof module !== 'undefined' ) && ( typeof process !== 'undefined' ) ) ? 'njs' : 'browser';
   if( _global_.Config.isWorker === undefined )
   _global_.Config.isWorker = !!( typeof self !== 'undefined' && self.self === self && typeof importScripts !== 'undefined' );
 
-  if( _global._starter_ )
+  if( _global._starter_ && _global._starter_._inited )
   return;
 
   let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
   let _ = _starter_;
   let path = _starter_.path = _starter_.path || Object.create( null );
+  let sourcesMap = _starter_.sourcesMap = _starter_.sourcesMap || Object.create( null );
 
   //
 
@@ -95,7 +96,14 @@ function _Begin()
 
   function toStr( src )
   {
-    return String( src );
+    try
+    {
+      return String( src );
+    }
+    catch( err )
+    {
+      return '<COMPLEX>';
+    }
   }
 
   //

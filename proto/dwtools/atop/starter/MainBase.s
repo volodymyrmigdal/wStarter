@@ -204,7 +204,6 @@ function sourcesJoin( o )
   let o2 = _.mapExtend( null, o )
   delete o2.inPath;
   o2.filesMap = srcScriptsMap;
-  debugger;
   let data = maker.sourcesJoin( o2 )
 
   _.sure( !fileProvider.isDir( o.outPath ), () => 'Can rewrite directory ' + _.color.strFormat( o.outPath, 'path' ) );

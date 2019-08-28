@@ -1,4 +1,4 @@
-( function _Require_s_() {
+( function _BroCode_s_() {
 
 'use strict';
 
@@ -13,9 +13,16 @@ function _Begin()
 
   'use strict';
 
-  let _starter_ = _global_._starter_ = _global_._starter_ || Object.create( null );
+  let _global = _global_;
+  let _starter_ = _global_._starter_;
   let _ = _starter_;
-  let path = _starter_.path = _starter_.path || Object.create( null );
+  let path = _starter_.path;
+  let sourcesMap = _starter_.sourcesMap;
+
+  if( _global._starter_ && _global._starter_._inited )
+  return;
+
+  //
 
   let FilesCache = Object.create( null );
   function fileReadAct( o )
@@ -233,7 +240,13 @@ function _Begin()
 
   //
 
-  function _browserRemoteResolve( filePath )
+  function _broSourceFile( sourceFile, op )
+  {
+  }
+
+  //
+
+  function _broResolveRemote( filePath )
   {
     let starter = this;
 
@@ -263,16 +276,39 @@ function _Begin()
 
   //
 
-  function _browserInclude( parentSource, basePath, filePath )
+  function _broResolve( parentSource, basePath, filePath )
+  {
+    let resolvedFilePath = this._pathResolve( parentSource, basePath, filePath );
+    try
+    {
+      let read = this.fileRead
+      ({
+        filePath : resolvedFilePath,
+        sync : 1,
+      });
+      return resolvedFilePath;
+    }
+    catch( err )
+    {
+      debugger;
+      return null;
+    }
+  }
+
+  //
+
+  function _broInclude( parentSource, basePath, filePath )
   {
     let starter = this;
     let joinedFilePath = this._pathResolve( parentSource, basePath, filePath );
-    let resolvedFilePath = starter._browserRemoteResolve( joinedFilePath );
+    let resolvedFilePath = starter._broResolveRemote( joinedFilePath );
 
     if( _.arrayIs( resolvedFilePath ) )
     {
       if( resolvedFilePath !== joinedFilePath && !resolvedFilePath.length )
-      throw _.err( `No source file found for "${joinedFilePath}"` );
+      {
+        throw _.err( `No source file found for "${joinedFilePath}"` );
+      }
       let result = [];
       for( let f = 0 ; f < resolvedFilePath.length ; f++ )
       {
@@ -303,28 +339,40 @@ function _Begin()
     return starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
   }
 
-  //
+  // _broInclude.resolve = _broResolve;
 
-  function _browserResolve( parentSource, basePath, filePath )
+}
+
+//
+
+function _sourceCodeModule()
+{
+  debugger;
+
+  var handler =
   {
-    let resolvedFilePath = this._pathResolve( parentSource, basePath, filePath );
-    try
+    get : function( original, key )
     {
-      let read = this.fileRead
-      ({
-        filePath : resolvedFilePath,
-        sync : 1,
-      });
-      return resolvedFilePath;
+      return original[ key ]
     }
-    catch( err )
-    {
-      debugger;
-      return null;
-    }
-  }
+  };
 
-  _browserInclude.resolve = _browserResolve;
+  var proxy = new Proxy( {}, handler );
+  proxy.a = 1;
+  proxy.b = undefined;
+
+  return proxy;
+}
+
+//
+
+function _broInit()
+{
+  var starter = this;
+
+  debugger;
+  starter._sourceMake( 'module', '/', _sourceCodeModule );
+  debugger;
 
 }
 
@@ -337,16 +385,21 @@ function _End()
 
   let Extend =
   {
+
     fileReadAct,
     fileRead,
-    _browserRemoteResolve,
-    _browserInclude,
-    _browserResolve,
+
+    _broSourceFile,
+    _broResolveRemote,
+    _broResolve,
+    _broInclude,
+
+    _broInit,
+    _sourceCodeModule,
+
   }
 
   Object.assign( _starter_, Extend );
-
-  // _global_.require = _nativeInclude;
 
 }
 

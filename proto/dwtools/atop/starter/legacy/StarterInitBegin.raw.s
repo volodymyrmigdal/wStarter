@@ -393,7 +393,7 @@ function _scriptsPreload()
 {
 
   let includeAny = [ /\.s$/,/\.js$/ ];
-  if( Config.platform === 'nodejs' )
+  if( Config.interpreter === 'njs' )
   includeAny.push( /\.ss$/ );
 
   let files = _starter_.fileProvider.filesFindRecursive

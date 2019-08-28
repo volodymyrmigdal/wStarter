@@ -322,7 +322,7 @@ function ScriptWrap_functor( fop )
       basePath : fop.basePath,
       filePath : filePath,
       running : query.running,
-      platform : 'browser',
+      interpreter : 'browser',
     });
 
     let stream = fileProvider.streamRead
@@ -486,7 +486,7 @@ function ScriptWrap_functor( fop )
     {
       if( !ware )
       {
-        let splits = fop.starterMaker.sourcesJoinSplits({ platform : 'browser', libraryName : 'browser' });
+        let splits = fop.starterMaker.sourcesJoinSplits({ interpreter : 'browser', libraryName : 'Application' });
         ware = splits.prefix + splits.ware + splits.browser + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
       }
       o.response.write( ware );

@@ -1,4 +1,4 @@
-( function _StarterWare_s_() {
+( function _StarterCode_s_() {
 
 'use strict';
 
@@ -21,20 +21,20 @@ function _Begin()
   'use strict';
 
   let _global = _global_;
-  if( _global._starter_ && _global._starter_.SourceFile )
+  if( _global._starter_ && _global._starter_._inited )
   return;
 
-  let _starter_ = _global._starter_;
+  let _starter_ = _global_._starter_;
   let _ = _starter_;
-  let sourcesMap = _starter_.sourcesMap = _starter_.sourcesMap || Object.create( null );
-
-  let _nativeInclude = typeof require !== 'undefined' ? require : null;
-  let _nativeResolve = typeof require !== 'undefined' ? require.resolve : null;
+  let path = _starter_.path;
+  let sourcesMap = _starter_.sourcesMap;
 
   //
 
   function SourceFile( o )
   {
+    let starter = _starter_;
+
     if( !( this instanceof SourceFile ) )
     return new SourceFile( o );
 
@@ -46,10 +46,10 @@ function _Begin()
     if( o.isScript === undefined )
     o.isScript = true;
 
-    o.filePath = _starter_.path.canonizeTolerant( o.filePath );
+    o.filePath = starter.path.canonizeTolerant( o.filePath );
     if( !o.dirPath )
-    o.dirPath = _starter_.path.dir( o.filePath );
-    o.dirPath = _starter_.path.canonizeTolerant( o.dirPath );
+    o.dirPath = starter.path.dir( o.filePath );
+    o.dirPath = starter.path.canonizeTolerant( o.dirPath );
 
     this.filePath = o.filePath;
     this.dirPath = o.dirPath;
@@ -63,14 +63,11 @@ function _Begin()
     this.error = null;
     this.state = o.nakedCall ? 'preloaded' : 'created';
 
-    this.starter = _starter_;
-    this.include = _starter_._sourceInclude.bind( _starter_, this, this.dirPath );
-    this.resolve = _starter_._sourceResolve.bind( _starter_, this, this.dirPath );
+    this.starter = starter;
+    this.include = starter._sourceInclude.bind( starter, this, this.dirPath );
+    this.resolve = starter._sourceResolve.bind( starter, this, this.dirPath );
     this.include.resolve = this.resolve;
     this.include.sourceFile = this;
-
-    this._nativeInclude = _nativeInclude;
-    this._nativeResolve = _nativeResolve;
 
     /* njs compatibility */
 
@@ -78,66 +75,30 @@ function _Begin()
     this.loaded = false;
     this.id = o.filePath;
 
-    // console.log( 'SourceFile', this.filePath );
+    if( _platform_ === 'browser' )
+    starter._broSourceFile( this, o );
+    else
+    starter._njsSourceFile( this, o );
 
-    _starter_.sourcesMap[ o.filePath ] = this;
+    starter.sourcesMap[ o.filePath ] = this;
     Object.preventExtensions( this );
     return this;
   }
 
   //
 
-  function _njsModuleFromSource( sourceFile )
+  function _sourceMake( filePath, dirPath, nakedCall )
   {
-    if( sourceFile.njsModule )
-    return sourceFile.njsModule;
-    let Module = _nativeInclude( 'module' );
-    let nativePath = this.path.nativize( sourceFile.filePath );
-    let njsModule = Module._cache[ nativePath ];
-    if( !njsModule )
-    {
-      njsModule = new Module( nativePath, sourceFile.parent ? sourceFile.parent.njsModule : null );
-      Module._cache[ nativePath ] = njsModule;
-    }
-    njsModule.sourceFile = sourceFile;
-    sourceFile.njsModule = njsModule;
-    return njsModule;
-  }
-
-  //
-
-  function _pathResolve( sourceFile, basePath, filePath )
-  {
-
-    if( sourceFile && !basePath )
-    {
-      basePath = sourceFile.dirPath;
-    }
-
-    if( !basePath && !sourceFile )
-    {
-      debugger;
-      throw 'Base path is not specified, neither script file';
-    }
-
-    let isRelative = _.strBegins( filePath, './' ) || _.strBegins( filePath, '../' ) || filePath === '.' || filePath === '..';
-
-    filePath = _starter_.path.canonizeTolerant( filePath );
-
-    if( isRelative && filePath[ 0 ] !== '/' )
-    {
-      filePath = _starter_.path.canonizeTolerant( basePath + '/' + filePath );
-      if( filePath[ 0 ] !== '/' )
-      filePath = './' + filePath;
-    }
-
-    return filePath;
+    let r = SourceFile({ filePath, dirPath, nakedCall });
+    return r;
   }
 
   //
 
   function _sourceIncludeAct( parentSource, childSource, sourcePath )
   {
+    let starter = this;
+
     try
     {
 
@@ -153,8 +114,8 @@ function _Begin()
       childSource.loaded = true;
       childSource.state = 'opened';
 
-      if( Config.platform === 'nodejs' )
-      _starter_._njsModuleFromSource( childSource );
+      if( Config.interpreter === 'njs' )
+      starter._njsModuleFromSource( childSource );
 
     }
     catch( err )
@@ -175,17 +136,9 @@ function _Begin()
 
   //
 
-  function _sourceIncludeFromNjsAct( njsModule, childSource, sourcePath )
-  {
-    let parentSource = njsModule.sourceFile || null;
-    return this._sourceIncludeAct( parentSource, childSource, sourcePath );
-  }
-
-  //
-
   function _sourceInclude( parentSource, basePath, filePath )
   {
-    let starter = this;
+    let starter = this; debugger;
 
     if( _.arrayIs( filePath ) )
     {
@@ -201,23 +154,14 @@ function _Begin()
       return result;
     }
 
-    let childSource = _starter_._sourceForIncludeGet.apply( starter, arguments );
+    let childSource = starter._sourceForIncludeGet.apply( starter, arguments );
     if( childSource )
-    return _starter_._sourceIncludeAct( parentSource, childSource, filePath );
+    return starter._sourceIncludeAct( parentSource, childSource, filePath );
 
     if( _platform_ === 'browser' )
-    {
-      return starter._browserInclude( parentSource, basePath, filePath );
-    }
+    return starter._broInclude( parentSource, basePath, filePath );
     else
-    {
-      let _nativeInclude;
-      if( parentSource )
-      _nativeInclude = parentSource._nativeInclude;
-      else
-      _nativeInclude = _starter_._nativeInclude;
-      return _nativeInclude( filePath );
-    }
+    return starter._njsInclude( parentSource, basePath, filePath );
 
   }
 
@@ -231,24 +175,11 @@ function _Begin()
 
     if( _platform_ === 'browser' )
     {
-      return this._browserResolve( parentSource, basePath, filePath );
+      return this._broResolve( parentSource, basePath, filePath );
     }
     else
     {
-
-      let _nativeResolve
-      if( parentSource )
-      {
-        debugger;
-        _nativeResolve = parentSource._nativeResolve;
-      }
-      else
-      {
-        debugger;
-        _nativeResolve = this._nativeResolve;
-      }
-
-      return _nativeResolve( filePath );
+      return this._njsResolve( parentSource, basePath, filePath );
     }
 
   }
@@ -257,7 +188,8 @@ function _Begin()
 
   function _sourceOwnResolve( parentSource, basePath, filePath )
   {
-    let childSource = _starter_._sourceForIncludeGet.apply( this, arguments );
+    let starter = this;
+    let childSource = starter._sourceForIncludeGet.apply( this, arguments );
     if( !childSource )
     return null;
     return childSource.filePath;
@@ -287,63 +219,33 @@ function _Begin()
 
   //
 
-  function _sourceWithNjsModuleGet( njsModule, filePath )
+  function _pathResolve( sourceFile, basePath, filePath )
   {
-    let sourceFile = njsModule.sourceFile || null;
-    return this._sourceForIncludeGet( sourceFile, this.path.dir( njsModule.filename ), filePath );
-  }
+    let starter = this;
 
-  //
-
-  function _sourceFromNjsModule( njsModule )
-  {
-    let r = this._sourceForPathGet( njsModule.filename );
-    if( r )
-    return r;
-    r = SourceFile({ filePath : njsModule.filename, njsModule });
-    if( !r.parent )
-    if( njsModule.parent )
-    r.parent = this._sourceFromNjsModule( njsModule.parent );
-    return r;
-  }
-
-  //
-
-  function _sourceMake( filePath, dirPath, nakedCall )
-  {
-    let r = SourceFile({ filePath, dirPath, nakedCall });
-    return r;
-  }
-
-  //
-
-  function _initNjs()
-  {
-    let Module = _nativeInclude( 'module' );
-    let NjsResolveFilename = Module._resolveFilename;
-    Module._resolveFilename = function _resolveFilename( request, parent, isMain, options )
+    if( sourceFile && !basePath )
     {
-      let result = _starter_._sourceOwnResolve( parent, null, request );
-      if( result === null )
-      return NjsResolveFilename.apply( this, arguments );
-      return result;
+      basePath = sourceFile.dirPath;
     }
-    let NjsLoad = Module._load;
-    Module._load = function _load( request, parent, isMain )
+
+    if( !basePath && !sourceFile )
     {
-      if( !parent.sourceFile )
-      _starter_._sourceFromNjsModule( parent );
-      let childSource = _starter_._sourceWithNjsModuleGet( parent, request );
-      if( childSource === null )
-      {
-        let result = NjsLoad.apply( this, arguments );
-        let child = Module._cache[ NjsResolveFilename.apply( this, arguments ) ];
-        if( child )
-        _starter_._sourceFromNjsModule( child );
-        return result;
-      }
-      return _starter_._sourceIncludeFromNjsAct( parent, childSource, request );
+      debugger;
+      throw 'Base path is not specified, neither script file';
     }
+
+    let isRelative = _.strBegins( filePath, './' ) || _.strBegins( filePath, '../' ) || filePath === '.' || filePath === '..';
+
+    filePath = starter.path.canonizeTolerant( filePath );
+
+    if( isRelative && filePath[ 0 ] !== '/' )
+    {
+      filePath = starter.path.canonizeTolerant( basePath + '/' + filePath );
+      if( filePath[ 0 ] !== '/' )
+      filePath = './' + filePath;
+    }
+
+    return filePath;
   }
 
   //
@@ -355,8 +257,10 @@ function _Begin()
       debugger;
       return;
     }
-    if( Config.platform === 'nodejs' )
-    this._initNjs();
+    if( Config.interpreter === 'njs' )
+    this._njsInit();
+    else
+    this._broInit();
     this._inited = 1;
   }
 
@@ -381,22 +285,16 @@ function _End()
 
     SourceFile,
 
-    _njsModuleFromSource,
-    _pathResolve,
-
-    _nativeInclude,
+    _sourceMake,
     _sourceIncludeAct,
-    _sourceIncludeFromNjsAct,
     _sourceInclude,
     _sourceResolve,
     _sourceOwnResolve,
     _sourceForPathGet,
     _sourceForIncludeGet,
-    _sourceWithNjsModuleGet,
-    _sourceFromNjsModule,
-    _sourceMake,
 
-    _initNjs,
+    _pathResolve,
+
     _init,
 
   }

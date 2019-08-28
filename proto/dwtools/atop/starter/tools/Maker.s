@@ -40,7 +40,7 @@ function sourceWrapSplits( o )
 
   _.routineOptions( sourceWrapSplits, arguments );
   _.assert( arguments.length === 1 );
-  _.assert( _.arrayHas( [ 'njs', 'browser' ], o.platform ) );
+  _.assert( _.arrayHas( [ 'njs', 'browser' ], o.interpreter ) );
 
   let relativeFilePath = _.path.dot( _.path.relative( o.basePath, o.filePath ) );
   let relativeDirPath = _.path.dot( _.path.dir( relativeFilePath ) );
@@ -54,7 +54,7 @@ function sourceWrapSplits( o )
 
   let ware = '\n';
 
-  if( o.platform === 'browser' )
+  if( o.interpreter === 'browser' )
   ware +=
 `
 /* */  let _filePath_ = _starter_._pathResolve( null, '/', '${relativeFilePath}' );
@@ -63,8 +63,8 @@ function sourceWrapSplits( o )
   else
   ware +=
 `
-/* */  let _filePath_ = _starter_._pathResolve( null, _libraryDirPath_, '${relativeFilePath}' );
-/* */  let _dirPath_ = _starter_._pathResolve( null, _libraryDirPath_, '${relativeDirPath}' );
+/* */  let _filePath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeFilePath}' );
+/* */  let _dirPath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeDirPath}' );
 `
 
   ware +=
@@ -98,7 +98,7 @@ sourceWrapSplits.defaults =
   filePath : null,
   basePath : null,
   running : 0,
-  platform : 'njs',
+  interpreter : 'njs',
 }
 
 //
@@ -184,7 +184,7 @@ function sourcesJoinSplits( o )
   let r = Object.create( null );
   r.prefix = '';
   r.ware = '';
-  r.browser = '';
+  r.interpreter = '';
   r.starter = '';
   r.env = '';
   r.externalBefore = '';
@@ -194,7 +194,7 @@ function sourcesJoinSplits( o )
   Object.preventExtensions( r );
 
   o = _.routineOptions( sourcesJoinSplits, arguments );
-  _.assert( _.arrayHas( [ 'njs', 'browser' ], o.platform ) );
+  _.assert( _.arrayHas( [ 'njs', 'browser' ], o.interpreter ) );
 
   if( o.entryPath )
   {
@@ -263,6 +263,7 @@ function sourcesJoinSplits( o )
   ${gr( 'rangeIs' )}
   ${gr( 'numbersAre' )}
   ${gr( 'bufferTypedIs' )}
+  ${gr( 'bufferNodeIs' )}
 
   ${pr( 'refine' )}
   ${pr( '_normalize' )}
@@ -279,7 +280,7 @@ function sourcesJoinSplits( o )
   ${_.routineParse( self.WareCode.end ).bodyUnwrapped};
   `
 
-  if( o.platform === 'browser' )
+  if( o.interpreter === 'browser' )
   r.ware +=
 `
 
@@ -291,18 +292,31 @@ function sourcesJoinSplits( o )
 
 `
 
-  /* browser */
+  /* bro */
 
-  r.browser = '';
-  if( o.platform === 'browser' )
-  r.browser =
+  if( o.interpreter === 'browser' )
+  r.interpreter =
 `
-/* */  /* end of browser */ ( function _Browser_() {
+/* */  /* end of bro */ ( function _Bro_() {
 
-  ${_.routineParse( self.BrowserCode.begin ).bodyUnwrapped};
-  ${_.routineParse( self.BrowserCode.end ).bodyUnwrapped};
+  ${_.routineParse( self.BroCode.begin ).bodyUnwrapped};
+  ${_.routineParse( self.BroCode.end ).bodyUnwrapped};
 
-/* */  /* end of browser */ })();
+/* */  /* end of bro */ })();
+
+`
+
+  /* njs */
+
+  if( o.interpreter === 'njs' )
+  r.interpreter =
+`
+/* */  /* end of njs */ ( function _Njs_() {
+
+  ${_.routineParse( self.NjsCode.begin ).bodyUnwrapped};
+  ${_.routineParse( self.NjsCode.end ).bodyUnwrapped};
+
+/* */  /* end of njs */ })();
 
 `
 
@@ -314,7 +328,7 @@ function sourcesJoinSplits( o )
 
   ${_.routineParse( self.StarterCode.begin ).bodyUnwrapped};
 
-/* */  let _platform_ = '${o.platform}';
+/* */  let _platform_ = '${o.interpreter}';
 
   ${_.routineParse( self.StarterCode.end ).bodyUnwrapped};
 
@@ -326,19 +340,19 @@ function sourcesJoinSplits( o )
 
   r.env = ``;
 
-  if( o.platform !== 'browser' )
+  if( o.interpreter !== 'browser' )
   r.env +=
 `
 /* */  let _libraryFilePath_ = _starter_.path.canonizeTolerant( __filename );
-/* */  let _libraryDirPath_ = _starter_.path.canonizeTolerant( __filename );
+/* */  let _libraryDirPath_ = _starter_.path.canonizeTolerant( __dirname );
 
 `
 
-  if( o.platform === 'browser' )
+  if( o.interpreter === 'browser' )
   r.env +=
 `
 /* */  if( !_global_._libraryFilePath_ )
-/* */  _global_._libraryFilePath_ = '/Index.html';
+/* */  _global_._libraryFilePath_ = '/';
 /* */  if( !_global_._libraryDirPath_ )
 /* */  _global_._libraryDirPath_ = '/';
 `
@@ -346,16 +360,6 @@ function sourcesJoinSplits( o )
   /* code */
 
   /* ... code goes here ... */
-
-  /* entry */
-
-  r.entry = '\n';
-  if( o.entryPath )
-  o.entryPath.forEach( ( entryPath ) =>
-  {
-    entryPath = _.path.relative( o.basePath, entryPath );
-    r.entry += `/* */  module.exports = _starter_._sourceInclude( null, _libraryDirPath_, './${entryPath}' );\n`;
-  });
 
   /* external */
 
@@ -368,6 +372,7 @@ function sourcesJoinSplits( o )
   {
     if( _.path.isAbsolute( externalPath ) )
     externalPath = _.path.dot( _.path.relative( _.path.dir( o.outPath ), externalPath ) );
+    r.externalBefore += `/* */  debugger;`;
     r.externalBefore += `/* */  _starter_._sourceInclude( null, _libraryDirPath_, '${externalPath}' );\n`;
   });
 
@@ -378,6 +383,16 @@ function sourcesJoinSplits( o )
     if( _.path.isAbsolute( externalPath ) )
     externalPath = _.path.dot( _.path.relative( _.path.dir( o.outPath ), externalPath ) );
     r.externalAfter += `/* */  _starter_._sourceInclude( null, _libraryDirPath_, '${externalPath}' );\n`;
+  });
+
+  /* entry */
+
+  r.entry = '\n';
+  if( o.entryPath )
+  o.entryPath.forEach( ( entryPath ) =>
+  {
+    entryPath = _.path.relative( o.basePath, entryPath );
+    r.entry += `/* */  module.exports = _starter_._sourceInclude( null, _libraryFilePath_, './${entryPath}' );\n`;
   });
 
   /* postfix */
@@ -447,7 +462,7 @@ sourcesJoinSplits.defaults =
   libraryName : null,
   externalBeforePath : null,
   externalAfterPath : null,
-  platform : 'njs',
+  interpreter : 'njs',
 }
 
 //
@@ -483,10 +498,10 @@ function sourcesJoin( o )
     externalBeforePath : o.externalBeforePath,
     externalAfterPath : o.externalAfterPath,
     outPath : o.outPath,
-    platform : o.platform,
+    interpreter : o.interpreter,
   });
 
-  result = splits.prefix + splits.ware + splits.browser + splits.starter + splits.env + result + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
+  result = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + result + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
 
   return result;
 }
@@ -609,7 +624,8 @@ let Restricts =
 let Statics =
 {
   WareCode : require( './WareCode.s' ),
-  BrowserCode : require( './BrowserCode.s' ),
+  BroCode : require( './BroCode.s' ),
+  NjsCode : require( './NjsCode.s' ),
   StarterCode : require( './StarterCode.s' ),
   InstanceDefaults,
 }
