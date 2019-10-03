@@ -105,7 +105,7 @@ trivial.timeOut = 60000;
 var Self =
 {
 
-  name : 'Tools/mid/StarterLegacy',
+  name : 'Tools.mid.StarterLegacy',
   silencing : 1,
   enabled : 1,
 

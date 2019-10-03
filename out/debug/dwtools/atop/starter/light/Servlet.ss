@@ -43,7 +43,7 @@ function form()
 
   starter.servletsMap[ servlet.servePath ] = servlet;
 
-  let parsedServerPath = _.servlet.serverPathParse({ serverPath : servlet.serverPath });
+  let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
   servlet.serverPath = parsedServerPath.full;
   _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
 
@@ -98,14 +98,16 @@ function form()
   express.use( ( request, response, next ) => servlet.requestPostHandler({ request, response, next }) );
   express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
 
+  debugger;
   let o3 = _.servlet.controlExpressStart
   ({
-    name : servlet.nickName,
+    name : servlet.qualifiedName,
     verbosity : starter.verbosity - 1,
     server : servlet.server,
     express : servlet.express,
     serverPath : servlet.serverPath,
   });
+  debugger;
 
   servlet.server = o3.server;
   servlet.express = o3.express;
@@ -191,6 +193,20 @@ function _verbosityGet()
   if( !servlet.starter )
   return 9;
   return servlet.starter.verbosity;
+}
+
+//
+
+function openPathGet()
+{
+  let servlet = this;
+
+  let parsedServerPath = _.uri.parseAtomic({ full : servlet.serverPath });
+
+  if( parsedServerPath.host === '0.0.0.0' )
+  parsedServerPath.host = '127.0.0.1';
+
+  return _.uri.str( parsedServerPath );
 }
 
 // //
@@ -395,8 +411,8 @@ function ScriptWrap_functor( fop )
         filter,
         mode : 'distinct',
         mandatory : 0,
-        includingDirs : 0,
-        includingDefunct : 0,
+        withDirs : 0,
+        withDefunct : 0,
       });
 
       if( !resolvedFilePath.length )
@@ -455,7 +471,7 @@ function ScriptWrap_functor( fop )
           filter,
           mode : 'distinct',
           mandatory : 0,
-          includingDirs : 0,
+          withDirs : 0,
         });
 
         resolvedFilePath.forEach( ( p ) => surePathAllowed( p.absolute ) );
@@ -487,7 +503,7 @@ function ScriptWrap_functor( fop )
       if( !ware )
       {
         let splits = fop.starterMaker.sourcesJoinSplits({ interpreter : 'browser', libraryName : 'Application' });
-        ware = splits.prefix + splits.ware + splits.browser + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
+        ware = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
       }
       o.response.write( ware );
       o.response.end();
@@ -542,7 +558,8 @@ let Composes =
 {
 
   servingDirs : 0,
-  serverPath : 'http://127.0.0.1:5000',
+  // serverPath : 'http://127.0.0.1:5000',
+  serverPath : 'http://0.0.0.0:5000',
   basePath : null,
   allowedPath : '/',
 
@@ -589,6 +606,7 @@ let Proto =
   requestErrorHandler,
 
   _verbosityGet,
+  openPathGet,
 
   ScriptWrap_functor,
 

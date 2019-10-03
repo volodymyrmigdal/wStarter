@@ -50,7 +50,7 @@ function exec()
 
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
-  let appArgs = _.appArgs();
+  let appArgs = _.process.args();
   let ca = starter.commandsMake();
 
   return _.Consequence
@@ -60,7 +60,7 @@ function exec()
   })
   .catch( ( err ) =>
   {
-    _.appExitCode( -1 );
+    _.process.exitCode( -1 );
     return _.errLogOnce( err );
   });
 }
@@ -72,7 +72,7 @@ function commandsMake()
   let starter = this;
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
-  let appArgs = _.appArgs();
+  let appArgs = _.process.args();
 
   _.assert( _.instanceIs( starter ) );
   _.assert( arguments.length === 0 );
@@ -131,7 +131,7 @@ function commandImply( e )
 
   let request = starter.Resolver.strRequestParse( e.argument );
 
-  _.appArgsReadTo
+  _.process.argsReadTo
   ({
     dst : starter,
     propertiesMap : request.map,

@@ -400,8 +400,8 @@ function _scriptsPreload()
   ({
     filePath : '/',
     onUp : onUp,
-    includingTransient : 0,
-    includingDirs : 0,
+    withTransient/*maybe withStem*//*maybe withStem*/ : 0,
+    withDirs : 0,
     resolvingSoftLink : 0,
     resolvingTextLink : 0,
     filter :
@@ -735,8 +735,8 @@ function _includeMature( bound, filePath )
 
     let o = Object.create( null );
     o.filter = fileProvider.RecordFilter.And( { system : fileProvider }, _starter_.includeDefaults.filter, scriptFile.include.filter );
-    o.includingTransient = 0;
-    o.includingDirs = 0;
+    o.withTransient/*maybe withStem*//*maybe withStem*/ = 0;
+    o.withDirs = 0;
     o.resolvingSoftLink = 0;
     o.resolvingTextLink = 0;
     o.filePath = filePath;

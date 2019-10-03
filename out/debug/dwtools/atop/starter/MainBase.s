@@ -152,7 +152,7 @@ function sourcesJoin( o )
       outputFormat : 'absolute',
     });
     if( !_.arrayHasAll( o.inPath, o.entryPath ) )
-    throw _.errBriefly
+    throw _.errBrief
     (
       'List of source files should have all entry files' +
       '\nSource files\n' + _.toStrNice( o.inPath, { levels : 2 } ) +
@@ -307,16 +307,16 @@ function httpOpen( o )
   let maker = starter.maker;
 
   _.routineOptions( httpOpen, arguments );
+  _.assert( starter.servlet === null );
 
   o.basePath = path.resolve( o.basePath );
   o.allowedPath = path.resolve( o.allowedPath );
   o.starter = starter;
 
-  let servlet = new starter.Servlet( o );
+  starter.servlet = new starter.Servlet( o );
+  starter.servlet.form();
 
-  servlet.form();
-
-  return servlet;
+  return starter.servlet;
 }
 
 httpOpen.defaults =
@@ -350,12 +350,12 @@ function start( o )
     filter,
     mode : 'distinct',
     mandatory : 0,
-    includingDirs : 0,
-    includingDefunct : 0,
+    withDirs : 0,
+    withDefunct : 0,
   });
 
   if( !found.length )
-  throw _.errBriefly( `Found no ${o.entryPath}` );
+  throw _.errBrief( `Found no ${o.entryPath}` );
 
   /* */
 
@@ -368,8 +368,7 @@ function start( o )
   if( !Open )
   Open = require( 'open' );
 
-  debugger;
-  Open( _.uri.join( servlet.serverPath, found[ 0 ].relative, '?entry:1' ) );
+  Open( _.uri.join( servlet.openPathGet(), found[ 0 ].relative, '?entry:1' ) );
 
   return servlet;
 }
@@ -400,6 +399,7 @@ let Associates =
   maker : null,
   fileProvider : null,
   logger : null,
+  servlet : null,
 
 }
 

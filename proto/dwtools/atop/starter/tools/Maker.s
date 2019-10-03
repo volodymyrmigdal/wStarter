@@ -297,7 +297,7 @@ function sourcesJoinSplits( o )
   if( o.interpreter === 'browser' )
   r.interpreter =
 `
-/* */  /* end of bro */ ( function _Bro_() {
+/* */  /* begin of bro */ ( function _Bro_() {
 
   ${_.routineParse( self.BroCode.begin ).bodyUnwrapped};
   ${_.routineParse( self.BroCode.end ).bodyUnwrapped};
@@ -311,7 +311,7 @@ function sourcesJoinSplits( o )
   if( o.interpreter === 'njs' )
   r.interpreter =
 `
-/* */  /* end of njs */ ( function _Njs_() {
+/* */  /* begin of njs */ ( function _Njs_() {
 
   ${_.routineParse( self.NjsCode.begin ).bodyUnwrapped};
   ${_.routineParse( self.NjsCode.end ).bodyUnwrapped};
@@ -328,7 +328,7 @@ function sourcesJoinSplits( o )
 
   ${_.routineParse( self.StarterCode.begin ).bodyUnwrapped};
 
-/* */  let _platform_ = '${o.interpreter}';
+/* */  let _interpreter_ = '${o.interpreter}';
 
   ${_.routineParse( self.StarterCode.end ).bodyUnwrapped};
 
@@ -372,7 +372,7 @@ function sourcesJoinSplits( o )
   {
     if( _.path.isAbsolute( externalPath ) )
     externalPath = _.path.dot( _.path.relative( _.path.dir( o.outPath ), externalPath ) );
-    r.externalBefore += `/* */  debugger;`;
+    // r.externalBefore += `/* */  debugger;`;
     r.externalBefore += `/* */  _starter_._sourceInclude( null, _libraryDirPath_, '${externalPath}' );\n`;
   });
 

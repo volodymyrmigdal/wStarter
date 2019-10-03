@@ -4,11 +4,9 @@
 
 let _ = wTools;
 
-// debugger;
 // let wasPrepareStackTrace = Error.prepareStackTrace;
 // Error.prepareStackTrace = function( err, stack )
 // {
-//   debugger;
 // }
 
 // --
@@ -34,14 +32,10 @@ function _Begin()
   function SourceFile( o )
   {
     let starter = _starter_;
+    let sourceFile = this;
 
-    if( !( this instanceof SourceFile ) )
+    if( !( sourceFile instanceof SourceFile ) )
     return new SourceFile( o );
-
-    if( o.njsModule === undefined )
-    o.njsModule = null;
-    if( o.njsModule )
-    o.njsModule.sourceFile = this;
 
     if( o.isScript === undefined )
     o.isScript = true;
@@ -51,38 +45,65 @@ function _Begin()
     o.dirPath = starter.path.dir( o.filePath );
     o.dirPath = starter.path.canonizeTolerant( o.dirPath );
 
-    this.filePath = o.filePath;
-    this.dirPath = o.dirPath;
-    this.nakedCall = o.nakedCall;
-    this.isScript = o.isScript;
+    sourceFile.filePath = o.filePath;
+    sourceFile.dirPath = o.dirPath;
+    sourceFile.nakedCall = o.nakedCall;
+    sourceFile.isScript = o.isScript;
 
-    this.filename = o.filePath;
-    this.exports = undefined;
-    this.parent = null;
-    this.njsModule = o.njsModule;
-    this.error = null;
-    this.state = o.nakedCall ? 'preloaded' : 'created';
+    sourceFile.filename = o.filePath;
+    sourceFile.exports = undefined;
+    sourceFile.parent = null;
+    sourceFile.njsModule = o.njsModule;
+    sourceFile.error = null;
+    sourceFile.state = o.nakedCall ? 'preloaded' : 'created';
 
-    this.starter = starter;
-    this.include = starter._sourceInclude.bind( starter, this, this.dirPath );
-    this.resolve = starter._sourceResolve.bind( starter, this, this.dirPath );
-    this.include.resolve = this.resolve;
-    this.include.sourceFile = this;
+    sourceFile.starter = starter;
+    sourceFile.include = starter._sourceInclude.bind( starter, sourceFile, sourceFile.dirPath );
+    sourceFile.resolve = starter._sourceResolve.bind( starter, sourceFile, sourceFile.dirPath );
+    sourceFile.include.resolve = sourceFile.resolve;
+    sourceFile.include.sourceFile = sourceFile;
 
     /* njs compatibility */
 
-    this.path = [ '/' ];
-    this.loaded = false;
-    this.id = o.filePath;
+    sourceFile.path = [ '/' ];
+    getter( 'id', idGet );
+    getter( 'loaded', loadedGet );
 
-    if( _platform_ === 'browser' )
-    starter._broSourceFile( this, o );
+    /* interpreter-specific */
+
+    if( _interpreter_ === 'browser' )
+    starter._broSourceFile( sourceFile, o );
     else
-    starter._njsSourceFile( this, o );
+    starter._njsSourceFile( sourceFile, o );
 
-    starter.sourcesMap[ o.filePath ] = this;
-    Object.preventExtensions( this );
-    return this;
+    /* */
+
+    starter.sourcesMap[ o.filePath ] = sourceFile;
+    Object.preventExtensions( sourceFile );
+    return sourceFile;
+
+    /* - */
+
+    function idGet()
+    {
+      return this.filePath;
+    }
+
+    function loadedGet()
+    {
+      return this.state === 'opened';
+    }
+
+    function getter( fieldName, onGet )
+    {
+      Object.defineProperty( sourceFile, fieldName,
+      {
+        enumerable : true,
+        configurable : true,
+        get : onGet,
+      });
+    }
+
   }
 
   //
@@ -111,7 +132,6 @@ function _Begin()
       childSource.state = 'opening';
       childSource.parent = parentSource || null;
       childSource.nakedCall.call( childSource );
-      childSource.loaded = true;
       childSource.state = 'opened';
 
       if( Config.interpreter === 'njs' )
@@ -120,8 +140,6 @@ function _Begin()
     }
     catch( err )
     {
-      // debugger;
-      // err.message += '\nError including ' + ( childSource ? childSource.filePath : 'source file' );
       err = _.err( err, `\nError including source file ${ childSource ? childSource.filePath : '' }` );
       if( childSource )
       {
@@ -138,7 +156,7 @@ function _Begin()
 
   function _sourceInclude( parentSource, basePath, filePath )
   {
-    let starter = this; debugger;
+    let starter = this;
 
     if( _.arrayIs( filePath ) )
     {
@@ -158,7 +176,7 @@ function _Begin()
     if( childSource )
     return starter._sourceIncludeAct( parentSource, childSource, filePath );
 
-    if( _platform_ === 'browser' )
+    if( _interpreter_ === 'browser' )
     return starter._broInclude( parentSource, basePath, filePath );
     else
     return starter._njsInclude( parentSource, basePath, filePath );
@@ -173,7 +191,7 @@ function _Begin()
     if( result !== null )
     return result;
 
-    if( _platform_ === 'browser' )
+    if( _interpreter_ === 'browser' )
     {
       return this._broResolve( parentSource, basePath, filePath );
     }

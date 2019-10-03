@@ -47,8 +47,15 @@ function _Begin()
 
   //
 
-  function assert()
+  function assert( good )
   {
+    if( !good )
+    {
+      debugger;
+      throw 'Something wrong!';
+      return false;
+    }
+    return true;
   }
 
   //

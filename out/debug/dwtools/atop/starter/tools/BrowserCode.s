@@ -321,58 +321,89 @@ function _Begin()
       return result;
     }
 
-    let read = starter.fileRead
-    ({
-      filePath : resolvedFilePath + '?running:0',
-      sync : 1,
-    });
+    try
+    {
 
-    read += '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
+      let read = starter.fileRead
+      ({
+        filePath : resolvedFilePath + '?running:0',
+        sync : 1,
+      });
 
-    let script = document.createElement( 'script' );
-    script.type = 'text/javascript';
-    var scriptCode = document.createTextNode( read );
-    script.appendChild( scriptCode );
-    document.head.appendChild( script );
+      read += '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
 
-    let childSource = starter._sourceForPathGet( resolvedFilePath );
-    return starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
+      let script = document.createElement( 'script' );
+      script.type = 'text/javascript';
+      var scriptCode = document.createTextNode( read );
+      script.appendChild( scriptCode );
+      document.head.appendChild( script );
+
+      let childSource = starter._sourceForPathGet( resolvedFilePath );
+      return starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
+    }
+    catch( err )
+    {
+      throw _.err( `Failed to include ${resolvedFilePath}\n`, err );
+    }
+
   }
 
   // _broInclude.resolve = _broResolve;
 
-}
+  //
 
-//
-
-function _sourceCodeModule()
-{
-  debugger;
-
-  var handler =
+  function _sourceCodeModule()
   {
-    get : function( original, key )
+    var result = Object.create( null );
+
+    accesor( '_cache', chacheGet, chacheSet );
+
+    this.exports = result;
+
+    // var handler =
+    // {
+    //   get : function( original, key )
+    //   {
+    //     return original[ key ]
+    //   }
+    // };
+    //
+    // var proxy = new Proxy( _starter_, handler );
+    // proxy.a = 1;
+    // proxy.b = undefined;
+    //
+    // return proxy;
+
+    function chacheGet()
     {
-      return original[ key ]
+      return _starter_.sourcesMap;
     }
-  };
 
-  var proxy = new Proxy( {}, handler );
-  proxy.a = 1;
-  proxy.b = undefined;
+    function chacheSet( src )
+    {
+      return _starter_.sourcesMap = src;
+    }
 
-  return proxy;
-}
+    function accesor( fieldName, onGet, onSet )
+    {
+      Object.defineProperty( result, fieldName,
+      {
+        enumerable : true,
+        configurable : true,
+        get : onGet,
+        set : onSet,
+      });
+    }
 
-//
+  }
 
-function _broInit()
-{
-  var starter = this;
+  //
 
-  debugger;
-  starter._sourceMake( 'module', '/', _sourceCodeModule );
-  debugger;
+  function _broInit()
+  {
+    var starter = this;
+    starter._sourceMake( 'module', '/', _sourceCodeModule );
+  }
 
 }
 

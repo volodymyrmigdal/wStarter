@@ -24,13 +24,13 @@ function onSuiteBegin()
 {
   let self = this;
 
-  self.tempDir = _.path.dirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
+  self.tempDir = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
   self.assetDirPath = _.path.join( __dirname, '_asset' );
   self.find = _.fileProvider.filesFinder
   ({
-    includingTerminals : 1,
-    includingDirs : 1,
-    includingTransient : 1,
+    withTerminals : 1,
+    withDirs : 1,
+    withTransient/*maybe withStem*/ : 1,
     allowingMissed : 1,
     maskPreset : 0,
     outputFormat : 'relative',
@@ -48,7 +48,7 @@ function onSuiteBegin()
 function onSuiteEnd()
 {
   let self = this;
-  _.assert( _.strHas( self.tempDir, '/dwtools/tmp.tmp' ) )
+  _.assert( _.strHas( self.tempDir, '/dwtools/tmp.tmp' ) || _.strHas( self.tempDir, '/Temp/' ) )
   _.fileProvider.filesDelete( self.tempDir );
 }
 
@@ -65,7 +65,7 @@ function sourcesJoin( test )
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
 
-  let shell = _.sheller
+  let shell = _.process.starter
   ({
     execPath : 'node',
     currentPath : routinePath,
@@ -123,7 +123,7 @@ function shellSourcesJoin( test )
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
 
-  let shell = _.sheller
+  let shell = _.process.starter
   ({
     execPath : 'node',
     currentPath : routinePath,
@@ -183,7 +183,7 @@ function shellSourcesJoinWithEntry( test )
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
 
-  let shell = _.sheller
+  let shell = _.process.starter
   ({
     execPath : 'node',
     currentPath : routinePath,
@@ -345,7 +345,7 @@ app0/File1.js:timeout numberIs:true
 app0/File1.js:timeout numberIs:true
 `
 
-  let shell = _.sheller
+  let shell = _.process.starter
   ({
     // execPath : 'node',
     currentPath : routinePath,
@@ -421,7 +421,7 @@ app0/File1.js:timeout numberIs:true
 app0/File1.js:timeout numberIs:true
 `
 
-  let shell = _.sheller
+  let shell = _.process.starter
   ({
     // execPath : 'node',
     currentPath : routinePath,
@@ -499,7 +499,7 @@ app0/File1.js:timeout true
 app0/File1.js:timeout true
 `
 
-  let shell = _.sheller
+  let shell = _.process.starter
   ({
     currentPath : routinePath,
     outputCollecting : 1,
@@ -567,7 +567,7 @@ function shellSourcesJoinTree( test )
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
 
-  let shell = _.sheller
+  let shell = _.process.starter
   ({
     currentPath : routinePath,
     outputCollecting : 1,
@@ -747,6 +747,201 @@ app0/File2.js:end main:true
 
 //
 
+function shellSourcesJoinCycle( test )
+{
+  let self = this;
+  let originalDirPath = _.path.join( self.assetDirPath, 'cycle' );
+  let routinePath = _.path.join( self.tempDir, test.name );
+  let outPath = _.path.join( routinePath, 'out' );
+  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
+  let ready = new _.Consequence().take( null );
+  let starter = new _.Starter().form();
+
+  let shell = _.process.starter
+  ({
+    currentPath : routinePath,
+    outputCollecting : 1,
+    ready : ready,
+    throwingExitCode : 1,
+  });
+
+  /* */
+
+  ready.then( () =>
+  {
+    test.case = 'app1, entry:File1';
+    _.fileProvider.filesDelete( routinePath );
+    _.fileProvider.filesReflect({ reflectMap : { [ originalDirPath ] : routinePath } })
+    _.fileProvider.filesDelete( routinePath + '/out' );
+    return null;
+  })
+
+  shell( `node ${execPath} .sources.join in/app1/** outPath:out/app1 entryPath:in/app1/File1.js` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinCycle\/out\/app1/ ), 1 );
+
+    var expected = [ '.', './app1' ];
+    var files = self.find( outPath );
+    test.identical( files, expected );
+
+    return op;
+  })
+
+  shell( `node in/app1/File1.js` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+app1/File1.js:begin main:true
+app1/File2.js:begin main:false
+app1/File2.js:end main:false
+app1/File1.js:end main:true
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  shell( `node out/app1` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+app1/File1.js:begin main:true
+app1/File2.js:begin main:false
+app1/File2.js:end main:false
+app1/File1.js:end main:true
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  ready.then( () =>
+  {
+    test.case = 'app1, entry:File2';
+    _.fileProvider.filesDelete( routinePath );
+    _.fileProvider.filesReflect({ reflectMap : { [ originalDirPath ] : routinePath } })
+    _.fileProvider.filesDelete( routinePath + '/out' );
+    return null;
+  })
+
+  shell( `node ${execPath} .sources.join in/app1/** outPath:out/app1 entryPath:in/app1/File2.js` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinCycle\/out\/app1/ ), 1 );
+
+    var expected = [ '.', './app1' ];
+    var files = self.find( outPath );
+    test.identical( files, expected );
+
+    return op;
+  })
+
+  shell( `node in/app1/File2.js` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+app1/File2.js:begin main:true
+app1/File1.js:begin main:false
+app1/File1.js:end main:false
+app1/File2.js:end main:true
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  shell( `node out/app1` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+app1/File2.js:begin main:true
+app1/File1.js:begin main:false
+app1/File1.js:end main:false
+app1/File2.js:end main:true
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  ready.then( () =>
+  {
+    test.case = 'cycled-external';
+    _.fileProvider.filesDelete( routinePath );
+    _.fileProvider.filesReflect({ reflectMap : { [ originalDirPath ] : routinePath } })
+    _.fileProvider.filesDelete( routinePath + '/out' );
+    return null;
+  })
+
+  shell( `node ${execPath} .sources.join in/app1/** outPath:out/app1 entryPath:in/app1/File2.js externalBeforePath:out/app2` )
+  shell( `node ${execPath} .sources.join in/app2/** outPath:out/app2 entryPath:in/app2/File2.js externalBeforePath:out/app1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    var expected = [ '.', './app1', './app2' ];
+    var files = self.find( outPath );
+    test.identical( files, expected );
+
+    return op;
+  })
+
+  shell( `node out/app1` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+app2/File2.js:begin main:true
+app2/File1.js:begin main:false
+app2/File1.js:end main:false
+app2/File2.js:end main:true
+app1/File2.js:begin main:true
+app1/File1.js:begin main:false
+app1/File1.js:end main:false
+app1/File2.js:end main:true
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  shell( `node out/app2` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+app1/File2.js:begin main:true
+app1/File1.js:begin main:false
+app1/File1.js:end main:false
+app1/File2.js:end main:true
+app2/File2.js:begin main:true
+app2/File1.js:begin main:false
+app2/File1.js:end main:false
+app2/File2.js:end main:true
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return ready;
+} /* end of shellSourcesJoinCycle */
+
+//
+
 function htmlFor( test )
 {
   let self = this;
@@ -824,7 +1019,7 @@ function shellHtmlFor( test )
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
 
-  let shell = _.sheller
+  let shell = _.process.starter
   ({
     execPath : 'node',
     currentPath : routinePath,
@@ -964,7 +1159,7 @@ function shellHtmlFor( test )
 var Self =
 {
 
-  name : 'Tools/StarterMaker',
+  name : 'Tools.StarterMaker',
   silencing : 1,
   enabled : 1,
   routineTimeOut : 60000,
@@ -988,6 +1183,7 @@ var Self =
     shellSourcesJoinRequireInternal,
     shellSourcesJoinComplex,
     shellSourcesJoinTree,
+    shellSourcesJoinCycle,
 
     htmlFor,
     shellHtmlFor,
