@@ -34,10 +34,11 @@
     "wFiles": "",
     "wverbal": "",
     "wtemplatetreeenvironment": "",
-    "open": ""
+    "wservlettools" : "",
+    "open": "",
+    "express": ""
   },
   "devDependencies": {
-    "express": "",
     "wTesting": ""
   },
   "keywords": [
