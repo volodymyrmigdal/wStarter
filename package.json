@@ -4,7 +4,7 @@
   "description": "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.",
   "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
   "license": "MIT",
-  "main": "proto/dwtools/atop/starter/Exec.s",
+  "main": "proto/dwtools/atop/starter/MainTop.s",
   "files": [
     "proto/dwtools/atop/starter",
     "proto/dwtools/Tools.s"
