@@ -16,8 +16,8 @@ submodule :
   wTemplateTreeEnvironment :
     path : npm:///wtemplatetreeenvironment
     enabled : 0 # submodule
-  wTemplateTreeEnvironment :
-    path : npm:///wtemplatetreeenvironment
+  wServletTools :
+    path : npm:///wservlettools
     enabled : 0 # submodule
   open:
     Path : npm:///open
