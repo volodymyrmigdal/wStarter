@@ -20,7 +20,7 @@ submodule :
     path : npm:///wservlettools
     enabled : 0 # submodule
   open:
-    Path : npm:///open
+    path : npm:///open
     enabled : 0 # submodule
   wstarter :
     path : hd://.
