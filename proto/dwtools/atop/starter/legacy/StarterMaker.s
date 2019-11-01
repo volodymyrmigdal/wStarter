@@ -431,12 +431,12 @@ function filesMapMake()
     dst :
     {
       prefixPath : _.uri.join( self.inPath, 'fmap://' ),
-      basePath : _.uri.join( self.inPath, 'fmap://' )
+      // basePath : _.uri.join( self.inPath, 'fmap://' )
     },
     src :
     {
       prefixPath : _.uri.join(  self.inPath, 'src://', ),
-      basePath : _.uri.join(  self.inPath, 'src://', ),
+      // basePath : _.uri.join(  self.inPath, 'src://', ),
       recursive : 2,
     },
     linking : 'fileCopy',
@@ -550,15 +550,19 @@ function starterMake()
 
   _.assert( arguments.length === 0 );
 
+  debugger
+
   let find = self.system.filesFinder
   ({
-    includingTerminals : 1,
-    includingTransient : 0,
+    withTerminals : 1,
+    withTransient : 0,
+    withDirs : 0,
     mandatory : 1,
+    maskPreset : 0,
     onUp : onUpInliningToStarter,
     filter :
     {
-      filePath : _.uri.join( 'src://', self.toolsPath ),
+      basePath : _.uri.join( 'src://', self.toolsPath ),
       recursive : 2,
       ends : [ '.js','.s' ],
     }
@@ -567,12 +571,13 @@ function starterMake()
   // debugger;
   find( 'abase/l0' );
   find( 'abase/l1' );
-  find( 'abase/l2' );
+  // find( 'abase/l2' );
   find( 'abase/l3' );
+  find( 'abase/l3_proto' );
   find( 'abase/l4' );
   find( 'abase/l5' );
   find( 'abase/l6' );
-  find( 'abase/l7' );
+  // find( 'abase/l7' );
   find( 'abase/l7_mixin' );
   find( 'abase/l8' );
   find( 'abase/l9/consequence' );
@@ -583,6 +588,7 @@ function starterMake()
   find( 'amid/bclass/RegexpObject.s' );
 
   find( 'amid/files/UseBase.s' );
+  find( 'amid/files/l0' );
   find( 'amid/files/l1' );
   find( 'amid/files/l2' );
   find( 'amid/files/l3' );
@@ -657,6 +663,9 @@ Config.offline = ${_.toStr( !!self.offline )};
 
   function onUpInliningToStarter( file )
   {
+    if( !file.isActual )
+    return file;
+
     _.assert( file.isActual );
 
     if( self.verbosity >= 3 )
