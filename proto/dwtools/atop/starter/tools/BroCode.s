@@ -330,19 +330,31 @@ function _Begin()
         sync : 1,
       });
 
-      read += '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
+      let ext = _.path.ext( resolvedFilePath );
+      if( ext === 'css' )
+      {
+        let style = document.createElement( 'style' );
+        var stylesCode = document.createTextNode( read );
+        style.appendChild( stylesCode );
+        document.head.appendChild( style );
+      }
+      else
+      {
+        read += '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
 
-      let script = document.createElement( 'script' );
-      script.type = 'text/javascript';
-      var scriptCode = document.createTextNode( read );
-      script.appendChild( scriptCode );
-      document.head.appendChild( script );
+        let script = document.createElement( 'script' );
+        script.type = 'text/javascript';
+        var scriptCode = document.createTextNode( read );
+        script.appendChild( scriptCode );
+        document.head.appendChild( script );
 
-      let childSource = starter._sourceForPathGet( resolvedFilePath );
-      return starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
+        let childSource = starter._sourceForPathGet( resolvedFilePath );
+        return starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
+      }
     }
     catch( err )
     {
+      debugger
       throw _.err( `Failed to include ${resolvedFilePath}\n`, err );
     }
 

@@ -1260,11 +1260,9 @@ function includeCss( test )
     var got = page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
     test.identical( got, [ 'http://127.0.0.1:5000/.starter', 'http://127.0.0.1:5000/index.js' ] )
 
-    var got = page.$( 'style', ( e ) => e ? e.innerText : null );
-    if( got )
-    test.is( _.strHas( got, 'body' ) );
-    else
-    test.is( _.strIs( got ) )
+    var style = page.$( 'style' );
+    var got = page.evaluate( style => style.innerHTML, style );
+    test.is( _.strHas( got, 'background: silver' ) );
 
     browser.close();
 

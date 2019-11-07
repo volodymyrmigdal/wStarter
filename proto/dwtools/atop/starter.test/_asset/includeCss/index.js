@@ -1,2 +1,3 @@
 console.log( 'Including css file');
-include( '/style.css')
+debugger
+include( './style.css')

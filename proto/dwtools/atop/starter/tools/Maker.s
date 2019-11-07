@@ -274,6 +274,7 @@ function sourcesJoinSplits( o )
   ${pr( 'isGlob' )}
   ${pr( 'isRelative' )}
   ${pr( 'isAbsolute' )}
+  ${pr( 'ext' )}
 
   ${pfs()}
 
