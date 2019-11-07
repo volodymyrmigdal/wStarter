@@ -1331,6 +1331,59 @@ function workerWithInclude( test )
   return a.ready;
 }
 
+//
+
+function includeExcludingManual( test )
+{
+  let self = this;
+  let a = self.assetFor( test, 'exclude', true );
+  let starter = new _.Starter().form();
+
+  a.ready
+
+  .then( () =>
+  {
+    a.reflect();
+    starter.start
+    ({
+      basePath : a.routinePath,
+      entryPath : 'index.js',
+      open : 0,
+    })
+    return null;
+  })
+
+  .then( () =>
+  {
+    let browser = a.puppeteer.launch({ headless : 1 });
+    let page = browser.newPage();
+    let output = '';
+
+    page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+
+    _.timeOut( 1500 ).deasync();
+
+    var scripts = page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
+    test.identical( scripts.length, 3 );
+    test.identical( scripts[ 0 ], 'http://127.0.0.1:5000/.starter' );
+    test.identical( scripts[ 1 ], 'http://127.0.0.1:5000/index.js' );
+    test.is( _.strHas( scripts[ 2 ], './src/File.js' ) );
+
+    browser.close();
+
+    return null;
+  })
+
+  .then( () =>
+  {
+    let ready = new _.Consequence();
+    starter.servlet.server.close( () => ready.take( null ) );
+    return ready;
+  })
+
+  return a.ready;
+}
+
 // --
 // declare
 // --
@@ -1369,7 +1422,8 @@ var Self =
     shellHtmlFor,
 
     includeCss,
-    workerWithInclude
+    workerWithInclude,
+    includeExcludingManual
 
   }
 

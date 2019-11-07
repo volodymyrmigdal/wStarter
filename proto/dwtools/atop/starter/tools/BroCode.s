@@ -312,6 +312,12 @@ function _Begin()
       let result = [];
       for( let f = 0 ; f < resolvedFilePath.length ; f++ )
       {
+        if( starter.exclude )
+        {
+          if( starter.exclude.test( resolvedFilePath[ f ] ) )
+          continue;
+        }
+
         let r = starter._sourceInclude( parentSource, basePath, resolvedFilePath[ f ] );
         if( r !== undefined )
         _.arrayAppendArrays( result, r );
