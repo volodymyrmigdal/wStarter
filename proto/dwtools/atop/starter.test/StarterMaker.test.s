@@ -1280,6 +1280,57 @@ function includeCss( test )
 
 }
 
+//
+
+function workerWithInclude( test )
+{
+  let self = this;
+  let a = self.assetFor( test, 'worker', true );
+  let starter = new _.Starter().form();
+
+  a.ready
+
+  .then( () =>
+  {
+    a.reflect();
+    starter.start
+    ({
+      basePath : a.routinePath,
+      entryPath : 'index.js',
+      open : 0,
+    })
+    return null;
+  })
+
+  .then( () =>
+  {
+    let browser = a.puppeteer.launch({ headless : 1 });
+    let page = browser.newPage();
+    let output = '';
+
+    page.on( 'console', msg => output += msg.text() + '\n' );
+    page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+
+    _.timeOut( 1500 ).deasync();
+
+    test.is( _.strHas( output, 'Global: Window' ) )
+    test.is( _.strHas( output, 'Global: DedicatedWorkerGlobalScope' ) )
+
+    browser.close();
+
+    return null;
+  })
+
+  .then( () =>
+  {
+    let ready = new _.Consequence();
+    starter.servlet.server.close( () => ready.take( null ) );
+    return ready;
+  })
+
+  return a.ready;
+}
+
 // --
 // declare
 // --
@@ -1318,6 +1369,7 @@ var Self =
     shellHtmlFor,
 
     includeCss,
+    workerWithInclude
 
   }
 
