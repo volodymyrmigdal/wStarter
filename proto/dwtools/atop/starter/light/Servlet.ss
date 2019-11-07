@@ -405,7 +405,7 @@ function ScriptWrap_functor( fop )
       let filePath = _.strRemoveBegin( uri.localWebPath, '/.resolve/' );
       let realPath = _.path.reroot( fop.basePath, filePath );
 
-      let filter = { filePath : realPath, basePath : fop.basePath };
+      let filter = { filePath : _.path.detrail( realPath ), basePath : fop.basePath };
       let resolvedFilePath = _.fileProvider.filesFind
       ({
         filter,
@@ -413,6 +413,7 @@ function ScriptWrap_functor( fop )
         mandatory : 0,
         withDirs : 0,
         withDefunct : 0,
+        withStem : 1
       });
 
       if( !resolvedFilePath.length )

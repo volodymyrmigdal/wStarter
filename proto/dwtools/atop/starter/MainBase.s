@@ -337,10 +337,10 @@ function start( o )
 
   _.routineOptions( start, arguments );
 
-  o.entryPath = path.resolve( o.entryPath );
   if( !o.basePath )
   o.basePath = path.resolve( '.' );
-  o.allowedPath = path.resolve( o.allowedPath );
+  o.entryPath = path.resolve( o.basePath, o.entryPath );
+  o.allowedPath = path.resolve( o.basePath, o.allowedPath );
 
   /* */
 
@@ -365,10 +365,13 @@ function start( o )
     basePath : o.basePath,
   });
 
-  if( !Open )
-  Open = require( 'open' );
+  if( o.open )
+  {
+    if( !Open )
+    Open = require( 'open' );
 
-  Open( _.uri.join( servlet.openPathGet(), found[ 0 ].relative, '?entry:1' ) );
+    Open( _.uri.join( servlet.openPathGet(), found[ 0 ].relative, '?entry:1' ) );
+  }
 
   return servlet;
 }
@@ -376,6 +379,7 @@ function start( o )
 var defaults = start.defaults = _.mapExtend( null, httpOpen.defaults );
 
 defaults.entryPath = null;
+defaults.open = true;
 
 // --
 // relations
