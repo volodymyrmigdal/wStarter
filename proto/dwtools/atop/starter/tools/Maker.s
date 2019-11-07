@@ -57,6 +57,8 @@ function sourceWrapSplits( o )
   if( o.interpreter === 'browser' )
   ware +=
 `
+/* */  if( typeof _starter_ === 'undefined' && importScripts )
+/* */     importScripts( '/.starter' );
 /* */  let _filePath_ = _starter_._pathResolve( null, '/', '${relativeFilePath}' );
 /* */  let _dirPath_ = _starter_._pathResolve( null, '/', '${relativeDirPath}' );
 `

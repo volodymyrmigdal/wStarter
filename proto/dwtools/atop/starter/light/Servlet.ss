@@ -506,6 +506,7 @@ function ScriptWrap_functor( fop )
         let splits = fop.starterMaker.sourcesJoinSplits({ interpreter : 'browser', libraryName : 'Application' });
         ware = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
       }
+      o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
       o.response.write( ware );
       o.response.end();
       return null;

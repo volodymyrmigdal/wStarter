@@ -323,6 +323,11 @@ function _Begin()
 
     try
     {
+      if( typeof window === 'undefined' )
+      {
+        _.assert( typeof importScripts !== 'undefined' );
+        return importScripts( resolvedFilePath )
+      }
 
       let read = starter.fileRead
       ({
