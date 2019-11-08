@@ -2,7 +2,7 @@
 
 'use strict';
 
-let _ = wTools;
+let _ = _global_.wTools;
 
 // --
 // begin

@@ -4,7 +4,7 @@
 
 //
 
-let _ = wTools;
+let _ = _global_.wTools;
 let Parent = null
 let Self = function wStarterMakerLight( o )
 {
@@ -23,7 +23,7 @@ function instanceOptions( o )
 
   for( let k in o )
   {
-    if( o[ k ] === null && _.arrayHas( self.InstanceDefaults, k ) )
+    if( o[ k ] === null && _.longHas( self.InstanceDefaults, k ) )
     o[ k ] = self[ k ];
   }
 
@@ -40,7 +40,7 @@ function sourceWrapSplits( o )
 
   _.routineOptions( sourceWrapSplits, arguments );
   _.assert( arguments.length === 1 );
-  _.assert( _.arrayHas( [ 'njs', 'browser' ], o.interpreter ) );
+  _.assert( _.longHas( [ 'njs', 'browser' ], o.interpreter ) );
 
   let relativeFilePath = _.path.dot( _.path.relative( o.basePath, o.filePath ) );
   let relativeDirPath = _.path.dot( _.path.dir( relativeFilePath ) );
@@ -194,7 +194,7 @@ function sourcesJoinSplits( o )
   Object.preventExtensions( r );
 
   o = _.routineOptions( sourcesJoinSplits, arguments );
-  _.assert( _.arrayHas( [ 'njs', 'browser' ], o.interpreter ) );
+  _.assert( _.longHas( [ 'njs', 'browser' ], o.interpreter ) );
 
   if( o.entryPath )
   {
@@ -246,9 +246,9 @@ function sourcesJoinSplits( o )
   ${gr( 'routineOptions' )}
   ${gr( 'arrayAppendArrays' )}
   ${gr( 'arrayAppendedArrays' )}
-  ${gr( 'arrayLeft' )}
-  ${gr( 'arrayLeftIndex' )}
-  ${gr( 'arrayLeftDefined' )}
+  ${gr( 'longLeft' )}
+  ${gr( 'longLeftIndex' )}
+  ${gr( 'longLeftDefined' )}
   ${gr( 'err' )}
   ${gr( '_err' )}
   ${gr( 'errIs' )}
@@ -524,7 +524,7 @@ function htmlSplitsFor( o )
 
   if( o.starterIncluding === null )
   o.starterIncluding = htmlSplitsFor.defaults.starterIncluding;
-  _.assert( _.arrayHas( [ 'include', 'inline', 0, false ], o.starterIncluding ) );
+  _.assert( _.longHas( [ 'include', 'inline', 0, false ], o.starterIncluding ) );
   _.assert( o.starterIncluding !== 'inline', 'not implemented' );
 
   r.prefix =

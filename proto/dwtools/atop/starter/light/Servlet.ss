@@ -6,7 +6,7 @@ let Express = null;
 let ExpressLogger = null;
 let ExpressDir = null;
 let Querystring = null;
-let _ = wTools;
+let _ = _global_.wTools;
 let Parent = null;
 let Self = function wStarterServlet( o )
 {
@@ -321,10 +321,10 @@ function ScriptWrap_functor( fop )
 
     surePathAllowed( uri.localWebPath );
 
-    if( !_.arrayHasAny( fop.incudingExts, exts ) )
+    if( !_.longHasAny( fop.incudingExts, exts ) )
     return o.next();
 
-    if( _.arrayHasAny( fop.excludingExts, exts ) )
+    if( _.longHasAny( fop.excludingExts, exts ) )
     return o.next();
 
     let filePath = _.path.normalize( _.path.reroot( fop.basePath, uri.longPath ) );

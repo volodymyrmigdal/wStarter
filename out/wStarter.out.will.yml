@@ -6,12 +6,13 @@ consistency:
     hash: ff7444ed508cec35d77f667bb5c5ab5a
     size: 2235
   ../.im.will.yml: &ref_1
-    hash: 0b5ced6e0bb580212533957458c7c2e7
-    size: 5408
+    hash: 40337c3bb12fb166d3ebe21a3fe485b3
+    size: 5482
 module:
   wStarter.out:
     about:
       name: wStarter
+      org: noorg
       description: >-
         Collection of tools to generate background service to start and pack
         application. Use the module to keep files structure of the application
@@ -67,9 +68,6 @@ module:
       download:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
       repository:
         path: 'git+https:///github.com/Wandalen/wStarter.git'
       origins:
@@ -79,15 +77,15 @@ module:
       bugtracker:
         path: 'https:///github.com/Wandalen/wStarter/issues'
       in:
-        criterion:
-          predefined: 0
         path: .
       out:
-        criterion:
-          predefined: 0
         path: .
       temp:
-        path: 'path::out'
+        path:
+          - 'path::out'
+          - ../package-lock.json
+          - ../package.json
+          - ../node_modules
       proto:
         path: ../proto
       export:
@@ -152,11 +150,13 @@ module:
         path: '{path::out.*=}/source/Index.s'
       exported.dir.proto.export:
         criterion:
+          generated: 1
           content: proto
           export: 1
         path: ../proto
       exported.files.proto.export:
         criterion:
+          generated: 1
           content: proto
           export: 1
         path:
@@ -556,6 +556,7 @@ module:
           prefixPath: ../proto
         mandatory: 1
         criterion:
+          generated: 1
           content: proto
           export: 1
       exported.files.proto.export:
@@ -568,6 +569,7 @@ module:
         recursive: 0
         mandatory: 1
         criterion:
+          generated: 1
           content: proto
           export: 1
     step:
@@ -1014,6 +1016,7 @@ module:
   ../:
     about:
       name: wStarter
+      org: noorg
       description: >-
         Collection of tools to generate background service to start and pack
         application. Use the module to keep files structure of the application
@@ -1056,9 +1059,6 @@ module:
       download:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
       repository:
         path: 'git+https:///github.com/Wandalen/wStarter.git'
       origins:
@@ -1068,21 +1068,21 @@ module:
       bugtracker:
         path: 'https:///github.com/Wandalen/wStarter/issues'
       in:
-        criterion:
-          predefined: 0
         path: .
       out:
-        criterion:
-          predefined: 0
         path: out
       temp:
-        path: 'path::out'
+        path:
+          - 'path::out'
+          - package-lock.json
+          - package.json
+          - node_modules
       proto:
-        path: ./proto
+        path: proto
       export:
         path: '{path::proto}/**'
       doc:
-        path: ./doc
+        path: doc
       out.raw.debug:
         criterion:
           debug: debug
@@ -1730,5 +1730,5 @@ module:
         hash: ff7444ed508cec35d77f667bb5c5ab5a
         size: 2235
       ../.im.will.yml:
-        hash: 0b5ced6e0bb580212533957458c7c2e7
-        size: 5408
+        hash: 40337c3bb12fb166d3ebe21a3fe485b3
+        size: 5482
