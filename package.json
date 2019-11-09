@@ -27,15 +27,15 @@
   }, 
   "dependencies" : 
   {
-    "wTools" : "", 
-    "wCopyable" : "", 
-    "wFiles" : "", 
-    "wverbal" : "", 
-    "wtemplatetreeenvironment" : "", 
-    "wservlettools" : "", 
-    "open" : "", 
-    "express" : ""
+    "wTools" : "alpha", 
+    "wCopyable" : "alpha", 
+    "wFiles" : "alpha", 
+    "wverbal" : "alpha", 
+    "wtemplatetreeenvironment" : "alpha", 
+    "wservlettools" : "alpha", 
+    "open" : "7.0.0", 
+    "express" : "4.17.1"
   }, 
-  "devDependencies" : { "wTesting" : "" }, 
+  "devDependencies" : { "wTesting" : "alpha" }, 
   "keywords" : [ "wTools" ]
 }
