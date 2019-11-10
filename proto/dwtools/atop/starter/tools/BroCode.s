@@ -332,7 +332,9 @@ function _Begin()
       if( typeof window === 'undefined' )
       {
         _.assert( typeof importScripts !== 'undefined' );
-        return importScripts( resolvedFilePath )
+        importScripts( resolvedFilePath );
+        let childSource = starter._sourceForPathGet( resolvedFilePath );
+        return childSource.exports;
       }
 
       let read = starter.fileRead
