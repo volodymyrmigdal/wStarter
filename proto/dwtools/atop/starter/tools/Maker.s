@@ -225,6 +225,7 @@ function sourcesJoinSplits( o )
   ${_.routineParse( self.WareCode.begin ).bodyUnwrapped};
 
   ${gr( 'strIs' )}
+  ${gr( 'strDefined' )}
   ${gr( '_strBeginOf' )}
   ${gr( '_strEndOf' )}
   ${gr( '_strRemovedBegin' )}
@@ -251,6 +252,9 @@ function sourcesJoinSplits( o )
   ${gr( 'arrayLeft' )}
   ${gr( 'arrayLeftIndex' )}
   ${gr( 'arrayLeftDefined' )}
+  let _diagnosticCodeExecuting = 0;
+  ${gr( 'diagnosticCode' )}
+  ${gr( 'errOriginalMessage' )}
   ${gr( 'err' )}
   ${gr( '_err' )}
   ${gr( 'errIs' )}
@@ -424,6 +428,11 @@ function sourcesJoinSplits( o )
       str = '(' + e.functor.toString() + ')();';
       else
       str = e.toString();
+
+      if( e.defaults )
+      {
+        str += `\n${dstContainerName}.${name}.defaults=\n` + _.toJs( e.defaults )
+      }
     }
     else
     {
