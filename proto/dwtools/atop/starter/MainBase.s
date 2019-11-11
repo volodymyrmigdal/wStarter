@@ -13,7 +13,7 @@ require( './IncludeBase.s' );
 
 //
 
-let _ = wTools;
+let _ = _global_.wTools;
 let Parent = null;
 let Self = function wStarter( o )
 {
@@ -151,7 +151,7 @@ function sourcesJoin( o )
       mode : 'distinct',
       outputFormat : 'absolute',
     });
-    if( !_.arrayHasAll( o.inPath, o.entryPath ) )
+    if( !_.longHasAll( o.inPath, o.entryPath ) )
     throw _.errBrief
     (
       'List of source files should have all entry files' +

@@ -14,7 +14,7 @@ if( typeof module !== 'undefined' )
 
 //
 
-var _ = wTools;
+var _ = _global_.wTools;
 var Self = _.starter = _.starter || Object.create( null );
 
 // --
@@ -37,13 +37,13 @@ function staticRequestHandler_functor( gen )
     if( !_.strBegins( url, gen.filterPath ) )
     return next();
 
-    if( _.arrayHasAny( [ 's','js','ss' ], exts ) )
+    if( _.longHasAny( [ 's','js','ss' ], exts ) )
     response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
     else
     return next();
 
-    var isRaw = _.arrayHasAny( [ 'raw','usefile' ], exts );
-    var isRun = _.arrayHasAny( [ 'run' ], exts );
+    var isRaw = _.longHasAny( [ 'raw','usefile' ], exts );
+    var isRun = _.longHasAny( [ 'run' ], exts );
 
     // console.log( url, exts );
     if( isRaw )

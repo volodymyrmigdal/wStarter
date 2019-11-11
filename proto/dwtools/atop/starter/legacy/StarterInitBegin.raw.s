@@ -1177,7 +1177,7 @@ function fileDescriptor( parentScriptFile, filePath )
 {
 
   let ext = _.uri.ext( filePath );
-  if( _.arrayHas( styleDescriptor.exts, ext ) )
+  if( _.longHas( styleDescriptor.exts, ext ) )
   return styleDescriptor;
 
   return null;
