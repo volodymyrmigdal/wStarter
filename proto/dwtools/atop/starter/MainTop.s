@@ -271,6 +271,7 @@ commandStart.commandProperties =
   entryPath : 'Path to enty source file to launch.',
   basePath : 'Path to make available over HTTP.',
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
+  templatePath : 'Path to html file to use as template'
 }
 
 // --

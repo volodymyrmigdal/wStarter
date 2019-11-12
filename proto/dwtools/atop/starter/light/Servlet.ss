@@ -78,6 +78,7 @@ function form()
     incudingExts : servlet.incudingExts,
     excludingExts : servlet.excludingExts,
     starterMaker : starter.maker,
+    templatePath : servlet.templatePath
   });
   express.use( ( request, response, next ) => servlet._requsetScriptWrapHandler({ request, response, next }) );
 
@@ -432,10 +433,15 @@ function ScriptWrap_functor( fop )
       });
       let title = _.path.fullName( resolvedFilePath[ 0 ].absolute );
 
+      let template = null;
+      if( fop.templatePath )
+      template = _.fileProvider.fileRead( fop.templatePath );
+
       let html = fop.starterMaker.htmlFor
       ({
         srcScriptsMap,
         title,
+        template
       });
 
       o.response.setHeader( 'Content-Type', 'text/html; charset=UTF-8' );
@@ -551,6 +557,7 @@ defaults.starterMaker = null;
 defaults.resolvingGlob = 1;
 defaults.resolvingNpm = 1;
 defaults.autoGeneratingHtml = 1;
+defaults.templatePath = null;
 
 // --
 // relationships
@@ -564,6 +571,7 @@ let Composes =
   serverPath : 'http://0.0.0.0:5000',
   basePath : null,
   allowedPath : '/',
+  templatePath : null,
 
   incudingExts : _.define.own([ 's', 'js', 'ss' ]),
   excludingExts : _.define.own([ 'raw', 'usefile' ]),

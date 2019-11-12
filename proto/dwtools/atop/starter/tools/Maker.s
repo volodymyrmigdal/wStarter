@@ -541,6 +541,12 @@ function htmlSplitsFor( o )
   _.assert( _.longHas( [ 'include', 'inline', 0, false ], o.starterIncluding ) );
   _.assert( o.starterIncluding !== 'inline', 'not implemented' );
 
+  if( o.template )
+  {
+    r.all = onTemplate();
+    return r;
+  }
+
   r.prefix =
 `
 <!DOCTYPE html>
@@ -570,6 +576,35 @@ function htmlSplitsFor( o )
 `
 
   return r;
+
+  /* */
+
+  function onTemplate()
+  {
+    _.assert( _.strDefined( o.template ) );
+
+    let jsdom = require( 'jsdom' );
+    let dom = new jsdom.JSDOM( o.template );
+    let document = dom.window.document;
+
+    if( o.starterIncluding === 'include' )
+    appendScript( '/.starter' );
+
+    for( let filePath in o.srcScriptsMap )
+    appendScript( filePath );
+
+    return dom.serialize();
+
+    /* */
+
+    function appendScript( src )
+    {
+      let script = document.createElement( 'script' );
+      script.type = 'text/javascript';
+      script.src = src;
+      document.head.appendChild( script );
+    }
+  }
 }
 
 htmlSplitsFor.defaults =
@@ -577,6 +612,7 @@ htmlSplitsFor.defaults =
   srcScriptsMap : null,
   starterIncluding : 'include',
   title : 'Title',
+  template : null
 }
 
 //
@@ -588,6 +624,9 @@ function htmlFor( o )
   _.routineOptions( htmlFor, arguments );
 
   let splits = self.htmlSplitsFor( o );
+
+  if( splits.all )
+  return splits.all;
 
   let result = splits.prefix + splits.starter + splits.scripts.join( '\n' ) + splits.postfix;
 

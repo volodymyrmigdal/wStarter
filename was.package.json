@@ -35,7 +35,8 @@
     "wcommandsaggregator" : "",
     "wservlettools" : "",
     "open" : "",
-    "express" : ""
+    "express" : "",
+    "jsdom": ""
   },
   "devDependencies" : { "wTesting" : "", "puppeteer" : "2.0.0" },
   "keywords" : [ "wTools" ]
