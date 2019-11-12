@@ -249,6 +249,7 @@ function sourcesJoinSplits( o )
   ${gr( 'routineOptions' )}
   ${gr( 'arrayAppendArrays' )}
   ${gr( 'arrayAppendedArrays' )}
+  ${gr( 'longLike' )}
   ${gr( 'longLeft' )}
   ${gr( 'longLeftIndex' )}
   ${gr( 'longLeftDefined' )}
@@ -256,6 +257,7 @@ function sourcesJoinSplits( o )
   ${gr( 'diagnosticCode' )}
   ${gr( 'errOriginalMessage' )}
   ${gr( 'err' )}
+  let ErrorCounter = 0;
   ${gr( '_err' )}
   ${gr( 'errIs' )}
   ${gr( 'unrollIs' )}
