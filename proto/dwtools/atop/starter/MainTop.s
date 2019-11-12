@@ -80,6 +80,7 @@ function commandsMake()
   let commands =
   {
     'help' :              { e : _.routineJoin( starter, starter.commandHelp ),                h : 'Get help.' },
+    'version' :           { e : _.routineJoin( starter, starter.commandVersion ),             h : 'Get current version.' },
     'imply' :             { e : _.routineJoin( starter, starter.commandImply ),               h : 'Change state or imply value of a variable.' },
     'html for' :          { e : _.routineJoin( starter, starter.commandHtmlFor ),             h : 'Generate HTML for specified files.' },
     'sources join' :      { e : _.routineJoin( starter, starter.commandSourcesJoin ),         h : 'Join source files found at specified directory.' },
@@ -113,6 +114,35 @@ function commandHelp( e )
   ca._commandHelp( e );
 
   return starter;
+}
+
+//
+
+function commandVersion( e )
+{
+  let starter = this.form();
+  let fileProvider = starter.fileProvider;
+  let path = starter.fileProvider.path;
+  let logger = starter.logger;
+
+  let packageJsonPath = path.join( __dirname, '../../../../package.json' );
+  let packageJson =  fileProvider.fileRead({ filePath : packageJsonPath, encoding : 'json' });
+
+  return _.process.start
+  ({
+    execPath : 'npm view wstarter@latest version',
+    outputCollecting : 1,
+    outputPiping : 0,
+    inputMirroring : 0,
+    mode : 'spawn'
+  })
+  .then( ( got ) =>
+  {
+    logger.log( 'Current version:', packageJson.version );
+    logger.log( 'Latest stable version:', got.output );
+    return null;
+  })
+
 }
 
 //
@@ -317,6 +347,7 @@ let Extend =
 
   commandsMake,
   commandHelp,
+  commandVersion,
   commandImply,
   commandHtmlFor,
   commandSourcesJoin,
