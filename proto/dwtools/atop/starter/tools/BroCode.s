@@ -344,12 +344,13 @@ function _Begin()
       });
 
       let ext = _.path.ext( resolvedFilePath );
-      if( ext === 'css' )
+      if( ext === 'css' || ext === 'less' )
       {
-        let style = document.createElement( 'style' );
-        var stylesCode = document.createTextNode( read );
-        style.appendChild( stylesCode );
-        document.head.appendChild( style );
+        let link = document.createElement( 'link' );
+        link.href = resolvedFilePath;
+        link.rel = 'stylesheet'
+        link.type = 'text/' + ext
+        document.head.appendChild( link );
       }
       else
       {
