@@ -1,6 +1,6 @@
 {
   "name" : "wstarter", 
-  "version" : "0.4.7", 
+  "version" : "0.4.8", 
   "description" : "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.", 
   "author" : "Kostiantyn Wandalen <wanalen@willbe.so>", 
   "license" : "MIT", 
@@ -27,15 +27,17 @@
   }, 
   "dependencies" : 
   {
-    "wTools" : "alpha", 
-    "wCopyable" : "alpha", 
-    "wFiles" : "alpha", 
-    "wverbal" : "alpha", 
-    "wtemplatetreeenvironment" : "alpha", 
-    "wservlettools" : "alpha", 
+    "wTools" : "beta", 
+    "wCopyable" : "beta", 
+    "wFiles" : "beta", 
+    "wverbal" : "beta", 
+    "wtemplatetreeenvironment" : "beta", 
+    "wcommandsaggregator" : "beta", 
+    "wservlettools" : "beta", 
     "open" : "7.0.0", 
-    "express" : "4.17.1"
+    "express" : "4.17.1", 
+    "jsdom" : "15.2.1"
   }, 
-  "devDependencies" : { "wTesting" : "alpha" }, 
+  "devDependencies" : { "puppeteer" : "2.0.0", "wTesting" : "beta" }, 
   "keywords" : [ "wTools" ]
 }

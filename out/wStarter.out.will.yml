@@ -2,15 +2,12 @@ format: outwillfile-2.0
 root:
   - wStarter.out
 consistency:
-  wStarter.out.will.yml: &ref_0
-    hash: 2cee412f23531ff859352cc219bf58ab
-    size: 52628
-  ../.ex.will.yml: &ref_1
+  ../.ex.will.yml: &ref_0
     hash: ff7444ed508cec35d77f667bb5c5ab5a
     size: 2235
-  ../.im.will.yml: &ref_2
-    hash: 40337c3bb12fb166d3ebe21a3fe485b3
-    size: 5482
+  ../.im.will.yml: &ref_1
+    hash: c14e3334f6da2e1af2a868578cbe5af0
+    size: 5506
 module:
   wStarter.out:
     about:
@@ -22,24 +19,24 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters:
+      interpreters: &ref_2
         - njs >= 8.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords:
+      keywords: &ref_3
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors:
+      contributors: &ref_4
         - Kostiantyn Wandalen <wanalen@willbe.so>
       npm.name: wstarter
-      npm.scripts:
+      npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
         single-process-starter: node proto/dwtools/atop/starter/Exec
         debug-starter: node proto/dwtools/atop/starter/ExecDebug
         starter: node proto/dwtools/atop/starter/ExecUnrestricted
-      npm.bin:
+      npm.bin: &ref_6
         starter: proto/dwtools/atop/starter/ExecUnrestricted
         single-process-starter: proto/dwtools/atop/starter/Exec
         debug-starter: proto/dwtools/atop/starter/ExecDebug
@@ -345,6 +342,14 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/dep2/ext
           - >-
             ../proto/dwtools/atop/starter.test/_asset/dep2/ext/RequireApp2File2.js
+          - ../proto/dwtools/atop/starter.test/_asset/exclude
+          - ../proto/dwtools/atop/starter.test/_asset/exclude/index.js
+          - ../proto/dwtools/atop/starter.test/_asset/exclude/src
+          - ../proto/dwtools/atop/starter.test/_asset/exclude/src/File.js
+          - ../proto/dwtools/atop/starter.test/_asset/exclude/src/File.manual.js
+          - ../proto/dwtools/atop/starter.test/_asset/includeCss
+          - ../proto/dwtools/atop/starter.test/_asset/includeCss/index.js
+          - ../proto/dwtools/atop/starter.test/_asset/includeCss/style.css
           - ../proto/dwtools/atop/starter.test/_asset/processes
           - ../proto/dwtools/atop/starter.test/_asset/processes/Experiment.js
           - ../proto/dwtools/atop/starter.test/_asset/processes/Experiment2.js
@@ -364,6 +369,10 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/tree/in/app2
           - ../proto/dwtools/atop/starter.test/_asset/tree/in/app2/File1.js
           - ../proto/dwtools/atop/starter.test/_asset/tree/in/app2/File2.js
+          - ../proto/dwtools/atop/starter.test/_asset/worker
+          - ../proto/dwtools/atop/starter.test/_asset/worker/index.js
+          - ../proto/dwtools/atop/starter.test/_asset/worker/script.js
+          - ../proto/dwtools/atop/starter.test/_asset/worker/worker.js
     submodule:
       wTools:
         path: 'npm:///wTools'
@@ -393,14 +402,16 @@ module:
         path: 'npm:///open'
         autoExporting: 0
         enabled: 0
-      wstarter:
-        path: 'hd://..'
-        autoExporting: 0
-        enabled: 0
-        criterion:
-          development: 1
       express:
         path: 'npm:///express'
+        autoExporting: 0
+        enabled: 0
+      jsdom:
+        path: 'npm:///jsdom'
+        autoExporting: 0
+        enabled: 0
+      wstarter:
+        path: 'hd://..'
         autoExporting: 0
         enabled: 0
         criterion:
@@ -926,24 +937,6 @@ module:
           content: prime
         inherit:
           - files.transpile
-      exported.proto.export:
-        opts:
-          reflector: 'reflector::exported.proto.export*'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
-      exported.files.proto.export:
-        opts:
-          reflector: 'reflector::exported.files.proto.export*'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
     build:
       proto.export:
         steps:
@@ -1032,9 +1025,8 @@ module:
           content: proto
           export: 1
     consistency:
-      wStarter.out.will.yml: *ref_0
-      ../.ex.will.yml: *ref_1
-      ../.im.will.yml: *ref_2
+      ../.ex.will.yml: *ref_0
+      ../.im.will.yml: *ref_1
   ../:
     about:
       name: wStarter
@@ -1045,27 +1037,14 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters:
-        - njs >= 8.0.0
-        - chrome >= 60.0.0
-        - firefox >= 60.0.0
-      keywords:
-        - wTools
+      interpreters: *ref_2
+      keywords: *ref_3
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors:
-        - Kostiantyn Wandalen <wanalen@willbe.so>
+      contributors: *ref_4
       npm.name: wstarter
-      npm.scripts:
-        test: wtest .run proto/**
-        docgen: wdocgen .build proto
-        single-process-starter: node proto/dwtools/atop/starter/Exec
-        debug-starter: node proto/dwtools/atop/starter/ExecDebug
-        starter: node proto/dwtools/atop/starter/ExecUnrestricted
-      npm.bin:
-        starter: proto/dwtools/atop/starter/ExecUnrestricted
-        single-process-starter: proto/dwtools/atop/starter/Exec
-        debug-starter: proto/dwtools/atop/starter/ExecDebug
+      npm.scripts: *ref_5
+      npm.bin: *ref_6
     path:
       module.willfiles:
         criterion:
@@ -1203,14 +1182,16 @@ module:
         path: 'npm:///open'
         autoExporting: 0
         enabled: 0
-      wstarter:
-        path: 'hd://.'
-        autoExporting: 0
-        enabled: 0
-        criterion:
-          development: 1
       express:
         path: 'npm:///express'
+        autoExporting: 0
+        enabled: 0
+      jsdom:
+        path: 'npm:///jsdom'
+        autoExporting: 0
+        enabled: 0
+      wstarter:
+        path: 'hd://.'
         autoExporting: 0
         enabled: 0
         criterion:
@@ -1765,6 +1746,5 @@ module:
         hash: ff7444ed508cec35d77f667bb5c5ab5a
         size: 2235
       ../.im.will.yml:
-        hash: 40337c3bb12fb166d3ebe21a3fe485b3
-        size: 5482
-      wStarter.out.will.yml: *ref_0
+        hash: c14e3334f6da2e1af2a868578cbe5af0
+        size: 5506
