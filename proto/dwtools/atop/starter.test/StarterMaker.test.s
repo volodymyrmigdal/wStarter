@@ -45,6 +45,83 @@ function onSuiteBegin()
 
 //
 
+function assetFor( test, name, puppeteer )
+{
+  let self = this;
+  let a = Object.create( null );
+
+  a.test = test;
+  a.name = name;
+  a.originalAssetPath = _.path.join( self.assetDirPath, name );
+  a.routinePath = _.path.join( self.tempDir, test.name );
+  a.fileProvider = _.fileProvider;
+  a.path = _.fileProvider.path;
+  a.ready = _.Consequence().take( null );
+
+  a.reflect = function reflect()
+  {
+    _.fileProvider.filesDelete( a.routinePath );
+    _.fileProvider.filesReflect({ reflectMap : { [ a.originalAssetPath ] : a.routinePath } });
+  }
+
+  // a.shell = _.process.starter
+  // ({
+  //   currentPath : a.routinePath,
+  //   outputCollecting : 1,
+  //   outputGraying : 1,
+  //   ready : a.ready,
+  //   mode : 'shell',
+  // })
+
+  _.assert( a.fileProvider.isDir( a.originalAssetPath ) );
+
+  if( puppeteer )
+  a.puppeteer = puppeteerPrepare();
+
+  return a;
+
+  //
+
+  function puppeteerPrepare()
+  {
+    let Puppeteer = require( 'puppeteer' );
+    let handler =
+    {
+      get( target, key, receiver )
+      {
+        let value = Reflect.get( target, key, receiver );
+        if ( !_.routineIs( value ) )
+        return value;
+        return function (...args)
+        {
+          let result = value.apply( this, args );
+          if( _.promiseIs( result ) )
+          {
+            let ready = new _.Consequence();
+            result.then( ( got ) =>
+            {
+              if( got === undefined )
+              got = true
+              ready.take( got );
+            })
+            result.catch( ( err ) => ready.error( err ) )
+            result = ready.deasync();
+          }
+          if( _.objectIs( result ) )
+          return new Proxy( result, handler )
+          return result;
+        }
+      }
+    }
+
+    return new Proxy( Puppeteer, handler );
+  }
+}
+
+
+
+//
+
 function onSuiteEnd()
 {
   let self = this;
@@ -1152,6 +1229,196 @@ function shellHtmlFor( test )
   return ready;
 }
 
+//
+
+function includeCss( test )
+{
+  let self = this;
+  let a = self.assetFor( test, 'includeCss', true );
+  let starter = new _.Starter().form();
+
+  a.ready
+
+  .then( () =>
+  {
+    a.reflect();
+    starter.start
+    ({
+      basePath : a.routinePath,
+      entryPath : 'index.js',
+      open : 0,
+    })
+    return null;
+  })
+
+  .then( () =>
+  {
+    let browser = a.puppeteer.launch({ headless : 1 });
+    let page = browser.newPage();
+    page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+
+    var got = page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
+    test.identical( got, [ 'http://127.0.0.1:5000/.starter', 'http://127.0.0.1:5000/index.js' ] )
+
+    var style = page.$( 'style' );
+    var got = page.evaluate( style => style.innerHTML, style );
+    test.is( _.strHas( got, 'background: silver' ) );
+
+    browser.close();
+
+    return null;
+  })
+
+  .then( () =>
+  {
+    let ready = new _.Consequence();
+    starter.servlet.server.close( () => ready.take( null ) );
+    return ready;
+  })
+
+  return a.ready;
+
+}
+
+//
+
+function workerWithInclude( test )
+{
+  let self = this;
+  let a = self.assetFor( test, 'worker', true );
+  let starter = new _.Starter().form();
+
+  a.ready
+
+  .then( () =>
+  {
+    a.reflect();
+    starter.start
+    ({
+      basePath : a.routinePath,
+      entryPath : 'index.js',
+      open : 0,
+    })
+    return null;
+  })
+
+  .then( () =>
+  {
+    let browser = a.puppeteer.launch({ headless : 1 });
+    let page = browser.newPage();
+    let output = '';
+
+    page.on( 'console', msg => output += msg.text() + '\n' );
+    page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+
+    _.timeOut( 1500 ).deasync();
+
+    test.is( _.strHas( output, 'Global: Window' ) )
+    test.is( _.strHas( output, 'Global: DedicatedWorkerGlobalScope' ) )
+
+    browser.close();
+
+    return null;
+  })
+
+  .then( () =>
+  {
+    let ready = new _.Consequence();
+    starter.servlet.server.close( () => ready.take( null ) );
+    return ready;
+  })
+
+  return a.ready;
+}
+
+//
+
+function includeExcludingManual( test )
+{
+  let self = this;
+  let a = self.assetFor( test, 'exclude', true );
+  let starter = new _.Starter().form();
+
+  a.ready
+
+  .then( () =>
+  {
+    a.reflect();
+    starter.start
+    ({
+      basePath : a.routinePath,
+      entryPath : 'index.js',
+      open : 0,
+    })
+    return null;
+  })
+
+  .then( () =>
+  {
+    let browser = a.puppeteer.launch({ headless : 1 });
+    let page = browser.newPage();
+    let output = '';
+
+    page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+
+    _.timeOut( 1500 ).deasync();
+
+    var scripts = page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
+    test.identical( scripts.length, 3 );
+    test.identical( scripts[ 0 ], 'http://127.0.0.1:5000/.starter' );
+    test.identical( scripts[ 1 ], 'http://127.0.0.1:5000/index.js' );
+    test.is( _.strHas( scripts[ 2 ], './src/File.js' ) );
+
+    browser.close();
+
+    return null;
+  })
+
+  .then( () =>
+  {
+    let ready = new _.Consequence();
+    starter.servlet.server.close( () => ready.take( null ) );
+    return ready;
+  })
+
+  return a.ready;
+}
+
+//
+
+function version( test )
+{
+  let self = this;
+  let routinePath = _.path.join( self.tempDir, test.name );
+  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
+  let ready = new _.Consequence().take( null );
+
+  let shell = _.process.starter
+  ({
+    execPath : 'node ' + execPath,
+    currentPath : routinePath,
+    outputCollecting : 1,
+    throwingExitCode : 0,
+    mode : 'shell',
+    ready : ready,
+  })
+
+  _.fileProvider.dirMake( routinePath );
+
+  /* */
+
+  shell({ execPath : '.version' })
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.is( _.strHas( op.output, /Current version:.*\..*\..*/ ) );
+    test.is( _.strHas( op.output, /Available version:.*\..*\..*/ ) );
+    return op;
+  })
+
+  return ready;
+}
+
 // --
 // declare
 // --
@@ -1171,6 +1438,7 @@ var Self =
     tempDir : null,
     assetDirPath : null,
     find : null,
+    assetFor
   },
 
   tests :
@@ -1187,6 +1455,12 @@ var Self =
 
     htmlFor,
     shellHtmlFor,
+
+    includeCss,
+    workerWithInclude,
+    includeExcludingManual,
+
+    version,
 
   }
 

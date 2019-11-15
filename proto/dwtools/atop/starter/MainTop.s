@@ -80,6 +80,7 @@ function commandsMake()
   let commands =
   {
     'help' :              { e : _.routineJoin( starter, starter.commandHelp ),                h : 'Get help.' },
+    'version' :           { e : _.routineJoin( starter, starter.commandVersion ),             h : 'Get current version.' },
     'imply' :             { e : _.routineJoin( starter, starter.commandImply ),               h : 'Change state or imply value of a variable.' },
     'html for' :          { e : _.routineJoin( starter, starter.commandHtmlFor ),             h : 'Generate HTML for specified files.' },
     'sources join' :      { e : _.routineJoin( starter, starter.commandSourcesJoin ),         h : 'Join source files found at specified directory.' },
@@ -113,6 +114,43 @@ function commandHelp( e )
   ca._commandHelp( e );
 
   return starter;
+}
+
+//
+
+function commandVersion( e )
+{
+  let starter = this.form();
+  let fileProvider = starter.fileProvider;
+  let path = starter.fileProvider.path;
+  let logger = starter.logger;
+
+  let packageJsonPath = path.join( __dirname, '../../../../package.json' );
+  let packageJson =  fileProvider.fileRead({ filePath : packageJsonPath, encoding : 'json', throwing : 0 });
+
+  return _.process.start
+  ({
+    execPath : 'npm view wstarter@latest version',
+    outputCollecting : 1,
+    outputPiping : 0,
+    inputMirroring : 0,
+    throwingExitCode : 0,
+    mode : 'spawn'
+  })
+  .then( ( got ) =>
+  {
+    let current = packageJson ? packageJson.version : 'unknown';
+    let latest = _.strStrip( got.output );
+
+    if( got.exitCode || !latest )
+    latest = 'unknown'
+
+    logger.log( 'Current version:', current );
+    logger.log( 'Available version:', latest );
+
+    return null;
+  })
+
 }
 
 //
@@ -271,6 +309,7 @@ commandStart.commandProperties =
   entryPath : 'Path to enty source file to launch.',
   basePath : 'Path to make available over HTTP.',
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
+  templatePath : 'Path to html file to use as template'
 }
 
 // --
@@ -316,6 +355,7 @@ let Extend =
 
   commandsMake,
   commandHelp,
+  commandVersion,
   commandImply,
   commandHtmlFor,
   commandSourcesJoin,

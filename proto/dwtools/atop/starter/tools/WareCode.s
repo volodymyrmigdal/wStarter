@@ -45,6 +45,8 @@ function _Begin()
   let path = _starter_.path = _starter_.path || Object.create( null );
   let sourcesMap = _starter_.sourcesMap = _starter_.sourcesMap || Object.create( null );
 
+  let stackSymbol = Symbol.for( 'stack' );
+
   //
 
   function assert( good )

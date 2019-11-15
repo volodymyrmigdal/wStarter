@@ -22,13 +22,14 @@ submodule :
   open:
     path : npm:///open
     enabled : 0 # submodule
-  wstarter :
-    path : hd://.
-    enabled : 0 # submodule
-    criterion :
-      development : 1
   express :
     path : npm:///express
+    enabled : 0 # submodule
+  jsdom :
+    path : npm:///jsdom
+    enabled : 0 # submodule
+  wstarter :
+    path : hd://.
     enabled : 0 # submodule
     criterion :
       development : 1

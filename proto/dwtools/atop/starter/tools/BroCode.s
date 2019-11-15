@@ -312,6 +312,12 @@ function _Begin()
       let result = [];
       for( let f = 0 ; f < resolvedFilePath.length ; f++ )
       {
+        if( starter.exclude )
+        {
+          if( starter.exclude.test( resolvedFilePath[ f ] ) )
+          continue;
+        }
+
         let r = starter._sourceInclude( parentSource, basePath, resolvedFilePath[ f ] );
         if( r !== undefined )
         _.arrayAppendArrays( result, r );
@@ -323,6 +329,13 @@ function _Begin()
 
     try
     {
+      if( typeof window === 'undefined' )
+      {
+        _.assert( typeof importScripts !== 'undefined' );
+        importScripts( resolvedFilePath );
+        let childSource = starter._sourceForPathGet( resolvedFilePath );
+        return childSource.exports;
+      }
 
       let read = starter.fileRead
       ({
@@ -330,19 +343,32 @@ function _Begin()
         sync : 1,
       });
 
-      read += '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
+      let ext = _.path.ext( resolvedFilePath );
+      if( ext === 'css' || ext === 'less' )
+      {
+        let link = document.createElement( 'link' );
+        link.href = resolvedFilePath;
+        link.rel = 'stylesheet'
+        link.type = 'text/' + ext
+        document.head.appendChild( link );
+      }
+      else
+      {
+        read += '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
 
-      let script = document.createElement( 'script' );
-      script.type = 'text/javascript';
-      var scriptCode = document.createTextNode( read );
-      script.appendChild( scriptCode );
-      document.head.appendChild( script );
+        let script = document.createElement( 'script' );
+        script.type = 'text/javascript';
+        var scriptCode = document.createTextNode( read );
+        script.appendChild( scriptCode );
+        document.head.appendChild( script );
 
-      let childSource = starter._sourceForPathGet( resolvedFilePath );
-      return starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
+        let childSource = starter._sourceForPathGet( resolvedFilePath );
+        return starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
+      }
     }
     catch( err )
     {
+      debugger
       throw _.err( `Failed to include ${resolvedFilePath}\n`, err );
     }
 
