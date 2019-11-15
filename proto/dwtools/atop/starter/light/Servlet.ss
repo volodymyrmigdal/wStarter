@@ -78,6 +78,7 @@ function form()
     incudingExts : servlet.incudingExts,
     excludingExts : servlet.excludingExts,
     starterMaker : starter.maker,
+    templatePath : servlet.templatePath
   });
   express.use( ( request, response, next ) => servlet._requsetScriptWrapHandler({ request, response, next }) );
 
@@ -405,7 +406,7 @@ function ScriptWrap_functor( fop )
       let filePath = _.strRemoveBegin( uri.localWebPath, '/.resolve/' );
       let realPath = _.path.reroot( fop.basePath, filePath );
 
-      let filter = { filePath : realPath, basePath : fop.basePath };
+      let filter = { filePath : _.path.detrail( realPath ), basePath : fop.basePath };
       let resolvedFilePath = _.fileProvider.filesFind
       ({
         filter,
@@ -413,6 +414,7 @@ function ScriptWrap_functor( fop )
         mandatory : 0,
         withDirs : 0,
         withDefunct : 0,
+        withStem : 1
       });
 
       if( !resolvedFilePath.length )
@@ -431,10 +433,15 @@ function ScriptWrap_functor( fop )
       });
       let title = _.path.fullName( resolvedFilePath[ 0 ].absolute );
 
+      let template = null;
+      if( fop.templatePath )
+      template = _.fileProvider.fileRead( fop.templatePath );
+
       let html = fop.starterMaker.htmlFor
       ({
         srcScriptsMap,
         title,
+        template
       });
 
       o.response.setHeader( 'Content-Type', 'text/html; charset=UTF-8' );
@@ -505,6 +512,7 @@ function ScriptWrap_functor( fop )
         let splits = fop.starterMaker.sourcesJoinSplits({ interpreter : 'browser', libraryName : 'Application' });
         ware = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
       }
+      o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
       o.response.write( ware );
       o.response.end();
       return null;
@@ -549,6 +557,7 @@ defaults.starterMaker = null;
 defaults.resolvingGlob = 1;
 defaults.resolvingNpm = 1;
 defaults.autoGeneratingHtml = 1;
+defaults.templatePath = null;
 
 // --
 // relationships
@@ -562,6 +571,7 @@ let Composes =
   serverPath : 'http://0.0.0.0:5000',
   basePath : null,
   allowedPath : '/',
+  templatePath : null,
 
   incudingExts : _.define.own([ 's', 'js', 'ss' ]),
   excludingExts : _.define.own([ 'raw', 'usefile' ]),

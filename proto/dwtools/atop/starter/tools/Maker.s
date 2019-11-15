@@ -57,6 +57,8 @@ function sourceWrapSplits( o )
   if( o.interpreter === 'browser' )
   ware +=
 `
+/* */  if( typeof _starter_ === 'undefined' && importScripts )
+/* */     importScripts( '/.starter' );
 /* */  let _filePath_ = _starter_._pathResolve( null, '/', '${relativeFilePath}' );
 /* */  let _dirPath_ = _starter_._pathResolve( null, '/', '${relativeDirPath}' );
 `
@@ -223,6 +225,7 @@ function sourcesJoinSplits( o )
   ${_.routineParse( self.WareCode.begin ).bodyUnwrapped};
 
   ${gr( 'strIs' )}
+  ${gr( 'strDefined' )}
   ${gr( '_strBeginOf' )}
   ${gr( '_strEndOf' )}
   ${gr( '_strRemovedBegin' )}
@@ -246,10 +249,15 @@ function sourcesJoinSplits( o )
   ${gr( 'routineOptions' )}
   ${gr( 'arrayAppendArrays' )}
   ${gr( 'arrayAppendedArrays' )}
+  ${gr( 'longLike' )}
   ${gr( 'longLeft' )}
   ${gr( 'longLeftIndex' )}
   ${gr( 'longLeftDefined' )}
+  let _diagnosticCodeExecuting = 0;
+  ${gr( 'diagnosticCode' )}
+  ${gr( 'errOriginalMessage' )}
   ${gr( 'err' )}
+  let ErrorCounter = 0;
   ${gr( '_err' )}
   ${gr( 'errIs' )}
   ${gr( 'unrollIs' )}
@@ -274,6 +282,7 @@ function sourcesJoinSplits( o )
   ${pr( 'isGlob' )}
   ${pr( 'isRelative' )}
   ${pr( 'isAbsolute' )}
+  ${pr( 'ext' )}
 
   ${pfs()}
 
@@ -421,6 +430,11 @@ function sourcesJoinSplits( o )
       str = '(' + e.functor.toString() + ')();';
       else
       str = e.toString();
+
+      if( e.defaults )
+      {
+        str += `\n${dstContainerName}.${name}.defaults=\n` + _.toJs( e.defaults )
+      }
     }
     else
     {
@@ -527,6 +541,12 @@ function htmlSplitsFor( o )
   _.assert( _.longHas( [ 'include', 'inline', 0, false ], o.starterIncluding ) );
   _.assert( o.starterIncluding !== 'inline', 'not implemented' );
 
+  if( o.template )
+  {
+    r.all = onTemplate();
+    return r;
+  }
+
   r.prefix =
 `
 <!DOCTYPE html>
@@ -556,6 +576,35 @@ function htmlSplitsFor( o )
 `
 
   return r;
+
+  /* */
+
+  function onTemplate()
+  {
+    _.assert( _.strDefined( o.template ) );
+
+    let jsdom = require( 'jsdom' );
+    let dom = new jsdom.JSDOM( o.template );
+    let document = dom.window.document;
+
+    if( o.starterIncluding === 'include' )
+    appendScript( '/.starter' );
+
+    for( let filePath in o.srcScriptsMap )
+    appendScript( filePath );
+
+    return dom.serialize();
+
+    /* */
+
+    function appendScript( src )
+    {
+      let script = document.createElement( 'script' );
+      script.type = 'text/javascript';
+      script.src = src;
+      document.head.appendChild( script );
+    }
+  }
 }
 
 htmlSplitsFor.defaults =
@@ -563,6 +612,7 @@ htmlSplitsFor.defaults =
   srcScriptsMap : null,
   starterIncluding : 'include',
   title : 'Title',
+  template : null
 }
 
 //
@@ -574,6 +624,9 @@ function htmlFor( o )
   _.routineOptions( htmlFor, arguments );
 
   let splits = self.htmlSplitsFor( o );
+
+  if( splits.all )
+  return splits.all;
 
   let result = splits.prefix + splits.starter + splits.scripts.join( '\n' ) + splits.postfix;
 
