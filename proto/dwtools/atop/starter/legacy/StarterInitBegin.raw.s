@@ -139,14 +139,14 @@ function _starterStart()
   catch( err )
   {
 
-    if( !_.errIsRefined( err ) )
+    if( !_.errIsStandard( err ) )
     debugger;
 
     if( _ )
     err = _._err
     ({
       args : [ 'Failed to start root script', _.uri.join( _.uri.server(), _starter_.initScriptPath ),'\n',err ],
-      level : _.errIsRefined( err ) ? null : 2,
+      level : _.errIsStandard( err ) ? null : 2,
     });
 
     if( _ )
@@ -163,7 +163,7 @@ function _starterStartWaiting()
   console.log( 'loadingCounter', _starter_.loadingCounter );
   _.assert( _starter_.loadingCounter >= 0 );
   if( _starter_.loadingCounter > 0 || !_starter_.preloaded )
-  return _.timeOut( 500, () =>
+  return _.time.out( 500, () =>
   {
     _starter_._starterStartWaiting();
     return null;
@@ -557,7 +557,7 @@ function _scriptExec( o )
     err = _._err
     ({
       args : [ 'Exception including', _.uri.join( _.uri.server(), o.filePath ),'\n',err ],
-      level : _.errIsRefined( err ) ? null : 2,
+      level : _.errIsStandard( err ) ? null : 2,
     });
     scriptFile.error = err;
   }
