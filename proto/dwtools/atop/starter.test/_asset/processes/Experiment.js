@@ -4,7 +4,7 @@ let _ = require( '../../Tools.s' );
 _.include( 'wAppBasic' );
 _.include( 'wFiles' );
 
-_.process.exitHandlerRepair();
+_.process._exitHandlerRepair();
 
 console.log( '1' );
 

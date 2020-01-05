@@ -9,5 +9,5 @@ let o =
   execPath : _.path.join( __dirname, 'Experiment.js' ),
   // mode : 'shell',
 }
-// _.process.exitHandlerRepair();
+// _.process._exitHandlerRepair();
 let shell = _.process.startNodePassingThrough( o );
