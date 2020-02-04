@@ -48,7 +48,8 @@ function _Begin()
 
   let stackSymbol = Symbol.for( 'stack' );
   let _diagnosticCodeExecuting = 0;
-  let ErrorCounter = 0;
+  let _errorCounter = 0;
+  let _errorMaking = false;
 
   //
 

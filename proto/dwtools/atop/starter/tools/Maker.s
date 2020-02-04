@@ -258,8 +258,10 @@ function sourcesJoinSplits( o )
   ${ir( 'stack' )}
   ${ir( 'stackCondense' )}
   ${ir( 'location' )}
+  ${ir( 'locationFromStackFrame' )}
   
   ${gr( 'errOriginalMessage' )}
+  ${gr( 'errOriginalStack' )}
   ${gr( 'err' )}
   ${gr( '_err' )}
   ${gr( 'errIs' )}
@@ -457,7 +459,7 @@ function sourcesJoinSplits( o )
   
   function ir( name )
   {
-    return elementExport( _.introspector, 'introspector', name );
+    return elementExport( _.introspector, '_.introspector', name );
   }
 
   function pfs( name )
