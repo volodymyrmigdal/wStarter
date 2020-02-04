@@ -43,9 +43,12 @@ function _Begin()
   let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
   let _ = _starter_;
   let path = _starter_.path = _starter_.path || Object.create( null );
+  let introspector = _starter_.introspector = _starter_.introspector || Object.create( null );
   let sourcesMap = _starter_.sourcesMap = _starter_.sourcesMap || Object.create( null );
 
   let stackSymbol = Symbol.for( 'stack' );
+  let _diagnosticCodeExecuting = 0;
+  let ErrorCounter = 0;
 
   //
 

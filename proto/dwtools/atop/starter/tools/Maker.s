@@ -253,17 +253,18 @@ function sourcesJoinSplits( o )
   ${gr( 'longLeft' )}
   ${gr( 'longLeftIndex' )}
   ${gr( 'longLeftDefined' )}
-  let _diagnosticCodeExecuting = 0;
-  ${gr( 'diagnosticCode' )}
+  
+  ${ir( 'code' )}
+  ${ir( 'stack' )}
+  ${ir( 'stackCondense' )}
+  ${ir( 'location' )}
+  
   ${gr( 'errOriginalMessage' )}
   ${gr( 'err' )}
-  let ErrorCounter = 0;
   ${gr( '_err' )}
   ${gr( 'errIs' )}
   ${gr( 'unrollIs' )}
-  ${gr( 'diagnosticStack' )}
-  ${gr( 'diagnosticStackCondense' )}
-  ${gr( 'diagnosticLocation' )}
+
   ${gr( 'strType' )}
   ${gr( 'strPrimitiveType' )}
   ${gr( 'strHas' )}
@@ -277,8 +278,8 @@ function sourcesJoinSplits( o )
   ${pr( '_normalize' )}
   ${pr( 'canonize' )}
   ${pr( 'canonizeTolerant' )}
-  ${pr( '_pathNativizeWindows' )}
-  ${pr( '_pathNativizePosix' )}
+  ${pr( '_nativizeWindows' )}
+  ${pr( '_nativizePosix' )}
   ${pr( 'isGlob' )}
   ${pr( 'isRelative' )}
   ${pr( 'isAbsolute' )}
@@ -452,6 +453,11 @@ function sourcesJoinSplits( o )
   function pr( name )
   {
     return elementExport( _.path, 'path', name );
+  }
+  
+  function ir( name )
+  {
+    return elementExport( _.introspector, 'introspector', name );
   }
 
   function pfs( name )
