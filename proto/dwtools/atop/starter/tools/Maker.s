@@ -441,7 +441,7 @@ function sourcesJoinSplits( o )
     {
       str = _.toJs( e );
     }
-    let r = dstContainerName + '.' + name + ' = ' + _.strIndentation( str, '  ' ) + ';\n\n//\n';
+    let r = dstContainerName + '.' + name + ' = ' + _.strLinesIndentation( str, '  ' ) + ';\n\n//\n';
     return r;
   }
 
