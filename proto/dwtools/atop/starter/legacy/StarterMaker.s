@@ -459,8 +459,8 @@ function filesMapMake()
         filePath : 'fmap:///',
         recursive : 2,
       },
-      includingTerminals : 1,
-      includingTransient : 0,
+      withTerminals : 1,
+      withTransient : 0,
       resolvingSoftLink : 0,
       onUp : onUp,
     });
@@ -571,7 +571,8 @@ function starterMake()
   // debugger;
   find( 'abase/l0' );
   find( 'abase/l1' );
-  // find( 'abase/l2' );
+  find( 'abase/l2' );
+  find( 'abase/l2_blueprint' );
   find( 'abase/l3' );
   find( 'abase/l3_proto' );
   find( 'abase/l4' );

@@ -38,6 +38,35 @@ function trivial( test )
   </html>`
   ;
   var initScriptSource = `console.log( 'Init script' )`;
+  var requiredModules = 
+  [ 
+    'wTools', 
+    'wFiles', 
+    'wlooker', 
+    'wblueprint', 
+    'wcloner', 
+    'wConsequence', 
+    'wCopyable',
+    'wpathbasic', 
+    'wpathtools',
+    'wProto', 
+    'wroutinebasic', 
+    'wselector', 
+    'wstringer', 
+    'wstringsextra', 
+    'wtraverser', 
+    'wreplicator', 
+    'wequaler', 
+    'wfieldsstack', 
+    'wEventHandler', 
+    'winstancing', 
+    'wprocedure', 
+    'wLogger',
+    'wtemplatetreeenvironment',
+    'wtemplatetreeresolver',
+    'wverbal',
+    'wRegexpObject'
+  ]
 
   /*  */
 
@@ -66,6 +95,9 @@ function trivial( test )
 
     starterMaker.fileProviderForm();
     starterMaker.fromHardDriveRead({ srcPath : _.uri.join( 'file:///', srcPath ) });
+    
+    let srcPaths = _.uri.s.join( 'file:///', __dirname, '../../../node_modules', requiredModules, 'proto' )
+    srcPaths.forEach( srcPath =>  starterMaker.fromHardDriveRead({ srcPath }) );
 
     starterMaker.form();
 
