@@ -247,7 +247,9 @@ function sourcesJoinSplits( o )
   ${gr( 'routineIs' )}
   ${gr( 'mapSupplementStructureless' )}
   ${gr( 'routineOptions' )}
+  ${gr( 'arrayAppendArray' )}
   ${gr( 'arrayAppendArrays' )}
+  ${gr( 'arrayAppendedArray' )}
   ${gr( 'arrayAppendedArrays' )}
   ${gr( 'longLike' )}
   ${gr( 'longLeft' )}
