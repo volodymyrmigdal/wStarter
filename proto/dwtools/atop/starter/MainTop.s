@@ -135,7 +135,6 @@ function commandVersion( e )
     outputPiping : 0,
     inputMirroring : 0,
     throwingExitCode : 0,
-    mode : 'spawn'
   })
   .then( ( got ) =>
   {

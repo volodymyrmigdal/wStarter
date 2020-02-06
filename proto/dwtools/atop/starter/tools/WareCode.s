@@ -99,9 +99,9 @@ function _Begin()
   function nativize()
   {
     if( _global.process && _global.process.platform === 'win32' )
-    this.nativize = this._pathNativizeWindows;
+    this.nativize = this._nativizeWindows;
     else
-    this.nativize = this._pathNativizePosix;
+    this.nativize = this._nativizePosix;
     return this.nativize.apply( this, arguments );
   }
 

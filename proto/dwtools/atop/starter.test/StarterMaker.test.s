@@ -10,8 +10,11 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
 
   require( '../starter/IncludeTop.s' );
-
+  
+  var Pupeeteer = require( 'puppeteer' );
 }
+
+
 
 var _global = _global_;
 var _ = _global_.wTools;
@@ -75,47 +78,8 @@ function assetFor( test, name, puppeteer )
 
   _.assert( a.fileProvider.isDir( a.originalAssetPath ) );
 
-  if( puppeteer )
-  a.puppeteer = puppeteerPrepare();
-
   return a;
 
-  //
-
-  function puppeteerPrepare()
-  {
-    let Puppeteer = require( 'puppeteer' );
-    let handler =
-    {
-      get( target, key, receiver )
-      {
-        let value = Reflect.get( target, key, receiver );
-        if ( !_.routineIs( value ) )
-        return value;
-        return function (...args)
-        {
-          let result = value.apply( this, args );
-          if( _.promiseIs( result ) )
-          {
-            let ready = new _.Consequence();
-            result.then( ( got ) =>
-            {
-              if( got === undefined )
-              got = true
-              ready.take( got );
-            })
-            result.catch( ( err ) => ready.error( err ) )
-            result = ready.deasync();
-          }
-          if( _.objectIs( result ) )
-          return new Proxy( result, handler )
-          return result;
-        }
-      }
-    }
-
-    return new Proxy( Puppeteer, handler );
-  }
 }
 
 
@@ -151,7 +115,7 @@ function sourcesJoin( test )
   });
 
   _.fileProvider.filesReflect({ reflectMap : { [ originalAssetPath ] : routinePath } })
-
+  
   starter.sourcesJoin
   ({
     inPath : '**',
@@ -164,6 +128,8 @@ function sourcesJoin( test )
 
   let read = _.fileProvider.fileRead( outputPath );
   test.identical( _.strCount( read, 'setTimeout( f, 1000 );' ), 2 );
+  
+  debugger
 
   shell( _.path.nativize( outputPath ) )
   .then( ( op ) =>
@@ -1231,157 +1197,139 @@ function shellHtmlFor( test )
 
 //
 
-function includeCss( test )
+async function includeCss( test )
 {
   let self = this;
   let a = self.assetFor( test, 'includeCss', true );
   let starter = new _.Starter().form();
+  var page,browser;
 
-  a.ready
-
-  .then( () =>
-  {
-    a.reflect();
-    starter.start
-    ({
-      basePath : a.routinePath,
-      entryPath : 'index.js',
-      open : 0,
-    })
-    return null;
+  a.reflect();
+  starter.start
+  ({
+    basePath : a.routinePath,
+    entryPath : 'index.js',
+    open : 0,
   })
-
-  .then( () =>
+  
+  try
   {
-    let browser = a.puppeteer.launch({ headless : 1 });
-    let page = browser.newPage();
-    page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
-
-    var got = page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
+    browser = await Pupeeteer.launch({ headless : true });
+    page = await browser.newPage();
+   
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
+    
+    var got = await page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
     test.identical( got, [ 'http://127.0.0.1:5000/.starter', 'http://127.0.0.1:5000/index.js' ] )
+    
+    var got = await page.evaluate( () => 
+    {
+      var style = window.getComputedStyle( document.querySelector( 'body') );
+      return style.getPropertyValue( 'background' )
+    });
+    test.is( _.strHas( got, 'rgb(192, 192, 192)' ) );
 
-    var style = page.$( 'style' );
-    var got = page.evaluate( style => style.innerHTML, style );
-    test.is( _.strHas( got, 'background: silver' ) );
+    await browser.close();
+  }
+  catch( err )
+  { 
+    test.exceptionReport({ err });
+    await browser.close();
+  }
+  
+  let ready = new _.Consequence();
+  starter.servlet.server.close( () => ready.take( null ) );
 
-    browser.close();
-
-    return null;
-  })
-
-  .then( () =>
-  {
-    let ready = new _.Consequence();
-    starter.servlet.server.close( () => ready.take( null ) );
-    return ready;
-  })
-
-  return a.ready;
-
+  await ready;
 }
 
 //
 
-function workerWithInclude( test )
+async function workerWithInclude( test )
 {
   let self = this;
   let a = self.assetFor( test, 'worker', true );
   let starter = new _.Starter().form();
+  let browser,page;
 
-  a.ready
-
-  .then( () =>
-  {
-    a.reflect();
-    starter.start
-    ({
-      basePath : a.routinePath,
-      entryPath : 'index.js',
-      open : 0,
-    })
-    return null;
+  a.reflect();
+  starter.start
+  ({
+    basePath : a.routinePath,
+    entryPath : 'index.js',
+    open : 0,
   })
-
-  .then( () =>
+  
+  try
   {
-    let browser = a.puppeteer.launch({ headless : 1 });
-    let page = browser.newPage();
+    browser = await Pupeeteer.launch({ headless : true });
+    page = await browser.newPage();
     let output = '';
-
+    
     page.on( 'console', msg => output += msg.text() + '\n' );
-    page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
-
-    _.timeOut( 1500 ).deasync();
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
+    
+    await _.time.out( 1500 );
 
     test.is( _.strHas( output, 'Global: Window' ) )
     test.is( _.strHas( output, 'Global: DedicatedWorkerGlobalScope' ) )
 
-    browser.close();
-
-    return null;
-  })
-
-  .then( () =>
-  {
-    let ready = new _.Consequence();
-    starter.servlet.server.close( () => ready.take( null ) );
-    return ready;
-  })
-
-  return a.ready;
+    await browser.close();
+  }
+  catch( err )
+  { 
+    test.exceptionReport({ err });
+    await browser.close();
+  }
+  
+  let ready = new _.Consequence();
+  starter.servlet.server.close( () => ready.take( null ) );
+  
+  await ready;
 }
 
 //
 
-function includeExcludingManual( test )
+async function includeExcludingManual( test )
 {
   let self = this;
   let a = self.assetFor( test, 'exclude', true );
   let starter = new _.Starter().form();
+  let browser,page;
 
-  a.ready
-
-  .then( () =>
-  {
-    a.reflect();
-    starter.start
-    ({
-      basePath : a.routinePath,
-      entryPath : 'index.js',
-      open : 0,
-    })
-    return null;
+  a.reflect();
+  starter.start
+  ({
+    basePath : a.routinePath,
+    entryPath : 'index.js',
+    open : 0,
   })
 
-  .then( () =>
+  try
   {
-    let browser = a.puppeteer.launch({ headless : 1 });
-    let page = browser.newPage();
-    let output = '';
-
-    page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
-
-    _.timeOut( 1500 ).deasync();
-
-    var scripts = page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
+    browser = await Pupeeteer.launch({ headless : true });
+    page = await browser.newPage();
+   
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
+    
+    var scripts = await page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
     test.identical( scripts.length, 3 );
     test.identical( scripts[ 0 ], 'http://127.0.0.1:5000/.starter' );
     test.identical( scripts[ 1 ], 'http://127.0.0.1:5000/index.js' );
     test.is( _.strHas( scripts[ 2 ], './src/File.js' ) );
 
-    browser.close();
-
-    return null;
-  })
-
-  .then( () =>
-  {
-    let ready = new _.Consequence();
-    starter.servlet.server.close( () => ready.take( null ) );
-    return ready;
-  })
-
-  return a.ready;
+    await browser.close();
+  }
+  catch( err )
+  { 
+    test.exceptionReport({ err });
+    await browser.close();
+  }
+  
+  let ready = new _.Consequence();
+  starter.servlet.server.close( () => ready.take( null ) );
+  
+  await ready;
 }
 
 //
