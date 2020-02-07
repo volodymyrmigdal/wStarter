@@ -5,11 +5,7 @@
 
   if( typeof include !== 'undefined' ) 
   { 
-    var _ = include( '/dwtools/abase/Layer2.s' );
-    _.include( 'wPathBasic' );
+    include( '/dwtools/abase/Layer2.s' );
   }
-  
-  var path = _.path.join( '/a', 'b' );
-  console.log( path );
   
 })();

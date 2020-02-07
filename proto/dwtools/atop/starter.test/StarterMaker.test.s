@@ -77,7 +77,18 @@ function assetFor( test, name, puppeteer )
   // })
 
   _.assert( a.fileProvider.isDir( a.originalAssetPath ) );
-
+  
+  a.willbeExecPath = _.path.normalize( require.resolve( 'willbe' ) );
+  a.willbe = _.process.starter
+  ({
+    execPath : 'node ' + a.willbeExecPath,
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    outputGraying : 1,
+    ready : a.ready,
+    mode : 'spawn',
+  })
+  
   return a;
 
 }
@@ -1334,6 +1345,56 @@ async function includeExcludingManual( test )
 
 //
 
+async function includeModule( test )
+{
+  let self = this;
+  let a = self.assetFor( test, 'includeModule', true );
+  let starter = new _.Starter().form();
+  let browser,page;
+  
+  a.reflect();
+  
+  await a.willbe({ args : '.build' })
+  
+  starter.start
+  ({
+    basePath : _.path.join( a.routinePath, 'out/debug' ),
+    entryPath : 'index.js',
+    open : 0,
+  })
+
+  try
+  {
+    browser = await Pupeeteer.launch({ headless : false });
+    page = await browser.newPage();
+   
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
+    
+    var result = await page.evaluate( () => 
+    { 
+      var _ = _global_.wTools;
+      _.include( 'wPathBasic' );
+      return _.path.join( '/a', 'b' );
+    })
+    test.identical( result, '/a/b' )
+    
+
+    await browser.close();
+  }
+  catch( err )
+  { 
+    test.exceptionReport({ err });
+    await browser.close();
+  }
+  
+  let ready = new _.Consequence();
+  starter.servlet.server.close( () => ready.take( null ) );
+  
+  await ready;
+}
+
+//
+
 function version( test )
 {
   let self = this;
@@ -1407,6 +1468,8 @@ var Self =
     includeCss,
     workerWithInclude,
     includeExcludingManual,
+    
+    includeModule,
 
     version,
 

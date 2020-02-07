@@ -38,6 +38,11 @@ submodule :
     enabled : 0 # submodule
     criterion :
       development : 1
+  willbe :
+    path : npm:///willbe
+    enabled : 0 # submodule
+    criterion :
+      development : 1
 
 path :
 
