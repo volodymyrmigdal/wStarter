@@ -486,7 +486,15 @@ function sourcesJoinSplits( o )
       str = _.toJs( e );
     }
     
+    /* */
+    
+    if( _.routineIs( e ) )
+    str += `;\nvar ${name} = ${dstContainerName + '.' + name}`
+    
     let r = dstContainerName + '.' + name + ' = ' + _.strLinesIndentation( str, '  ' ) + ';\n\n//\n';
+    
+    /* */
+    
     return r;
     
     function routineProperties( dstContainerName, routine )
