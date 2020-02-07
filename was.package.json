@@ -38,6 +38,6 @@
     "express" : "", 
     "jsdom" : ""
   }, 
-  "devDependencies" : { "wTesting" : "", "puppeteer" : "2.0.0" }, 
+  "devDependencies" : { "wTesting" : "", "willbe" : "", "puppeteer" : "2.0.0" }, 
   "keywords" : [ "wTools" ]
 }

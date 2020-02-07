@@ -224,6 +224,8 @@ function sourcesJoinSplits( o )
 
   ${_.routineParse( self.WareCode.begin ).bodyUnwrapped};
 
+  
+  ${gr( 'assert' )}
   ${gr( 'strIs' )}
   ${gr( 'strDefined' )}
   ${gr( '_strBeginOf' )}
@@ -241,18 +243,37 @@ function sourcesJoinSplits( o )
   ${gr( 'objectIs' )}
   ${gr( 'objectLike' )}
   ${gr( 'arrayLike' )}
+  ${gr( 'mapLike' )}
+  ${gr( 'strsLikeAll' )}
   ${gr( 'arrayIs' )}
   ${gr( 'numberIs' )}
   ${gr( 'argumentsArrayIs' )}
   ${gr( 'routineIs' )}
+  ${gr( 'routineIsPure' )}
+  ${gr( 'mapIs' )}
+  ${gr( 'sure' )}
+  ${gr( 'mapBut' )}
+  ${gr( 'mapHas' )}
+  ${gr( 'sureMapHasOnly' )}
+  ${gr( 'sureMapHasNoUndefine' )}
   ${gr( 'mapSupplementStructureless' )}
+  ${gr( 'assertMapHasOnly' )}
+  ${gr( 'assertMapHasNoUndefine' )}
   ${gr( 'routineOptions' )}
+  ${gr( 'routineExtend' )}
+  ${gr( 'arrayAppendArray' )}
   ${gr( 'arrayAppendArrays' )}
+  ${gr( 'arrayAppendedArray' )}
   ${gr( 'arrayAppendedArrays' )}
   ${gr( 'longLike' )}
   ${gr( 'longLeft' )}
   ${gr( 'longLeftIndex' )}
   ${gr( 'longLeftDefined' )}
+  ${gr( 'longHas' )}
+  ${gr( 'routineFromPreAndBody' )}
+  
+  ${gr( 'arrayAs' )}
+  
   
   ${ir( 'code' )}
   ${ir( 'stack' )}
@@ -286,8 +307,21 @@ function sourcesJoinSplits( o )
   ${pr( 'isRelative' )}
   ${pr( 'isAbsolute' )}
   ${pr( 'ext' )}
-
+  
   ${pfs()}
+  
+  ${gr( '_strRightSingle' )}
+  ${gr( 'strIsolate' )}
+  ${gr( 'strIsolateRightOrNone' )}
+  
+  ${ur( 'parseConsecutive' )}
+  ${ur( 'isGlobal' )}
+  ${ur( 'refine' )}
+  ${ur( '_normalize' )}
+  ${ur( 'canonize' )}
+  ${ur( 'canonizeTolerant' )}
+
+  ${ufs()}
 
   ${_.routineParse( self.WareCode.end ).bodyUnwrapped};
   `
@@ -428,23 +462,81 @@ function sourcesJoinSplits( o )
     );
     let str = '';
     if( _.routineIs( e ) )
-    {
+    { 
+      
+      if( e.pre || e.body )
+      { 
+        _.assert( _.routineIs( e.pre ) && _.routineIs( e.body ) );
+        str = routineFromPreAndBodyToString( e )
+        return str;
+      }
+      
       if( e.functor )
       str = '(' + e.functor.toString() + ')();';
       else
       str = e.toString();
-
+      
       if( e.defaults )
-      {
-        str += `\n${dstContainerName}.${name}.defaults=\n` + _.toJs( e.defaults )
+      { 
+        str += `\n${dstContainerName}.${name}.defaults =\n` + _.toJs( e.defaults )
       }
     }
     else
     {
       str = _.toJs( e );
     }
+    
+    /* */
+    
+    if( _.routineIs( e ) )
+    str += `;\nvar ${name} = ${dstContainerName + '.' + name}`
+    
     let r = dstContainerName + '.' + name + ' = ' + _.strLinesIndentation( str, '  ' ) + ';\n\n//\n';
+    
+    /* */
+    
     return r;
+    
+    function routineProperties( dstContainerName, routine )
+    { 
+      let r = ''
+      for( var k in routine )
+      r += `${dstContainerName}.${k} = ` + _.toJs( routine[ k ] ) + '\n'
+      if( r )
+      r = _.strLinesIndentation( r, '  ' );
+      return r;
+    }
+    
+    function routineToString( routine )
+    {
+      return _.strLinesIndentation( routine.toString(), '  ' ) + '\n\n  //\n'
+    }
+    
+    function routineFromPreAndBodyToString( e )
+    {
+      let str = 
+      `\
+        \n  var __${e.name}_pre = ${routineToString( e.pre )}\
+        \n  var ${e.pre.name} = __${e.name}_pre\
+        \n  ${routineProperties( `__${e.name}_pre`, e.pre )}\
+        \n  var __${e.name}_body = ${routineToString( e.body )}\
+        \n  var ${e.body.name} = __${e.name}_body\
+        \n  ${routineProperties( `__${e.name}_body`, e.body )}\
+      `
+      if( name === 'routineFromPreAndBody' )
+      { 
+        
+        str += `\n${dstContainerName}.${name} = ` + _.strLinesIndentation( e.toString(), '  ' );
+        str += `\n${dstContainerName}.${name}.pre = ` + `__${e.name}_pre;`
+        str += `\n${dstContainerName}.${name}.body = ` + `__${e.name}_body;`
+        str += `\n${dstContainerName}.${name}.defaults = ` + 'Object.create( ' + `__${e.name}_body.defaults` + ' );'
+      }
+      else
+      {
+        str += `\n  ${dstContainerName}.${name} = _.routineFromPreAndBody( __${e.name}_pre, __${e.name}_body );`
+      }
+      return str;
+    }
   }
 
   function gr( name )
@@ -461,6 +553,11 @@ function sourcesJoinSplits( o )
   {
     return elementExport( _.introspector, '_.introspector', name );
   }
+  
+  function ur( name )
+  {
+    return elementExport( _.uri, 'uri', name );
+  }
 
   function pfs( name )
   {
@@ -470,6 +567,18 @@ function sourcesJoinSplits( o )
       let e = _.path[ f ];
       if( _.strIs( e ) || _.regexpIs( e ) )
       result.push( pr( f ) );
+    }
+    return result.join( '  ' );
+  }
+  
+  function ufs( name )
+  {
+    let result = [];
+    for( let f in _.uri )
+    {
+      let e = _.uri[ f ];
+      if( _.strIs( e ) || _.regexpIs( e ) )
+      result.push( ur( f ) );
     }
     return result.join( '  ' );
   }
