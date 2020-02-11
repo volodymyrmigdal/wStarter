@@ -217,6 +217,7 @@ function sourcesJoinSplits( o )
 `
 
   /* ware */
+  /* Uri namespace( parseConsecutive ) is required to make _.include work in a browser */
 
   r.ware =
 `
