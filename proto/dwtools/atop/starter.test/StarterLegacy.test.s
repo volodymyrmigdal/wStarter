@@ -16,17 +16,99 @@ if( typeof module !== 'undefined' )
 var _global = _global_;
 var _ = _global_.wTools;
 
+//
+
+function onSuiteBegin()
+{
+  let self = this;
+
+  self.tempDir = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
+  self.assetDirPath = _.path.join( __dirname, '_asset' );
+  self.find = _.fileProvider.filesFinder
+  ({
+    withTerminals : 1,
+    withDirs : 1,
+    withTransient/*maybe withStem*/ : 1,
+    allowingMissed : 1,
+    maskPreset : 0,
+    outputFormat : 'relative',
+    filter :
+    {
+      filePath : { 'node_modules' : 0, 'package.json' : 0, 'package-lock.json' : 0 },
+      recursive : 2,
+    }
+  });
+
+}
+
+//
+
+function assetFor( test, name, puppeteer )
+{
+  let self = this;
+  let a = Object.create( null );
+
+  a.test = test;
+  a.name = name;
+  a.originalAssetPath = _.path.join( self.assetDirPath, name );
+  a.routinePath = _.path.join( self.tempDir, test.name );
+  a.fileProvider = _.fileProvider;
+  a.path = _.fileProvider.path;
+  a.ready = _.Consequence().take( null );
+
+  a.reflect = function reflect()
+  {
+    _.fileProvider.filesDelete( a.routinePath );
+    _.fileProvider.filesReflect({ reflectMap : { [ a.originalAssetPath ] : a.routinePath } });
+  }
+
+  // a.shell = _.process.starter
+  // ({
+  //   currentPath : a.routinePath,
+  //   outputCollecting : 1,
+  //   outputGraying : 1,
+  //   ready : a.ready,
+  //   mode : 'shell',
+  // })
+
+  _.assert( a.fileProvider.isDir( a.originalAssetPath ) );
+  
+  a.willbeExecPath = _.path.normalize( require.resolve( 'willbe' ) );
+  a.willbe = _.process.starter
+  ({
+    execPath : 'node ' + a.willbeExecPath,
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    outputGraying : 1,
+    ready : a.ready,
+    mode : 'spawn',
+  })
+  
+  return a;
+
+}
+
+//
+
+function onSuiteEnd()
+{
+  let self = this;
+  _.assert( _.strHas( self.tempDir, '/dwtools/tmp.tmp' ) || _.strHas( self.tempDir, '/Temp/' ) )
+  _.fileProvider.filesDelete( self.tempDir );
+}
+
 // --
 //
 // --
 
-function trivial( test )
+async function trivial( test )
 {
-  var srcPath = _.path.resolve( __dirname, '../../..' );
-  var tempPath = _.path.join( srcPath, 'tmp.tmp' );
-  var initScriptPath = _.path.join( tempPath, 'Init.s' );
-  var indexHtmlPath = _.path.join( tempPath, 'Index.html' );
-
+  let self = this;
+  let a = self.assetFor( test, 'legacy-trivial', true );
+  var srcPath = _.path.join( a.routinePath, 'out/debug' );
+  var initScriptPath = _.path.join( srcPath, 'Init.s' );
+  var indexHtmlPath = _.path.join( srcPath, 'Index.html' );
+  
   var indexHtmlSource =
   `<html>
     <head>
@@ -38,41 +120,12 @@ function trivial( test )
   </html>`
   ;
   var initScriptSource = `console.log( 'Init script' )`;
-  var requiredModules =
-  [
-    'wTools',
-    'wFiles',
-    'wlooker',
-    'wblueprint',
-    'wcloner',
-    'wConsequence',
-    'wCopyable',
-    'wpathbasic',
-    'wpathtools',
-    'wProto',
-    'wroutinebasic',
-    'wselector',
-    'wstringer',
-    'wstringsextra',
-    'wtraverser',
-    'wreplicator',
-    'wequaler',
-    'wfieldsstack',
-    'wEventHandler',
-    'winstancing',
-    'wprocedure',
-    'wLogger',
-    'wtemplatetreeenvironment',
-    'wtemplatetreeresolver',
-    'wverbal',
-    'wRegexpObject'
-  ]
-
-  /*  */
-
-  _.fileProvider.filesDelete( tempPath );
+ 
   _.fileProvider.fileWrite( indexHtmlPath, indexHtmlSource );
   _.fileProvider.fileWrite( initScriptPath, initScriptSource );
+  
+  a.reflect();
+  await a.willbe({ args : '.build' });
 
   /*
     ... grab all required files into tmp/dwtools dir ...
@@ -87,7 +140,7 @@ function trivial( test )
       inPath : '/',
       outPath : '/',
       toolsPath : '/dwtools',
-      initScriptPath : '/tmp.tmp/Init.s',
+      initScriptPath : '/Init.s',
       offline : 1,
       verbosity : 5,
       logger : new _.Logger({ output : logger }),
@@ -95,15 +148,11 @@ function trivial( test )
 
     starterMaker.fileProviderForm();
     starterMaker.fromHardDriveRead({ srcPath : _.uri.join( 'file:///', srcPath ) });
-
-    let srcPaths = _.uri.s.join( 'file:///', __dirname, '../../../node_modules', requiredModules, 'proto' )
-    srcPaths.forEach( srcPath =>  starterMaker.fromHardDriveRead({ srcPath }) );
-
     starterMaker.form();
 
     starterMaker.starterMake();
     starterMaker.filesMapMake();
-    starterMaker.toHardDriveWrite({ dstPath : _.uri.join( 'file:///', tempPath ) });
+    starterMaker.toHardDriveWrite({ dstPath : _.uri.join( 'file:///', srcPath ) });
 
   }
   catch( err )
@@ -111,8 +160,7 @@ function trivial( test )
     test.exceptionReport({ err : err });
   }
 
-
-  var files = _.fileProvider.dirRead( tempPath );
+  var files = _.fileProvider.dirRead( srcPath );
   var expected =
   [
     'Index.html',
@@ -123,12 +171,10 @@ function trivial( test )
     'Test.raw.filesmap.s',
     'Test.raw.starter.config.s'
   ];
-  test.identical( files, expected )
-
-  _.fileProvider.filesDelete( tempPath );
+  test.identical( files, expected );
 }
 
-trivial.timeOut = 60000;
+trivial.timeOut = 300000;
 
 // --
 //
@@ -140,6 +186,17 @@ var Self =
   name : 'Tools.mid.StarterLegacy',
   silencing : 1,
   enabled : 0,
+  
+  onSuiteBegin,
+  onSuiteEnd,
+  
+  context : 
+  {
+    tempDir : null,
+    assetDirPath : null,
+    find : null,
+    assetFor
+  },
 
   tests :
   {
