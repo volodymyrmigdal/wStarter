@@ -358,6 +358,8 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/includeModule/proto
           - >-
             ../proto/dwtools/atop/starter.test/_asset/includeModule/proto/index.js
+          - ../proto/dwtools/atop/starter.test/_asset/legacy-trivial
+          - ../proto/dwtools/atop/starter.test/_asset/legacy-trivial/.will.yml
           - ../proto/dwtools/atop/starter.test/_asset/processes
           - ../proto/dwtools/atop/starter.test/_asset/processes/Experiment.js
           - ../proto/dwtools/atop/starter.test/_asset/processes/Experiment2.js
