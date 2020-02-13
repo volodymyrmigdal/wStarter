@@ -52,7 +52,7 @@ function _Begin()
   let _diagnosticCodeExecuting = 0;
   let _errorCounter = 0;
   let _errorMaking = false;
-  
+
   let _ArrayIndexOf = Array.prototype.indexOf;
   let _ArrayIncludes = Array.prototype.includes;
   if( !_ArrayIncludes )

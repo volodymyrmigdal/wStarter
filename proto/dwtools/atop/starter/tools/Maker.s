@@ -225,7 +225,7 @@ function sourcesJoinSplits( o )
 
   ${_.routineParse( self.WareCode.begin ).bodyUnwrapped};
 
-  
+
   ${gr( 'assert' )}
   ${gr( 'strIs' )}
   ${gr( 'strDefined' )}
@@ -272,16 +272,16 @@ function sourcesJoinSplits( o )
   ${gr( 'longLeftDefined' )}
   ${gr( 'longHas' )}
   ${gr( 'routineFromPreAndBody' )}
-  
+
   ${gr( 'arrayAs' )}
-  
-  
+
+
   ${ir( 'code' )}
   ${ir( 'stack' )}
   ${ir( 'stackCondense' )}
   ${ir( 'location' )}
   ${ir( 'locationFromStackFrame' )}
-  
+
   ${gr( 'errOriginalMessage' )}
   ${gr( 'errOriginalStack' )}
   ${gr( 'err' )}
@@ -308,13 +308,13 @@ function sourcesJoinSplits( o )
   ${pr( 'isRelative' )}
   ${pr( 'isAbsolute' )}
   ${pr( 'ext' )}
-  
+
   ${pfs()}
-  
+
   ${gr( '_strRightSingle' )}
   ${gr( 'strIsolate' )}
   ${gr( 'strIsolateRightOrNone' )}
-  
+
   ${ur( 'parseConsecutive' )}
   ${ur( 'isGlobal' )}
   ${ur( 'refine' )}
@@ -463,22 +463,22 @@ function sourcesJoinSplits( o )
     );
     let str = '';
     if( _.routineIs( e ) )
-    { 
-      
+    {
+
       if( e.pre || e.body )
-      { 
+      {
         _.assert( _.routineIs( e.pre ) && _.routineIs( e.body ) );
         str = routineFromPreAndBodyToString( e )
         return str;
       }
-      
+
       if( e.functor )
       str = '(' + e.functor.toString() + ')();';
       else
       str = e.toString();
-      
+
       if( e.defaults )
-      { 
+      {
         str += `\n${dstContainerName}.${name}.defaults =\n` + _.toJs( e.defaults )
       }
     }
@@ -486,20 +486,20 @@ function sourcesJoinSplits( o )
     {
       str = _.toJs( e );
     }
-    
+
     /* */
-    
+
     if( _.routineIs( e ) )
     str += `;\nvar ${name} = ${dstContainerName + '.' + name}`
-    
+
     let r = dstContainerName + '.' + name + ' = ' + _.strLinesIndentation( str, '  ' ) + ';\n\n//\n';
-    
+
     /* */
-    
+
     return r;
-    
+
     function routineProperties( dstContainerName, routine )
-    { 
+    {
       let r = ''
       for( var k in routine )
       r += `${dstContainerName}.${k} = ` + _.toJs( routine[ k ] ) + '\n'
@@ -507,15 +507,15 @@ function sourcesJoinSplits( o )
       r = _.strLinesIndentation( r, '  ' );
       return r;
     }
-    
+
     function routineToString( routine )
     {
       return _.strLinesIndentation( routine.toString(), '  ' ) + '\n\n  //\n'
     }
-    
+
     function routineFromPreAndBodyToString( e )
     {
-      let str = 
+      let str =
       `\
         \n  var __${e.name}_pre = ${routineToString( e.pre )}\
         \n  var ${e.pre.name} = __${e.name}_pre\
@@ -525,8 +525,8 @@ function sourcesJoinSplits( o )
         \n  ${routineProperties( `__${e.name}_body`, e.body )}\
       `
       if( name === 'routineFromPreAndBody' )
-      { 
-        
+      {
+
         str += `\n${dstContainerName}.${name} = ` + _.strLinesIndentation( e.toString(), '  ' );
         str += `\n${dstContainerName}.${name}.pre = ` + `__${e.name}_pre;`
         str += `\n${dstContainerName}.${name}.body = ` + `__${e.name}_body;`
@@ -549,12 +549,12 @@ function sourcesJoinSplits( o )
   {
     return elementExport( _.path, 'path', name );
   }
-  
+
   function ir( name )
   {
     return elementExport( _.introspector, '_.introspector', name );
   }
-  
+
   function ur( name )
   {
     return elementExport( _.uri, 'uri', name );
@@ -571,7 +571,7 @@ function sourcesJoinSplits( o )
     }
     return result.join( '  ' );
   }
-  
+
   function ufs( name )
   {
     let result = [];

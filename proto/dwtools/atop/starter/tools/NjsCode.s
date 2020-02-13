@@ -1,6 +1,6 @@
 ( function _NjsWare_s_() {
 
-'use strict';
+'use strict'; 
 
 let _ = _global_.wTools;
 
@@ -11,7 +11,7 @@ let _ = _global_.wTools;
 function _Begin()
 {
 
-  'use strict';
+  'use strict'; 
 
   let _global = _global_;
   let _starter_ = _global_._starter_;
