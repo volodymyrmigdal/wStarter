@@ -110,7 +110,7 @@ function commandsMake()
     'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor ),             h : 'Generate HTML for specified files.' },
     'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin ),         h : 'Join source files found at specified directory.' },
     'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen ),            h : 'Run HTTP server to serve files in a specified directory.' },
-    'start' :             { e : _.routineJoin( cui, cui.commandStart ),               h : 'Run executable file. By default in browser.' },
+    'start' :             { e : _.routineJoin( cui, cui.commandStart )          },
   }
 
   let ca = _.CommandsAggregator
@@ -246,6 +246,8 @@ commandHtmlFor.commandProperties =
   outPath : 'Path to save generated HTML file.',
 }
 
+commandSourcesJoin.hint = '';
+
 //
 
 function commandSourcesJoin( e )
@@ -285,6 +287,8 @@ commandSourcesJoin.commandProperties =
   outPath : 'Path to save merged file.',
 }
 
+commandSourcesJoin.hint = '';
+
 //
 
 function commandHttpOpen( e )
@@ -320,6 +324,8 @@ commandHttpOpen.commandProperties =
   basePath : 'Path to make available over HTTP.',
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
 }
+
+commandHttpOpen.hint = '';
 
 //
 
@@ -358,6 +364,8 @@ commandStart.commandProperties =
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
   templatePath : 'Path to html file to use as template'
 }
+
+commandStart.hint = 'Run executable file. By default in browser.';
 
 // --
 // relations
