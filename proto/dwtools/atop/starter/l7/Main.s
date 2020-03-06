@@ -99,7 +99,7 @@ function formAssociates()
   starter.fileProvider = _.FileProvider.Default();
 
   if( !starter.maker )
-  starter.maker = _.StarterMakerLight();
+  starter.maker = _.starter.Maker();
 
   return starter;
 }
@@ -212,7 +212,7 @@ function sourcesJoin( o )
   return data;
 }
 
-var defaults = sourcesJoin.defaults = _.mapBut( _.StarterMakerLight.prototype.sourcesJoin.defaults, { filesMap : null } );
+var defaults = sourcesJoin.defaults = _.mapBut( _.starter.Maker.prototype.sourcesJoin.defaults, { filesMap : null } );
 defaults.inPath = null;
 defaults.outPath = 'Index.js';
 
@@ -284,7 +284,7 @@ function htmlFor( o )
   return data;
 }
 
-var defaults = htmlFor.defaults = _.mapBut( _.StarterMakerLight.prototype.htmlFor.defaults, { srcScriptsMap : null } );
+var defaults = htmlFor.defaults = _.mapBut( _.starter.Maker.prototype.htmlFor.defaults, { srcScriptsMap : null } );
 defaults.inPath = null;
 defaults.outPath = 'Index.html';
 defaults.basePath = null;

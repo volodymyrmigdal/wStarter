@@ -11,7 +11,7 @@ let Self = function wStarterMakerLight( o )
   return _.workpiece.construct( Self, this, arguments );
 }
 
-Self.shortName = 'StarterMakerLight';
+Self.shortName = 'Maker';
 
 // --
 // routines
@@ -846,6 +846,6 @@ _.Copyable.mixin( Self );
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
-_[ Self.shortName ] = Self;
+_.starter[ Self.shortName ] = Self;
 
 })();

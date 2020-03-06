@@ -104,12 +104,12 @@ function commandsMake()
 
   let commands =
   {
-    'help' :              { e : _.routineJoin( cui, cui.commandHelp ),                h : 'Get help.' },
-    'version' :           { e : _.routineJoin( cui, cui.commandVersion ),             h : 'Get current version.' },
-    'imply' :             { e : _.routineJoin( cui, cui.commandImply ),               h : 'Change state or imply value of a variable.' },
-    'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor ),             h : 'Generate HTML for specified files.' },
-    'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin ),         h : 'Join source files found at specified directory.' },
-    'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen ),            h : 'Run HTTP server to serve files in a specified directory.' },
+    'help' :              { e : _.routineJoin( cui, cui.commandHelp ),          },
+    'version' :           { e : _.routineJoin( cui, cui.commandVersion ),       },
+    'imply' :             { e : _.routineJoin( cui, cui.commandImply ),         },
+    'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor ),       },
+    'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin ),   },
+    'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen ),      },
     'start' :             { e : _.routineJoin( cui, cui.commandStart )          },
   }
 
@@ -141,6 +141,8 @@ function commandHelp( e )
 
   return cui;
 }
+
+commandHelp.hint = 'Get help.';
 
 //
 
@@ -182,6 +184,8 @@ function commandVersion( e )
 
 }
 
+commandVersion.hint = 'Get current version.';
+
 //
 
 function commandImply( e )
@@ -208,6 +212,8 @@ function commandImply( e )
   });
 
 }
+
+commandImply.hint = 'Change state or imply value of a variable.';
 
 //
 
@@ -246,7 +252,7 @@ commandHtmlFor.commandProperties =
   outPath : 'Path to save generated HTML file.',
 }
 
-commandSourcesJoin.hint = '';
+commandHtmlFor.hint = 'Generate HTML for specified files.';
 
 //
 
@@ -287,7 +293,7 @@ commandSourcesJoin.commandProperties =
   outPath : 'Path to save merged file.',
 }
 
-commandSourcesJoin.hint = '';
+commandSourcesJoin.hint = 'Join source files found at specified directory.';
 
 //
 
@@ -325,7 +331,7 @@ commandHttpOpen.commandProperties =
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
 }
 
-commandHttpOpen.hint = '';
+commandHttpOpen.hint = 'Run HTTP server to serve files in a specified directory.';
 
 //
 
@@ -337,8 +343,6 @@ function commandStart( e )
   starter.form();
 
   let ca = e.ca;
-  let fileProvider = starter.fileProvider;
-  let path = starter.fileProvider.path;
   let logger = starter.logger;
   let request = _.strRequestParse( e.argument );
 
