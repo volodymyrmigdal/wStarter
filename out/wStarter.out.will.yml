@@ -2,15 +2,12 @@ format: outwillfile-2.0
 root:
   - wStarter.out
 consistency:
-  wStarter.out.will.yml: &ref_0
-    hash: bf1ba125bc847785e6e5c9092b5b6886
-    size: 54283
-  ../.ex.will.yml: &ref_1
+  ../.ex.will.yml: &ref_0
     hash: ff7444ed508cec35d77f667bb5c5ab5a
     size: 2235
-  ../.im.will.yml: &ref_2
-    hash: e6b174f3efed5c4d48a532319ed1c921
-    size: 5608
+  ../.im.will.yml: &ref_1
+    hash: 0f0702c579eed032ef3d308f233ee0af
+    size: 5602
 module:
   wStarter.out:
     about:
@@ -22,24 +19,24 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters:
+      interpreters: &ref_2
         - njs >= 8.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords:
+      keywords: &ref_3
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors:
+      contributors: &ref_4
         - Kostiantyn Wandalen <wanalen@willbe.so>
       npm.name: wstarter
-      npm.scripts:
+      npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
         single-process-starter: node proto/dwtools/atop/starter/Exec
         debug-starter: node proto/dwtools/atop/starter/ExecDebug
         starter: node proto/dwtools/atop/starter/ExecUnrestricted
-      npm.bin:
+      npm.bin: &ref_6
         starter: proto/dwtools/atop/starter/ExecUnrestricted
         single-process-starter: proto/dwtools/atop/starter/Exec
         debug-starter: proto/dwtools/atop/starter/ExecDebug
@@ -122,7 +119,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: ../proto/dwtools/atop/starter/MainTop.s
+        path: ../proto/dwtools/atop/starter/Main.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -132,13 +129,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/atop/starter/MainTop.s'
+        path: '{path::out.*=1}/source/dwtools/atop/starter/Main.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/atop/starter/MainTop.s'
+        path: '{path::out.*=1}/source/dwtools/atop/starter/Main.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -215,11 +212,27 @@ module:
           - ../proto/dwtools/atop/starter/Exec
           - ../proto/dwtools/atop/starter/ExecDebug
           - ../proto/dwtools/atop/starter/ExecUnrestricted
-          - ../proto/dwtools/atop/starter/IncludeBase.s
-          - ../proto/dwtools/atop/starter/IncludeMid.s
-          - ../proto/dwtools/atop/starter/IncludeTop.s
-          - ../proto/dwtools/atop/starter/MainBase.s
-          - ../proto/dwtools/atop/starter/MainTop.s
+          - ../proto/dwtools/atop/starter/Include.s
+          - ../proto/dwtools/atop/starter/Main.s
+          - ../proto/dwtools/atop/starter/include
+          - ../proto/dwtools/atop/starter/include/Base.s
+          - ../proto/dwtools/atop/starter/include/Mid.s
+          - ../proto/dwtools/atop/starter/include/MidLegacy.s
+          - ../proto/dwtools/atop/starter/include/Top.s
+          - ../proto/dwtools/atop/starter/l1
+          - ../proto/dwtools/atop/starter/l1/Namespace.s
+          - ../proto/dwtools/atop/starter/l3
+          - ../proto/dwtools/atop/starter/l3/BroCode.s
+          - ../proto/dwtools/atop/starter/l3/Maker.s
+          - ../proto/dwtools/atop/starter/l3/NjsCode.s
+          - ../proto/dwtools/atop/starter/l3/StarterCode.s
+          - ../proto/dwtools/atop/starter/l3/WareCode.s
+          - ../proto/dwtools/atop/starter/l5
+          - ../proto/dwtools/atop/starter/l5/Servlet.ss
+          - ../proto/dwtools/atop/starter/l7
+          - ../proto/dwtools/atop/starter/l7/Main.s
+          - ../proto/dwtools/atop/starter/l8
+          - ../proto/dwtools/atop/starter/l8/Cui.s
           - ../proto/dwtools/atop/starter/legacy
           - ../proto/dwtools/atop/starter/legacy/StarterConfigBegin.raw.s
           - ../proto/dwtools/atop/starter/legacy/StarterInitBegin.raw.s
@@ -228,80 +241,9 @@ module:
           - ../proto/dwtools/atop/starter/legacy/StarterPreloadEnd.raw.s
           - ../proto/dwtools/atop/starter/legacy/StarterServer.ss
           - ../proto/dwtools/atop/starter/legacy/StarterStart.raw.s
-          - ../proto/dwtools/atop/starter/light
-          - ../proto/dwtools/atop/starter/light/Servlet.ss
-          - ../proto/dwtools/atop/starter/tools
-          - ../proto/dwtools/atop/starter/tools/BroCode.s
-          - ../proto/dwtools/atop/starter/tools/Maker.s
-          - ../proto/dwtools/atop/starter/tools/NjsCode.s
-          - ../proto/dwtools/atop/starter/tools/StarterCode.s
-          - ../proto/dwtools/atop/starter/tools/WareCode.s
           - ../proto/dwtools/atop/starter.test
           - ../proto/dwtools/atop/starter.test/StarterLegacy.test.s
           - ../proto/dwtools/atop/starter.test/StarterMaker.test.s
-          - ../proto/dwtools/atop/starter.test/-_asset
-          - ../proto/dwtools/atop/starter.test/-_asset/complex
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/package.json
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/app0
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/app0/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/app0/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/app1
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/app1/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/app1/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/app2
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/complex/app2/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/cycle
-          - ../proto/dwtools/atop/starter.test/-_asset/cycle/in
-          - ../proto/dwtools/atop/starter.test/-_asset/cycle/in/app1
-          - ../proto/dwtools/atop/starter.test/-_asset/cycle/in/app1/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/cycle/in/app1/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/cycle/in/app2
-          - ../proto/dwtools/atop/starter.test/-_asset/cycle/in/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/cycle/in/app2/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep
-          - ../proto/dwtools/atop/starter.test/-_asset/dep/package.json
-          - ../proto/dwtools/atop/starter.test/-_asset/dep/app0
-          - ../proto/dwtools/atop/starter.test/-_asset/dep/app0/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep/app0/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep/app2
-          - ../proto/dwtools/atop/starter.test/-_asset/dep/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep/app2/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep/ext
-          - >-
-            ../proto/dwtools/atop/starter.test/-_asset/dep/ext/RequireApp2File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2/Index.html
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2/package.json
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2/app0
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2/app0/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2/app0/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2/app2
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2/app2/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/dep2/ext
-          - >-
-            ../proto/dwtools/atop/starter.test/-_asset/dep2/ext/RequireApp2File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/processes
-          - ../proto/dwtools/atop/starter.test/-_asset/processes/Experiment.js
-          - ../proto/dwtools/atop/starter.test/-_asset/processes/Experiment2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/several
-          - ../proto/dwtools/atop/starter.test/-_asset/several/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/several/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/tree
-          - ../proto/dwtools/atop/starter.test/-_asset/tree/External1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/tree/External2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/tree/in
-          - ../proto/dwtools/atop/starter.test/-_asset/tree/in/app1
-          - ../proto/dwtools/atop/starter.test/-_asset/tree/in/app1/dir1
-          - >-
-            ../proto/dwtools/atop/starter.test/-_asset/tree/in/app1/dir1/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/tree/in/app1/dir1/dir2
-          - >-
-            ../proto/dwtools/atop/starter.test/-_asset/tree/in/app1/dir1/dir2/File2.js
-          - ../proto/dwtools/atop/starter.test/-_asset/tree/in/app2
-          - ../proto/dwtools/atop/starter.test/-_asset/tree/in/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/-_asset/tree/in/app2/File2.js
           - ../proto/dwtools/atop/starter.test/_asset
           - ../proto/dwtools/atop/starter.test/_asset/complex
           - ../proto/dwtools/atop/starter.test/_asset/complex/package.json
@@ -953,24 +895,6 @@ module:
           content: prime
         inherit:
           - files.transpile
-      exported.proto.export:
-        opts:
-          reflector: 'reflector::exported.proto.export*'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
-      exported.files.proto.export:
-        opts:
-          reflector: 'reflector::exported.files.proto.export*'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
     build:
       proto.export:
         steps:
@@ -1059,9 +983,8 @@ module:
           content: proto
           export: 1
     consistency:
-      wStarter.out.will.yml: *ref_0
-      ../.ex.will.yml: *ref_1
-      ../.im.will.yml: *ref_2
+      ../.ex.will.yml: *ref_0
+      ../.im.will.yml: *ref_1
   ../:
     about:
       name: wStarter
@@ -1072,27 +995,14 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters:
-        - njs >= 8.0.0
-        - chrome >= 60.0.0
-        - firefox >= 60.0.0
-      keywords:
-        - wTools
+      interpreters: *ref_2
+      keywords: *ref_3
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors:
-        - Kostiantyn Wandalen <wanalen@willbe.so>
+      contributors: *ref_4
       npm.name: wstarter
-      npm.scripts:
-        test: wtest .run proto/**
-        docgen: wdocgen .build proto
-        single-process-starter: node proto/dwtools/atop/starter/Exec
-        debug-starter: node proto/dwtools/atop/starter/ExecDebug
-        starter: node proto/dwtools/atop/starter/ExecUnrestricted
-      npm.bin:
-        starter: proto/dwtools/atop/starter/ExecUnrestricted
-        single-process-starter: proto/dwtools/atop/starter/Exec
-        debug-starter: proto/dwtools/atop/starter/ExecDebug
+      npm.scripts: *ref_5
+      npm.bin: *ref_6
     path:
       module.willfiles:
         criterion:
@@ -1172,7 +1082,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: proto/dwtools/atop/starter/MainTop.s
+        path: proto/dwtools/atop/starter/Main.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -1182,13 +1092,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/atop/starter/MainTop.s'
+        path: '{path::out.*=1}/source/dwtools/atop/starter/Main.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/atop/starter/MainTop.s'
+        path: '{path::out.*=1}/source/dwtools/atop/starter/Main.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -1800,6 +1710,5 @@ module:
         hash: ff7444ed508cec35d77f667bb5c5ab5a
         size: 2235
       ../.im.will.yml:
-        hash: e6b174f3efed5c4d48a532319ed1c921
-        size: 5608
-      wStarter.out.will.yml: *ref_0
+        hash: 0f0702c579eed032ef3d308f233ee0af
+        size: 5602

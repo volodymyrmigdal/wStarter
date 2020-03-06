@@ -1,51 +1,43 @@
 {
-  "name": "wstarter",
-  "version": "0.4.44",
-  "description": "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.",
-  "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
-  "license": "MIT",
-  "main": "proto/dwtools/atop/starter/Main.s",
-  "files": [
-    "proto/dwtools/atop/starter",
-    "proto/dwtools/Tools.s"
-  ],
-  "scripts": {
-    "test": "wtest .run proto/**",
-    "docgen": "wdocgen proto",
-    "single-process-starter": "node proto/dwtools/atop/starter/Exec",
-    "debug-starter": "node proto/dwtools/atop/starter/ExecDebug",
-    "starter": "node proto/dwtools/atop/starter/ExecUnrestricted"
-  },
-  "bin": {
-    "starter": "proto/dwtools/atop/starter/ExecUnrestricted",
-    "single-process-starter": "proto/dwtools/atop/starter/Exec",
-    "debug-starter": "proto/dwtools/atop/starter/ExecDebug"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Wandalen/wStarter.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Wandalen/wStarter/issues"
-  },
-  "dependencies": {
-    "wTools": "alpha",
-    "wCopyable": "alpha",
-    "wFiles": "alpha",
-    "wverbal": "alpha",
-    "wtemplatetreeenvironment": "alpha",
-    "wcommandsaggregator": "alpha",
-    "wservlettools": "alpha",
-    "open": "7.0.2",
-    "express": "4.17.1",
-    "jsdom": "16.2.0"
-  },
-  "devDependencies": {
-    "puppeteer": "2.0.0",
-    "wTesting": "alpha",
-    "willbe": "alpha"
-  },
-  "keywords": [
-    "wTools"
-  ]
+  "name" : "wstarter", 
+  "version" : "0.4.45", 
+  "description" : "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.", 
+  "author" : "Kostiantyn Wandalen <wanalen@willbe.so>", 
+  "license" : "MIT", 
+  "main" : "proto/dwtools/atop/starter/Main.s", 
+  "files" : [ "proto/dwtools/atop/starter", "proto/dwtools/Tools.s" ], 
+  "scripts" : 
+  {
+    "test" : "wtest .run proto/**", 
+    "docgen" : "wdocgen proto", 
+    "single-process-starter" : "node proto/dwtools/atop/starter/Exec", 
+    "debug-starter" : "node proto/dwtools/atop/starter/ExecDebug", 
+    "starter" : "node proto/dwtools/atop/starter/ExecUnrestricted"
+  }, 
+  "bin" : 
+  {
+    "starter" : "proto/dwtools/atop/starter/ExecUnrestricted", 
+    "single-process-starter" : "proto/dwtools/atop/starter/Exec", 
+    "debug-starter" : "proto/dwtools/atop/starter/ExecDebug"
+  }, 
+  "repository" : { "type" : "git", "url" : "https://github.com/Wandalen/wStarter.git" }, 
+  "bugs" : 
+  {
+    "url" : "https://github.com/Wandalen/wStarter/issues"
+  }, 
+  "dependencies" : 
+  {
+    "wTools" : "alpha", 
+    "wCopyable" : "alpha", 
+    "wFiles" : "alpha", 
+    "wverbal" : "alpha", 
+    "wtemplatetreeenvironment" : "alpha", 
+    "wcommandsaggregator" : "alpha", 
+    "wservlettools" : "alpha", 
+    "open" : "7.0.2", 
+    "express" : "4.17.1", 
+    "jsdom" : "16.2.0"
+  }, 
+  "devDependencies" : { "puppeteer" : "2.0.0", "wTesting" : "alpha", "willbe" : "alpha" }, 
+  "keywords" : [ "wTools" ]
 }
