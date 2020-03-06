@@ -18,7 +18,8 @@ cls && local-starter .serve .
 //
 
 let _ = _global_.wTools;
-let Parent = _.Starter;
+// let Parent = _.Starter;
+let Parent = null;
 let Self = function wStarterCui( o )
 {
   return _.workpiece.construct( Self, this, arguments );
@@ -27,20 +28,40 @@ let Self = function wStarterCui( o )
 Self.shortName = 'StarterCui';
 
 // --
-// exec
+// inter
 // --
+
+function init( o )
+{
+  let cui = this;
+
+  _.assert( arguments.length === 0 || arguments.length === 1 );
+
+  _.workpiece.initFields( cui );
+  Object.preventExtensions( cui );
+
+  if( o )
+  cui.copy( o );
+
+  if( cui.starter === null )
+  cui.starter = new _.starter.Starter();
+
+}
+
+//
 
 function Exec()
 {
-  let starter = new this.Self();
-  return starter.exec();
+  let cui = new this.Self();
+  return cui.exec();
 }
 
 //
 
 function exec()
 {
-  let starter = this;
+  let cui = this;
+  let starter = cui.starter;
 
   if( !starter.formed )
   starter.form();
@@ -51,7 +72,7 @@ function exec()
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
   let appArgs = _.process.args();
-  let ca = starter.commandsMake();
+  let ca = cui.commandsMake();
 
   return _.Consequence
   .Try( () =>
@@ -65,27 +86,31 @@ function exec()
   });
 }
 
-//
+// --
+// commands
+// --
 
 function commandsMake()
 {
-  let starter = this;
+  let cui = this;
+  let starter = cui.starter;
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
   let appArgs = _.process.args();
 
+  _.assert( _.instanceIs( cui ) );
   _.assert( _.instanceIs( starter ) );
   _.assert( arguments.length === 0 );
 
   let commands =
   {
-    'help' :              { e : _.routineJoin( starter, starter.commandHelp ),                h : 'Get help.' },
-    'version' :           { e : _.routineJoin( starter, starter.commandVersion ),             h : 'Get current version.' },
-    'imply' :             { e : _.routineJoin( starter, starter.commandImply ),               h : 'Change state or imply value of a variable.' },
-    'html for' :          { e : _.routineJoin( starter, starter.commandHtmlFor ),             h : 'Generate HTML for specified files.' },
-    'sources join' :      { e : _.routineJoin( starter, starter.commandSourcesJoin ),         h : 'Join source files found at specified directory.' },
-    'http open' :         { e : _.routineJoin( starter, starter.commandHttpOpen ),            h : 'Run HTTP server to serve files in a specified directory.' },
-    'start' :             { e : _.routineJoin( starter, starter.commandStart ),               h : 'Run executable file. By default in browser.' },
+    'help' :              { e : _.routineJoin( cui, cui.commandHelp ),                h : 'Get help.' },
+    'version' :           { e : _.routineJoin( cui, cui.commandVersion ),             h : 'Get current version.' },
+    'imply' :             { e : _.routineJoin( cui, cui.commandImply ),               h : 'Change state or imply value of a variable.' },
+    'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor ),             h : 'Generate HTML for specified files.' },
+    'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin ),         h : 'Join source files found at specified directory.' },
+    'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen ),            h : 'Run HTTP server to serve files in a specified directory.' },
+    'start' :             { e : _.routineJoin( cui, cui.commandStart ),               h : 'Run executable file. By default in browser.' },
   }
 
   let ca = _.CommandsAggregator
@@ -95,7 +120,7 @@ function commandsMake()
     commandPrefix : 'node ',
   })
 
-  // starter._commandsConfigAdd( ca );
+  // cui._commandsConfigAdd( ca );
 
   ca.form();
 
@@ -106,21 +131,26 @@ function commandsMake()
 
 function commandHelp( e )
 {
-  let starter = this;
+  let cui = this;
+  let starter = cui.starter;
   let ca = e.ca;
   let fileProvider = starter.fileProvider;
   let logger = starter.logger;
 
   ca._commandHelp( e );
 
-  return starter;
+  return cui;
 }
 
 //
 
 function commandVersion( e )
 {
-  let starter = this.form();
+  let cui = this;
+  let starter = cui.starter;
+
+  starter.form();
+
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
@@ -156,7 +186,9 @@ function commandVersion( e )
 
 function commandImply( e )
 {
-  let starter = this;
+  let cui = this;
+  let starter = cui.starter;
+
   let ca = e.ca;
   let logger = starter.logger;
 
@@ -166,7 +198,7 @@ function commandImply( e )
     verbosity : 'verbosity',
   }
 
-  let request = starter.Resolver.strRequestParse( e.argument );
+  let request = _.strRequestParse( e.argument );
 
   _.process.argsReadTo
   ({
@@ -181,7 +213,11 @@ function commandImply( e )
 
 function commandHtmlFor( e )
 {
-  let starter = this.form();
+  let cui = this;
+  let starter = cui.starter;
+
+  starter.form();
+
   let ca = e.ca;
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
@@ -214,7 +250,11 @@ commandHtmlFor.commandProperties =
 
 function commandSourcesJoin( e )
 {
-  let starter = this.form();
+  let cui = this;
+  let starter = cui.starter;
+
+  starter.form();
+
   let ca = e.ca;
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
@@ -249,7 +289,11 @@ commandSourcesJoin.commandProperties =
 
 function commandHttpOpen( e )
 {
-  let starter = this.form();
+  let cui = this;
+  let starter = cui.starter;
+
+  starter.form();
+
   let ca = e.ca;
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
@@ -281,7 +325,11 @@ commandHttpOpen.commandProperties =
 
 function commandStart( e )
 {
-  let starter = this.form();
+  let cui = this;
+  let starter = cui.starter;
+
+  starter.form();
+
   let ca = e.ca;
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
@@ -325,6 +373,7 @@ let Aggregates =
 
 let Associates =
 {
+  starter : null,
 }
 
 let Restricts =
@@ -347,10 +396,13 @@ let Forbids =
 let Extend =
 {
 
-  // exec
+  // inter
 
+  init,
   Exec,
   exec,
+
+  // commands
 
   commandsMake,
   commandHelp,
@@ -379,11 +431,13 @@ _.classDeclare
   extend : Extend,
 });
 
+_.Copyable.mixin( Self );
+
 //
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
-wTools.starter[ Self.shortName ] = Self;
+_.starter[ Self.shortName ] = Self;
 
 if( !module.parent )
 Self.Exec();

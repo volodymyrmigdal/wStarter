@@ -369,7 +369,6 @@ function start( o )
   {
     if( !Open )
     Open = require( 'open' );
-
     Open( _.uri.join( servlet.openPathGet(), found[ 0 ].relative, '?entry:1' ) );
   }
 
