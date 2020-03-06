@@ -1,11 +1,11 @@
-( function _IncludeBase_s_( ) {
+( function _Base_s_( ) {
 
-'use strict'; 
+'use strict';
 
 if( typeof module !== 'undefined' )
 {
 
-  let _ = require( '../../Tools.s' );
+  let _ = require( '../../../Tools.s' );
 
   require( 'express' );
 
@@ -15,8 +15,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wTemplateTreeEnvironment' );
   _.include( 'wServletTools' );
 
-  require( './tools/Maker.s' );
-
+  module.exports = _;
 }
 
 })();

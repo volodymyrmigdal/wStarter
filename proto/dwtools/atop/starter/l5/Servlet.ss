@@ -99,7 +99,6 @@ function form()
   express.use( ( request, response, next ) => servlet.requestPostHandler({ request, response, next }) );
   express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
 
-  debugger;
   let o3 = _.servlet.controlExpressStart
   ({
     name : servlet.qualifiedName,
@@ -108,7 +107,6 @@ function form()
     express : servlet.express,
     serverPath : servlet.serverPath,
   });
-  debugger;
 
   servlet.server = o3.server;
   servlet.express = o3.express;
@@ -334,6 +332,7 @@ function ScriptWrap_functor( fop )
     if( !_.fileProvider.isTerminal( filePath ) )
     return o.next();
 
+    debugger;
     let splits = fop.starterMaker.sourceWrapSplits
     ({
       basePath : fop.basePath,
@@ -646,11 +645,13 @@ _.Copyable.mixin( Self );
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
 
-_.staticDeclare
-({
-  prototype : _.Starter.prototype,
-  name : Self.shortName,
-  value : Self,
-});
+_.starter[ Self.shortName ] = Self;
+
+// _.staticDeclare
+// ({
+//   prototype : _.Starter.prototype,
+//   name : Self.shortName,
+//   value : Self,
+// });
 
 })();

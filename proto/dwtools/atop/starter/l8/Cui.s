@@ -1,14 +1,14 @@
-( function _MainTop_s_( ) {
+( function _Cui_s_( ) {
 
 'use strict';
 
-if( typeof module !== 'undefined' )
-{
-
-  require( './MainBase.s' );
-  require( './IncludeTop.s' );
-
-}
+// if( typeof module !== 'undefined' )
+// {
+//
+//   require( './MainBase.s' );
+//   require( './IncludeTop.s' );
+//
+// }
 
 /*
 cls && local-starter .html.for builder/include/dwtools/amid/starter/processes.experiment/**
@@ -19,12 +19,12 @@ cls && local-starter .serve .
 
 let _ = _global_.wTools;
 let Parent = _.Starter;
-let Self = function wStarterCli( o )
+let Self = function wStarterCui( o )
 {
   return _.workpiece.construct( Self, this, arguments );
 }
 
-Self.shortName = 'StarterCli';
+Self.shortName = 'StarterCui';
 
 // --
 // exec
@@ -383,7 +383,7 @@ _.classDeclare
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
-wTools[ Self.shortName ] = Self;
+wTools.starter[ Self.shortName ] = Self;
 
 if( !module.parent )
 Self.Exec();

@@ -1,15 +1,10 @@
-( function _MainBase_s_( ) {
+( function _Main_s_( ) {
 
 'use strict';
 
-/**
- * Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.
-  @module Tools/mid/Starter
-*/
-
 let Open;
 
-require( './IncludeBase.s' );
+// require( './IncludeBase.s' );
 
 //
 
@@ -314,7 +309,7 @@ function httpOpen( o )
   o.allowedPath = path.resolve( o.allowedPath );
   o.starter = starter;
 
-  starter.servlet = new starter.Servlet( o );
+  starter.servlet = new _.starter.Servlet( o );
   starter.servlet.form();
 
   return starter.servlet;
@@ -472,8 +467,9 @@ _.Verbal.mixin( Self );
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
-_global_[ Self.name ] = wTools[ Self.shortName ] = Self;
+wTools[ Self.shortName ] = Self;
+wTools.starter[ Self.shortName ] = Self;
 
-require( './IncludeMid.s' );
+// require( './IncludeMid.s' );
 
 })();

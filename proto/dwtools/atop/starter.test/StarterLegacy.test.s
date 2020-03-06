@@ -1,6 +1,6 @@
 ( function _StarterLegacy_test_s_() {
 
-'use strict';
+'use strict'; /*bbb*/
 
 if( typeof module !== 'undefined' )
 {
@@ -72,7 +72,7 @@ function assetFor( test, name, puppeteer )
   // })
 
   _.assert( a.fileProvider.isDir( a.originalAssetPath ) );
-  
+
   a.willbeExecPath = _.path.normalize( require.resolve( 'willbe' ) );
   a.willbe = _.process.starter
   ({
@@ -83,7 +83,7 @@ function assetFor( test, name, puppeteer )
     ready : a.ready,
     mode : 'spawn',
   })
-  
+
   return a;
 
 }
@@ -108,7 +108,7 @@ async function trivial( test )
   var srcPath = _.path.join( a.routinePath, 'out/debug' );
   var initScriptPath = _.path.join( srcPath, 'Init.s' );
   var indexHtmlPath = _.path.join( srcPath, 'Index.html' );
-  
+
   var indexHtmlSource =
   `<html>
     <head>
@@ -120,10 +120,10 @@ async function trivial( test )
   </html>`
   ;
   var initScriptSource = `console.log( 'Init script' )`;
- 
+
   _.fileProvider.fileWrite( indexHtmlPath, indexHtmlSource );
   _.fileProvider.fileWrite( initScriptPath, initScriptSource );
-  
+
   a.reflect();
   await a.willbe({ args : '.build' });
 
@@ -186,11 +186,11 @@ var Self =
   name : 'Tools.mid.StarterLegacy',
   silencing : 1,
   enabled : 0,
-  
+
   onSuiteBegin,
   onSuiteEnd,
-  
-  context : 
+
+  context :
   {
     tempDir : null,
     assetDirPath : null,

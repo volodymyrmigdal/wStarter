@@ -5,16 +5,14 @@
 if( typeof module !== 'undefined' )
 {
 
-  let _ = require( '../../Tools.s' );
+  var Pupeteer = require( 'puppeteer' );
+  var _ = require( '../../Tools.s' );
 
   _.include( 'wTesting' );
 
-  require( '../starter/IncludeTop.s' );
-  
-  var Pupeeteer = require( 'puppeteer' );
+  require( '../starter/Include.s' );
+
 }
-
-
 
 var _global = _global_;
 var _ = _global_.wTools;
@@ -77,7 +75,7 @@ function assetFor( test, name, puppeteer )
   // })
 
   _.assert( a.fileProvider.isDir( a.originalAssetPath ) );
-  
+
   a.willbeExecPath = _.path.normalize( require.resolve( 'willbe' ) );
   a.willbe = _.process.starter
   ({
@@ -88,7 +86,7 @@ function assetFor( test, name, puppeteer )
     ready : a.ready,
     mode : 'spawn',
   })
-  
+
   return a;
 
 }
@@ -126,7 +124,7 @@ function sourcesJoin( test )
   });
 
   _.fileProvider.filesReflect({ reflectMap : { [ originalAssetPath ] : routinePath } })
-  
+
   starter.sourcesJoin
   ({
     inPath : '**',
@@ -139,7 +137,7 @@ function sourcesJoin( test )
 
   let read = _.fileProvider.fileRead( outputPath );
   test.identical( _.strCount( read, 'setTimeout( f, 1000 );' ), 2 );
-  
+
   debugger
 
   shell( _.path.nativize( outputPath ) )
@@ -1222,18 +1220,18 @@ async function includeCss( test )
     entryPath : 'index.js',
     open : 0,
   })
-  
+
   try
   {
-    browser = await Pupeeteer.launch({ headless : true });
+    browser = await Pupeteer.launch({ headless : true });
     page = await browser.newPage();
-   
+
     await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
-    
+
     var got = await page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
     test.identical( got, [ 'http://127.0.0.1:5000/.starter', 'http://127.0.0.1:5000/index.js' ] )
-    
-    var got = await page.evaluate( () => 
+
+    var got = await page.evaluate( () =>
     {
       var style = window.getComputedStyle( document.querySelector( 'body') );
       return style.getPropertyValue( 'background' )
@@ -1243,11 +1241,11 @@ async function includeCss( test )
     await browser.close();
   }
   catch( err )
-  { 
+  {
     test.exceptionReport({ err });
     await browser.close();
   }
-  
+
   let ready = new _.Consequence();
   starter.servlet.server.close( () => ready.take( null ) );
 
@@ -1270,16 +1268,16 @@ async function workerWithInclude( test )
     entryPath : 'index.js',
     open : 0,
   })
-  
+
   try
   {
-    browser = await Pupeeteer.launch({ headless : true });
+    browser = await Pupeteer.launch({ headless : true });
     page = await browser.newPage();
     let output = '';
-    
+
     page.on( 'console', msg => output += msg.text() + '\n' );
     await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
-    
+
     await _.time.out( 1500 );
 
     test.is( _.strHas( output, 'Global: Window' ) )
@@ -1288,14 +1286,14 @@ async function workerWithInclude( test )
     await browser.close();
   }
   catch( err )
-  { 
+  {
     test.exceptionReport({ err });
     await browser.close();
   }
-  
+
   let ready = new _.Consequence();
   starter.servlet.server.close( () => ready.take( null ) );
-  
+
   await ready;
 }
 
@@ -1318,11 +1316,11 @@ async function includeExcludingManual( test )
 
   try
   {
-    browser = await Pupeeteer.launch({ headless : true });
+    browser = await Pupeteer.launch({ headless : true });
     page = await browser.newPage();
-   
+
     await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
-    
+
     var scripts = await page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
     test.identical( scripts.length, 3 );
     test.identical( scripts[ 0 ], 'http://127.0.0.1:5000/.starter' );
@@ -1332,14 +1330,14 @@ async function includeExcludingManual( test )
     await browser.close();
   }
   catch( err )
-  { 
+  {
     test.exceptionReport({ err });
     await browser.close();
   }
-  
+
   let ready = new _.Consequence();
   starter.servlet.server.close( () => ready.take( null ) );
-  
+
   await ready;
 }
 
@@ -1351,11 +1349,11 @@ async function includeModule( test )
   let a = self.assetFor( test, 'includeModule', true );
   let starter = new _.Starter().form();
   let browser,page;
-  
+
   a.reflect();
-  
+
   await a.willbe({ args : '.build' })
-  
+
   starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
@@ -1365,31 +1363,31 @@ async function includeModule( test )
 
   try
   {
-    browser = await Pupeeteer.launch({ headless : true });
+    browser = await Pupeteer.launch({ headless : true });
     page = await browser.newPage();
-   
+
     await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
-    
-    var result = await page.evaluate( () => 
-    { 
+
+    var result = await page.evaluate( () =>
+    {
       var _ = _global_.wTools;
       _.include( 'wPathBasic' );
       return _.path.join( '/a', 'b' );
     })
     test.identical( result, '/a/b' )
-    
+
 
     await browser.close();
   }
   catch( err )
-  { 
+  {
     test.exceptionReport({ err });
     await browser.close();
   }
-  
+
   let ready = new _.Consequence();
   starter.servlet.server.close( () => ready.take( null ) );
-  
+
   await ready;
 }
 
@@ -1468,7 +1466,7 @@ var Self =
     includeCss,
     workerWithInclude,
     includeExcludingManual,
-    
+
     includeModule,
 
     version,
