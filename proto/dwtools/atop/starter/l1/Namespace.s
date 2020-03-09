@@ -14,6 +14,12 @@ let vectorizeNone = _.routineDefaults( null, _.vectorizeNone, { vectorizingConta
 // inter
 // --
 
+async function launch()
+{
+  let center = _.Starter.Center();
+  return await center.form();
+}
+
 // --
 // declare
 // --
@@ -30,6 +36,8 @@ let Restricts =
 
 let Extension =
 {
+
+  launch,
 
   _ : Restricts,
 

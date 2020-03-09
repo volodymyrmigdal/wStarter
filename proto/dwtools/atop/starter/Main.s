@@ -4,8 +4,12 @@
   @module Tools/mid/Starter
 */
 
-let _ = require( './include/Top.s' );
+// let _ = require( './include/Top.s' );
+// if( !module.parent )
+// _.starter.StarterCui.Exec();
+// module[ 'exports' ] = _.starter.StarterCui;
+
+let _ = require( './include/Launcher.s' );
 if( !module.parent )
-_.starter.StarterCui.Exec();
-debugger;
-module[ 'exports' ] = _.starter.StarterCui;
+_.starter.Launcher.Exec();
+module[ 'exports' ] = _.starter.Launcher;

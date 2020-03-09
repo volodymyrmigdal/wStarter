@@ -219,6 +219,7 @@ module:
           - ../proto/dwtools/atop/starter/Main.s
           - ../proto/dwtools/atop/starter/include
           - ../proto/dwtools/atop/starter/include/Base.s
+          - ../proto/dwtools/atop/starter/include/Launcher.s
           - ../proto/dwtools/atop/starter/include/Mid.s
           - ../proto/dwtools/atop/starter/include/MidLegacy.s
           - ../proto/dwtools/atop/starter/include/Top.s
@@ -231,11 +232,14 @@ module:
           - ../proto/dwtools/atop/starter/l3/StarterCode.s
           - ../proto/dwtools/atop/starter/l3/WareCode.s
           - ../proto/dwtools/atop/starter/l5
+          - ../proto/dwtools/atop/starter/l5/Center.ss
+          - ../proto/dwtools/atop/starter/l5/Remote.ss
           - ../proto/dwtools/atop/starter/l5/Servlet.ss
           - ../proto/dwtools/atop/starter/l7
-          - ../proto/dwtools/atop/starter/l7/Main.s
+          - ../proto/dwtools/atop/starter/l7/Starter.s
           - ../proto/dwtools/atop/starter/l8
           - ../proto/dwtools/atop/starter/l8/Cui.s
+          - ../proto/dwtools/atop/starter/l8/Launcher.s
           - ../proto/dwtools/atop/starter/legacy
           - ../proto/dwtools/atop/starter/legacy/StarterConfigBegin.raw.s
           - ../proto/dwtools/atop/starter/legacy/StarterInitBegin.raw.s
@@ -1747,6 +1751,4 @@ module:
       ../.im.will.yml:
         hash: 0f0702c579eed032ef3d308f233ee0af
         size: 5602
-      wStarter.out.will.yml:
-        hash: bec600578904f2ececa7d86fb1b8ecfb
-        size: 50367
+      wStarter.out.will.yml: *ref_0
