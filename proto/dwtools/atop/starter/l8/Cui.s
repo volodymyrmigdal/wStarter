@@ -221,27 +221,21 @@ function commandHtmlFor( e )
 {
   let cui = this;
   let starter = cui.starter;
-  
+
   starter.form();
 
   let ca = e.ca;
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
-  // let request = _.strRequestParse( e.argument );
+  let request = _.strRequestParse( e.argument );
   
-  /* qqq Vova: temporary workaround for problem with option value that contains spaces */
-  
-  let isolated = _.strIsolateLeftOrAll( e.argument, ' ' );
-  let subject = _.strStructureParse({ src : isolated[ 0 ], parsingArrays : 1, defaultStructure : 'string' })
-  if( isolated[ 2 ] )
-  { 
-    let optionsMap = _.strStructureParse({ src : _.strUnquote( isolated[ 2 ] ), parsingArrays : 1, defaultStructure : 'map' });
-    _.mapExtend( e.propertiesMap, optionsMap );
-  }
+  console.log( e.propertiesMap )
+
+  request.subject = _.strStructureParse({ src : request.subject, parsingArrays : 1, defaultStructure : 'string' })
 
   let o2 = _.mapExtend( null, e.propertiesMap );
-  o2.inPath = o2.inPath || /* request. */subject;
+  o2.inPath = o2.inPath || request.subject;
 
   let html = starter.htmlFor( o2 );
 
