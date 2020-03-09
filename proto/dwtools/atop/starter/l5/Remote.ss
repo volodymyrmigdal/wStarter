@@ -73,7 +73,6 @@ function form()
     if( remote.role === 'slave' )
     {
 
-      debugger;
       if( !remote.masterPath )
       {
         ready.then( () => remote.slaveOpenMaster() );
@@ -180,6 +179,8 @@ function slaveOpenMaster()
     sync : 0,
     deasync : 0,
     detaching : 1,
+    // stdio : 'pipe',
+    stdio : 'ignore',
   });
 
   return result;

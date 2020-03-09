@@ -5,7 +5,6 @@
 //
 
 let _ = _global_.wTools;
-// let Parent = _.Starter;
 let Parent = null;
 let Self = function wStarterLauncher( o )
 {
