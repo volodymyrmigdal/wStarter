@@ -157,7 +157,7 @@ function commandVersion( e )
   let path = starter.fileProvider.path;
   let logger = starter.logger;
 
-  let packageJsonPath = path.join( __dirname, '../../../../package.json' );
+  let packageJsonPath = path.join( __dirname, '../../../../../package.json' );
   let packageJson =  fileProvider.fileRead({ filePath : packageJsonPath, encoding : 'json', throwing : 0 });
 
   return _.process.start
