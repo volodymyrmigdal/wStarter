@@ -1210,7 +1210,7 @@ async function includeCss( test )
 {
   let self = this;
   let a = self.assetFor( test, 'includeCss', true );
-  let starter = new _.Starter().form();
+  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   var page,browser;
 
   a.reflect();
@@ -1218,7 +1218,7 @@ async function includeCss( test )
   ({
     basePath : a.routinePath,
     entryPath : 'index.js',
-    open : 0,
+    open : 0
   })
 
   try
@@ -1258,7 +1258,7 @@ async function workerWithInclude( test )
 {
   let self = this;
   let a = self.assetFor( test, 'worker', true );
-  let starter = new _.Starter().form();
+  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   let browser,page;
 
   a.reflect();
@@ -1303,7 +1303,7 @@ async function includeExcludingManual( test )
 {
   let self = this;
   let a = self.assetFor( test, 'exclude', true );
-  let starter = new _.Starter().form();
+  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   let browser,page;
 
   a.reflect();
@@ -1347,7 +1347,7 @@ async function includeModule( test )
 {
   let self = this;
   let a = self.assetFor( test, 'includeModule', true );
-  let starter = new _.Starter().form();
+  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   let browser,page;
 
   a.reflect();
