@@ -75,6 +75,7 @@ function form()
 
       if( !remote.masterPath )
       {
+        debugger;
         ready.then( () => remote.slaveOpenMaster() );
       }
 
@@ -132,6 +133,8 @@ function masterOpen()
   let masterPathParsed = _.uri.parse( remote.masterPath );
   masterPathParsed.port = _.strToNumberMaybe( masterPathParsed.port );
   _.assert( _.numberDefined( masterPathParsed.port ) );
+
+  debugger;
 
   remote.server = Net.createServer( ( socket ) =>
   {

@@ -332,7 +332,6 @@ function ScriptWrap_functor( fop )
     if( !_.fileProvider.isTerminal( filePath ) )
     return o.next();
 
-    debugger;
     let splits = fop.starterMaker.sourceWrapSplits
     ({
       basePath : fop.basePath,

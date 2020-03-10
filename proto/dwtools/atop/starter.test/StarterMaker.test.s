@@ -25,13 +25,14 @@ function onSuiteBegin()
 {
   let self = this;
 
-  self.tempDir = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
-  self.assetDirPath = _.path.join( __dirname, '_asset' );
+  self.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
+  self.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
+
   self.find = _.fileProvider.filesFinder
   ({
     withTerminals : 1,
     withDirs : 1,
-    withTransient/*maybe withStem*/ : 1,
+    withTransient : 1,
     allowingMissed : 1,
     maskPreset : 0,
     outputFormat : 'relative',
@@ -46,15 +47,26 @@ function onSuiteBegin()
 
 //
 
-function assetFor( test, name, puppeteer )
+function onSuiteEnd()
+{
+  let self = this;
+  _.assert( _.strHas( self.suiteTempPath, '/Starter' ) )
+  _.path.pathDirTempClose( self.suiteTempPath );
+  // _.assert( _.strHas( self.suiteTempPath, '/dwtools/tmp.tmp' ) || _.strHas( self.suiteTempPath, '/Temp/' ) )
+  // _.fileProvider.filesDelete( self.suiteTempPath );
+}
+
+//
+
+function assetFor( test, name )
 {
   let self = this;
   let a = Object.create( null );
 
   a.test = test;
   a.name = name;
-  a.originalAssetPath = _.path.join( self.assetDirPath, name );
-  a.routinePath = _.path.join( self.tempDir, test.name );
+  a.originalAssetPath = _.path.join( self.assetsOriginalSuitePath, name );
+  a.routinePath = _.path.join( self.suiteTempPath, test.name );
   a.fileProvider = _.fileProvider;
   a.path = _.fileProvider.path;
   a.ready = _.Consequence().take( null );
@@ -76,7 +88,19 @@ function assetFor( test, name, puppeteer )
 
   _.assert( a.fileProvider.isDir( a.originalAssetPath ) );
 
-  a.willbeExecPath = _.path.normalize( require.resolve( 'willbe' ) );
+  // debugger;
+  // try
+  // {
+  //   a.willbeExecPath = _.path.normalize( require.resolve( 'willbe' ) );
+  // }
+  // catch( err )
+  // {
+  //   debugger;
+  //   a.willbeExecPath = _.path.join( __dirname, '../willbe/xxx' );
+  // }
+
+  a.willbeExecPath = _.module.resolve( 'willbe' );
+
   a.willbe = _.process.starter
   ({
     execPath : 'node ' + a.willbeExecPath,
@@ -91,17 +115,6 @@ function assetFor( test, name, puppeteer )
 
 }
 
-
-
-//
-
-function onSuiteEnd()
-{
-  let self = this;
-  _.assert( _.strHas( self.tempDir, '/dwtools/tmp.tmp' ) || _.strHas( self.tempDir, '/Temp/' ) )
-  _.fileProvider.filesDelete( self.tempDir );
-}
-
 // --
 // tests
 // --
@@ -109,8 +122,8 @@ function onSuiteEnd()
 function sourcesJoin( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'several' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'several' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let outputPath = _.path.join( routinePath, 'Index.js' );
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
@@ -168,8 +181,8 @@ function sourcesJoin( test )
 function shellSourcesJoin( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'several' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'several' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let outputPath = _.path.join( routinePath, 'Index.js' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
@@ -228,8 +241,8 @@ function shellSourcesJoin( test )
 function shellSourcesJoinWithEntry( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'dep' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'dep' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let outputPath = _.path.join( routinePath, 'out/app0.js' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
@@ -378,8 +391,8 @@ function shellSourcesJoinWithEntry( test )
 function shellSourcesJoinDep( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'dep' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'dep' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
@@ -457,8 +470,8 @@ app0/File1.js:timeout numberIs:true
 function shellSourcesJoinRequireInternal( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'dep' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'dep' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
@@ -525,8 +538,8 @@ app0/File1.js:timeout numberIs:true
 function shellSourcesJoinComplex( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'complex' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'complex' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
@@ -612,8 +625,8 @@ app0/File1.js:timeout true
 function shellSourcesJoinTree( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'tree' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'tree' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let outPath = _.path.join( routinePath, 'out' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
@@ -802,8 +815,8 @@ app0/File2.js:end main:true
 function shellSourcesJoinCycle( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'cycle' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'cycle' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let outPath = _.path.join( routinePath, 'out' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
@@ -997,8 +1010,8 @@ app2/File2.js:end main:true
 function htmlFor( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'several' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'several' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let outputPath = _.path.join( routinePath, 'Index.html' );
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
@@ -1064,8 +1077,8 @@ function htmlFor( test )
 function shellHtmlFor( test )
 {
   let self = this;
-  let originalAssetPath = _.path.join( self.assetDirPath, 'several' );
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let originalAssetPath = _.path.join( self.assetsOriginalSuitePath, 'several' );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let outputPath = _.path.join( routinePath, 'Index.html' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
@@ -1304,7 +1317,7 @@ async function includeExcludingManual( test )
   let self = this;
   let a = self.assetFor( test, 'exclude', true );
   let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let browser,page;
+  let browser, page;
 
   a.reflect();
   starter.start
@@ -1376,7 +1389,6 @@ async function includeModule( test )
     })
     test.identical( result, '/a/b' )
 
-
     await browser.close();
   }
   catch( err )
@@ -1396,7 +1408,7 @@ async function includeModule( test )
 function version( test )
 {
   let self = this;
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
 
@@ -1442,8 +1454,8 @@ var Self =
 
   context :
   {
-    tempDir : null,
-    assetDirPath : null,
+    suiteTempPath : null,
+    assetsOriginalSuitePath : null,
     find : null,
     assetFor
   },
