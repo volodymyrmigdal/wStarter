@@ -167,7 +167,7 @@ function sourcesJoin( test )
 function shellSourcesJoin( test )
 {
   let self = this;
-  let a = self.assetFor( test, 'includeModule', true );
+  let a = self.assetFor( test, 'several', true );
   let outputPath = _.path.join( a.routinePath, 'Index.js' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
