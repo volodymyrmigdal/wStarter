@@ -73,9 +73,9 @@ function form()
     if( remote.role === 'slave' )
     {
 
-      debugger;
       if( !remote.masterPath )
       {
+        debugger;
         ready.then( () => remote.slaveOpenMaster() );
       }
 
@@ -134,6 +134,8 @@ function masterOpen()
   masterPathParsed.port = _.strToNumberMaybe( masterPathParsed.port );
   _.assert( _.numberDefined( masterPathParsed.port ) );
 
+  debugger;
+
   remote.server = Net.createServer( ( socket ) =>
   {
     debugger;
@@ -180,6 +182,8 @@ function slaveOpenMaster()
     sync : 0,
     deasync : 0,
     detaching : 1,
+    // stdio : 'pipe',
+    stdio : 'ignore',
   });
 
   return result;

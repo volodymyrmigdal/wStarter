@@ -25,21 +25,32 @@ function onSuiteBegin()
 {
   let self = this;
 
-  self.tempDir = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
-  self.assetDirPath = _.path.join( __dirname, '_asset' );
+  self.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
+  self.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
 }
 
 //
 
-function assetFor( test, name, puppeteer )
+function onSuiteEnd()
+{
+  let self = this;
+  _.assert( _.strHas( self.suiteTempPath, '/Starter' ) )
+  _.path.pathDirTempClose( self.suiteTempPath );
+  // _.assert( _.strHas( self.suiteTempPath, '/dwtools/tmp.tmp' ) || _.strHas( self.suiteTempPath, '/Temp/' ) )
+  // _.fileProvider.filesDelete( self.suiteTempPath );
+}
+
+//
+
+function assetFor( test, name )
 {
   let self = this;
   let a = Object.create( null );
 
   a.test = test;
   a.name = name;
-  a.originalAssetPath = _.path.join( self.assetDirPath, name );
-  a.routinePath = _.path.join( self.tempDir, test.name );
+  a.originalAssetPath = _.path.join( self.assetsOriginalSuitePath, name );
+  a.routinePath = _.path.join( self.suiteTempPath, test.name );
   a.fileProvider = _.fileProvider;
   a.path = _.fileProvider.path;
   a.ready = _.Consequence().take( null );
@@ -76,7 +87,19 @@ function assetFor( test, name, puppeteer )
 
   _.assert( a.fileProvider.isDir( a.originalAssetPath ) );
 
-  a.willbeExecPath = _.path.normalize( require.resolve( 'willbe' ) );
+  // debugger;
+  // try
+  // {
+  //   a.willbeExecPath = _.path.normalize( require.resolve( 'willbe' ) );
+  // }
+  // catch( err )
+  // {
+  //   debugger;
+  //   a.willbeExecPath = _.path.join( __dirname, '../willbe/xxx' );
+  // }
+
+  a.willbeExecPath = _.module.resolve( 'willbe' );
+
   a.willbe = _.process.starter
   ({
     execPath : 'node ' + a.willbeExecPath,
@@ -91,15 +114,13 @@ function assetFor( test, name, puppeteer )
 
 }
 
-
-
 //
 
 function onSuiteEnd()
 {
   let self = this;
-  _.assert( _.strHas( self.tempDir, '/Starter-' ) );
-  _.path.pathDirTempClose( self.tempDir );
+  _.assert( _.strHas( self.suiteTempPath, '/Starter-' ) );
+  _.path.pathDirTempClose( self.suiteTempPath );
 }
 
 // --
@@ -226,7 +247,6 @@ function shellSourcesJoinWithEntry( test )
 {
   let self = this;
   let a = self.assetFor( test, 'dep', true );
-  
   let outputPath = _.path.join( a.routinePath, 'out/app0.js' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
@@ -1288,7 +1308,7 @@ async function includeExcludingManual( test )
   let self = this;
   let a = self.assetFor( test, 'exclude', true );
   let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let browser,page;
+  let browser, page;
 
   a.reflect();
   starter.start
@@ -1360,7 +1380,6 @@ async function includeModule( test )
     })
     test.identical( result, '/a/b' )
 
-
     await browser.close();
   }
   catch( err )
@@ -1380,7 +1399,7 @@ async function includeModule( test )
 function version( test )
 {
   let self = this;
-  let routinePath = _.path.join( self.tempDir, test.name );
+  let routinePath = _.path.join( self.suiteTempPath, test.name );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
 
@@ -1426,8 +1445,8 @@ var Self =
 
   context :
   {
-    tempDir : null,
-    assetDirPath : null,
+    suiteTempPath : null,
+    assetsOriginalSuitePath : null,
     assetFor
   },
 

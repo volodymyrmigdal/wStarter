@@ -22,8 +22,8 @@
 // {
 //   let self = this;
 
-//   self.tempDir = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
-//   self.assetDirPath = _.path.join( __dirname, '_asset' );
+//   self.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
+//   self.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
 //   self.find = _.fileProvider.filesFinder
 //   ({
 //     withTerminals : 1,
@@ -50,8 +50,8 @@
 
 //   a.test = test;
 //   a.name = name;
-//   a.originalAssetPath = _.path.join( self.assetDirPath, name );
-//   a.routinePath = _.path.join( self.tempDir, test.name );
+//   a.originalAssetPath = _.path.join( self.assetsOriginalSuitePath, name );
+//   a.routinePath = _.path.join( self.suiteTempPath, test.name );
 //   a.fileProvider = _.fileProvider;
 //   a.path = _.fileProvider.path;
 //   a.ready = _.Consequence().take( null );
@@ -93,8 +93,8 @@
 // function onSuiteEnd()
 // {
 //   let self = this;
-//   _.assert( _.strHas( self.tempDir, '/dwtools/tmp.tmp' ) || _.strHas( self.tempDir, '/Temp/' ) )
-//   _.fileProvider.filesDelete( self.tempDir );
+//   _.assert( _.strHas( self.suiteTempPath, '/dwtools/tmp.tmp' ) || _.strHas( self.suiteTempPath, '/Temp/' ) )
+//   _.fileProvider.filesDelete( self.suiteTempPath );
 // }
 
 // // --
@@ -192,8 +192,8 @@
 
 //   context :
 //   {
-//     tempDir : null,
-//     assetDirPath : null,
+//     suiteTempPath : null,
+//     assetsOriginalSuitePath : null,
 //     find : null,
 //     assetFor
 //   },
