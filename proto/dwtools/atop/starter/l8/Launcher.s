@@ -79,7 +79,7 @@ function execImmediate()
 
 let Composes =
 {
-  immediate : 1,
+  immediate : 0,
 }
 
 let Aggregates =

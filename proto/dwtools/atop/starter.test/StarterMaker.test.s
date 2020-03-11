@@ -60,7 +60,7 @@ function assetFor( test, name )
     _.fileProvider.filesDelete( a.routinePath );
     _.fileProvider.filesReflect({ reflectMap : { [ a.originalAssetPath ] : a.routinePath } });
   }
-  
+
   a.find = _.fileProvider.filesFinder
   ({
     withTerminals : 1,
@@ -134,7 +134,7 @@ function sourcesJoin( test )
   let outputPath = _.path.join( a.routinePath, 'Index.js' );
   let ready = new _.Consequence().take( null );
   let starter = new _.Starter().form();
-  
+
   a.reflect();
 
   let shell = _.process.starter
@@ -200,7 +200,7 @@ function shellSourcesJoin( test )
     outputCollecting : 1,
     ready : ready,
   });
-  
+
   a.reflect();
 
   shell( `${execPath} .sources.join ${a.routinePath}/** entryPath:File2.js` )
