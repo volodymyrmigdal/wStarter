@@ -43,6 +43,11 @@ submodule :
     enabled : 0 # submodule
     criterion :
       development : 1
+  wPuppet :
+    path : npm:///wpuppet
+    enabled : 0 # submodule
+    criterion :
+      development : 1
 
 path :
 
