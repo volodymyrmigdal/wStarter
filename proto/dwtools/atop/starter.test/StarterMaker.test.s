@@ -5,10 +5,10 @@
 if( typeof module !== 'undefined' )
 {
 
-  var Pupeteer = require( 'puppeteer' );
   var _ = require( '../../Tools.s' );
 
   _.include( 'wTesting' );
+  _.include( 'wPuppet' );
 
   require( '../starter/Include.s' );
 
@@ -1215,7 +1215,7 @@ async function includeCss( test )
   let self = this;
   let a = self.assetFor( test, 'includeCss', true );
   let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  var page,browser;
+  var page,window;
 
   a.reflect();
   starter.start
@@ -1227,27 +1227,27 @@ async function includeCss( test )
 
   try
   {
-    browser = await Pupeteer.launch({ headless : true });
-    page = await browser.newPage();
+    window = await _.puppet.windowOpen({ headless : true });
+    page = await window.pageOpen();
 
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
 
-    var got = await page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
+    var got = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
     test.identical( got, [ 'http://127.0.0.1:5000/.starter', 'http://127.0.0.1:5000/index.js' ] )
 
-    var got = await page.evaluate( () =>
+    var got = await page.eval( () =>
     {
       var style = window.getComputedStyle( document.querySelector( 'body') );
       return style.getPropertyValue( 'background' )
     });
     test.is( _.strHas( got, 'rgb(192, 192, 192)' ) );
 
-    await browser.close();
+    await window.close();
   }
   catch( err )
   {
     test.exceptionReport({ err });
-    await browser.close();
+    await window.close();
   }
 
   let ready = new _.Consequence();
@@ -1263,7 +1263,7 @@ async function workerWithInclude( test )
   let self = this;
   let a = self.assetFor( test, 'worker', true );
   let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let browser,page;
+  let window,page;
 
   a.reflect();
   starter.start
@@ -1275,24 +1275,24 @@ async function workerWithInclude( test )
 
   try
   {
-    browser = await Pupeteer.launch({ headless : true });
-    page = await browser.newPage();
+    window = await _.puppet.windowOpen({ headless : true });
+    page = await window.pageOpen();
     let output = '';
 
     page.on( 'console', msg => output += msg.text() + '\n' );
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
 
     await _.time.out( 1500 );
 
     test.is( _.strHas( output, 'Global: Window' ) )
     test.is( _.strHas( output, 'Global: DedicatedWorkerGlobalScope' ) )
 
-    await browser.close();
+    await window.close();
   }
   catch( err )
   {
     test.exceptionReport({ err });
-    await browser.close();
+    await window.close();
   }
 
   let ready = new _.Consequence();
@@ -1308,7 +1308,7 @@ async function includeExcludingManual( test )
   let self = this;
   let a = self.assetFor( test, 'exclude', true );
   let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let browser, page;
+  let window,page;
 
   a.reflect();
   starter.start
@@ -1320,23 +1320,23 @@ async function includeExcludingManual( test )
 
   try
   {
-    browser = await Pupeteer.launch({ headless : true });
-    page = await browser.newPage();
+    window = await _.puppet.windowOpen({ headless : true });
+    page = await window.pageOpen();
 
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
 
-    var scripts = await page.$$eval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
+    var scripts = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
     test.identical( scripts.length, 3 );
     test.identical( scripts[ 0 ], 'http://127.0.0.1:5000/.starter' );
     test.identical( scripts[ 1 ], 'http://127.0.0.1:5000/index.js' );
     test.is( _.strHas( scripts[ 2 ], './src/File.js' ) );
 
-    await browser.close();
+    await window.close();
   }
   catch( err )
   {
     test.exceptionReport({ err });
-    await browser.close();
+    await window.close();
   }
 
   let ready = new _.Consequence();
@@ -1352,7 +1352,7 @@ async function includeModule( test )
   let self = this;
   let a = self.assetFor( test, 'includeModule', true );
   let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let browser,page;
+  let window,page;
 
   a.reflect();
 
@@ -1367,12 +1367,12 @@ async function includeModule( test )
 
   try
   {
-    browser = await Pupeteer.launch({ headless : true });
-    page = await browser.newPage();
+    window = await _.puppet.windowOpen({ headless : true });
+    page = await window.pageOpen();
 
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1', { waitUntil : 'load' } );
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
 
-    var result = await page.evaluate( () =>
+    var result = await page.eval( () =>
     {
       var _ = _global_.wTools;
       _.include( 'wPathBasic' );
@@ -1380,12 +1380,12 @@ async function includeModule( test )
     })
     test.identical( result, '/a/b' )
 
-    await browser.close();
+    await window.close();
   }
   catch( err )
   {
     test.exceptionReport({ err });
-    await browser.close();
+    await window.close();
   }
 
   let ready = new _.Consequence();
