@@ -55,9 +55,7 @@ function form()
 
   _.process.on( 'exit', () =>
   {
-    logger.begin({ verbosity : -5 });
-    logger.log( `${remote.role} exit` );
-    logger.end({ verbosity : -5 });
+    remote.log( -5, `exit` );
   });
 
   ready.then( () => remote.roleDetermine() );
@@ -66,9 +64,7 @@ function form()
   {
     let ready = _.Consequence().take( arg );
 
-    logger.begin({ verbosity : -5 });
-    logger.log( `${remote.role} start` );
-    logger.end({ verbosity : -5 });
+    remote.log( -5, `start` );
 
     if( remote.role === 'slave' )
     {
@@ -83,6 +79,8 @@ function form()
       {
         // debugger
       });
+
+      ready.then( () => _.time.out( 5000 ) );
 
       ready.then( () => remote.slaveConnectMaster() );
 
@@ -128,7 +126,11 @@ function masterOpen()
   let remote = this;
   let logger = remote.logger;
 
+  remote.masterOpenBegin();
+
+  if( !remote.masterPath )
   remote.masterPath = remote.MasterPathFindFree();
+
   _.assert( !!remote.masterPath );
   let masterPathParsed = _.uri.parse( remote.masterPath );
   masterPathParsed.port = _.strToNumberMaybe( masterPathParsed.port );
@@ -136,35 +138,17 @@ function masterOpen()
 
   remote.server = Net.createServer( ( socket ) =>
   {
-    debugger;
-    logger.log( 'MASTER:', `${socket.remoteAddress} connected` );
+    remote.masterConnectBegin({ connection : socket });
     socket
-    .on( 'data', ( data ) =>
-    {
-      logger.log( 'MASTER-RECIEVED:', data.toString() );
-      debugger;
-    })
-    .on( 'end', () =>
-    {
-      logger.log( 'MASTER:', `${socket.remoteAddress} disconnected` );
-      debugger;
-    })
-    socket.write( 'MASTER-SENDING: Hello! This is server speaking.' );
-    // socket.end( 'MASTER: Closing connection now.' );
+    .on( 'data', ( data ) => remote.masterRecieve({ data }) )
+    .on( 'end', () => remote.masterDisconnectEnd({ connection : socket }) )
+    .on( 'error', ( err ) => remote.masterError({ err, connection : socket }) )
+    ;
+    remote.masterConnectEnd({ connection : socket });
   })
-  .on( 'error', ( err ) =>
-  {
-    logger.error( _.err( 'Server error\n', err ) );
-    debugger;
-  });
+  .on( 'error', ( err ) => remote.masterError({ err }) );
 
-  remote.server.listen( masterPathParsed.port, () =>
-  {
-    debugger;
-    logger.begin({ verbosity : -7 });
-    logger.log( 'MASTER:', 'Opened server on', remote.server.address().port );
-    logger.begin({ verbosity : -7 });
-  });
+  remote.server.listen( masterPathParsed.port, () => remote.masterOpenEnd() );
 
   return remote;
 }
@@ -211,28 +195,25 @@ function slaveConnectMaster()
   let remote = this;
   let logger = remote.logger;
 
-  _.assert( remote.role === 'slave' );
-
   let masterPathParsed = _.uri.parse( remote.masterPath );
   masterPathParsed.port = _.strToNumberMaybe( masterPathParsed.port );
+
   _.assert( _.numberDefined( masterPathParsed.port ) );
+  _.assert( remote.role === 'slave' );
+  _.assert( remote.connections.length === 0 );
 
   remote.slaveConnectBegin();
 
   let o2 = { port : masterPathParsed.port };
+  let connection = Net.createConnection( o2, () => remote.slaveConnectEnd() );
 
-  remote.connection = Net.createConnection( o2, () => remote.slaveConnectEnd() );
-  remote.connection.on( 'data', ( data ) => remote.slaveRecieve({ data }) );
-  remote.connection.on( 'error', ( err ) => remote.slaveErr( err ) );
-  remote.connection.on( 'end', () =>
-  {
-    debugger;
-    return remote.slaveDisconnectEnd();
-  });
+  remote.connections.push( connection );
 
-  _.assert( remote.channel === null );
+  connection.on( 'data', ( data ) => remote.slaveRecieve({ data }) );
+  connection.on( 'error', ( err ) => remote.slaveError({ err }) );
+  connection.on( 'end', () => remote.slaveDisconnectEnd({ connection }) )
 
-  _.time.out( 5000, () =>
+  _.time.out( 10000, () =>
   {
     remote.slaveDisconnectMaster();
   });
@@ -246,7 +227,7 @@ function slaveDisconnectMaster()
 {
   let remote = this;
   let logger = remote.logger;
-  remote.connection.end();
+  remote.connections[ 0 ].end();
   if( remote._process )
   {
     let process = remote._process;
@@ -261,8 +242,7 @@ function slaveConnectBegin()
 {
   let remote = this;
   let logger = remote.logger;
-  remote.log( 'slaveConnectBegin' );
-  debugger;
+  remote.log( -7, `slaveConnectBegin` );
 }
 
 //
@@ -271,19 +251,27 @@ function slaveConnectEnd()
 {
   let remote = this;
   let logger = remote.logger;
-  remote.log( 'slaveConnectEnd' );
-  remote.connection.write( 'SLAVE-SENDING: Hello this is client!' );
-  debugger;
+  remote.log( -7, `slaveConnectEnd` );
+  remote.connections[ 0 ].write( 'SLAVE-SENDING: Hello this is client!' );
 }
 
 //
 
-function slaveDisconnectEnd()
+function slaveDisconnectEnd( o )
 {
   let remote = this;
   let logger = remote.logger;
-  logger.log( 'SLAVE: I disconnected from the server.' );
-  debugger;
+  remote.log( -7, `slaveDisconnectEnd` );
+
+  _.assert( remote.connections.length === 1 );
+  _.assert( remote.connections[ 0 ] === o.connection )
+
+  remote.connections.splice( 0, 1 );
+}
+
+slaveDisconnectEnd.defaults =
+{
+  connection : null,
 }
 
 //
@@ -292,8 +280,7 @@ function slaveRecieve( o )
 {
   let remote = this;
   let logger = remote.logger;
-  logger.log( 'SLAVE-RECIEVED:', o.data.toString() );
-  debugger;
+  remote.log( -5, `recieved . ${o.data.toString()}` );
 }
 
 slaveRecieve.defaults =
@@ -303,32 +290,112 @@ slaveRecieve.defaults =
 
 //
 
-function slaveErr( err )
+function slaveError( o )
 {
   let remote = this;
   let logger = remote.logger;
-  logger.error( _.err( 'Slave error\n', err ) );
+  logger.error( _.err( 'Slave error\n', o.err ) );
   debugger;
+}
+
+slaveError.defaults =
+{
+  err : null,
 }
 
 //
 
-function masterConnectBegin()
+function masterOpenBegin()
 {
   let remote = this;
   let logger = remote.logger;
-  remote.log( 'masterConnectBegin' );
-  debugger;
 }
 
 //
 
-function masterConnectEnd()
+function masterOpenEnd()
 {
   let remote = this;
   let logger = remote.logger;
-  remote.log( 'masterConnectEnd' );
+  remote.log( -7, `opened server on port::${remote.server.address().port}` );
+}
+
+//
+
+function masterConnectBegin( o )
+{
+  let remote = this;
+  let logger = remote.logger;
+
+  _.arrayAppendOnceStrictly( remote.connections, o.connection );
+
+  remote.log( -7, `${o.connection.remoteAddress} connected. ${remote.connections.length} connections` );
+
+  o.connection.write( 'MASTER-SENDING: Hello! This is server speaking.' ); /* xxx */
+}
+
+masterConnectBegin.defaults =
+{
+  connection : null,
+}
+
+//
+
+function masterConnectEnd( o )
+{
+  let remote = this;
+  let logger = remote.logger;
+  remote.log( -7, `masterConnectEnd` );
+}
+
+masterConnectEnd.defaults =
+{
+  connection : null,
+}
+
+//
+
+function masterDisconnectEnd( o )
+{
+  let remote = this;
+  let logger = remote.logger;
+  _.arrayRemoveOnceStrictly( remote.connections, o.connection );
+  remote.log( -7, `${o.connection.remoteAddress} disconnected. ${remote.connections.length} connections` );
+}
+
+masterDisconnectEnd.defaults =
+{
+  connection : null,
+}
+
+//
+
+function masterRecieve( o )
+{
+  let remote = this;
+  let logger = remote.logger;
+  remote.log( -5, `recieved . ${o.data.toString()}` );
+}
+
+masterRecieve.defaults =
+{
+  data : null,
+}
+
+//
+
+function masterError( o )
+{
+  let remote = this;
+  let logger = remote.logger;
+  logger.error( _.err( 'Master error\n', o.err ) );
   debugger;
+}
+
+masterError.defaults =
+{
+  err : null,
+  connection : null,
 }
 
 //
@@ -383,11 +450,24 @@ function _roleDetermine()
 
 //
 
-function log()
+function format()
 {
   let remote = this;
   let logger = remote.logger;
-  logger.log( `${remote.role} . I connected to the server.` );
+  return [ `${remote.role} .`, ... arguments ];
+}
+
+//
+
+function log( level, ... msgs )
+{
+  let remote = this;
+  let logger = remote.logger;
+
+  logger.begin({ verbosity : level });
+  logger.log( ... remote.format( ... msgs ) );
+  logger.end({ verbosity : level });
+
 }
 
 // //
@@ -467,7 +547,7 @@ let Associates =
 {
   logger : null,
   server : null,
-  connection : null,
+  connections : _.define.own( [] ),
   object : null,
   _process : null,
   // server : null,
@@ -514,10 +594,19 @@ let Proto =
   slaveConnectEnd,
   slaveDisconnectEnd,
   slaveRecieve,
-  slaveErr,
+  slaveError,
+
+  masterOpenBegin,
+  masterOpenEnd,
+  masterConnectBegin,
+  masterConnectEnd,
+  masterDisconnectEnd,
+  masterRecieve,
+  masterError,
 
   roleDetermine,
   _roleDetermine,
+  format,
   log,
 
   // requestPreHandler,
