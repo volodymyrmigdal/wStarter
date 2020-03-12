@@ -2,10 +2,13 @@ format: outwillfile-2.0
 root:
   - wStarter.out
 consistency:
-  ../.ex.will.yml: &ref_0
+  wStarter.out.will.yml: &ref_0
+    hash: 3774f9c7f9bbdc192eea88987bc2f0ec
+    size: 50865
+  ../.ex.will.yml: &ref_1
     hash: ff7444ed508cec35d77f667bb5c5ab5a
     size: 2235
-  ../.im.will.yml: &ref_1
+  ../.im.will.yml: &ref_2
     hash: 4e36e79187f3207d79f56fe55bd65caa
     size: 5706
 module:
@@ -19,24 +22,24 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters: &ref_2
+      interpreters:
         - njs >= 8.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords: &ref_3
+      keywords:
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors: &ref_4
+      contributors:
         - Kostiantyn Wandalen <wanalen@willbe.so>
       npm.name: wstarter
-      npm.scripts: &ref_5
+      npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
         single-process-starter: node proto/dwtools/atop/starter/Exec
         debug-starter: node proto/dwtools/atop/starter/ExecDebug
         starter: node proto/dwtools/atop/starter/ExecUnrestricted
-      npm.bin: &ref_6
+      npm.bin:
         starter: proto/dwtools/atop/starter/ExecUnrestricted
         single-process-starter: proto/dwtools/atop/starter/Exec
         debug-starter: proto/dwtools/atop/starter/ExecDebug
@@ -165,48 +168,6 @@ module:
           - ../proto/dwtools/Tools.s
           - ../proto/dwtools/abase
           - ../proto/dwtools/amid
-          - ../proto/dwtools/amid/---starter
-          - ../proto/dwtools/amid/---starter/Exec
-          - ../proto/dwtools/amid/---starter/ExecDebug
-          - ../proto/dwtools/amid/---starter/ExecUnrestricted
-          - ../proto/dwtools/amid/---starter/IncludeBase.s
-          - ../proto/dwtools/amid/---starter/IncludeMid.s
-          - ../proto/dwtools/amid/---starter/IncludeTop.s
-          - ../proto/dwtools/amid/---starter/MainBase.s
-          - ../proto/dwtools/amid/---starter/MainTop.s
-          - ../proto/dwtools/amid/---starter/legacy
-          - ../proto/dwtools/amid/---starter/legacy/StarterConfigBegin.raw.s
-          - ../proto/dwtools/amid/---starter/legacy/StarterInitBegin.raw.s
-          - ../proto/dwtools/amid/---starter/legacy/StarterInitEnd.raw.s
-          - ../proto/dwtools/amid/---starter/legacy/StarterMaker.s
-          - ../proto/dwtools/amid/---starter/legacy/StarterPreloadEnd.raw.s
-          - ../proto/dwtools/amid/---starter/legacy/StarterServer.ss
-          - ../proto/dwtools/amid/---starter/legacy/StarterStart.raw.s
-          - ../proto/dwtools/amid/---starter/light
-          - ../proto/dwtools/amid/---starter/light/Servlet.ss
-          - ../proto/dwtools/amid/---starter/light/StarterMaker.s
-          - ../proto/dwtools/amid/---starter/light/StarterWare.s
-          - ../proto/dwtools/amid/---starter.test
-          - ../proto/dwtools/amid/---starter.test/Starter.test.s
-          - ../proto/dwtools/amid/--starter
-          - ../proto/dwtools/amid/--starter/StarterConfigBegin.raw.s
-          - ../proto/dwtools/amid/--starter/StarterInitBegin.raw.s
-          - ../proto/dwtools/amid/--starter/StarterInitEnd.raw.s
-          - ../proto/dwtools/amid/--starter/StarterMaker.s
-          - ../proto/dwtools/amid/--starter/StarterPreloadEnd.raw.s
-          - ../proto/dwtools/amid/--starter/StarterServer.ss
-          - ../proto/dwtools/amid/--starter/StarterStart.raw.s
-          - ../proto/dwtools/amid/--starter/light
-          - ../proto/dwtools/amid/--starter/light/StarterMaker.s
-          - ../proto/dwtools/amid/--starter/light/StarterWare.s
-          - ../proto/dwtools/amid/-starter
-          - ../proto/dwtools/amid/-starter/StarterConfigBegin.raw.s
-          - ../proto/dwtools/amid/-starter/StarterInitBegin.raw.s
-          - ../proto/dwtools/amid/-starter/StarterInitEnd.raw.s
-          - ../proto/dwtools/amid/-starter/StarterMaker.s
-          - ../proto/dwtools/amid/-starter/StarterPreloadEnd.raw.s
-          - ../proto/dwtools/amid/-starter/StarterServer.ss
-          - ../proto/dwtools/amid/-starter/StarterStart.raw.s
           - ../proto/dwtools/atop
           - ../proto/dwtools/atop/starter
           - ../proto/dwtools/atop/starter/Exec
@@ -216,6 +177,7 @@ module:
           - ../proto/dwtools/atop/starter/Main.s
           - ../proto/dwtools/atop/starter/include
           - ../proto/dwtools/atop/starter/include/Base.s
+          - ../proto/dwtools/atop/starter/include/Center.s
           - ../proto/dwtools/atop/starter/include/Launcher.s
           - ../proto/dwtools/atop/starter/include/Mid.s
           - ../proto/dwtools/atop/starter/include/MidLegacy.s
@@ -230,7 +192,6 @@ module:
           - ../proto/dwtools/atop/starter/l3/WareCode.s
           - ../proto/dwtools/atop/starter/l5
           - ../proto/dwtools/atop/starter/l5/Center.ss
-          - ../proto/dwtools/atop/starter/l5/Remote.ss
           - ../proto/dwtools/atop/starter/l5/Servlet.ss
           - ../proto/dwtools/atop/starter/l7
           - ../proto/dwtools/atop/starter/l7/Starter.s
@@ -905,6 +866,24 @@ module:
           content: prime
         inherit:
           - files.transpile
+      exported.proto.export:
+        opts:
+          reflector: 'reflector::exported.proto.export*'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
+      exported.files.proto.export:
+        opts:
+          reflector: 'reflector::exported.files.proto.export*'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
     build:
       proto.export:
         steps:
@@ -993,8 +972,9 @@ module:
           content: proto
           export: 1
     consistency:
-      ../.ex.will.yml: *ref_0
-      ../.im.will.yml: *ref_1
+      wStarter.out.will.yml: *ref_0
+      ../.ex.will.yml: *ref_1
+      ../.im.will.yml: *ref_2
   ../:
     about:
       name: wStarter
@@ -1005,14 +985,27 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters: *ref_2
-      keywords: *ref_3
+      interpreters:
+        - njs >= 8.0.0
+        - chrome >= 60.0.0
+        - firefox >= 60.0.0
+      keywords:
+        - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors: *ref_4
+      contributors:
+        - Kostiantyn Wandalen <wanalen@willbe.so>
       npm.name: wstarter
-      npm.scripts: *ref_5
-      npm.bin: *ref_6
+      npm.scripts:
+        test: wtest .run proto/**
+        docgen: wdocgen .build proto
+        single-process-starter: node proto/dwtools/atop/starter/Exec
+        debug-starter: node proto/dwtools/atop/starter/ExecDebug
+        starter: node proto/dwtools/atop/starter/ExecUnrestricted
+      npm.bin:
+        starter: proto/dwtools/atop/starter/ExecUnrestricted
+        single-process-starter: proto/dwtools/atop/starter/Exec
+        debug-starter: proto/dwtools/atop/starter/ExecDebug
     path:
       module.willfiles:
         criterion:
@@ -1728,3 +1721,6 @@ module:
       ../.im.will.yml:
         hash: 4e36e79187f3207d79f56fe55bd65caa
         size: 5706
+      wStarter.out.will.yml:
+        hash: 3774f9c7f9bbdc192eea88987bc2f0ec
+        size: 50865
