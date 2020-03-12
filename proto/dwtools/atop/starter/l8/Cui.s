@@ -2,14 +2,6 @@
 
 'use strict';
 
-// if( typeof module !== 'undefined' )
-// {
-//
-//   require( './MainBase.s' );
-//   require( './IncludeTop.s' );
-//
-// }
-
 /*
 cls && local-starter .html.for builder/include/dwtools/amid/starter/processes.experiment/**
 cls && local-starter .serve .
@@ -18,7 +10,6 @@ cls && local-starter .serve .
 //
 
 let _ = _global_.wTools;
-// let Parent = _.Starter;
 let Parent = null;
 let Self = function wStarterCui( o )
 {
@@ -120,8 +111,6 @@ function commandsMake()
     commandPrefix : 'node ',
   })
 
-  // cui._commandsConfigAdd( ca );
-
   ca.form();
 
   return ca;
@@ -184,7 +173,7 @@ function commandVersion( e )
 
 }
 
-commandVersion.hint = 'Get current version.';
+commandVersion.hint = 'Get information about version.';
 
 //
 
@@ -229,10 +218,15 @@ function commandHtmlFor( e )
   let path = starter.fileProvider.path;
   let logger = starter.logger;
   let request = _.strRequestParse( e.argument );
-  
-  console.log( e.propertiesMap )
 
-  request.subject = _.strStructureParse({ src : request.subject, parsingArrays : 1, defaultStructure : 'string' })
+  logger.log( e.propertiesMap )
+
+  request.subject = _.strStructureParse
+  ({
+    src : request.subject,
+    parsingArrays : 1,
+    defaultStructure : 'string',
+  })
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.inPath = o2.inPath || request.subject;
@@ -421,6 +415,7 @@ let Extend =
   commandsMake,
   commandHelp,
   commandVersion,
+
   commandImply,
   commandHtmlFor,
   commandSourcesJoin,

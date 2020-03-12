@@ -1,4 +1,4 @@
-( function _Center_s_( ) {
+( function _Launcher_s_( ) {
 
 'use strict';
 
@@ -12,7 +12,7 @@ if( typeof module !== 'undefined' )
   if( Config.interpreter === 'njs' )
   {
     require( '../l5/Center.ss' );
-    require( '../l5/Remote.ss' );
+    // require( '../l5/Remote.ss' );
   }
 
   require( '../l8/Launcher.s' );

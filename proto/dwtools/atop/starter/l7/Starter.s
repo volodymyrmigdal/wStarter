@@ -4,8 +4,6 @@
 
 let Open;
 
-// require( './IncludeBase.s' );
-
 //
 
 let _ = _global_.wTools;
@@ -468,7 +466,5 @@ if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
 wTools[ Self.shortName ] = Self;
 wTools.starter[ Self.shortName ] = Self;
-
-// require( './IncludeMid.s' );
 
 })();
