@@ -1394,6 +1394,8 @@ async function includeModule( test )
   await ready;
 }
 
+includeModule.timeOut = 300000;
+
 //
 
 function version( test )
