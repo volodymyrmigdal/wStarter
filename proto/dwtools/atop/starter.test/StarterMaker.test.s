@@ -137,6 +137,7 @@ function shellSourcesJoin( test )
   ({
     execPath : 'node',
     currentPath : a.routinePath,
+    mode : 'spawn',
     outputCollecting : 1,
     ready : ready,
   });
@@ -196,6 +197,7 @@ function shellSourcesJoinWithEntry( test )
   ({
     execPath : 'node',
     currentPath : a.routinePath,
+    mode : 'spawn',
     outputCollecting : 1,
     ready : ready,
     throwingExitCode : 0,
@@ -356,6 +358,7 @@ app0/File1.js:timeout numberIs:true
   ({
     // execPath : 'node',
     currentPath : a.routinePath,
+    mode : 'spawn',
     outputCollecting : 1,
     ready : ready,
     throwingExitCode : 1,
@@ -429,6 +432,7 @@ app0/File1.js:timeout numberIs:true
   let shell = _.process.starter
   ({
     // execPath : 'node',
+    mode : 'spawn',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -504,6 +508,7 @@ app0/File1.js:timeout true
 
   let shell = _.process.starter
   ({
+    mode : 'spawn',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -570,6 +575,7 @@ function shellSourcesJoinTree( test )
 
   let shell = _.process.starter
   ({
+    mode : 'spawn',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -759,6 +765,7 @@ function shellSourcesJoinCycle( test )
 
   let shell = _.process.starter
   ({
+    mode : 'spawn',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -1017,6 +1024,7 @@ function shellHtmlFor( test )
 
   let shell = _.process.starter
   ({
+    mode : 'spawn',
     execPath : 'node',
     currentPath : a.routinePath,
     outputCollecting : 1,
@@ -1293,7 +1301,7 @@ async function includeModule( test )
   let a = test.assetFor( 'includeModule' );
   let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   let window,page;
-  
+
   let willbe = _.process.starter
   ({
     execPath : 'node ' + self.willbeExecPath,
@@ -1361,7 +1369,7 @@ function version( test )
     currentPath : routinePath,
     outputCollecting : 1,
     throwingExitCode : 0,
-    mode : 'shell',
+    mode : 'spawn',
     ready : ready,
   })
 
