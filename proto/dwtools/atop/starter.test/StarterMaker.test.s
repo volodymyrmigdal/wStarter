@@ -354,11 +354,19 @@ app0/File1.js:timeout numberIs:true
 app0/File1.js:timeout numberIs:true
 `
 
-  let shell = _.process.starter
+  let start = _.process.starter
   ({
-    // execPath : 'node',
     currentPath : a.routinePath,
     mode : 'spawn',
+    outputCollecting : 1,
+    ready : ready,
+    throwingExitCode : 1,
+  });
+
+  let shell = _.process.starter
+  ({
+    mode : 'shell',
+    currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
     throwingExitCode : 1,
@@ -376,8 +384,8 @@ app0/File1.js:timeout numberIs:true
   })
 
   shell( `npm i` )
-  shell( `node ${execPath} .sources.join app2/** outPath:out/app2` )
-  shell( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:out/app2` )
+  start( `node ${execPath} .sources.join app2/** outPath:out/app2` )
+  start( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:out/app2` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -389,7 +397,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  shell( `node out/app0` )
+  start( `node out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -397,7 +405,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  shell( `node app0/File2.js` )
+  start( `node app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -429,10 +437,18 @@ app0/File1.js:timeout numberIs:true
 app0/File1.js:timeout numberIs:true
 `
 
+  let start = _.process.starter
+  ({
+    mode : 'spawn',
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    ready : ready,
+    throwingExitCode : 1,
+  });
+
   let shell = _.process.starter
   ({
-    // execPath : 'node',
-    mode : 'spawn',
+    mode : 'shell',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -451,8 +467,8 @@ app0/File1.js:timeout numberIs:true
   })
 
   shell( `npm i` )
-  shell( `node ${execPath} .sources.join app0/** outPath:out/dir/app0` )
-  shell( `node ${execPath} .sources.join app2/** outPath:out/dir/app2` )
+  start( `node ${execPath} .sources.join app0/** outPath:out/dir/app0` )
+  start( `node ${execPath} .sources.join app2/** outPath:out/dir/app2` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -464,7 +480,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  shell( `node ext/RequireApp2File2.js` )
+  start( `node ext/RequireApp2File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -506,9 +522,18 @@ app0/File1.js:timeout true
 app0/File1.js:timeout true
 `
 
-  let shell = _.process.starter
+  let start = _.process.starter
   ({
     mode : 'spawn',
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    ready : ready,
+    throwingExitCode : 1,
+  });
+
+  let shell = _.process.starter
+  ({
+    mode : 'shell',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -527,9 +552,9 @@ app0/File1.js:timeout true
   })
 
   shell( `npm i` )
-  shell( `node ${execPath} .sources.join app2/** outPath:out/app2` )
-  shell( `node ${execPath} .sources.join app1/** outPath:out/app1` )
-  shell( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:[out/app1, out/app2]` )
+  start( `node ${execPath} .sources.join app2/** outPath:out/app2` )
+  start( `node ${execPath} .sources.join app1/** outPath:out/app1` )
+  start( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:[out/app1, out/app2]` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -541,7 +566,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  shell( `node out/app0` )
+  start( `node out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -549,7 +574,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  shell( `node app0/File2.js` )
+  start( `node app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
