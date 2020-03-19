@@ -29,11 +29,11 @@ function onSuiteBegin()
   self.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
   self.willbeExecPath = _.module.resolve( 'willbe' );
   self.execJsPath = _.module.resolve( 'wstarter' );
-  self.find = _.fileProvider.filesFinder
+  self.find = _.fileProvider.filesFinder /* qqq xxx : remove maybe? */
   ({
     withTerminals : 1,
     withDirs : 1,
-    withTransient/*maybe withStem*/ : 1,
+    withTransient : 1,
     allowingMissed : 1,
     maskPreset : 0,
     outputFormat : 'relative',
@@ -51,15 +51,6 @@ function onSuiteEnd()
 {
   let self = this;
   _.assert( _.strHas( self.suiteTempPath, '/Starter' ) )
-  _.path.pathDirTempClose( self.suiteTempPath );
-}
-
-//
-
-function onSuiteEnd()
-{
-  let self = this;
-  _.assert( _.strHas( self.suiteTempPath, '/Starter-' ) );
   _.path.pathDirTempClose( self.suiteTempPath );
 }
 
@@ -1293,7 +1284,7 @@ async function includeModule( test )
   let a = test.assetFor( 'includeModule' );
   let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   let window,page;
-  
+
   let willbe = _.process.starter
   ({
     execPath : 'node ' + self.willbeExecPath,
@@ -1399,8 +1390,9 @@ var Self =
   {
     suiteTempPath : null,
     assetsOriginalSuitePath : null,
-    willbeExecPath : null,
     execJsPath : null,
+
+    willbeExecPath : null,
     find : null
   },
 
