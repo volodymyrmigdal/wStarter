@@ -558,7 +558,7 @@ defaults.autoGeneratingHtml = 1;
 defaults.templatePath = null;
 
 // --
-// relationships
+// relations
 // --
 
 let Composes =

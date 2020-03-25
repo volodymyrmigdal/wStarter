@@ -275,20 +275,22 @@ function sourcesJoinSplits( o )
 
   ${gr( 'arrayAs' )}
 
-
   ${ir( 'code' )}
   ${ir( 'stack' )}
   ${ir( 'stackCondense' )}
   ${ir( 'location' )}
   ${ir( 'locationFromStackFrame' )}
-
   ${gr( 'errOriginalMessage' )}
   ${gr( 'errOriginalStack' )}
   ${gr( 'err' )}
   ${gr( '_err' )}
+  ${gr( 'errLogEnd' )}
+  ${gr( 'errAttend' )}
+  ${gr( '_errFields' )}
+  ${gr( 'errIsStandard' )}
+
   ${gr( 'errIs' )}
   ${gr( 'unrollIs' )}
-
   ${gr( 'strType' )}
   ${gr( 'strPrimitiveType' )}
   ${gr( 'strHas' )}
@@ -774,7 +776,7 @@ htmlFor.defaults = Object.create( htmlSplitsFor.defaults );
 */
 
 // --
-// relationships
+// relations
 // --
 
 let InstanceDefaults = [ 'removingShellPrologue' ];

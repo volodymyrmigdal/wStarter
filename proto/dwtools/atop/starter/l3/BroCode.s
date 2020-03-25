@@ -164,7 +164,7 @@ function _Begin()
 
     function handleErrorEvent( e )
     {
-      let err = _.err( 'Network error', e );
+      let err = _.err( err, '\nNetwork error' );
       return handleError( err );
     }
 
@@ -368,7 +368,9 @@ function _Begin()
     }
     catch( err )
     {
-      throw _.err( `Failed to include ${resolvedFilePath}\n`, err );
+      err = _.err( err, `\nFailed to include ${resolvedFilePath}` );
+      debugger;
+      throw err;
     }
 
   }
