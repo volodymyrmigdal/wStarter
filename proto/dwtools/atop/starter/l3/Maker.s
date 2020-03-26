@@ -2,6 +2,10 @@
 
 'use strict';
 
+// debugger;
+// console.log( typeof exports );
+// debugger;
+
 //
 
 let _ = _global_.wTools;
@@ -74,6 +78,7 @@ function sourceWrapSplits( o )
 /* */  let __filename = _filePath_;
 /* */  let __dirname = _dirPath_;
 /* */  let module = _starter_._sourceMake( _filePath_, _dirPath_, ${fileNameNaked} );
+/* */  let exports = module.exports;
 /* */  let require = module.include;
 /* */  let include = module.include;
 `
@@ -225,7 +230,6 @@ function sourcesJoinSplits( o )
 
   ${_.routineParse( self.WareCode.begin ).bodyUnwrapped};
 
-
   ${gr( 'assert' )}
   ${gr( 'strIs' )}
   ${gr( 'strDefined' )}
@@ -272,23 +276,7 @@ function sourcesJoinSplits( o )
   ${gr( 'longLeftDefined' )}
   ${gr( 'longHas' )}
   ${gr( 'routineFromPreAndBody' )}
-
   ${gr( 'arrayAs' )}
-
-  ${ir( 'code' )}
-  ${ir( 'stack' )}
-  ${ir( 'stackCondense' )}
-  ${ir( 'location' )}
-  ${ir( 'locationFromStackFrame' )}
-  ${gr( 'errOriginalMessage' )}
-  ${gr( 'errOriginalStack' )}
-  ${gr( 'err' )}
-  ${gr( '_err' )}
-  ${gr( 'errLogEnd' )}
-  ${gr( 'errAttend' )}
-  ${gr( '_errFields' )}
-  ${gr( 'errIsStandard' )}
-
   ${gr( 'errIs' )}
   ${gr( 'unrollIs' )}
   ${gr( 'strType' )}
@@ -299,32 +287,51 @@ function sourcesJoinSplits( o )
   ${gr( 'numbersAre' )}
   ${gr( 'bufferTypedIs' )}
   ${gr( 'bufferNodeIs' )}
-
-  ${pr( 'refine' )}
-  ${pr( '_normalize' )}
-  ${pr( 'canonize' )}
-  ${pr( 'canonizeTolerant' )}
-  ${pr( '_nativizeWindows' )}
-  ${pr( '_nativizePosix' )}
-  ${pr( 'isGlob' )}
-  ${pr( 'isRelative' )}
-  ${pr( 'isAbsolute' )}
-  ${pr( 'ext' )}
-
-  ${pfs()}
-
+  ${gr( '_strLeftSingle' )}
   ${gr( '_strRightSingle' )}
   ${gr( 'strIsolate' )}
+  ${gr( 'strIsolateLeftOrNone' )}
   ${gr( 'strIsolateRightOrNone' )}
+  ${gr( 'strIsolateLeftOrAll' )}
+  ${gr( 'strIsolateRightOrAll' )}
+  ${gr( 'numberFromStrMaybe' )}
 
-  ${ur( 'parseConsecutive' )}
-  ${ur( 'isGlobal' )}
-  ${ur( 'refine' )}
-  ${ur( '_normalize' )}
-  ${ur( 'canonize' )}
-  ${ur( 'canonizeTolerant' )}
+  ${gr( 'errOriginalMessage' )}
+  ${gr( 'errOriginalStack' )}
+  ${gr( 'err' )}
+  ${gr( '_err' )}
+  ${gr( 'errLogEnd' )}
+  ${gr( 'errAttend' )}
+  ${gr( '_errFields' )}
+  ${gr( 'errIsStandard' )}
 
-  ${ufs()}
+  ${gr( 'introspector', 'code' )}
+  ${gr( 'introspector', 'stack' )}
+  ${gr( 'introspector', 'stackCondense' )}
+  ${gr( 'introspector', 'location' )}
+  ${gr( 'introspector', 'locationFromStackFrame' )}
+  ${gr( 'introspector', 'locationToStack' )}
+  ${gr( 'introspector', 'locationNormalize' )}
+
+  ${gr( 'path', 'refine' )}
+  ${gr( 'path', '_normalize' )}
+  ${gr( 'path', 'canonize' )}
+  ${gr( 'path', 'canonizeTolerant' )}
+  ${gr( 'path', '_nativizeWindows' )}
+  ${gr( 'path', '_nativizePosix' )}
+  ${gr( 'path', 'isGlob' )}
+  ${gr( 'path', 'isRelative' )}
+  ${gr( 'path', 'isAbsolute' )}
+  ${gr( 'path', 'ext' )}
+  ${gr( 'path', 'isGlobal' )}
+  ${fields( 'path' )}
+
+  ${gr( 'uri', 'parseConsecutive' )}
+  ${gr( 'uri', 'refine' )}
+  ${gr( 'uri', '_normalize' )}
+  ${gr( 'uri', 'canonize' )}
+  ${gr( 'uri', 'canonizeTolerant' )}
+  ${fields( 'uri' )}
 
   ${_.routineParse( self.WareCode.end ).bodyUnwrapped};
   `
@@ -421,7 +428,6 @@ function sourcesJoinSplits( o )
   {
     if( _.path.isAbsolute( externalPath ) )
     externalPath = _.path.dot( _.path.relative( _.path.dir( o.outPath ), externalPath ) );
-    // r.externalBefore += `/* */  debugger;`;
     r.externalBefore += `/* */  _starter_._sourceInclude( null, _libraryDirPath_, '${externalPath}' );\n`;
   });
 
@@ -460,8 +466,13 @@ function sourcesJoinSplits( o )
     let e = srcContainer[ name ];
     _.assert
     (
+      _.strDefined( name ),
+      () => `Cant export, expects defined name, but got ${_.strType( name )}`
+    );
+    _.assert
+    (
       _.routineIs( e ) || _.strIs( e ) || _.regexpIs( e ),
-      () => 'Cant export ' + _.strQuote( name ) + ' is ' + _.strType( e )
+      () => `Cant export ${name} is ${_.strType( e )}`
     );
     let str = '';
     if( _.routineIs( e ) )
@@ -542,49 +553,70 @@ function sourcesJoinSplits( o )
     }
   }
 
-  function gr( name )
+  function gr( namesapce, name )
   {
-    return elementExport( _, '_', name );
+    if( arguments.length === 2 )
+    {
+      return elementExport( _[ namesapce ], `_.${namesapce}`, name );
+    }
+    else
+    {
+      name = arguments[ 0 ];
+      return elementExport( _, '_', name );
+    }
   }
 
-  function pr( name )
-  {
-    return elementExport( _.path, 'path', name );
-  }
+  // function pr( name )
+  // {
+  //   return elementExport( _.path, 'path', name );
+  // }
+  //
+  // function ir( name )
+  // {
+  //   return elementExport( _.introspector, '_.introspector', name );
+  // }
+  //
+  // function ur( name )
+  // {
+  //   return elementExport( _.uri, 'uri', name );
+  // }
 
-  function ir( name )
-  {
-    return elementExport( _.introspector, '_.introspector', name );
-  }
-
-  function ur( name )
-  {
-    return elementExport( _.uri, 'uri', name );
-  }
-
-  function pfs( name )
+  function fields( namespace )
   {
     let result = [];
-    for( let f in _.path )
+    _.assert( _.objectIs( _[ namespace ] ) );
+    for( let f in _[ namespace ] )
     {
-      let e = _.path[ f ];
+      let e = _[ namespace ][ f ];
       if( _.strIs( e ) || _.regexpIs( e ) )
-      result.push( pr( f ) );
+      result.push( gr( namespace, f ) );
     }
     return result.join( '  ' );
   }
 
-  function ufs( name )
-  {
-    let result = [];
-    for( let f in _.uri )
-    {
-      let e = _.uri[ f ];
-      if( _.strIs( e ) || _.regexpIs( e ) )
-      result.push( ur( f ) );
-    }
-    return result.join( '  ' );
-  }
+  // function pfs( name )
+  // {
+  //   let result = [];
+  //   for( let f in _.path )
+  //   {
+  //     let e = _.path[ f ];
+  //     if( _.strIs( e ) || _.regexpIs( e ) )
+  //     result.push( pr( f ) );
+  //   }
+  //   return result.join( '  ' );
+  // }
+  //
+  // function ufs( name )
+  // {
+  //   let result = [];
+  //   for( let f in _.uri )
+  //   {
+  //     let e = _.uri[ f ];
+  //     if( _.strIs( e ) || _.regexpIs( e ) )
+  //     result.push( ur( f ) );
+  //   }
+  //   return result.join( '  ' );
+  // }
 
 }
 
