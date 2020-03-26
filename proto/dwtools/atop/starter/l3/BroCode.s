@@ -354,6 +354,7 @@ function _Begin()
       }
       else
       {
+        read += '//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n' + read;
         read += '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
 
         let script = document.createElement( 'script' );
