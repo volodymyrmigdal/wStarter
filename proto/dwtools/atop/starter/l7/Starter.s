@@ -2,8 +2,6 @@
 
 'use strict';
 
-let Open;
-
 //
 
 let _ = _global_.wTools;
@@ -330,71 +328,66 @@ function start( o )
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
-  let maker = starter.maker;
 
   _.routineOptions( start, arguments );
 
-
-  let work = new _.starter.Work({ starter });
-
-  if( !o.basePath )
-  o.basePath = path.resolve( '.' );
-  o.entryPath = path.resolve( o.basePath, o.entryPath );
-  o.allowedPath = path.resolve( o.basePath, o.allowedPath );
-  if( o.templatePath )
-  o.templatePath = path.resolve( o.basePath, o.templatePath );
-
-  /* */
-
-  let filter = { filePath : o.entryPath, basePath : o.basePath };
-  let found = _.fileProvider.filesFind
-  ({
-    filter,
-    mode : 'distinct',
-    mandatory : 0,
-    withDirs : 0,
-    withDefunct : 0,
-  });
-
-  if( !found.length )
-  throw _.errBrief( `Found no ${o.entryPath}` );
-
-  /* */
-
-  work.servlet = starter.httpOpen
-  ({
-    allowedPath : o.allowedPath,
-    basePath : o.basePath,
-    templatePath : o.templatePath,
-    loggingApplication : o.loggingApplication,
-    loggingConnection : o.loggingConnection,
-  });
-
-  if( o.opening )
+  let opts =
   {
-    if( !Open )
-    Open = require( 'open' );
-    debugger;
-    let pageUri = _.uri.join( work.servlet.openPathGet(), found[ 0 ].relative, '?entry:1' );
-    let opts = Object.create( null );
-    if( o.headless )
-    opts.app = [ 'chrome', '--headless', '--disable-gpu', '--remote-debugging-port=9222' ];
-    _.Consequence.Try( () => Open( pageUri, opts ) )
-    .finally( ( err, process ) =>
-    {
-      work.process = process;
-      logger.log( 'open.end', err, process ); debugger;
-      if( err )
-      {
-        err = _.err( err );
-        if( !work.error )
-        work.error = err;
-        return logger.error( _.errOnce( err ) ) || null;
-      }
-      // _.time.begin( 1000, () => process.kill( 'SIGTERM' ) /* xxx qqq : use _.process.terminate after fixing it */ );
-      return process;
-    });
+    starter,
+    ... o,
+    // basePath : o.basePath,
+    // entryPath : o.entryPath,
+    // allowedPath : o.allowedPath,
+    // templatePath : o.templatePath,
+    // loggingApplication : o.loggingApplication,
+    // loggingConnection : o.loggingConnection,
   }
+  let work = new _.starter.Work( opts );
+
+  work.form();
+
+  // if( !o.basePath )
+  // o.basePath = path.resolve( '.' );
+  // o.entryPath = path.resolve( o.basePath, o.entryPath );
+  // o.allowedPath = path.resolve( o.basePath, o.allowedPath );
+  // if( o.templatePath )
+  // o.templatePath = path.resolve( o.basePath, o.templatePath );
+
+  /* */
+
+  // let filter = { filePath : o.entryPath, basePath : o.basePath };
+  // let found = _.fileProvider.filesFind
+  // ({
+  //   filter,
+  //   mode : 'distinct',
+  //   mandatory : 0,
+  //   withDirs : 0,
+  //   withDefunct : 0,
+  // });
+  //
+  // if( !found.length )
+  // throw _.errBrief( `Found no ${o.entryPath}` );
+  // if( found.length !== 1 )
+  // throw _.errBrief( `Found ${found.length} of ${o.entryPath}, but expects single file.` );
+  //
+  // work.basePath = o.basePath;
+  // work.entryPath = found[ 0 ].absolute;
+  // work.entryShortUri = _.uri.join( work.servlet.openPathGet(), found[ 0 ].relative );
+  // work.entryFullUri = _.uri.join( work.entryShortUri, '?entry:1' );
+
+  // work.servlet = starter.httpOpen
+  // ({
+  //   allowedPath : o.allowedPath,
+  //   basePath : o.basePath,
+  //   templatePath : o.templatePath,
+  //   loggingApplication : o.loggingApplication,
+  //   loggingConnection : o.loggingConnection,
+  // });
+
+  // if( o.opening )
+  // {
+  //   work.applicationOpen();
+  // }
 
   return work;
 }
