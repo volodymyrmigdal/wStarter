@@ -379,10 +379,10 @@ function start( o )
     _.Consequence.Try( () => Open( pageUri, opts ) )
     .finally( ( err, arg ) =>
     {
-      logger.log( 'open.end', err, arg );
+      // logger.log( 'open.end', err, arg );
       if( err )
       return logger.error( _.errOnce( err ) ) || null;
-      _.time.periodic( 1000, () => logger.log( arg.exitCode ) );
+      // _.time.periodic( 1000, () => logger.log( arg.exitCode ) );
       return arg;
     });
   }
