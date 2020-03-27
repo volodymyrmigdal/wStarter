@@ -370,7 +370,8 @@ commandStart.commandProperties =
   templatePath : 'Path to html file to use as template',
   loggingApplication : 'Enable printing of application output. Default : true',
   loggingConnection : 'Enable logging of request to the server. Default : false',
-  opening : 'Opening application in a broser. Default : true',
+  opening : 'Opening the application. Default : true',
+  headless : 'Headless mode. Default : false',
 }
 
 commandStart.hint = 'Run executable file. By default in browser.';

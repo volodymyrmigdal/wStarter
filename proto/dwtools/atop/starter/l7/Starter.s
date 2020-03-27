@@ -372,9 +372,19 @@ function start( o )
     if( !Open )
     Open = require( 'open' );
     debugger;
-    Open( _.uri.join( servlet.openPathGet(), found[ 0 ].relative, '?entry:1' ) );
-    // --headless \                   # Runs Chrome in headless mode.
-    // --disable-gpu \
+    let pageUri = _.uri.join( servlet.openPathGet(), found[ 0 ].relative, '?entry:1' );
+    let opts = Object.create( null );
+    if( o.headless )
+    opts.app = [ 'chrome', '--headless', '--disable-gpu' ];
+    _.Consequence.Try( () => Open( pageUri, opts ) )
+    .finally( ( err, arg ) =>
+    {
+      logger.log( 'open.end', err, arg );
+      if( err )
+      return logger.error( _.errOnce( err ) ) || null;
+      _.time.periodic( 1000, () => logger.log( arg.exitCode ) );
+      return arg;
+    });
   }
 
   return servlet;
@@ -386,7 +396,8 @@ defaults.loggingApplication = 1;
 defaults.loggingConnection = 0;
 
 defaults.entryPath = null;
-defaults.opening = true;
+defaults.opening = 1;
+defaults.headless = 0;
 
 // --
 // relations
