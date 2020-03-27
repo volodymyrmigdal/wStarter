@@ -426,30 +426,22 @@ function _Begin()
 
   //
 
-  function _importInWorker( parentSource, filePath )
+  function _importInWorker( parentSource, resolvedFilePath )
   {
+    let starter = this;
+
     _.assert( typeof importScripts !== 'undefined' );
 
-    try
-    {
-      importScripts( filePath );
+    starter._includingSource = resolvedFilePath;
 
-      let childSource = starter._sourceForPathGet( filePath );
-      childSource.parent = parentSource || null;
-      childSource.state = 'opened';
-      return childSource.exports;
-    }
-    catch( err )
-    {
-      let childSource = starter._sourceForPathGet( filePath );
-      err = _.err( err, `\nError including source file ${ childSource ? childSource.filePath : filePath }` );
-      if( childSource )
-      {
-        childSource.error = err;
-        childSource.state = 'errored';
-      }
-      throw err;
-    }
+    importScripts( resolvedFilePath + '?running:0' );
+
+    let childSource = starter._sourceForPathGet( resolvedFilePath );
+    let result = starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
+
+    starter._includingSource = null;
+
+    return result;
 
   }
 
