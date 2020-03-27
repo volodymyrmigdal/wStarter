@@ -370,7 +370,7 @@ function _Begin()
     {
       if( typeof window === 'undefined' )
       {
-        return importInWorker( resolvedFilePath );
+        return this._importInWorker( parentSource, resolvedFilePath );
       }
 
       let read = starter.fileRead
@@ -421,32 +421,36 @@ function _Begin()
       starter._includingSource = null;
     }
 
-    function importInWorker( filePath )
+
+  }
+
+  //
+
+  function _importInWorker( parentSource, filePath )
+  {
+    _.assert( typeof importScripts !== 'undefined' );
+
+    try
     {
-      _.assert( typeof importScripts !== 'undefined' );
+      importScripts( filePath );
 
-      try
-      {
-        importScripts( filePath );
-
-        let childSource = starter._sourceForPathGet( filePath );
-        childSource.parent = parentSource || null;
-        childSource.state = 'opened';
-        return childSource.exports;
-      }
-      catch( err )
-      {
-        let childSource = starter._sourceForPathGet( filePath );
-        err = _.err( err, `\nError including source file ${ childSource ? childSource.filePath : filePath }` );
-        if( childSource )
-        {
-          childSource.error = err;
-          childSource.state = 'errored';
-        }
-        throw err;
-      }
-
+      let childSource = starter._sourceForPathGet( filePath );
+      childSource.parent = parentSource || null;
+      childSource.state = 'opened';
+      return childSource.exports;
     }
+    catch( err )
+    {
+      let childSource = starter._sourceForPathGet( filePath );
+      err = _.err( err, `\nError including source file ${ childSource ? childSource.filePath : filePath }` );
+      if( childSource )
+      {
+        childSource.error = err;
+        childSource.state = 'errored';
+      }
+      throw err;
+    }
+
   }
 
   //
@@ -560,6 +564,7 @@ function _End()
     _broResolveRemote,
     _broResolve,
     _broInclude,
+    _importInWorker,
 
     _broConsoleRedirect,
     _broConsoleMethodRedirect,
