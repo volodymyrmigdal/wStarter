@@ -130,6 +130,7 @@ function shellSourcesJoin( test )
   ({
     execPath : 'node',
     currentPath : a.routinePath,
+    mode : 'spawn',
     outputCollecting : 1,
     ready : ready,
   });
@@ -189,6 +190,7 @@ function shellSourcesJoinWithEntry( test )
   ({
     execPath : 'node',
     currentPath : a.routinePath,
+    mode : 'spawn',
     outputCollecting : 1,
     ready : ready,
     throwingExitCode : 0,
@@ -345,9 +347,18 @@ app0/File1.js:timeout numberIs:true
 app0/File1.js:timeout numberIs:true
 `
 
+  let start = _.process.starter
+  ({
+    currentPath : a.routinePath,
+    mode : 'spawn',
+    outputCollecting : 1,
+    ready : ready,
+    throwingExitCode : 1,
+  });
+
   let shell = _.process.starter
   ({
-    // execPath : 'node',
+    mode : 'shell',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -366,8 +377,8 @@ app0/File1.js:timeout numberIs:true
   })
 
   shell( `npm i` )
-  shell( `node ${execPath} .sources.join app2/** outPath:out/app2` )
-  shell( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:out/app2` )
+  start( `node ${execPath} .sources.join app2/** outPath:out/app2` )
+  start( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:out/app2` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -379,7 +390,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  shell( `node out/app0` )
+  start( `node out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -387,7 +398,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  shell( `node app0/File2.js` )
+  start( `node app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -419,9 +430,18 @@ app0/File1.js:timeout numberIs:true
 app0/File1.js:timeout numberIs:true
 `
 
+  let start = _.process.starter
+  ({
+    mode : 'spawn',
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    ready : ready,
+    throwingExitCode : 1,
+  });
+
   let shell = _.process.starter
   ({
-    // execPath : 'node',
+    mode : 'shell',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -440,8 +460,8 @@ app0/File1.js:timeout numberIs:true
   })
 
   shell( `npm i` )
-  shell( `node ${execPath} .sources.join app0/** outPath:out/dir/app0` )
-  shell( `node ${execPath} .sources.join app2/** outPath:out/dir/app2` )
+  start( `node ${execPath} .sources.join app0/** outPath:out/dir/app0` )
+  start( `node ${execPath} .sources.join app2/** outPath:out/dir/app2` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -453,7 +473,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  shell( `node ext/RequireApp2File2.js` )
+  start( `node ext/RequireApp2File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -495,8 +515,18 @@ app0/File1.js:timeout true
 app0/File1.js:timeout true
 `
 
+  let start = _.process.starter
+  ({
+    mode : 'spawn',
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    ready : ready,
+    throwingExitCode : 1,
+  });
+
   let shell = _.process.starter
   ({
+    mode : 'shell',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -515,9 +545,9 @@ app0/File1.js:timeout true
   })
 
   shell( `npm i` )
-  shell( `node ${execPath} .sources.join app2/** outPath:out/app2` )
-  shell( `node ${execPath} .sources.join app1/** outPath:out/app1` )
-  shell( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:[out/app1, out/app2]` )
+  start( `node ${execPath} .sources.join app2/** outPath:out/app2` )
+  start( `node ${execPath} .sources.join app1/** outPath:out/app1` )
+  start( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:[out/app1, out/app2]` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -529,7 +559,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  shell( `node out/app0` )
+  start( `node out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -537,7 +567,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  shell( `node app0/File2.js` )
+  start( `node app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -563,6 +593,7 @@ function shellSourcesJoinTree( test )
 
   let shell = _.process.starter
   ({
+    mode : 'spawn',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -752,6 +783,7 @@ function shellSourcesJoinCycle( test )
 
   let shell = _.process.starter
   ({
+    mode : 'spawn',
     currentPath : a.routinePath,
     outputCollecting : 1,
     ready : ready,
@@ -1010,6 +1042,7 @@ function shellHtmlFor( test )
 
   let shell = _.process.starter
   ({
+    mode : 'spawn',
     execPath : 'node',
     currentPath : a.routinePath,
     outputCollecting : 1,
@@ -1341,6 +1374,139 @@ includeModule.timeOut = 300000;
 
 //
 
+async function includeModuleInWorker( test )
+{
+  let self = this;
+  let a = test.assetFor( 'includeModuleInWorker' );
+  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
+  let window,page;
+
+  test.description = 'include module two times, second time module cache should be used'
+
+  let willbe = _.process.starter
+  ({
+    execPath : 'node ' + self.willbeExecPath,
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    outputGraying : 1,
+    ready : a.ready,
+    mode : 'spawn',
+  })
+
+  a.reflect();
+
+  await willbe({ args : '.build' })
+
+  starter.start
+  ({
+    basePath : _.path.join( a.routinePath, 'out/debug' ),
+    entryPath : 'index.js',
+    open : 0,
+  })
+
+  try
+  {
+    window = await _.puppet.windowOpen({ headless : true });
+    page = await window.pageOpen();
+    let output = '';
+
+    page.on( 'console', msg => output += msg.text() + '\n' );
+
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+
+    await _.time.out( 5000 );
+
+    console.log( output )
+
+    test.case = 'module was exported and returned object is same as global namespace created in module'
+    test.is( _.strHas( output, `Module was exported: true` ) );
+    test.case = 'two includes return same object'
+    test.is( _.strHas( output, `Both includes have same export: true` ) );
+
+    await window.close();
+  }
+  catch( err )
+  {
+    test.exceptionReport({ err });
+    await window.close();
+  }
+
+  let ready = new _.Consequence();
+  starter.servlet.server.close( () => ready.take( null ) );
+
+  await ready;
+}
+
+includeModuleInWorker.timeOut = 300000;
+
+//
+
+async function includeModuleInWorkerThrowing( test )
+{
+  let self = this;
+  let a = test.assetFor( 'includeModuleInWorkerThrowing' );
+  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
+  let window,page;
+
+  test.description = 'module throws an error during include process, error should be catched in try/catch block'
+
+  let willbe = _.process.starter
+  ({
+    execPath : 'node ' + self.willbeExecPath,
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    outputGraying : 1,
+    ready : a.ready,
+    mode : 'spawn',
+  })
+
+  a.reflect();
+
+  await willbe({ args : '.build' })
+
+  starter.start
+  ({
+    basePath : _.path.join( a.routinePath, 'out/debug' ),
+    entryPath : 'index.js',
+    open : 0,
+  })
+
+  try
+  {
+    window = await _.puppet.windowOpen({ headless : true });
+    page = await window.pageOpen();
+    let output = '';
+
+    page.on( 'console', msg => output += msg.text() + '\n' );
+
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+
+    await _.time.out( 5000 );
+
+    console.log( output )
+
+    test.is( !_.strHas( output, `Module was included` ) );
+    test.is( _.strHas( output, `Module error` ) );
+    test.is( _.strHas( output, `Error including source file /module.js` ) );
+
+    await window.close();
+  }
+  catch( err )
+  {
+    test.exceptionReport({ err });
+    await window.close();
+  }
+
+  let ready = new _.Consequence();
+  starter.servlet.server.close( () => ready.take( null ) );
+
+  await ready;
+}
+
+includeModuleInWorkerThrowing.timeOut = 300000;
+
+//
+
 function version( test )
 {
   let self = this;
@@ -1354,7 +1520,7 @@ function version( test )
     currentPath : routinePath,
     outputCollecting : 1,
     throwingExitCode : 0,
-    mode : 'shell',
+    mode : 'spawn',
     ready : ready,
   })
 
@@ -1418,6 +1584,8 @@ var Self =
     includeExcludingManual,
 
     includeModule,
+    includeModuleInWorker,
+    includeModuleInWorkerThrowing,
 
     version,
 
