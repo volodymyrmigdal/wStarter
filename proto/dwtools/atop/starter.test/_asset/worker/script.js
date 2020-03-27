@@ -1,4 +1,4 @@
-let global = typeof window !== 'undefined' ? window : this;
+let global = typeof window !== 'undefined' ? window : self;
 
 if( global.tools )
 throw "Already included"
