@@ -240,8 +240,47 @@ function _Begin()
 
   //
 
+  function socketWrite( o )
+  {
+    let socket = new WebSocket( o.filePath );
+    socket.onopen = function( e )
+    {
+      socket.send( JSON.stringify( o.data ) );
+      setTimeout( () => socket.close(), 1000 );
+    };
+  }
+  socketWrite.defaults =
+  {
+    filePath : null,
+    data : null,
+  }
+
+  //
+
   function _broSourceFile( sourceFile, op )
   {
+  }
+
+  //
+
+  function _broLog( o )
+  {
+    let starter = this;
+
+    let response = starter.socketWrite
+    ({
+      filePath : 'ws://127.0.0.1:5000/.log/',
+      // filePath : 'ws://127.0.0.1:5000',
+      data : o,
+    });
+
+    return;
+  }
+
+  _broLog.defaults =
+  {
+    methodName : null,
+    args : null,
   }
 
   //
@@ -360,7 +399,7 @@ function _Begin()
 
         let script = document.createElement( 'script' );
         script.type = 'text/javascript';
-        var scriptCode = document.createTextNode( read );
+        let scriptCode = document.createTextNode( read );
         script.appendChild( scriptCode );
         document.head.appendChild( script );
 
@@ -414,7 +453,7 @@ function _Begin()
 
   function _sourceCodeModule()
   {
-    var result = Object.create( null );
+    let result = Object.create( null );
 
     accesor( '_cache', chacheGet, chacheSet );
 
@@ -445,10 +484,59 @@ function _Begin()
 
   //
 
-  function _broInit()
+  function _broConsoleRedirect( console )
   {
-    var starter = this;
+    let starter = this;
+    let MethodsNames =
+    [
+      'log', 'debug', 'error', 'warn', 'info',
+      'assert', 'clear', 'count', 'dir', 'dirxml',
+      'group', 'groupCollapsed', 'groupEnd',
+      'table', 'time', 'timeEnd', 'timeStamp', 'trace'
+    ];
+
+    for( let n = 0 ; n < MethodsNames.length ; n++ )
+    {
+      let name = MethodsNames[ n ];
+      _.assert( _.routineIs( console[ name ] ) );
+      console[ name ] = starter._broConsoleMethodRedirect( console, name );
+    }
+
+  }
+
+  //
+
+  function _broConsoleMethodRedirect( console, methodName )
+  {
+    let starter = this;
+    let original = console[ methodName ];
+    _.assert( _.routineIs( original ) );
+
+    let wrap =
+    {
+      [ methodName ] : function()
+      {
+        let args = [];
+        for( let i = 0 ; i < arguments.length ; i++ )
+        args[ i ] = _.toStr( arguments[ i ] );
+        starter._broLog({ methodName, args });
+        return original.apply( console, arguments );
+      }
+    }
+
+    return wrap[ methodName ];
+  }
+
+  //
+
+  function _broSetup()
+  {
+    let starter = this;
     starter._sourceMake( 'module', '/', _sourceCodeModule );
+
+    if( starter.redirectingConsole === null || starter.redirectingConsole )
+    starter._broConsoleRedirect( console );
+
   }
 
 }
@@ -465,13 +553,18 @@ function _End()
 
     fileReadAct,
     fileRead,
+    socketWrite,
 
     _broSourceFile,
+    _broLog,
     _broResolveRemote,
     _broResolve,
     _broInclude,
 
-    _broInit,
+    _broConsoleRedirect,
+    _broConsoleMethodRedirect,
+
+    _broSetup,
     _sourceCodeModule,
 
   }

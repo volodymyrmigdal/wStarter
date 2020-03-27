@@ -60,7 +60,8 @@ function form()
 
   express.use( ( request, response, next ) => servlet.requestPreHandler({ request, response, next }) );
 
-  if( Config.debug && starter.verbosity )
+  // if( Config.debug && starter.verbosity )
+  if( Config.debug && servlet.loggingConnection )
   {
     if( !ExpressLogger )
     ExpressLogger = require( 'morgan' );
@@ -69,7 +70,7 @@ function form()
 
   express.use( ( request, response, next ) => servlet.requestMidHandler({ request, response, next }) );
 
-  servlet._requsetScriptWrapHandler = servlet.ScriptWrap_functor
+  servlet._requestScriptWrapHandler = servlet.ScriptWrap_functor
   ({
     allowedPath : '/',
     basePath : servlet.basePath,
@@ -80,9 +81,9 @@ function form()
     starterMaker : starter.maker,
     templatePath : servlet.templatePath
   });
-  express.use( ( request, response, next ) => servlet._requsetScriptWrapHandler({ request, response, next }) );
+  express.use( ( request, response, next ) => servlet._requestScriptWrapHandler({ request, response, next }) );
 
-  express.use( parsedServerPath.localWebPath, Express.static( _.path.nativize( servlet.basePath ) ) );
+  express.use( parsedServerPath.resourcePath, Express.static( _.path.nativize( servlet.basePath ) ) );
 
   if( servlet.servingDirs )
   {
@@ -93,7 +94,7 @@ function form()
       'icons' : true,
       'hidden' : true,
     }
-    express.use( parsedServerPath.localWebPath, ExpressDir( _.path.nativize( servlet.basePath ), directoryOptions ) );
+    express.use( parsedServerPath.resourcePath, ExpressDir( _.path.nativize( servlet.basePath ), directoryOptions ) );
   }
 
   express.use( ( request, response, next ) => servlet.requestPostHandler({ request, response, next }) );
@@ -102,7 +103,7 @@ function form()
   let o3 = _.servlet.controlExpressStart
   ({
     name : servlet.qualifiedName,
-    verbosity : starter.verbosity - 1,
+    verbosity : servlet.loggingApplication ? 0 : starter.verbosity - 1,
     server : servlet.server,
     express : servlet.express,
     serverPath : servlet.serverPath,
@@ -111,6 +112,22 @@ function form()
   servlet.server = o3.server;
   servlet.express = o3.express;
   servlet.serverPath = o3.serverPath;
+
+  if( servlet.loggingApplication )
+  {
+    let loggerServerPath = _.uri.join( servlet.serverPath, '.log/' );
+    loggerServerPath = _.uri.parseAtomic( loggerServerPath );
+    loggerServerPath.protocol = 'ws';
+    delete loggerServerPath.protocols;
+    loggerServerPath = _.uri.str( loggerServerPath );
+    servlet.loggerSocket = _.LoggerSocketReceiver
+    ({
+      httpServer : servlet.server,
+      serverPath : loggerServerPath,
+    });
+    servlet.loggerSocket.form();
+    servlet.loggerSocket.outputTo( logger );
+  }
 
   /* - */
 
@@ -154,7 +171,6 @@ function requestPostHandler( o )
 {
   let servlet = this;
 
-  debugger;
   _.servlet.controlRequestPostHandle
   ({
     verbosity : servlet.verbosity,
@@ -208,54 +224,6 @@ function openPathGet()
   return _.uri.str( parsedServerPath );
 }
 
-// //
-//
-// function webSocketServerRun()
-// {
-//
-//   debugger;
-//   var WebSocketServer = require( 'websocket' ).server;
-//   var http = require( 'http' );
-//
-//   o.server = http.createServer( function( request, response )
-//   {
-//     console.log( 'server request' ); debugger;
-//   });
-//   o.server.listen( 5001, function() { } );
-//
-//   o.webSocketServer = new WebSocketServer
-//   ({
-//     httpServer : o.server
-//   });
-//
-//   o.webSocketServer.on( 'request', function( request )
-//   {
-//     console.log( 'webSocketServer request' ); debugger;
-//
-//     var connection = request.accept( null, request.origin );
-//
-//     connection.on( 'message', function( message )
-//     {
-//       console.log( 'webSocketServer message' ); debugger;
-//       if( message.type === 'utf8' )
-//       {
-//       }
-//     });
-//
-//     connection.on( 'close', function( connection )
-//     {
-//       console.log( 'webSocketServer close' ); debugger;
-//     });
-//
-//   });
-//
-// }
-//
-// let defaults = webSocketServerRun.defaults = Object.create( null );
-//
-// defaults.server = null;
-// defaults.webSocketServer = null;
-
 // --
 //
 // --
@@ -298,18 +266,18 @@ function ScriptWrap_functor( fop )
     o.request.url = Querystring.unescape( o.request.url );
 
     let uri = _.uri.parseFull( o.request.url );
-    let exts = _.uri.exts( uri.localWebPath );
+    let exts = _.uri.exts( uri.resourcePath );
     let query = uri.query ? _.strWebQueryParse( uri.query ) : Object.create( null );
     if( query.running === undefined )
     query.running = 1;
     query.running = !!query.running;
     query.entry = !!query.entry;
 
-    if( uri.localWebPath === '/.starter' )
+    if( uri.resourcePath === '/.starter' )
     {
       return starterWareReturn();
     }
-    else if( _.strBegins( uri.localWebPath, '/.resolve/' ) )
+    else if( _.strBegins( uri.resourcePath, '/.resolve/' ) )
     {
       return remoteResolve();
     }
@@ -318,7 +286,7 @@ function ScriptWrap_functor( fop )
       return htmlGenerate();
     }
 
-    surePathAllowed( uri.localWebPath );
+    surePathAllowed( uri.resourcePath );
 
     if( !_.longHasAny( fop.incudingExts, exts ) )
     return o.next();
@@ -354,7 +322,7 @@ function ScriptWrap_functor( fop )
     let state = 0;
 
     if( fop.verbosity )
-    console.log( ' . scriptWrap', uri.localWebPath, 'of', filePath );
+    console.log( ' . scriptWrap', uri.resourcePath, 'of', filePath );
 
     stream.on( 'open', function()
     {
@@ -401,7 +369,7 @@ function ScriptWrap_functor( fop )
 
     function htmlGenerate()
     {
-      let filePath = _.strRemoveBegin( uri.localWebPath, '/.resolve/' );
+      let filePath = _.strRemoveBegin( uri.resourcePath, '/.resolve/' );
       let realPath = _.path.reroot( fop.basePath, filePath );
 
       let filter = { filePath : _.path.detrail( realPath ), basePath : fop.basePath };
@@ -452,7 +420,7 @@ function ScriptWrap_functor( fop )
 
     function remoteResolve()
     {
-      let filePath = _.strRemoveBegin( uri.localWebPath, '/.resolve/' );
+      let filePath = _.strRemoveBegin( uri.resourcePath, '/.resolve/' );
       filePath = _.path.reroot( fop.basePath, filePath );
 
       let basePath = _.path.fromGlob( filePath );
@@ -565,6 +533,9 @@ let Composes =
 {
 
   servingDirs : 0,
+  loggingApplication : 1,
+  loggingConnection : 0,
+
   // serverPath : 'http://127.0.0.1:5000',
   serverPath : 'http://0.0.0.0:5000',
   basePath : null,
@@ -581,11 +552,12 @@ let Associates =
   starter : null,
   server : null,
   express : null,
+  loggerSocket : null,
 }
 
 let Restricts =
 {
-  _requsetScriptWrapHandler : null,
+  _requestScriptWrapHandler : null,
 }
 
 let Statics =

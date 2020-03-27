@@ -1,6 +1,6 @@
 ( function _NjsWare_s_() {
 
-'use strict'; 
+'use strict';
 
 let _ = _global_.wTools;
 
@@ -11,7 +11,7 @@ let _ = _global_.wTools;
 function _Begin()
 {
 
-  'use strict'; 
+  'use strict';
 
   let _global = _global_;
   let _starter_ = _global_._starter_;
@@ -151,10 +151,9 @@ function _Begin()
     // return _natInclude( filePath );
   }
 
-
   //
 
-  function _njsInit()
+  function _njsSetup()
   {
     let starter = this;
     let Module = _natInclude( 'module' );
@@ -212,7 +211,7 @@ function _End()
     _njsResolve,
     _njsSourceIncludeFromNjsAct,
     _njsInclude,
-    _njsInit,
+    _njsSetup,
 
 
   }

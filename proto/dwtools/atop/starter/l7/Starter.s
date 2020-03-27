@@ -317,7 +317,9 @@ httpOpen.defaults =
 {
   basePath : null,
   allowedPath : '/',
-  templatePath : null
+  templatePath : null,
+  loggingApplication : 0,
+  loggingConnection : 1,
 }
 
 //
@@ -360,14 +362,19 @@ function start( o )
   ({
     allowedPath : o.allowedPath,
     basePath : o.basePath,
-    templatePath : o.templatePath
+    templatePath : o.templatePath,
+    loggingApplication : o.loggingApplication,
+    loggingConnection : o.loggingConnection,
   });
 
-  if( o.open )
+  if( o.opening )
   {
     if( !Open )
     Open = require( 'open' );
+    debugger;
     Open( _.uri.join( servlet.openPathGet(), found[ 0 ].relative, '?entry:1' ) );
+    // --headless \                   # Runs Chrome in headless mode.
+    // --disable-gpu \
   }
 
   return servlet;
@@ -375,8 +382,11 @@ function start( o )
 
 var defaults = start.defaults = _.mapExtend( null, httpOpen.defaults );
 
+defaults.loggingApplication = 1;
+defaults.loggingConnection = 0;
+
 defaults.entryPath = null;
-defaults.open = true;
+defaults.opening = true;
 
 // --
 // relations
