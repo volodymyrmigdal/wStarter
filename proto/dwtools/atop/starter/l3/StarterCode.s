@@ -132,13 +132,7 @@ function _Begin()
       childSource.state = 'opening';
       childSource.parent = parentSource || null;
 
-      var childSourceProxy = new Proxy( childSource, { set: function( target, property, value, receiver )
-      {
-        _global[ property ] = value;
-        return true;
-      }})
-
-      childSource.nakedCall.call( childSourceProxy );
+      childSource.nakedCall();
       childSource.state = 'opened';
 
       if( Config.interpreter === 'njs' )
