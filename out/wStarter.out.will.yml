@@ -304,6 +304,10 @@ submodule:
     path: 'npm:///jsdom'
     autoExporting: 0
     enabled: 0
+  wloggersocket:
+    path: 'npm:///wloggersocket'
+    autoExporting: 0
+    enabled: 0
   wstarter:
     path: 'hd://..'
     autoExporting: 0
@@ -1218,6 +1222,10 @@ module:
         enabled: 0
       jsdom:
         path: 'npm:///jsdom'
+        autoExporting: 0
+        enabled: 0
+      wloggersocket:
+        path: 'npm:///wloggersocket'
         autoExporting: 0
         enabled: 0
       wstarter:
