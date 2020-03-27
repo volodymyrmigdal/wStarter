@@ -1406,7 +1406,7 @@ async function includeModuleInWorker( test )
 
   try
   {
-    window = await _.puppet.windowOpen({ headless : false });
+    window = await _.puppet.windowOpen({ headless : true });
     page = await window.pageOpen();
     let output = '';
 
@@ -1438,6 +1438,72 @@ async function includeModuleInWorker( test )
 }
 
 includeModuleInWorker.timeOut = 300000;
+
+//
+
+async function includeModuleInWorkerThrowing( test )
+{
+  let self = this;
+  let a = test.assetFor( 'includeModuleInWorkerThrowing' );
+  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
+  let window,page;
+
+  test.description = 'module throws an error during include process, error should be catched in try/catch block'
+
+  let willbe = _.process.starter
+  ({
+    execPath : 'node ' + self.willbeExecPath,
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    outputGraying : 1,
+    ready : a.ready,
+    mode : 'spawn',
+  })
+
+  a.reflect();
+
+  await willbe({ args : '.build' })
+
+  starter.start
+  ({
+    basePath : _.path.join( a.routinePath, 'out/debug' ),
+    entryPath : 'index.js',
+    open : 0,
+  })
+
+  try
+  {
+    window = await _.puppet.windowOpen({ headless : true });
+    page = await window.pageOpen();
+    let output = '';
+
+    page.on( 'console', msg => output += msg.text() + '\n' );
+
+    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+
+    await _.time.out( 5000 );
+
+    console.log( output )
+
+    test.is( !_.strHas( output, `Module was included` ) );
+    test.is( _.strHas( output, `Module error` ) );
+    test.is( _.strHas( output, `Error including source file /module.js` ) );
+
+    await window.close();
+  }
+  catch( err )
+  {
+    test.exceptionReport({ err });
+    await window.close();
+  }
+
+  let ready = new _.Consequence();
+  starter.servlet.server.close( () => ready.take( null ) );
+
+  await ready;
+}
+
+includeModuleInWorkerThrowing.timeOut = 300000;
 
 //
 
@@ -1519,6 +1585,7 @@ var Self =
 
     includeModule,
     includeModuleInWorker,
+    includeModuleInWorkerThrowing,
 
     version,
 
