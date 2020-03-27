@@ -1401,7 +1401,7 @@ async function includeModuleInWorker( test )
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
     entryPath : 'index.js',
-    open : 0,
+    opening : 0,
   })
 
   try
@@ -1468,7 +1468,7 @@ async function includeModuleInWorkerThrowing( test )
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
     entryPath : 'index.js',
-    open : 0,
+    opening : 0,
   })
 
   try

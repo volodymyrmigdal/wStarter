@@ -166,8 +166,6 @@ module:
           - ../proto
           - ../proto/dwtools
           - ../proto/dwtools/Tools.s
-          - ../proto/dwtools/abase
-          - ../proto/dwtools/amid
           - ../proto/dwtools/atop
           - ../proto/dwtools/atop/starter
           - ../proto/dwtools/atop/starter/Exec
