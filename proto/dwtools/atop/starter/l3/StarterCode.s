@@ -51,7 +51,7 @@ function _Begin()
     sourceFile.isScript = o.isScript;
 
     sourceFile.filename = o.filePath;
-    sourceFile.exports = undefined;
+    sourceFile.exports = Object.create( null );
     sourceFile.parent = null;
     sourceFile.njsModule = o.njsModule;
     sourceFile.error = null;
@@ -147,7 +147,7 @@ function _Begin()
     }
     catch( err )
     {
-      err = _.err( err, `\nError including source file ${ childSource ? childSource.filePath : '' }` );
+      err = _.err( err, `\nError including source file ${ childSource ? childSource.filePath : sourcePath }` );
       if( childSource )
       {
         childSource.error = err;

@@ -155,7 +155,7 @@ execImmediate.operation =
 }
 
 // --
-// relationships
+// relations
 // --
 
 let Composes =

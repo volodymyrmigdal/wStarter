@@ -164,7 +164,7 @@ function _Begin()
 
     function handleErrorEvent( e )
     {
-      let err = _.err( 'Network error', e );
+      let err = _.err( err, '\nNetwork error' );
       return handleError( err );
     }
 
@@ -343,6 +343,8 @@ function _Begin()
         sync : 1,
       });
 
+      starter._includingSource = resolvedFilePath;
+
       let ext = _.path.ext( resolvedFilePath );
       if( ext === 'css' || ext === 'less' )
       {
@@ -351,10 +353,13 @@ function _Begin()
         link.rel = 'stylesheet'
         link.type = 'text/' + ext
         document.head.appendChild( link );
+        end();
       }
       else
       {
-        read += '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
+        // read = '//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n' + read;
+        read = read + '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
+        read = read + '\n//# sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
 
         let script = document.createElement( 'script' );
         script.type = 'text/javascript';
@@ -363,17 +368,23 @@ function _Begin()
         document.head.appendChild( script );
 
         let childSource = starter._sourceForPathGet( resolvedFilePath );
-        return starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
+        let result = starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
+
+        end();
+        return result;
       }
     }
     catch( err )
     {
-      throw _.err( `Failed to include ${resolvedFilePath}\n`, err );
+      end();
+      throw err;
     }
 
+    function end()
+    {
+      starter._includingSource = null;
+    }
   }
-
-  // _broInclude.resolve = _broResolve;
 
   //
 
@@ -384,20 +395,6 @@ function _Begin()
     accesor( '_cache', chacheGet, chacheSet );
 
     this.exports = result;
-
-    // var handler =
-    // {
-    //   get : function( original, key )
-    //   {
-    //     return original[ key ]
-    //   }
-    // };
-    //
-    // var proxy = new Proxy( _starter_, handler );
-    // proxy.a = 1;
-    // proxy.b = undefined;
-    //
-    // return proxy;
 
     function chacheGet()
     {
