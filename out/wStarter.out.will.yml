@@ -193,6 +193,7 @@ module:
           - ../proto/dwtools/atop/starter/l5
           - ../proto/dwtools/atop/starter/l5/Center.ss
           - ../proto/dwtools/atop/starter/l5/Servlet.ss
+          - ../proto/dwtools/atop/starter/l5/Work.s
           - ../proto/dwtools/atop/starter/l7
           - ../proto/dwtools/atop/starter/l7/Starter.s
           - ../proto/dwtools/atop/starter/l8
