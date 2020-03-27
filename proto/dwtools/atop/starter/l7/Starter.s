@@ -334,6 +334,9 @@ function start( o )
 
   _.routineOptions( start, arguments );
 
+
+  let work = new _.starter.Work({ starter });
+
   if( !o.basePath )
   o.basePath = path.resolve( '.' );
   o.entryPath = path.resolve( o.basePath, o.entryPath );
@@ -358,7 +361,7 @@ function start( o )
 
   /* */
 
-  let servlet = starter.httpOpen
+  work.servlet = starter.httpOpen
   ({
     allowedPath : o.allowedPath,
     basePath : o.basePath,
@@ -372,22 +375,28 @@ function start( o )
     if( !Open )
     Open = require( 'open' );
     debugger;
-    let pageUri = _.uri.join( servlet.openPathGet(), found[ 0 ].relative, '?entry:1' );
+    let pageUri = _.uri.join( work.servlet.openPathGet(), found[ 0 ].relative, '?entry:1' );
     let opts = Object.create( null );
     if( o.headless )
-    opts.app = [ 'chrome', '--headless', '--disable-gpu' ];
+    opts.app = [ 'chrome', '--headless', '--disable-gpu', '--remote-debugging-port=9222' ];
     _.Consequence.Try( () => Open( pageUri, opts ) )
-    .finally( ( err, arg ) =>
+    .finally( ( err, process ) =>
     {
-      // logger.log( 'open.end', err, arg );
+      work.process = process;
+      logger.log( 'open.end', err, process ); debugger;
       if( err )
-      return logger.error( _.errOnce( err ) ) || null;
-      // _.time.periodic( 1000, () => logger.log( arg.exitCode ) );
-      return arg;
+      {
+        err = _.err( err );
+        if( !work.error )
+        work.error = err;
+        return logger.error( _.errOnce( err ) ) || null;
+      }
+      // _.time.begin( 1000, () => process.kill( 'SIGTERM' ) /* xxx qqq : use _.process.terminate after fixing it */ );
+      return process;
     });
   }
 
-  return servlet;
+  return work;
 }
 
 var defaults = start.defaults = _.mapExtend( null, httpOpen.defaults );
@@ -408,6 +417,8 @@ let Composes =
 
   verbosity : 3,
   servletsMap : _.define.own({}),
+  workArray : _.define.own([]),
+  workCounter : 0,
 
 }
 

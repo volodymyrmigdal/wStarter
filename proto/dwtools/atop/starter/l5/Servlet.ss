@@ -19,6 +19,15 @@ Self.shortName = 'Servlet';
 // routine
 // --
 
+function finit()
+{
+  let servlet = this;
+  servlet.unform();
+  return _.Copyable.prototype.finit.call( servlet );
+}
+
+//
+
 function unform()
 {
   let servlet = this;
@@ -577,6 +586,7 @@ let Accessor =
 let Proto =
 {
 
+  finit,
   unform,
   form,
 
@@ -617,12 +627,5 @@ if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
 
 _.starter[ Self.shortName ] = Self;
-
-// _.staticDeclare
-// ({
-//   prototype : _.Starter.prototype,
-//   name : Self.shortName,
-//   value : Self,
-// });
 
 })();
