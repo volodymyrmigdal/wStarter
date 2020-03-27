@@ -29,6 +29,7 @@ function onSuiteBegin()
   self.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
   self.willbeExecPath = _.module.resolve( 'willbe' );
   self.execJsPath = _.module.resolve( 'wStarter' );
+
   self.find = _.fileProvider.filesFinder /* qqq xxx : remove maybe? */
   ({
     withTerminals : 1,
@@ -43,6 +44,7 @@ function onSuiteBegin()
       recursive : 2,
     }
   });
+
 }
 
 //
