@@ -73,7 +73,10 @@ function exec()
   .catch( ( err ) =>
   {
     _.process.exitCode( -1 );
-    return _.errLogOnce( err );
+    logger.log( _.errOnce( err ) );
+    _.procedure.terminationBegin();
+    _.process.exit();
+    return err;
   });
 }
 
@@ -325,6 +328,8 @@ commandHttpOpen.commandProperties =
 {
   basePath : 'Path to make available over HTTP.',
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
+  loggingApplication : 'Enable printing of application output. Default : false',
+  loggingConnection : 'Enable logging of request to the server. Default : true',
 }
 
 commandHttpOpen.hint = 'Run HTTP server to serve files in a specified directory.';
@@ -362,7 +367,10 @@ commandStart.commandProperties =
   entryPath : 'Path to enty source file to launch.',
   basePath : 'Path to make available over HTTP.',
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
-  templatePath : 'Path to html file to use as template'
+  templatePath : 'Path to html file to use as template',
+  loggingApplication : 'Enable printing of application output. Default : true',
+  loggingConnection : 'Enable logging of request to the server. Default : false',
+  opening : 'Opening application in a broser. Default : true',
 }
 
 commandStart.hint = 'Run executable file. By default in browser.';

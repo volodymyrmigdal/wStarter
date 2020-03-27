@@ -275,7 +275,7 @@ function _Begin()
 
   //
 
-  function _init()
+  function _Setup()
   {
     if( this._inited )
     {
@@ -283,9 +283,9 @@ function _Begin()
       return;
     }
     if( Config.interpreter === 'njs' )
-    this._njsInit();
+    this._njsSetup();
     else
-    this._broInit();
+    this._broSetup();
     this._inited = 1;
   }
 
@@ -298,14 +298,7 @@ function _Begin()
 function _End()
 {
 
-  let Fields =
-  {
-
-    _inited : false,
-
-  }
-
-  let Routines =
+  let Extension =
   {
 
     SourceFile,
@@ -320,14 +313,20 @@ function _End()
 
     _pathResolve,
 
-    _init,
+    _Setup,
+
+    // fields
+
+    redirectingConsole : null,
+    _inited : false,
 
   }
 
-  Object.assign( _starter_, Routines );
-  Object.assign( _starter_, Fields );
+  for( let k in Extension )
+  if( _starter_[ k ] === undefined )
+  _starter_[ k ] = Extension[ k ];
 
-  _starter_._init();
+  _starter_._Setup();
 
 }
 

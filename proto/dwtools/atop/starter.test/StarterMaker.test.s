@@ -5,7 +5,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  var _ = require( '../../Tools.s' );
+  var _ = require( '../../../dwtools/Tools.s' );
 
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
@@ -1155,7 +1155,7 @@ async function includeCss( test )
   ({
     basePath : a.routinePath,
     entryPath : 'index.js',
-    open : 0
+    opening : 0
   })
 
   try
@@ -1203,7 +1203,7 @@ async function workerWithInclude( test )
   ({
     basePath : a.routinePath,
     entryPath : 'index.js',
-    open : 0,
+    opening : 0,
   })
 
   try
@@ -1248,7 +1248,7 @@ async function includeExcludingManual( test )
   ({
     basePath : a.routinePath,
     entryPath : 'index.js',
-    open : 0,
+    opening : 0,
   })
 
   try
@@ -1305,7 +1305,7 @@ async function includeModule( test )
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
     entryPath : 'index.js',
-    open : 0,
+    opening : 0,
   })
 
   try

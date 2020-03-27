@@ -5,7 +5,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  let _ = require( '../../../Tools.s' );
+  let _ = require( '../../../../dwtools/Tools.s' );
 
   require( 'express' );
 
@@ -14,6 +14,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wFiles' );
   _.include( 'wTemplateTreeEnvironment' );
   _.include( 'wServletTools' );
+  _.include( 'wLoggerSocket' );
 
   module.exports = _;
 }
