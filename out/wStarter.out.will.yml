@@ -242,6 +242,27 @@ path:
       - ../proto/dwtools/atop/starter.test/_asset/includeModule/.will.yml
       - ../proto/dwtools/atop/starter.test/_asset/includeModule/proto
       - ../proto/dwtools/atop/starter.test/_asset/includeModule/proto/index.js
+      - ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker
+      - >-
+        ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/.will.yml
+      - ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto
+      - >-
+        ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/index.js
+      - >-
+        ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/module.js
+      - >-
+        ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/worker.js
+      - ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing
+      - >-
+        ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/.will.yml
+      - >-
+        ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto
+      - >-
+        ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/index.js
+      - >-
+        ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/module.js
+      - >-
+        ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/worker.js
       - ../proto/dwtools/atop/starter.test/_asset/legacy-trivial
       - ../proto/dwtools/atop/starter.test/_asset/legacy-trivial/.will.yml
       - ../proto/dwtools/atop/starter.test/_asset/processes
@@ -1162,6 +1183,27 @@ module:
           - proto/dwtools/atop/starter.test/_asset/includeModule/.will.yml
           - proto/dwtools/atop/starter.test/_asset/includeModule/proto
           - proto/dwtools/atop/starter.test/_asset/includeModule/proto/index.js
+          - proto/dwtools/atop/starter.test/_asset/includeModuleInWorker
+          - >-
+            proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/.will.yml
+          - proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto
+          - >-
+            proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/index.js
+          - >-
+            proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/module.js
+          - >-
+            proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/worker.js
+          - proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing
+          - >-
+            proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/.will.yml
+          - >-
+            proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto
+          - >-
+            proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/index.js
+          - >-
+            proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/module.js
+          - >-
+            proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/worker.js
           - proto/dwtools/atop/starter.test/_asset/legacy-trivial
           - proto/dwtools/atop/starter.test/_asset/legacy-trivial/.will.yml
           - proto/dwtools/atop/starter.test/_asset/processes
