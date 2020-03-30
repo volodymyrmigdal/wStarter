@@ -16,7 +16,7 @@ let Self = function wStarterCui( o )
   return _.workpiece.construct( Self, this, arguments );
 }
 
-Self.shortName = 'StarterCui';
+Self.shortName = 'Cui';
 
 // --
 // inter
@@ -35,7 +35,7 @@ function init( o )
   cui.copy( o );
 
   if( cui.starter === null )
-  cui.starter = new _.starter.Starter();
+  cui.starter = new _.starter.System();
 
 }
 
@@ -312,8 +312,19 @@ function commandHttpOpen( e )
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.basePath = o2.basePath || request.subject;
 
+  /* xxx qqq : write option-less test routine */
+
+  if( request.subject && request.subject !== o2.basePath )
+  throw _.errBrief
+  (
+    'Subject if specified should be option::basePath, but option::basePath specified too!'
+  );
+
   if( !o2.basePath )
-  throw _.errBriefly
+  o2.basePath = '.';
+
+  if( !o2.basePath )
+  throw _.errBrief
   (
     'Please specify what directory to serve.\nFor example: '
     + _.color.strFormat( 'starter .http.open ./proto', 'code' )
@@ -350,6 +361,12 @@ function commandStart( e )
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.entryPath = o2.entryPath || request.subject;
 
+  if( request.subject && request.subject !== o2.entryPath )
+  throw _.errBrief
+  (
+    'Subject if specified should be option::entryPath, but option::entryPath specified too!'
+  );
+
   if( !o2.entryPath )
   throw _.errBriefly
   (
@@ -370,7 +387,7 @@ commandStart.commandProperties =
   templatePath : 'Path to html file to use as template',
   loggingApplication : 'Enable printing of application output. Default : true',
   loggingConnection : 'Enable logging of request to the server. Default : false',
-  opening : 'Opening the application. Default : true',
+  curating : 'Automatic opening of the application in curated window. Default : true',
   headless : 'Headless mode. Default : false',
 }
 

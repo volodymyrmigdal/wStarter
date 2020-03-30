@@ -145,7 +145,7 @@ function execImmediate()
   require( '../include/Top.s' );
 
   if( center.cui === null )
-  center.cui = new _.starter.StarterCui();
+  center.cui = new _.starter.Cui();
   return center.cui.exec();
 }
 

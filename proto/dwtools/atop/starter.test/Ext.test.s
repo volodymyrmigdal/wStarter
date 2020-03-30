@@ -23,14 +23,32 @@ var _ = _global_.wTools;
 
 function onSuiteBegin()
 {
-  let self = this;
+  let context = this;
 
-  self.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
-  self.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
-  self.willbeExecPath = _.module.resolve( 'willbe' );
-  self.execJsPath = _.module.resolve( 'wStarter' );
+  context.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
+  context.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
+  context.willbeExecPath = _.module.resolve( 'willbe' );
+  context.execJsPath = _.module.resolve( 'wStarter' );
 
-  self.find = _.fileProvider.filesFinder /* qqq xxx : remove maybe? */
+}
+
+//
+
+function onSuiteEnd()
+{
+  let context = this;
+  _.assert( _.strHas( context.suiteTempPath, '/Starter' ) )
+  _.path.pathDirTempClose( context.suiteTempPath );
+}
+
+//
+
+function assetFor( test, name )
+{
+  let context = this;
+  let a = test.assetFor( name );
+
+  a.find = _.fileProvider.filesFinder
   ({
     withTerminals : 1,
     withDirs : 1,
@@ -45,83 +63,27 @@ function onSuiteBegin()
     }
   });
 
-}
+  a.will = _.process.starter
+  ({
+    execPath : context.willbeExecPath,
+    currentPath : a.routinePath,
+    outputCollecting : 1,
+    outputGraying : 1,
+    ready : a.ready,
+    mode : 'fork',
+  })
 
-//
-
-function onSuiteEnd()
-{
-  let self = this;
-  _.assert( _.strHas( self.suiteTempPath, '/Starter' ) )
-  _.path.pathDirTempClose( self.suiteTempPath );
+  return a;
 }
 
 // --
 // tests
 // --
 
-function sourcesJoin( test )
-{
-  let self = this;
-  let a = test.assetFor( 'several' );
-  let outputPath = _.path.join( a.routinePath, 'Index.js' );
-  let ready = new _.Consequence().take( null );
-  let starter = new _.Starter().form();
-
-  a.reflect();
-
-  let shell = _.process.starter
-  ({
-    execPath : 'node',
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    ready : ready,
-  });
-
-  starter.sourcesJoin
-  ({
-    inPath : '**',
-    entryPath : 'File2.js',
-    basePath : a.routinePath,
-  })
-
-  var files = self.find( a.routinePath );
-  test.identical( files, [ '.', './File1.js', './File2.js', './Index.js' ] );
-
-  let read = _.fileProvider.fileRead( outputPath );
-  test.identical( _.strCount( read, 'setTimeout( f, 1000 );' ), 2 );
-
-  debugger
-
-  shell( _.path.nativize( outputPath ) )
-  .then( ( op ) =>
-  {
-    test.identical( op.exitCode, 0 );
-
-    var output =
-    `
-    File1.js:0
-    File1.js:1
-    File1.js:2
-    File2.js:0
-    File2.js:1
-    File2.js:2
-    File1.js:timeout
-    File2.js:timeout
-    `;
-    test.equivalent( op.output, output );
-    return op;
-  });
-
-  return ready;
-}
-
-//
-
 function shellSourcesJoin( test )
 {
-  let self = this;
-  let a = test.assetFor( 'several' );
+  let context = this;
+  let a = context.assetFor( test, 'several' );
   let outputPath = _.path.join( a.routinePath, 'Index.js' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
@@ -143,7 +105,7 @@ function shellSourcesJoin( test )
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoin\/Index\.js/ ), 1 )
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.js' ] );
 
     let read = _.fileProvider.fileRead( outputPath );
@@ -179,12 +141,12 @@ function shellSourcesJoin( test )
 
 function shellSourcesJoinWithEntry( test )
 {
-  let self = this;
-  let a = test.assetFor( 'dep' );
+  let context = this;
+  let a = context.assetFor( test, 'dep' );
   let outputPath = _.path.join( a.routinePath, 'out/app0.js' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
-  let starter = new _.Starter().form();
+  let starter = new _.starter.System().form();
 
   let shell = _.process.starter
   ({
@@ -213,7 +175,7 @@ function shellSourcesJoinWithEntry( test )
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0.js' ] );
 
     let read = _.fileProvider.fileRead( outputPath );
@@ -239,7 +201,7 @@ function shellSourcesJoinWithEntry( test )
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0.js' ] );
 
     let read = _.fileProvider.fileRead( outputPath );
@@ -265,7 +227,7 @@ function shellSourcesJoinWithEntry( test )
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0.js' ] );
 
     let read = _.fileProvider.fileRead( outputPath );
@@ -291,7 +253,7 @@ function shellSourcesJoinWithEntry( test )
     test.notIdentical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, 'List of source files should have all entry files' ), 1 );
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js' ] );
 
     return op;
@@ -314,7 +276,7 @@ function shellSourcesJoinWithEntry( test )
     test.notIdentical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, 'List of source files should have all entry files' ), 1 );
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js' ] );
 
     return op;
@@ -329,8 +291,8 @@ function shellSourcesJoinWithEntry( test )
 
 function shellSourcesJoinDep( test )
 {
-  let self = this;
-  let a = test.assetFor( 'dep' );
+  let context = this;
+  let a = context.assetFor( test, 'dep' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
   var output =
@@ -384,7 +346,7 @@ app0/File1.js:timeout numberIs:true
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinDep\/out\/app0/ ), 1 );
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0', './out/app2' ] );
 
     return op;
@@ -415,8 +377,8 @@ app0/File1.js:timeout numberIs:true
 
 function shellSourcesJoinRequireInternal( test )
 {
-  let self = this;
-  let a = test.assetFor( 'dep' );
+  let context = this;
+  let a = context.assetFor( test, 'dep' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
   var output =
@@ -467,7 +429,7 @@ app0/File1.js:timeout numberIs:true
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinRequireInternal\/out\/dir\/app2/ ), 1 );
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/dir', './out/dir/app0', './out/dir/app2' ] );
 
     return op;
@@ -490,8 +452,8 @@ app0/File1.js:timeout numberIs:true
 
 function shellSourcesJoinComplex( test )
 {
-  let self = this;
-  let a = test.assetFor( 'complex' );
+  let context = this;
+  let a = context.assetFor( test, 'complex' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
   var output =
@@ -553,7 +515,7 @@ app0/File1.js:timeout true
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinComplex\/out\/app0/ ), 1 );
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app1', './app1/File1.js', './app1/File2.js', './app2', './app2/File1.js', './app2/File2.js', './out', './out/app0', './out/app1', './out/app2' ] );
 
     return op;
@@ -585,8 +547,8 @@ app0/File1.js:timeout true
 
 function shellSourcesJoinTree( test )
 {
-  let self = this;
-  let a = test.assetFor( 'tree' );
+  let context = this;
+  let a = context.assetFor( test, 'tree' );
   let outPath = _.path.join( a.routinePath, 'out' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
@@ -618,7 +580,7 @@ function shellSourcesJoinTree( test )
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinTree\/out\/app1/ ), 1 );
 
     var expected = [ '.', './app1' ];
-    var files = self.find( outPath );
+    var files = a.find( outPath );
     test.identical( files, expected );
 
     return op;
@@ -670,7 +632,7 @@ app1/File1.js:end main:true
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinTree\/out\/app1/ ), 1 );
 
     var expected = [ '.', './app1' ];
-    var files = self.find( outPath );
+    var files = a.find( outPath );
     test.identical( files, expected );
 
     return op;
@@ -723,7 +685,7 @@ app1/File2.js:end main:true
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinTree\/out\/app2/ ), 1 );
 
     var expected = [ '.', './app1', './app2' ];
-    var files = self.find( outPath );
+    var files = a.find( outPath );
     test.identical( files, expected );
 
     return op;
@@ -774,12 +736,12 @@ app0/File2.js:end main:true
 
 function shellSourcesJoinCycle( test )
 {
-  let self = this;
-  let a = test.assetFor( 'cycle' );
+  let context = this;
+  let a = context.assetFor( test, 'cycle' );
   let outPath = _.path.join( a.routinePath, 'out' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
-  let starter = new _.Starter().form();
+  let starter = new _.starter.System().form();
 
   let shell = _.process.starter
   ({
@@ -808,7 +770,7 @@ function shellSourcesJoinCycle( test )
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinCycle\/out\/app1/ ), 1 );
 
     var expected = [ '.', './app1' ];
-    var files = self.find( outPath );
+    var files = a.find( outPath );
     test.identical( files, expected );
 
     return op;
@@ -862,7 +824,7 @@ app1/File1.js:end main:true
     test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinCycle\/out\/app1/ ), 1 );
 
     var expected = [ '.', './app1' ];
-    var files = self.find( outPath );
+    var files = a.find( outPath );
     test.identical( files, expected );
 
     return op;
@@ -916,7 +878,7 @@ app1/File2.js:end main:true
     test.identical( op.exitCode, 0 );
 
     var expected = [ '.', './app1', './app2' ];
-    var files = self.find( outPath );
+    var files = a.find( outPath );
     test.identical( files, expected );
 
     return op;
@@ -967,78 +929,14 @@ app2/File2.js:end main:true
 
 //
 
-function htmlFor( test )
-{
-  let self = this;
-  let a = test.assetFor( 'several' );
-  let outputPath = _.path.join( a.routinePath, 'Index.html' );
-  let ready = new _.Consequence().take( null );
-  let starter = new _.Starter().form();
-
-  /* */
-
-  test.case = 'default';
-
-  a.reflect();
-
-  starter.htmlFor
-  ({
-    inPath : '**',
-    basePath : a.routinePath,
-    title : 'Html for test',
-  })
-
-  var files = self.find( a.routinePath );
-  test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
-
-  var read = _.fileProvider.fileRead( outputPath );
-  test.identical( _.strCount( read, '<html' ), 1 );
-  test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
-  test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-  test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-  test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
-  test.identical( _.strCount( read, '<script src' ), 3 );
-
-  /* */
-
-  test.case = 'without starter';
-
-  a.reflect();
-
-  starter.htmlFor
-  ({
-    inPath : '**',
-    basePath : a.routinePath,
-    title : 'Html for test',
-    starterIncluding : 0,
-  })
-
-  var files = self.find( a.routinePath );
-  test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
-
-  var read = _.fileProvider.fileRead( outputPath );
-  test.identical( _.strCount( read, '<html' ), 1 );
-  test.identical( _.strCount( read, 'src="/.starter"' ), 0 );
-  test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-  test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-  test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
-  test.identical( _.strCount( read, '<script src' ), 2 );
-
-  /* */
-
-  return ready;
-}
-
-//
-
 function shellHtmlFor( test )
 {
-  let self = this;
-  let a = test.assetFor( 'several' );
+  let context = this;
+  let a = context.assetFor( test, 'several' );
   let outputPath = _.path.join( a.routinePath, 'Index.html' );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
-  let starter = new _.Starter().form();
+  let starter = new _.starter.System().form();
 
   let shell = _.process.starter
   ({
@@ -1065,7 +963,7 @@ function shellHtmlFor( test )
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ html saved to .*shellHtmlFor\/Index\.html/ ), 1 )
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
     var read = _.fileProvider.fileRead( outputPath );
@@ -1095,7 +993,7 @@ function shellHtmlFor( test )
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ html saved to .*shellHtmlFor\/Index\.html/ ), 1 )
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
     var read = _.fileProvider.fileRead( outputPath );
@@ -1126,7 +1024,7 @@ function shellHtmlFor( test )
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ html saved to .*shellHtmlFor\/Index\.html/ ), 1 )
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
     var read = _.fileProvider.fileRead( outputPath );
@@ -1156,7 +1054,7 @@ function shellHtmlFor( test )
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, /\+ html saved to .*shellHtmlFor\/Index\.html/ ), 1 )
 
-    var files = self.find( a.routinePath );
+    var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
     var read = _.fileProvider.fileRead( outputPath );
@@ -1176,341 +1074,30 @@ function shellHtmlFor( test )
 
 //
 
-async function includeCss( test )
+async function logging( test )
 {
-  let self = this;
-  let a = test.assetFor( 'includeCss' );
-  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  var page,window;
-
-  a.reflect();
-  starter.start
-  ({
-    basePath : a.routinePath,
-    entryPath : 'index.js',
-    opening : 0
-  })
-
-  try
-  {
-    window = await _.puppet.windowOpen({ headless : true });
-    page = await window.pageOpen();
-
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
-
-    var got = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
-    test.identical( got, [ 'http://127.0.0.1:5000/.starter', 'http://127.0.0.1:5000/index.js' ] )
-
-    var got = await page.eval( () =>
-    {
-      var style = window.getComputedStyle( document.querySelector( 'body') );
-      return style.getPropertyValue( 'background' )
-    });
-    test.is( _.strHas( got, 'rgb(192, 192, 192)' ) );
-
-    await window.close();
-  }
-  catch( err )
-  {
-    test.exceptionReport({ err });
-    await window.close();
-  }
-
-  let ready = new _.Consequence();
-  starter.servlet.server.close( () => ready.take( null ) );
-
-  await ready;
-}
-
-//
-
-async function workerWithInclude( test )
-{
-  let self = this;
-  let a = test.assetFor( 'worker' );
-  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let window,page;
-
-  a.reflect();
-  starter.start
-  ({
-    basePath : a.routinePath,
-    entryPath : 'index.js',
-    opening : 0,
-  })
-
-  try
-  {
-    window = await _.puppet.windowOpen({ headless : true });
-    page = await window.pageOpen();
-    let output = '';
-
-    page.on( 'console', msg => output += msg.text() + '\n' );
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
-
-    await _.time.out( 1500 );
-
-    test.is( _.strHas( output, 'Global: Window' ) )
-    test.is( _.strHas( output, 'Global: DedicatedWorkerGlobalScope' ) )
-
-    await window.close();
-  }
-  catch( err )
-  {
-    test.exceptionReport({ err });
-    await window.close();
-  }
-
-  let ready = new _.Consequence();
-  starter.servlet.server.close( () => ready.take( null ) );
-
-  await ready;
-}
-
-//
-
-async function includeExcludingManual( test )
-{
-  let self = this;
-  let a = test.assetFor( 'exclude' );
-  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let window,page;
-
-  a.reflect();
-  starter.start
-  ({
-    basePath : a.routinePath,
-    entryPath : 'index.js',
-    opening : 0,
-  })
-
-  try
-  {
-    window = await _.puppet.windowOpen({ headless : true });
-    page = await window.pageOpen();
-
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
-
-    var scripts = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
-    test.identical( scripts.length, 3 );
-    test.identical( scripts[ 0 ], 'http://127.0.0.1:5000/.starter' );
-    test.identical( scripts[ 1 ], 'http://127.0.0.1:5000/index.js' );
-    test.is( _.strHas( scripts[ 2 ], './src/File.js' ) );
-
-    await window.close();
-  }
-  catch( err )
-  {
-    test.exceptionReport({ err });
-    await window.close();
-  }
-
-  let ready = new _.Consequence();
-  starter.servlet.server.close( () => ready.take( null ) );
-
-  await ready;
-}
-
-//
-
-async function includeModule( test )
-{
-  let self = this;
-  let a = test.assetFor( 'includeModule' );
-  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let window,page;
-
-  let willbe = _.process.starter
-  ({
-    execPath : 'node ' + self.willbeExecPath,
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    outputGraying : 1,
-    ready : a.ready,
-    mode : 'spawn',
-  })
+  let context = this;
+  let a = context.assetFor( test, 'asyncError' );
 
   a.reflect();
 
-  await willbe({ args : '.build' })
-
-  starter.start
-  ({
-    basePath : _.path.join( a.routinePath, 'out/debug' ),
-    entryPath : 'index.js',
-    opening : 0,
+  a.js( `.start F1.js` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, 'xxx' ), 1 )
+    return op;
   })
 
-  try
-  {
-    window = await _.puppet.windowOpen({ headless : true });
-    page = await window.pageOpen();
-
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
-
-    var result = await page.eval( () =>
-    {
-      var _ = _global_.wTools;
-      _.include( 'wPathBasic' );
-      return _.path.join( '/a', 'b' );
-    })
-    test.identical( result, '/a/b' )
-
-    await window.close();
-  }
-  catch( err )
-  {
-    test.exceptionReport({ err });
-    await window.close();
-  }
-
-  let ready = new _.Consequence();
-  starter.servlet.server.close( () => ready.take( null ) );
-
-  await ready;
+  return a.ready;
 }
-
-includeModule.timeOut = 300000;
-
-//
-
-async function includeModuleInWorker( test )
-{
-  let self = this;
-  let a = test.assetFor( 'includeModuleInWorker' );
-  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let window,page;
-
-  test.description = 'include module two times, second time module cache should be used'
-
-  let willbe = _.process.starter
-  ({
-    execPath : 'node ' + self.willbeExecPath,
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    outputGraying : 1,
-    ready : a.ready,
-    mode : 'spawn',
-  })
-
-  a.reflect();
-
-  await willbe({ args : '.build' })
-
-  starter.start
-  ({
-    basePath : _.path.join( a.routinePath, 'out/debug' ),
-    entryPath : 'index.js',
-    opening : 0,
-  })
-
-  try
-  {
-    window = await _.puppet.windowOpen({ headless : true });
-    page = await window.pageOpen();
-    let output = '';
-
-    page.on( 'console', msg => output += msg.text() + '\n' );
-
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
-
-    await _.time.out( 5000 );
-
-    console.log( output )
-
-    test.case = 'module was exported and returned object is same as global namespace created in module'
-    test.is( _.strHas( output, `Module was exported: true` ) );
-    test.case = 'two includes return same object'
-    test.is( _.strHas( output, `Both includes have same export: true` ) );
-
-    await window.close();
-  }
-  catch( err )
-  {
-    test.exceptionReport({ err });
-    await window.close();
-  }
-
-  let ready = new _.Consequence();
-  starter.servlet.server.close( () => ready.take( null ) );
-
-  await ready;
-}
-
-includeModuleInWorker.timeOut = 300000;
-
-//
-
-async function includeModuleInWorkerThrowing( test )
-{
-  let self = this;
-  let a = test.assetFor( 'includeModuleInWorkerThrowing' );
-  let starter = new _.Starter({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
-  let window,page;
-
-  test.description = 'module throws an error during include process, error should be catched in try/catch block'
-
-  let willbe = _.process.starter
-  ({
-    execPath : 'node ' + self.willbeExecPath,
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    outputGraying : 1,
-    ready : a.ready,
-    mode : 'spawn',
-  })
-
-  a.reflect();
-
-  await willbe({ args : '.build' })
-
-  starter.start
-  ({
-    basePath : _.path.join( a.routinePath, 'out/debug' ),
-    entryPath : 'index.js',
-    opening : 0,
-  })
-
-  try
-  {
-    window = await _.puppet.windowOpen({ headless : true });
-    page = await window.pageOpen();
-    let output = '';
-
-    page.on( 'console', msg => output += msg.text() + '\n' );
-
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
-
-    await _.time.out( 5000 );
-
-    console.log( output )
-
-    test.is( !_.strHas( output, `Module was included` ) );
-    test.is( _.strHas( output, `Module error` ) );
-    test.is( _.strHas( output, `Error including source file /module.js` ) );
-
-    await window.close();
-  }
-  catch( err )
-  {
-    test.exceptionReport({ err });
-    await window.close();
-  }
-
-  let ready = new _.Consequence();
-  starter.servlet.server.close( () => ready.take( null ) );
-
-  await ready;
-}
-
-includeModuleInWorkerThrowing.timeOut = 300000;
 
 //
 
 function version( test )
 {
-  let self = this;
-  let routinePath = _.path.join( self.suiteTempPath, test.name );
+  let context = this;
+  let routinePath = _.path.join( context.suiteTempPath, test.name );
   let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
   let ready = new _.Consequence().take( null );
 
@@ -1547,7 +1134,7 @@ function version( test )
 var Self =
 {
 
-  name : 'Tools.StarterMaker',
+  name : 'Tools.Starter.Ext',
   silencing : 1,
   enabled : 1,
   routineTimeOut : 60000,
@@ -1556,18 +1143,23 @@ var Self =
 
   context :
   {
+
+    assetFor,
+
     suiteTempPath : null,
     assetsOriginalSuitePath : null,
     execJsPath : null,
 
     willbeExecPath : null,
-    find : null
+    find : null,
+
   },
 
   tests :
   {
 
-    sourcesJoin,
+    // sourcesJoin
+
     shellSourcesJoin,
     shellSourcesJoinWithEntry,
     shellSourcesJoinDep,
@@ -1576,17 +1168,13 @@ var Self =
     shellSourcesJoinTree,
     shellSourcesJoinCycle,
 
-    htmlFor,
+    // html for
+
     shellHtmlFor,
 
-    includeCss,
-    workerWithInclude,
-    includeExcludingManual,
+    // etc
 
-    includeModule,
-    includeModuleInWorker,
-    includeModuleInWorkerThrowing,
-
+    logging,
     version,
 
   }

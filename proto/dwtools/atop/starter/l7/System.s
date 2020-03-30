@@ -1,4 +1,4 @@
-( function _Main_s_( ) {
+( function _System_s_( ) {
 
 'use strict';
 
@@ -6,12 +6,12 @@
 
 let _ = _global_.wTools;
 let Parent = null;
-let Self = function wStarter( o )
+let Self = function wStarterSystem( o )
 {
   return _.workpiece.construct( Self, this, arguments );
 }
 
-Self.shortName = 'Starter';
+Self.shortName = 'System';
 
 // --
 // inter
@@ -28,18 +28,18 @@ function finit()
 
 function init( o )
 {
-  let starter = this;
+  let system = this;
 
   _.assert( arguments.length === 0 || arguments.length === 1 );
 
-  if( !starter.logger )
-  starter.logger = new _.Logger({ output : _global_.logger });
+  if( !system.logger )
+  system.logger = new _.Logger({ output : _global_.logger });
 
-  _.workpiece.initFields( starter );
-  Object.preventExtensions( starter );
+  _.workpiece.initFields( system );
+  Object.preventExtensions( system );
 
   if( o )
-  starter.copy( o );
+  system.copy( o );
 
 }
 
@@ -47,68 +47,101 @@ function init( o )
 
 function unform()
 {
-  let starter = this;
+  let system = this;
 
   _.assert( arguments.length === 0 );
-  _.assert( !!starter.formed );
+  _.assert( !!system.formed );
 
   /* begin */
 
   /* end */
 
-  starter.formed = 0;
-  return starter;
+  system.formed = 0;
+  return system;
 }
 
 //
 
 function form()
 {
-  let starter = this;
+  let system = this;
 
-  if( starter.formed )
-  return starter;
+  if( system.formed )
+  return system;
 
-  starter.formAssociates();
+  system.formAssociates();
 
   _.assert( arguments.length === 0 );
-  _.assert( !starter.formed );
+  _.assert( !system.formed );
 
-  starter.formed = 1;
-  return starter;
+  system.formed = 1;
+  return system;
 }
 
 //
 
 function formAssociates()
 {
-  let starter = this;
-  let logger = starter.logger;
+  let system = this;
+  let logger = system.logger;
 
   _.assert( arguments.length === 0 );
-  _.assert( !starter.formed );
+  _.assert( !system.formed );
 
-  if( !starter.logger )
-  logger = starter.logger = new _.Logger({ output : _global_.logger });
+  if( !system.logger )
+  logger = system.logger = new _.Logger({ output : _global_.logger });
 
-  if( !starter.fileProvider )
-  starter.fileProvider = _.FileProvider.Default();
+  if( !system.fileProvider )
+  system.fileProvider = _.FileProvider.Default();
 
-  if( !starter.maker )
-  starter.maker = _.starter.Maker();
+  if( !system.maker )
+  system.maker = _.starter.Maker();
 
-  return starter;
+  return system;
+}
+
+//
+
+function close()
+{
+  let system = this;
+  let fileProvider = system.fileProvider;
+  let path = system.fileProvider.path;
+  let logger = system.logger;
+  let ready = _.after();
+
+  for( let i = 0 ; i < system.sessionArray.length ; i++ ) (function()
+  {
+    let session = system.sessionArray[ i ];
+    ready.then( ( arg ) =>
+    {
+      return session.unform();
+    });
+    ready.then( ( arg ) =>
+    {
+      return session.finit() || null;
+    });
+  })();
+
+  ready.then( ( arg ) =>
+  {
+    _.assert( _.lengthOf( system.servletsMap ) === 0 );
+    _.assert( _.lengthOf( system.sessionArray ) === 0 );
+    return arg;
+  });
+
+  return ready;
 }
 
 //
 
 function sourcesJoin( o )
 {
-  let starter = this;
-  let fileProvider = starter.fileProvider;
-  let path = starter.fileProvider.path;
-  let logger = starter.logger;
-  let maker = starter.maker;
+  let system = this;
+  let fileProvider = system.fileProvider;
+  let path = system.fileProvider.path;
+  let logger = system.logger;
+  let maker = system.maker;
 
   o = _.routineOptions( sourcesJoin, arguments );
 
@@ -216,11 +249,11 @@ defaults.outPath = 'Index.js';
 
 function htmlFor( o )
 {
-  let starter = this;
-  let fileProvider = starter.fileProvider;
-  let path = starter.fileProvider.path;
-  let logger = starter.logger;
-  let maker = starter.maker;
+  let system = this;
+  let fileProvider = system.fileProvider;
+  let path = system.fileProvider.path;
+  let logger = system.logger;
+  let maker = system.maker;
 
   o = _.routineOptions( htmlFor, arguments );
 
@@ -291,30 +324,29 @@ defaults.nativize = 0;
 
 function httpOpen( o )
 {
-  let starter = this;
-  let fileProvider = starter.fileProvider;
-  let path = starter.fileProvider.path;
-  let logger = starter.logger;
-  let maker = starter.maker;
+  let system = this;
+  let fileProvider = system.fileProvider;
+  let path = system.fileProvider.path;
+  let logger = system.logger;
+  let maker = system.maker;
 
   _.routineOptions( httpOpen, arguments );
-  _.assert( starter.servlet === null );
 
-  o.basePath = path.resolve( o.basePath );
-  o.templatePath = path.resolve( o.templatePath );
-  o.allowedPath = path.resolve( o.allowedPath );
-  o.starter = starter;
+  let opts =
+  {
+    system,
+    curating : 0,
+    ... o,
+  }
+  let session = new _.starter.Session( opts );
 
-  starter.servlet = new _.starter.Servlet( o );
-  starter.servlet.form();
-
-  return starter.servlet;
+  return session.form();
 }
 
 httpOpen.defaults =
 {
   basePath : null,
-  allowedPath : '/',
+  allowedPath : null,
   templatePath : null,
   loggingApplication : 0,
   loggingConnection : 1,
@@ -324,72 +356,21 @@ httpOpen.defaults =
 
 function start( o )
 {
-  let starter = this;
-  let fileProvider = starter.fileProvider;
-  let path = starter.fileProvider.path;
-  let logger = starter.logger;
+  let system = this;
+  let fileProvider = system.fileProvider;
+  let path = system.fileProvider.path;
+  let logger = system.logger;
 
   _.routineOptions( start, arguments );
 
   let opts =
   {
-    starter,
+    system,
     ... o,
-    // basePath : o.basePath,
-    // entryPath : o.entryPath,
-    // allowedPath : o.allowedPath,
-    // templatePath : o.templatePath,
-    // loggingApplication : o.loggingApplication,
-    // loggingConnection : o.loggingConnection,
   }
-  let work = new _.starter.Work( opts );
+  let session = new _.starter.Session( opts );
 
-  work.form();
-
-  // if( !o.basePath )
-  // o.basePath = path.resolve( '.' );
-  // o.entryPath = path.resolve( o.basePath, o.entryPath );
-  // o.allowedPath = path.resolve( o.basePath, o.allowedPath );
-  // if( o.templatePath )
-  // o.templatePath = path.resolve( o.basePath, o.templatePath );
-
-  /* */
-
-  // let filter = { filePath : o.entryPath, basePath : o.basePath };
-  // let found = _.fileProvider.filesFind
-  // ({
-  //   filter,
-  //   mode : 'distinct',
-  //   mandatory : 0,
-  //   withDirs : 0,
-  //   withDefunct : 0,
-  // });
-  //
-  // if( !found.length )
-  // throw _.errBrief( `Found no ${o.entryPath}` );
-  // if( found.length !== 1 )
-  // throw _.errBrief( `Found ${found.length} of ${o.entryPath}, but expects single file.` );
-  //
-  // work.basePath = o.basePath;
-  // work.entryPath = found[ 0 ].absolute;
-  // work.entryShortUri = _.uri.join( work.servlet.openPathGet(), found[ 0 ].relative );
-  // work.entryFullUri = _.uri.join( work.entryShortUri, '?entry:1' );
-
-  // work.servlet = starter.httpOpen
-  // ({
-  //   allowedPath : o.allowedPath,
-  //   basePath : o.basePath,
-  //   templatePath : o.templatePath,
-  //   loggingApplication : o.loggingApplication,
-  //   loggingConnection : o.loggingConnection,
-  // });
-
-  // if( o.opening )
-  // {
-  //   work.applicationOpen();
-  // }
-
-  return work;
+  return session.form();
 }
 
 var defaults = start.defaults = _.mapExtend( null, httpOpen.defaults );
@@ -398,7 +379,7 @@ defaults.loggingApplication = 1;
 defaults.loggingConnection = 0;
 
 defaults.entryPath = null;
-defaults.opening = 1;
+defaults.curating = 1;
 defaults.headless = 0;
 
 // --
@@ -410,8 +391,8 @@ let Composes =
 
   verbosity : 3,
   servletsMap : _.define.own({}),
-  workArray : _.define.own([]),
-  workCounter : 0,
+  sessionArray : _.define.own([]),
+  sessionCounter : 0,
 
 }
 
@@ -425,7 +406,6 @@ let Associates =
   maker : null,
   fileProvider : null,
   logger : null,
-  servlet : null,
 
 }
 
@@ -440,6 +420,7 @@ let Statics =
 
 let Forbids =
 {
+  servlet : 'servlet',
 }
 
 // --
@@ -457,6 +438,7 @@ let Proto =
   form,
   formAssociates,
 
+  close,
   sourcesJoin,
   htmlFor,
   httpOpen,
@@ -489,7 +471,6 @@ _.Verbal.mixin( Self );
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
-wTools[ Self.shortName ] = Self;
 wTools.starter[ Self.shortName ] = Self;
 
 })();

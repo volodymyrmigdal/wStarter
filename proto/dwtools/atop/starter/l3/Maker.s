@@ -61,8 +61,8 @@ function sourceWrapSplits( o )
   if( o.interpreter === 'browser' )
   ware +=
 `
-/* */  if( typeof _starter_ === 'undefined' && importScripts )
-/* */     importScripts( '/.starter' );
+/* */  if( typeof _starter_ === 'undefined' && importScripts ) /* qqq xxx : ? */
+/* */  importScripts( '/.starter' );
 /* */  let _filePath_ = _starter_._pathResolve( null, '/', '${relativeFilePath}' );
 /* */  let _dirPath_ = _starter_._pathResolve( null, '/', '${relativeDirPath}' );
 `
@@ -222,7 +222,7 @@ function sourcesJoinSplits( o )
 `
 
   /* ware */
-  /* Uri namespace( parseConsecutive ) is required to make _.include work in a browser */
+  /* Uri namespace( parseConsecutive ) is required to make _.include working in a browser */
 
   r.ware =
 `
@@ -304,6 +304,14 @@ function sourcesJoinSplits( o )
   ${gr( 'errAttend' )}
   ${gr( '_errFields' )}
   ${gr( 'errIsStandard' )}
+  ${gr( 'errIsAttended' )}
+  ${gr( 'errProcess' )}
+
+  ${gr( 'setup', '_setupUncaughtErrorHandler2' )}
+  ${gr( 'setup', '_setupUncaughtErrorHandler9' )}
+  ${gr( 'setup', '_errUncaughtPre' )}
+  ${gr( 'setup', '_errUncaughtHandler1' )}
+  ${gr( 'setup', '_errUncaughtHandler2' )}
 
   ${gr( 'introspector', 'code' )}
   ${gr( 'introspector', 'stack' )}
@@ -332,6 +340,10 @@ function sourcesJoinSplits( o )
   ${gr( 'uri', 'canonize' )}
   ${gr( 'uri', 'canonizeTolerant' )}
   ${fields( 'uri' )}
+
+  ${cls( 'Procedure' )}
+  ${method( 'Procedure', 'NativeWatchingEnable' )}
+  ${method( 'Procedure', 'init' )}
 
   ${_.routineParse( self.WareCode.end ).bodyUnwrapped};
   `
@@ -566,21 +578,6 @@ function sourcesJoinSplits( o )
     }
   }
 
-  // function pr( name )
-  // {
-  //   return elementExport( _.path, 'path', name );
-  // }
-  //
-  // function ir( name )
-  // {
-  //   return elementExport( _.introspector, '_.introspector', name );
-  // }
-  //
-  // function ur( name )
-  // {
-  //   return elementExport( _.uri, 'uri', name );
-  // }
-
   function fields( namespace )
   {
     let result = [];
@@ -594,29 +591,27 @@ function sourcesJoinSplits( o )
     return result.join( '  ' );
   }
 
-  // function pfs( name )
-  // {
-  //   let result = [];
-  //   for( let f in _.path )
-  //   {
-  //     let e = _.path[ f ];
-  //     if( _.strIs( e ) || _.regexpIs( e ) )
-  //     result.push( pr( f ) );
-  //   }
-  //   return result.join( '  ' );
-  // }
-  //
-  // function ufs( name )
-  // {
-  //   let result = [];
-  //   for( let f in _.uri )
-  //   {
-  //     let e = _.uri[ f ];
-  //     if( _.strIs( e ) || _.regexpIs( e ) )
-  //     result.push( ur( f ) );
-  //   }
-  //   return result.join( '  ' );
-  // }
+  function cls( namesapce, name )
+  {
+    if( arguments.length === 2 )
+    {
+      return elementExport( _[ namesapce ], `_.${namesapce}`, name );
+    }
+    else
+    {
+      name = arguments[ 0 ];
+      return elementExport( _, '_', name );
+    }
+  }
+
+  function method( cls, method )
+  {
+    debugger;
+    if( _[ cls ][ method ] )
+    elementExport( _[ cls ], `_.${cls}.${method}`, method );
+    if( _[ cls ][ 'prototype' ][ method ] )
+    elementExport( _[ cls ][ 'prototype' ], `_.${cls}.prototype.${method}`, method );
+  }
 
 }
 
@@ -828,10 +823,10 @@ let Restricts =
 
 let Statics =
 {
-  WareCode : require( './WareCode.s' ),
-  BroCode : require( './BroCode.s' ),
-  NjsCode : require( './NjsCode.s' ),
-  StarterCode : require( './StarterCode.s' ),
+  WareCode : require( '../l1_boot/Ware.txt.s' ),
+  BroCode : require( '../l1_boot/Bro.txt.s' ),
+  NjsCode : require( '../l1_boot/Njs.txt.s' ),
+  StarterCode : require( '../l1_boot/Starter.txt.s' ),
   InstanceDefaults,
 }
 

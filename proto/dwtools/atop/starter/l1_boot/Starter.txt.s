@@ -276,6 +276,10 @@ function _Begin()
       debugger;
       return;
     }
+
+    _starter_.setup._setupUncaughtErrorHandler2();
+    _starter_.setup._setupUncaughtErrorHandler9();
+
     if( Config.interpreter === 'njs' )
     this._njsSetup();
     else

@@ -16,7 +16,7 @@ let vectorizeNone = _.routineDefaults( null, _.vectorizeNone, { vectorizingConta
 
 async function launch()
 {
-  let center = _.Starter.Center();
+  let center = _.starter.System.Center();
   return await center.form();
 }
 

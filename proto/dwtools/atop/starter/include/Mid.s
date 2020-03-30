@@ -13,12 +13,12 @@ if( typeof module !== 'undefined' )
 
   if( Config.interpreter === 'njs' )
   {
-    require( '../l5/Center.ss' );
-    require( '../l5/Servlet.ss' );
-    require( '../l5/Work.s' );
+    require( '../l5/Center.s' );
+    require( '../l5/Servlet.s' );
+    require( '../l5/Session.s' );
   }
 
-  require( '../l7/Starter.s' );
+  require( '../l7/System.s' );
 
   // require( './legacy/StarterMaker.s' );
 

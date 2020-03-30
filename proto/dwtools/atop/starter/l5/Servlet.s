@@ -22,7 +22,19 @@ Self.shortName = 'Servlet';
 function finit()
 {
   let servlet = this;
+  let system = servlet.system;
+
   servlet.unform();
+  if( system )
+  {
+    _.assert
+    (
+      system.servletsMap[ servlet.serverPath ] === servlet,
+      `Servlet at ${servlet.serverPath} is already launched`
+    );
+    delete system.servletsMap[ servlet.serverPath ];
+  }
+
   return _.Copyable.prototype.finit.call( servlet );
 }
 
@@ -31,12 +43,20 @@ function finit()
 function unform()
 {
   let servlet = this;
+  let system = servlet.system;
 
-  _.assert( 0, 'not implemented' );
+  if( servlet.loggerSocket )
+  {
+    servlet.loggerSocket.finit();
+    servlet.loggerSocket = null;
+  }
 
-/*
-qqq : implement please
-*/
+  if( servlet.httpServer )
+  {
+    if( servlet.owningHttpServer )
+    servlet.httpServer.close();
+    servlet.httpServer = null;
+  }
 
 }
 
@@ -45,12 +65,14 @@ qqq : implement please
 function form()
 {
   let servlet = this;
-  let starter = servlet.starter;
+  let system = servlet.system;
 
-  if( starter.servletsMap[ servlet.servePath ] && starter.servletsMap[ servlet.servePath ] !== servlet )
-  throw _.err( 'Servlet at ' + servlet.servePath + ' is already launched' );
-
-  starter.servletsMap[ servlet.servePath ] = servlet;
+  _.assert
+  (
+    !system.servletsMap[ servlet.serverPath ] || system.servletsMap[ servlet.serverPath ] === servlet,
+    `Servlet at ${servlet.serverPath} is already launched`
+  );
+  system.servletsMap[ servlet.serverPath ] = servlet;
 
   let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
   servlet.serverPath = parsedServerPath.full;
@@ -69,7 +91,7 @@ function form()
 
   express.use( ( request, response, next ) => servlet.requestPreHandler({ request, response, next }) );
 
-  // if( Config.debug && starter.verbosity )
+  // if( Config.debug && system.verbosity )
   if( Config.debug && servlet.loggingConnection )
   {
     if( !ExpressLogger )
@@ -81,13 +103,12 @@ function form()
 
   servlet._requestScriptWrapHandler = servlet.ScriptWrap_functor
   ({
-    allowedPath : '/',
     basePath : servlet.basePath,
     allowedPath : servlet.allowedPath,
     verbosity : servlet.verbosity,
     incudingExts : servlet.incudingExts,
     excludingExts : servlet.excludingExts,
-    starterMaker : starter.maker,
+    starterMaker : system.maker,
     templatePath : servlet.templatePath
   });
   express.use( ( request, response, next ) => servlet._requestScriptWrapHandler({ request, response, next }) );
@@ -112,18 +133,19 @@ function form()
   let o3 = _.servlet.controlExpressStart
   ({
     name : servlet.qualifiedName,
-    verbosity : servlet.loggingApplication ? 0 : starter.verbosity - 1,
-    server : servlet.server,
+    verbosity : servlet.loggingApplication ? 0 : system.verbosity - 1, /* xxx : use servlet.verbosity? */
+    server : servlet.httpServer,
     express : servlet.express,
     serverPath : servlet.serverPath,
   });
 
-  servlet.server = o3.server;
+  servlet.httpServer = o3.server;
   servlet.express = o3.express;
   servlet.serverPath = o3.serverPath;
 
   if( servlet.loggingApplication )
   {
+    _.assert( servlet.loggerSocket === null );
     let loggerServerPath = _.uri.join( servlet.serverPath, '.log/' );
     loggerServerPath = _.uri.parseAtomic( loggerServerPath );
     loggerServerPath.protocol = 'ws';
@@ -131,7 +153,8 @@ function form()
     loggerServerPath = _.uri.str( loggerServerPath );
     servlet.loggerSocket = _.LoggerSocketReceiver
     ({
-      httpServer : servlet.server,
+      httpServer : servlet.httpServer,
+      owningHttpServer : 0,
       serverPath : loggerServerPath,
     });
     servlet.loggerSocket.form();
@@ -214,9 +237,9 @@ function requestErrorHandler( o )
 function _verbosityGet()
 {
   let servlet = this;
-  if( !servlet.starter )
+  if( !servlet.system )
   return 9;
-  return servlet.starter.verbosity;
+  return servlet.system.verbosity;
 }
 
 //
@@ -241,8 +264,8 @@ function ScriptWrap_functor( fop )
 {
   fop = _.routineOptions( ScriptWrap_functor, arguments );
 
-  if( fop.starter === null )
-  fop.starter = new _.Starter();
+  if( fop.system === null )
+  fop.system = new _.starter.System();
 
   if( fop.incudingExts === null )
   fop.incudingExts = [ 's', 'js', 'ss' ];
@@ -253,7 +276,17 @@ function ScriptWrap_functor( fop )
   _.assert( _.strDefined( fop.basePath ) );
   _.assert( _.strDefined( fop.allowedPath ) );
 
+  if( !Querystring )
+  Querystring = require( 'querystring' );
+
   let ware;
+
+  if( !ware )
+  {
+    let splits = fop.starterMaker.sourcesJoinSplits({ interpreter : 'browser', libraryName : 'Application' });
+    ware = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
+  }
+
   let fileProvider = _.FileProvider.HardDrive({ encoding : 'utf8' });
 
   scriptWrap.defaults =
@@ -270,17 +303,20 @@ function ScriptWrap_functor( fop )
 
     _.assertRoutineOptions( scriptWrap, arguments );
 
-    if( !Querystring )
-    Querystring = require( 'querystring' );
     o.request.url = Querystring.unescape( o.request.url );
 
     let uri = _.uri.parseFull( o.request.url );
     let exts = _.uri.exts( uri.resourcePath );
     let query = uri.query ? _.strWebQueryParse( uri.query ) : Object.create( null );
+
+    query.entry = !!query.entry;
     if( query.running === undefined )
     query.running = 1;
+    // if( query.running === undefined && !query.entry )
+    // query.running = 1;
+    // else
+    // query.running = 0;
     query.running = !!query.running;
-    query.entry = !!query.entry;
 
     if( uri.resourcePath === '/.starter' )
     {
@@ -295,8 +331,6 @@ function ScriptWrap_functor( fop )
       return htmlGenerate();
     }
 
-    surePathAllowed( uri.resourcePath );
-
     if( !_.longHasAny( fop.incudingExts, exts ) )
     return o.next();
 
@@ -305,6 +339,8 @@ function ScriptWrap_functor( fop )
 
     let filePath = _.path.normalize( _.path.reroot( fop.basePath, uri.longPath ) );
     let shortName = _.strVarNameFor( _.path.fullName( filePath ) );
+
+    surePathAllowed( filePath );
 
     if( !_.fileProvider.isTerminal( filePath ) )
     return o.next();
@@ -433,6 +469,8 @@ function ScriptWrap_functor( fop )
       filePath = _.path.reroot( fop.basePath, filePath );
 
       let basePath = _.path.fromGlob( filePath );
+
+      debugger;
       surePathAllowed( basePath );
 
       let resolvedFilePath = [];
@@ -482,11 +520,6 @@ function ScriptWrap_functor( fop )
 
     function starterWareReturn()
     {
-      if( !ware )
-      {
-        let splits = fop.starterMaker.sourcesJoinSplits({ interpreter : 'browser', libraryName : 'Application' });
-        ware = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
-      }
       o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
       o.response.write( ware );
       o.response.end();
@@ -531,7 +564,7 @@ defaults.excludingExts = null;
 defaults.starterMaker = null;
 defaults.resolvingGlob = 1;
 defaults.resolvingNpm = 1;
-defaults.autoGeneratingHtml = 1;
+// defaults.autoGeneratingHtml = 1;
 defaults.templatePath = null;
 
 // --
@@ -544,9 +577,10 @@ let Composes =
   servingDirs : 0,
   loggingApplication : 1,
   loggingConnection : 0,
+  owningHttpServer : 1,
 
-  // serverPath : 'http://127.0.0.1:5000',
-  serverPath : 'http://0.0.0.0:5000',
+  serverPath : 'http://127.0.0.1:5000',
+  // serverPath : 'http://0.0.0.0:5000',
   basePath : null,
   allowedPath : '/',
   templatePath : null,
@@ -558,8 +592,8 @@ let Composes =
 
 let Associates =
 {
-  starter : null,
-  server : null,
+  system : null,
+  httpServer : null,
   express : null,
   loggerSocket : null,
 }
@@ -577,6 +611,11 @@ let Statics =
 let Accessor =
 {
   verbosity : { getter : _verbosityGet, readOnly : 1 }
+}
+
+let Forbids =
+{
+  server : 'server',
 }
 
 // --

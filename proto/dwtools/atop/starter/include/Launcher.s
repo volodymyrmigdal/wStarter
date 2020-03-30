@@ -11,8 +11,7 @@ if( typeof module !== 'undefined' )
 
   if( Config.interpreter === 'njs' )
   {
-    require( '../l5/Center.ss' );
-    // require( '../l5/Remote.ss' );
+    require( '../l5/Center.s' );
   }
 
   require( '../l8/Launcher.s' );

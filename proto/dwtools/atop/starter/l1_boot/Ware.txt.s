@@ -42,10 +42,12 @@ function _Begin()
 
   let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
   let _ = _starter_;
+
   let path = _starter_.path = _starter_.path || Object.create( null );
   let uri = _starter_.uri = _starter_.uri || Object.create( null );
   _starter_.uri.path = _starter_.path;
   let introspector = _starter_.introspector = _starter_.introspector || Object.create( null );
+  let setup = _starter_.setup = _starter_.setup || Object.create( null );
   let sourcesMap = _starter_.sourcesMap = _starter_.sourcesMap || Object.create( null );
 
   let stackSymbol = Symbol.for( 'stack' );
