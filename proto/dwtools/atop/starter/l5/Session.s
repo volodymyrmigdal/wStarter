@@ -223,13 +223,21 @@ function curratedRunOpen()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
+  let chromeAppName = 'google-chrome';//linux
+  if( process.platform === 'win32' )
+  chromeAppName = 'chrome';
+  else if( process.platform === 'darwin' )
+  chromeAppName = 'google chrome'
+
+  chromeAppName = chromeAppName[ process.platform ] || 'google-chrome';
+
   if( !Open )
   Open = require( 'open' );
   let opts = Object.create( null );
   if( session.headless )
-  opts.app = [ 'chrome', '--headless', '--disable-gpu', '--remote-debugging-port=9222' ];
+  opts.app = [ chromeAppName, '--headless', '--disable-gpu', '--remote-debugging-port=9222' ];
   else
-  opts.app = [ 'chrome', '--remote-debugging-port=9222' ];
+  opts.app = [ chromeAppName, '--remote-debugging-port=9222' ];
 
   let tempDir = path.resolve( path.dirTemp(), 'wStarter/session/chrome' );
   fileProvider.dirMake( tempDir );
