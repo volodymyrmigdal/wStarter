@@ -28,6 +28,9 @@ submodule :
   jsdom :
     path : npm:///jsdom
     enabled : 0 # submodule
+  chrome-remote-interface :
+    path : npm:///chrome-remote-interface
+    enabled : 0 # submodule
   wloggersocket :
     path : npm:///wloggersocket
     enabled : 0 # submodule
