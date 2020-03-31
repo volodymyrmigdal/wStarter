@@ -1085,7 +1085,10 @@ async function logging( test )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, 'xxx' ), 1 )
+    test.identical( _.strCount( op.output, 'F1:begin' ), 1 )
+    test.identical( _.strCount( op.output, 'F1:end' ), 1 )
+    test.identical( _.strCount( op.output, 'Some Error!' ), 1 )
+
     return op;
   })
 
