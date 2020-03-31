@@ -229,8 +229,6 @@ function curratedRunOpen()
   else if( process.platform === 'darwin' )
   chromeAppName = 'google chrome'
 
-  chromeAppName = chromeAppName[ process.platform ] || 'google-chrome';
-
   if( !Open )
   Open = require( 'open' );
   let opts = Object.create( null );
