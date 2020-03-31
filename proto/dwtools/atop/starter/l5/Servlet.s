@@ -283,7 +283,12 @@ function ScriptWrap_functor( fop )
 
   if( !ware )
   {
-    let splits = fop.starterMaker.sourcesJoinSplits({ interpreter : 'browser', libraryName : 'Application' });
+    let splits = fop.starterMaker.sourcesJoinSplits
+    ({
+      interpreter : 'browser',
+      libraryName : 'Application',
+      proceduresWatching : 1,
+    });
     ware = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
   }
 

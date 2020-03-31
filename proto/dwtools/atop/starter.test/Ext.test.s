@@ -1174,7 +1174,7 @@ var Self =
 
     // etc
 
-    logging,
+    // logging,
     version,
 
   }

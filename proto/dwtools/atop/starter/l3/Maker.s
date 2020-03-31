@@ -222,7 +222,6 @@ function sourcesJoinSplits( o )
 `
 
   /* ware */
-  /* Uri namespace( parseConsecutive ) is required to make _.include working in a browser */
 
   r.ware =
 `
@@ -334,6 +333,10 @@ function sourcesJoinSplits( o )
   ${gr( 'path', 'isGlobal' )}
   ${fields( 'path' )}
 
+  /*
+  Uri namespace( parseConsecutive ) is required to make _.include working in a browser
+  */
+
   ${gr( 'uri', 'parseConsecutive' )}
   ${gr( 'uri', 'refine' )}
   ${gr( 'uri', '_normalize' )}
@@ -396,7 +399,8 @@ function sourcesJoinSplits( o )
 
   ${_.routineParse( self.StarterCode.begin ).bodyUnwrapped};
 
-/* */  let _interpreter_ = '${o.interpreter}';
+/* */  _global_._starter_.interpreter = '${o.interpreter}';
+/* */  _global_._starter_.proceduresWatching = ${o.proceduresWatching};
 
   ${_.routineParse( self.StarterCode.end ).bodyUnwrapped};
 
@@ -472,6 +476,8 @@ function sourcesJoinSplits( o )
   /* */
 
   return r;
+
+  /* */
 
   function elementExport( srcContainer, dstContainerName, name )
   {
@@ -606,11 +612,12 @@ function sourcesJoinSplits( o )
 
   function method( cls, method )
   {
-    debugger;
+    let result = '';
     if( _[ cls ][ method ] )
-    elementExport( _[ cls ], `_.${cls}.${method}`, method );
+    result = elementExport( _[ cls ], `_.${cls}`, method );
     if( _[ cls ][ 'prototype' ][ method ] )
-    elementExport( _[ cls ][ 'prototype' ], `_.${cls}.prototype.${method}`, method );
+    result += '\n' + elementExport( _[ cls ][ 'prototype' ], `_.${cls}.prototype`, method );
+    return result;
   }
 
 }
@@ -624,6 +631,7 @@ sourcesJoinSplits.defaults =
   externalBeforePath : null,
   externalAfterPath : null,
   interpreter : 'njs',
+  proceduresWatching : 0,
 }
 
 //
@@ -660,6 +668,7 @@ function sourcesJoin( o )
     externalAfterPath : o.externalAfterPath,
     outPath : o.outPath,
     interpreter : o.interpreter,
+    proceduresWatching : o.proceduresWatching,
   });
 
   result = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + result + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;

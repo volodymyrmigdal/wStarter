@@ -71,7 +71,7 @@ function _Begin()
 
     /* interpreter-specific */
 
-    if( _interpreter_ === 'browser' )
+    if( starter.interpreter === 'browser' )
     starter._broSourceFile( sourceFile, o );
     else
     starter._njsSourceFile( sourceFile, o );
@@ -177,7 +177,7 @@ function _Begin()
     if( childSource )
     return starter._sourceIncludeAct( parentSource, childSource, filePath );
 
-    if( _interpreter_ === 'browser' )
+    if( starter.interpreter === 'browser' )
     return starter._broInclude( parentSource, basePath, filePath );
     else
     return starter._njsInclude( parentSource, basePath, filePath );
@@ -188,17 +188,18 @@ function _Begin()
 
   function _sourceResolve( parentSource, basePath, filePath )
   {
-    let result = this._sourceOwnResolve( parentSource, basePath, filePath );
+    let starter = this;
+    let result = starter._sourceOwnResolve( parentSource, basePath, filePath );
     if( result !== null )
     return result;
 
-    if( _interpreter_ === 'browser' )
+    if( starter.interpreter === 'browser' )
     {
-      return this._broResolve( parentSource, basePath, filePath );
+      return starter._broResolve( parentSource, basePath, filePath );
     }
     else
     {
-      return this._njsResolve( parentSource, basePath, filePath );
+      return starter._njsResolve( parentSource, basePath, filePath );
     }
 
   }
@@ -208,7 +209,7 @@ function _Begin()
   function _sourceOwnResolve( parentSource, basePath, filePath )
   {
     let starter = this;
-    let childSource = starter._sourceForIncludeGet.apply( this, arguments );
+    let childSource = starter._sourceForIncludeGet.apply( starter, arguments );
     if( !childSource )
     return null;
     return childSource.filePath;
@@ -279,6 +280,11 @@ function _Begin()
 
     _starter_.setup._setupUncaughtErrorHandler2();
     _starter_.setup._setupUncaughtErrorHandler9();
+
+    // debugger;
+    // if( _starter_.proceduresWatching )
+    // _starter_.Procedure.NativeWatchingEnable();
+    // debugger;
 
     if( Config.interpreter === 'njs' )
     this._njsSetup();

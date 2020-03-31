@@ -377,6 +377,8 @@ async function workerWithInclude( test )
   return await starter.close();
 }
 
+workerWithInclude.timeOut = 300000;
+
 //
 
 async function includeModuleInWorker( test )
@@ -520,6 +522,8 @@ async function curatedRunWindowOpenCloseAutomatic( test )
 
 }
 
+curatedRunWindowOpenCloseAutomatic.timeOut = 300000;
+
 //
 
 async function curatedRunWindowOpenCloseWindowManually( test )
@@ -555,6 +559,8 @@ async function curatedRunWindowOpenCloseWindowManually( test )
   test.identical( session.curratedRunState, 'terminated' );
 
 }
+
+curatedRunWindowOpenCloseWindowManually.timeOut = 300000;
 
 //
 
@@ -592,6 +598,8 @@ async function curatedRunWindowOpenClosePageManually( test )
   test.identical( session.curratedRunState, 'terminated' );
 
 }
+
+curatedRunWindowOpenClosePageManually.timeOut = 300000;
 
 //
 
@@ -646,6 +654,8 @@ async function curatedRunEventsCloseAutomatic( test )
   test.identical( encountered, exp );
 
 }
+
+curatedRunEventsCloseAutomatic.timeOut = 300000;
 
 //
 
@@ -703,6 +713,8 @@ async function curatedRunEventsCloseWindowManually( test )
 
 }
 
+curatedRunEventsCloseWindowManually.timeOut = 300000;
+
 //
 
 async function curatedRunEventsClosePageManually( test )
@@ -759,6 +771,8 @@ async function curatedRunEventsClosePageManually( test )
   test.identical( encountered, exp );
 
 }
+
+curatedRunEventsClosePageManually.timeOut = 300000;
 
 // --
 // declare
