@@ -37,8 +37,8 @@ function _Begin()
   if( _global_.Config.isWorker === undefined )
   _global_.Config.isWorker = !!( typeof self !== 'undefined' && self.self === self && typeof importScripts !== 'undefined' );
 
-  if( _global._starter_ && _global._starter_._inited )
-  return;
+  // if( _global._starter_ && _global._starter_._inited )
+  // return;
 
   let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
   let _ = _starter_;
@@ -50,15 +50,15 @@ function _Begin()
   let setup = _starter_.setup = _starter_.setup || Object.create( null );
   let sourcesMap = _starter_.sourcesMap = _starter_.sourcesMap || Object.create( null );
 
-  let stackSymbol = Symbol.for( 'stack' );
-  let _diagnosticCodeExecuting = 0;
-  let _errorCounter = 0;
-  let _errorMaking = false;
-
-  let _ArrayIndexOf = Array.prototype.indexOf;
-  let _ArrayIncludes = Array.prototype.includes;
-  if( !_ArrayIncludes )
-  _ArrayIncludes = function( e ){ _ArrayIndexOf.call( this, e ) }
+  // let stackSymbol = Symbol.for( 'stack' );
+  // let _diagnosticCodeExecuting = 0;
+  // let _errorCounter = 0;
+  // let _errorMaking = false;
+  //
+  // let _ArrayIndexOf = Array.prototype.indexOf;
+  // let _ArrayIncludes = Array.prototype.includes;
+  // if( !_ArrayIncludes )
+  // _ArrayIncludes = function( e ){ _ArrayIndexOf.call( this, e ) }
 
   //
 
@@ -139,6 +139,34 @@ function _Begin()
     result[ s ] = src[ s ];
     return result;
   }
+  //
+  // //
+  //
+  // debugger;
+  // ProcedureInit = function init( o )
+  // {
+  //   let procedure = this; debugger;
+  //
+  //   // _.workpiece.initFields( procedure );
+  //   // Object.preventExtensions( procedure );
+  //   // procedure.copy( o );
+  //   _.mapExtend( procedure, o );
+  //
+  //   _.assert( _.strIs( procedure._stack ) );
+  //   // _.assert( procedure._sourcePath === null );
+  //
+  //   procedure._sourcePath = procedure._stack.split( '\n' )[ 0 ];
+  //
+  //   procedure._longNameMake();
+  //
+  //   _.arrayAppendOnceStrictly( _.Procedure.InstancesArray, procedure );
+  //
+  //   _.assert( _.strIs( procedure._sourcePath ) );
+  //   _.assert( arguments.length === 1 );
+  //   // _.assert( _.Procedure.NamesMap[ procedure._longName ] === procedure, () => `${procedure._longName} not found` );
+  //
+  //   return procedure;
+  // };
 
 }
 
@@ -149,7 +177,7 @@ function _Begin()
 function _End()
 {
 
-  let Extend =
+  let StarterExtension =
   {
 
     assert,
@@ -163,9 +191,9 @@ function _End()
 
   }
 
-  Object.assign( _starter_, Extend );
+  Object.assign( _starter_, StarterExtension );
 
-  let ExtendPath =
+  let PathExtension =
   {
 
     dir,
@@ -173,7 +201,16 @@ function _End()
 
   }
 
-  Object.assign( _starter_.path, ExtendPath );
+  Object.assign( _starter_.path, PathExtension );
+
+  // let ProcedureExtension =
+  // {
+  //
+  //   ProcedureInit
+  //
+  // }
+  //
+  // Object.assign( _starter_.Procedure.prototype, PathExtension );
 
 }
 

@@ -269,8 +269,7 @@ function _Begin()
 
     let response = starter.socketWrite
     ({
-      filePath : 'ws://127.0.0.1:5000/.log/',
-      // filePath : 'ws://127.0.0.1:5000',
+      filePath : 'ws://127.0.0.1:15000/.log/',
       data : o,
     });
 
@@ -480,7 +479,7 @@ function _Begin()
 
   //
 
-  function _broConsoleRedirect( console )
+  function _broConsoleRedirect( o )
   {
     let starter = this;
     let MethodsNames =
@@ -491,13 +490,47 @@ function _Begin()
       'table', 'time', 'timeEnd', 'timeStamp', 'trace'
     ];
 
-    for( let n = 0 ; n < MethodsNames.length ; n++ )
+    _.routineOptions( _broConsoleRedirect, o );
+
+    if( o.console === null )
+    o.console = console;
+
+    let original = o.console._original = o.console._original || Object.create( null );
+
+    if( o.enable )
     {
-      let name = MethodsNames[ n ];
-      _.assert( _.routineIs( console[ name ] ) );
-      console[ name ] = starter._broConsoleMethodRedirect( console, name );
+      _.assert( _.lengthOf( original ) === 0 );
+
+      for( let n = 0 ; n < MethodsNames.length ; n++ )
+      {
+        let name = MethodsNames[ n ];
+        _.assert( _.routineIs( o.console[ name ] ) );
+        original[ name ] = o.console[ name ];
+        o.console[ name ] = starter._broConsoleMethodRedirect( o.console, name );
+      }
+
+    }
+    else
+    {
+      _.assert( _.lengthOf( original ) !== 0 );
+
+      for( let n = 0 ; n < MethodsNames.length ; n++ )
+      {
+        let name = MethodsNames[ n ];
+        _.assert( _.routineIs( o.console[ name ] ) );
+        _.assert( _.routineIs( original[ name ] ) );
+        o.console[ name ] = original[ name ];
+        delete original[ name ];
+      }
+
     }
 
+  }
+
+  _broConsoleRedirect.defaults =
+  {
+    console : null,
+    enable : 1,
   }
 
   //
@@ -531,7 +564,7 @@ function _Begin()
     starter._sourceMake( 'module', '/', _sourceCodeModule );
 
     if( starter.redirectingConsole === null || starter.redirectingConsole )
-    starter._broConsoleRedirect( console );
+    starter._broConsoleRedirect({ console });
 
   }
 

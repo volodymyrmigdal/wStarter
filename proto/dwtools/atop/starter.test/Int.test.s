@@ -208,7 +208,8 @@ async function includeCss( test )
   var page, window;
 
   a.reflect();
-  starter.start
+
+  let session = starter.start
   ({
     basePath : a.routinePath,
     entryPath : 'index.js',
@@ -220,7 +221,9 @@ async function includeCss( test )
     window = await _.puppet.windowOpen({ headless : true });
     page = await window.pageOpen();
 
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    debugger;
+    await page.goto( session.entryFullUri );
+    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
 
     var got = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
     test.identical( got, [ 'http://127.0.0.1:5000/.starter', 'http://127.0.0.1:5000/index.js' ] )
@@ -254,7 +257,7 @@ async function includeExcludingManual( test )
 
   a.reflect();
 
-  starter.start
+  let session = starter.start
   ({
     basePath : a.routinePath,
     entryPath : 'index.js',
@@ -266,7 +269,8 @@ async function includeExcludingManual( test )
     window = await _.puppet.windowOpen({ headless : true });
     page = await window.pageOpen();
 
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryFullUri );
+    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
 
     var scripts = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
     test.identical( scripts.length, 3 );
@@ -298,7 +302,7 @@ async function includeModule( test )
 
   await a.will({ args : '.build' })
 
-  starter.start
+  let session = starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
     entryPath : 'index.js',
@@ -310,7 +314,8 @@ async function includeModule( test )
     window = await _.puppet.windowOpen({ headless : true });
     page = await window.pageOpen();
 
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryFullUri );
+    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
 
     var result = await page.eval( () =>
     {
@@ -345,7 +350,8 @@ async function workerWithInclude( test )
   let window, page;
 
   a.reflect();
-  starter.start
+
+  let session = starter.start
   ({
     basePath : a.routinePath,
     entryPath : 'index.js',
@@ -360,7 +366,8 @@ async function workerWithInclude( test )
 
     page.on( 'console', msg => output += msg.text() + '\n' );
 
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryFullUri );
+    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
     await _.time.out( 1500 );
 
     test.is( _.strHas( output, 'Global: Window' ) )
@@ -394,7 +401,7 @@ async function includeModuleInWorker( test )
 
   await a.will({ args : '.build' })
 
-  starter.start
+  let session = starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
     entryPath : 'index.js',
@@ -409,7 +416,8 @@ async function includeModuleInWorker( test )
 
     page.on( 'console', msg => output += msg.text() + '\n' );
 
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryFullUri );
+    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
 
     await _.time.out( 5000 );
 
@@ -448,7 +456,7 @@ async function includeModuleInWorkerThrowing( test )
 
   await a.will({ args : '.build' })
 
-  starter.start
+  let session = starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ), /* xxx : replace */
     entryPath : 'index.js',
@@ -463,7 +471,8 @@ async function includeModuleInWorkerThrowing( test )
 
     page.on( 'console', msg => output += msg.text() + '\n' );
 
-    await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryFullUri );
+    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
 
     await _.time.out( 5000 );
 

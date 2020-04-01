@@ -350,6 +350,8 @@ httpOpen.defaults =
   templatePath : null,
   loggingApplication : 0,
   loggingConnection : 1,
+  proceduring : null,
+  catchingUncaughtErrors : null,
 }
 
 //

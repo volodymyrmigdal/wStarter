@@ -339,8 +339,11 @@ commandHttpOpen.commandProperties =
 {
   basePath : 'Path to make available over HTTP.',
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
+  templatePath : 'Path to html file to use as template',
   loggingApplication : 'Enable printing of application output. Default : false',
   loggingConnection : 'Enable logging of request to the server. Default : true',
+  proceduring : 'Watching asynchronous procedures to terminate the application when all will run out. Default : true',
+  catchingUncaughtErrors : 'Catching uncaught errors and handling them properly. Default : true',
 }
 
 commandHttpOpen.hint = 'Run HTTP server to serve files in a specified directory.';
@@ -381,10 +384,11 @@ function commandStart( e )
 
 commandStart.commandProperties =
 {
-  entryPath : 'Path to enty source file to launch.',
-  basePath : 'Path to make available over HTTP.',
-  allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
-  templatePath : 'Path to html file to use as template',
+  ... commandHttpOpen.commandProperties,
+  // entryPath : 'Path to enty source file to launch.',
+  // basePath : 'Path to make available over HTTP.',
+  // allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
+  // templatePath : 'Path to html file to use as template',
   loggingApplication : 'Enable printing of application output. Default : true',
   loggingConnection : 'Enable logging of request to the server. Default : false',
   curating : 'Automatic opening of the application in curated window. Default : true',

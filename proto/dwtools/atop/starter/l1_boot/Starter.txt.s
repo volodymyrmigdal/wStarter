@@ -272,19 +272,21 @@ function _Begin()
 
   function _Setup()
   {
+
     if( this._inited )
     {
       debugger;
       return;
     }
 
-    _starter_.setup._setupUncaughtErrorHandler2();
-    _starter_.setup._setupUncaughtErrorHandler9();
+    if( _starter_.catchingUncaughtErrors )
+    {
+      _starter_.setup._setupUncaughtErrorHandler2();
+      _starter_.setup._setupUncaughtErrorHandler9();
+    }
 
-    // debugger;
-    // if( _starter_.proceduresWatching )
+    // if( _starter_.proceduring )
     // _starter_.Procedure.NativeWatchingEnable();
-    // debugger;
 
     if( Config.interpreter === 'njs' )
     this._njsSetup();

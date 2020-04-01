@@ -102,6 +102,16 @@ function form()
 
   _.assert( session.error === null );
 
+  for( let k in session.Bools )
+  {
+    if( session[ k ] === null )
+     session[ k ] = session.Bools[ k ];
+    _.assert( _.boolLike( session[ k ] ) );
+  }
+
+  if( session._cdpPort === null )
+  session._cdpPort = session._CdpPortDefault;
+
   session.on( _.anything, ( e ) =>
   {
     logger.log( `! event::${e.kind}` );
@@ -184,14 +194,17 @@ function servletOpen()
 
   _.assert( session.servlet === null );
 
-  let o2 = Object.create( null );
-  o2.basePath = session.basePath;
-  o2.templatePath = session.templatePath;
-  o2.allowedPath = session.allowedPath;
-  o2.system = session.system;
-  o2.loggingApplication = session.loggingApplication;
-  o2.loggingConnection = session.loggingConnection;
+  // let o2 = Object.create( null );
+  // o2.basePath = session.basePath;
+  // o2.templatePath = session.templatePath;
+  // o2.allowedPath = session.allowedPath;
+  // o2.system = session.system;
+  // o2.loggingApplication = session.loggingApplication;
+  // o2.loggingConnection = session.loggingConnection;
+  // o2.proceduring = session.proceduring;
+  // o2.catchingUncaughtErrors = session.catchingUncaughtErrors;
 
+  let o2 = _.mapOnly( session, _.starter.Servlet.FieldsOfRelationsGroups );
   session.servlet = new _.starter.Servlet( o2 );
   session.servlet.form();
 
@@ -227,15 +240,17 @@ function curratedRunOpen()
   Open = require( 'open' );
   let opts = Object.create( null );
   if( session.headless )
-  opts.app = [ 'chrome', '--headless', '--disable-gpu', '--remote-debugging-port=9222' ];
+  opts.app = [ `chrome`, `--headless`, `--disable-gpu`, `--remote-debugging-port=${session._cdpPort}` ];
   else
-  opts.app = [ 'chrome', '--remote-debugging-port=9222' ];
+  opts.app = [ `chrome`, `--remote-debugging-port=${session._cdpPort}` ];
 
-  let tempDir = path.resolve( path.dirTemp(), 'wStarter/session/chrome' );
+  let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome` );
   fileProvider.dirMake( tempDir );
+  debugger;
+  _.assert( fileProvider.isDir( tempDir ) );
 
   if( opts.app )
-  opts.app.push( `--user-data-dir=${_.path.nativize( _.path.current() )}` )
+  opts.app.push( `--user-data-dir=${_.path.nativize( tempDir )}` )
 
   _.Consequence.Try( () => Open( session.entryFullUri, opts ) )
   .finally( ( err, process ) =>
@@ -390,7 +405,7 @@ function _CurratedRunWindowIsOpened()
   return _.Consequence.Try( () =>
   {
     let Cdp = require( 'chrome-remote-interface' );
-    return Cdp()
+    return Cdp({ port : this._CdpPortDefault })
   })
   .catch( ( err ) =>
   {
@@ -418,7 +433,7 @@ async function _cdpConnect( o )
 
   try
   {
-    session.cdp = await Cdp();
+    session.cdp = await Cdp({ port : session._cdpPort });
     // debugger;
     // session.cdp.Network.requestWillBeSent( ( params ) =>
     // {
@@ -597,6 +612,18 @@ function cdpClose()
 // relations
 // --
 
+let Bools =
+{
+
+  curating : 1, /* qqq xxx : cover */
+  headless : 0, /* qqq xxx : cover? */
+  loggingApplication : 1, /* qqq xxx : cover */
+  loggingConnection : 0, /* qqq xxx : cover */
+  proceduring : 1, /* qqq xxx : cover */
+  catchingUncaughtErrors : 1, /* qqq xxx : cover */
+
+}
+
 let Composes =
 {
 
@@ -607,10 +634,7 @@ let Composes =
   entryShortUri : null,
   entryFullUri : null,
 
-  curating : 1,
-  headless : 0,
-  loggingApplication : 1,
-  loggingConnection : 0
+  ... Bools,
 
 }
 
@@ -633,12 +657,14 @@ let Restricts =
 
   cdp : null,
   _cdpTrackingPeriod : 500,
+  _cdpPort : null,
 
 }
 
 let Statics =
 {
   _CurratedRunWindowIsOpened,
+  _CdpPortDefault : 19222,
 }
 
 let Events =
@@ -692,6 +718,7 @@ let Proto =
 
   /* */
 
+  Bools,
   Composes,
   Associates,
   Restricts,

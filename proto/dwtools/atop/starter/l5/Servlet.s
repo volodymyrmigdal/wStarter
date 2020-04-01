@@ -91,7 +91,6 @@ function form()
 
   express.use( ( request, response, next ) => servlet.requestPreHandler({ request, response, next }) );
 
-  // if( Config.debug && system.verbosity )
   if( Config.debug && servlet.loggingConnection )
   {
     if( !ExpressLogger )
@@ -101,16 +100,10 @@ function form()
 
   express.use( ( request, response, next ) => servlet.requestMidHandler({ request, response, next }) );
 
-  servlet._requestScriptWrapHandler = servlet.ScriptWrap_functor
-  ({
-    basePath : servlet.basePath,
-    allowedPath : servlet.allowedPath,
-    verbosity : servlet.verbosity,
-    incudingExts : servlet.incudingExts,
-    excludingExts : servlet.excludingExts,
-    starterMaker : system.maker,
-    templatePath : servlet.templatePath
-  });
+  let o2 = _.mapOnly( servlet, servlet.ScriptWrap_functor.defaults );
+  o2.starterMaker = servlet.system.maker;
+
+  servlet._requestScriptWrapHandler = servlet.ScriptWrap_functor( o2 );
   express.use( ( request, response, next ) => servlet._requestScriptWrapHandler({ request, response, next }) );
 
   express.use( parsedServerPath.resourcePath, Express.static( _.path.nativize( servlet.basePath ) ) );
@@ -275,6 +268,7 @@ function ScriptWrap_functor( fop )
 
   _.assert( _.strDefined( fop.basePath ) );
   _.assert( _.strDefined( fop.allowedPath ) );
+  _.assert( fop.starterMaker instanceof _.starter.Maker );
 
   if( !Querystring )
   Querystring = require( 'querystring' );
@@ -287,9 +281,11 @@ function ScriptWrap_functor( fop )
     ({
       interpreter : 'browser',
       libraryName : 'Application',
-      proceduresWatching : 1,
+      proceduring : fop.proceduring,
+      loggingApplication : fop.loggingApplication,
     });
-    ware = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
+    // ware = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
+    ware = fop.starterMaker.librarySplitsJoin( splits );
   }
 
   let fileProvider = _.FileProvider.HardDrive({ encoding : 'utf8' });
@@ -567,10 +563,12 @@ defaults.verbosity = 0;
 defaults.incudingExts = null;
 defaults.excludingExts = null;
 defaults.starterMaker = null;
+defaults.templatePath = null;
+
 defaults.resolvingGlob = 1;
 defaults.resolvingNpm = 1;
-// defaults.autoGeneratingHtml = 1;
-defaults.templatePath = null;
+defaults.proceduring = 0;
+defaults.loggingApplication = 0;
 
 // --
 // relations
@@ -582,10 +580,13 @@ let Composes =
   servingDirs : 0,
   loggingApplication : 1,
   loggingConnection : 0,
+  proceduring : 0,
+  catchingUncaughtErrors : 1,
+
   owningHttpServer : 1,
 
-  serverPath : 'http://127.0.0.1:5000',
-  // serverPath : 'http://0.0.0.0:5000',
+  serverPath : 'http://127.0.0.1:15000',
+  // serverPath : 'http://0.0.0.0:15000',
   basePath : null,
   allowedPath : '/',
   templatePath : null,

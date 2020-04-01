@@ -3,7 +3,7 @@
 'use strict';
 
 // debugger;
-// console.log( typeof exports );
+// console.log( typeof exports ); /* xxx qqq : write test routine for exports. ask how */
 // debugger;
 
 //
@@ -16,6 +16,27 @@ let Self = function wStarterMakerLight( o )
 }
 
 Self.shortName = 'Maker';
+
+// --
+// relations
+// --
+
+let LibrarySplits =
+{
+  prefix : '',
+  predefined : '',
+  early : '',
+  extract : '',
+  proceduring : '',
+  interpreter : '',
+  starter : '',
+  env : '',
+  files : '',
+  externalBefore : '',
+  entry : '',
+  externalAfter : '',
+  postfix : '',
+}
 
 // --
 // routines
@@ -188,20 +209,15 @@ function sourceRemoveShellPrologue( fileData )
 function sourcesJoinSplits( o )
 {
   let self = this;
-  let r = Object.create( null );
-  r.prefix = '';
-  r.ware = '';
-  r.interpreter = '';
-  r.starter = '';
-  r.env = '';
-  r.externalBefore = '';
-  r.entry = '';
-  r.externalAfter = '';
-  r.postfix = '';
+  let r = _.mapExtend( null, self.LibrarySplits );
   Object.preventExtensions( r );
 
   o = _.routineOptions( sourcesJoinSplits, arguments );
   _.assert( _.longHas( [ 'njs', 'browser' ], o.interpreter ) );
+  _.assert( _.boolLike( o.debug ) );
+  _.assert( _.boolLike( o.proceduring ) );
+  _.assert( _.boolLike( o.catchingUncaughtErrors ) );
+  _.assert( _.boolLike( o.loggingApplication ) );
 
   if( o.entryPath )
   {
@@ -221,145 +237,68 @@ function sourcesJoinSplits( o )
 /* */  /* begin of library ${o.libraryName} */ ( function _library_() {
 `
 
-  /* ware */
+  /* predefined */
 
-  r.ware =
+  r.predefined =
 `
-/* */  /* begin of ware */ ( function _StarterWare_() {
+/* */  /* begin of predefined */ ( function _predefined_() {
 
-  ${_.routineParse( self.WareCode.begin ).bodyUnwrapped};
+  ${_.routineParse( self.PredefinedCode.begin ).bodyUnwrapped};
 
-  ${gr( 'assert' )}
-  ${gr( 'strIs' )}
-  ${gr( 'strDefined' )}
-  ${gr( '_strBeginOf' )}
-  ${gr( '_strEndOf' )}
-  ${gr( '_strRemovedBegin' )}
-  ${gr( '_strRemovedEnd' )}
-  ${gr( 'strBegins' )}
-  ${gr( 'strEnds' )}
-  ${gr( 'strRemoveBegin' )}
-  ${gr( 'strRemoveEnd' )}
-  ${gr( 'regexpIs' )}
-  ${gr( 'longIs' )}
-  ${gr( 'primitiveIs' )}
-  ${gr( 'strBegins' )}
-  ${gr( 'objectIs' )}
-  ${gr( 'objectLike' )}
-  ${gr( 'arrayLike' )}
-  ${gr( 'mapLike' )}
-  ${gr( 'strsLikeAll' )}
-  ${gr( 'arrayIs' )}
-  ${gr( 'numberIs' )}
-  ${gr( 'argumentsArrayIs' )}
-  ${gr( 'routineIs' )}
-  ${gr( 'routineIsPure' )}
-  ${gr( 'mapIs' )}
-  ${gr( 'sure' )}
-  ${gr( 'mapBut' )}
-  ${gr( 'mapHas' )}
-  ${gr( 'sureMapHasOnly' )}
-  ${gr( 'sureMapHasNoUndefine' )}
-  ${gr( 'mapSupplementStructureless' )}
-  ${gr( 'assertMapHasOnly' )}
-  ${gr( 'assertMapHasNoUndefine' )}
-  ${gr( 'routineOptions' )}
-  ${gr( 'routineExtend' )}
-  ${gr( 'arrayAppendArray' )}
-  ${gr( 'arrayAppendArrays' )}
-  ${gr( 'arrayAppendedArray' )}
-  ${gr( 'arrayAppendedArrays' )}
-  ${gr( 'longLike' )}
-  ${gr( 'longLeft' )}
-  ${gr( 'longLeftIndex' )}
-  ${gr( 'longLeftDefined' )}
-  ${gr( 'longHas' )}
-  ${gr( 'routineFromPreAndBody' )}
-  ${gr( 'arrayAs' )}
-  ${gr( 'errIs' )}
-  ${gr( 'unrollIs' )}
-  ${gr( 'strType' )}
-  ${gr( 'strPrimitiveType' )}
-  ${gr( 'strHas' )}
-  ${gr( 'strLike' )}
-  ${gr( 'rangeIs' )}
-  ${gr( 'numbersAre' )}
-  ${gr( 'bufferTypedIs' )}
-  ${gr( 'bufferNodeIs' )}
-  ${gr( '_strLeftSingle' )}
-  ${gr( '_strRightSingle' )}
-  ${gr( 'strIsolate' )}
-  ${gr( 'strIsolateLeftOrNone' )}
-  ${gr( 'strIsolateRightOrNone' )}
-  ${gr( 'strIsolateLeftOrAll' )}
-  ${gr( 'strIsolateRightOrAll' )}
-  ${gr( 'numberFromStrMaybe' )}
+/* */  _global_._starter_.debug = ${o.debug};
+/* */  _global_._starter_.interpreter = '${o.interpreter}';
+/* */  _global_._starter_.proceduring = ${o.proceduring};
+/* */  _global_._starter_.catchingUncaughtErrors = ${o.catchingUncaughtErrors};
+/* */  _global_._starter_.loggingApplication = ${o.loggingApplication};
 
-  ${gr( 'errOriginalMessage' )}
-  ${gr( 'errOriginalStack' )}
-  ${gr( 'err' )}
-  ${gr( '_err' )}
-  ${gr( 'errLogEnd' )}
-  ${gr( 'errAttend' )}
-  ${gr( '_errFields' )}
-  ${gr( 'errIsStandard' )}
-  ${gr( 'errIsAttended' )}
-  ${gr( 'errProcess' )}
+/* */  _global_.Config.debug = ${o.debug};
 
-  ${gr( 'setup', '_setupUncaughtErrorHandler2' )}
-  ${gr( 'setup', '_setupUncaughtErrorHandler9' )}
-  ${gr( 'setup', '_errUncaughtPre' )}
-  ${gr( 'setup', '_errUncaughtHandler1' )}
-  ${gr( 'setup', '_errUncaughtHandler2' )}
+  ${_.routineParse( self.PredefinedCode.end ).bodyUnwrapped};
 
-  ${gr( 'introspector', 'code' )}
-  ${gr( 'introspector', 'stack' )}
-  ${gr( 'introspector', 'stackCondense' )}
-  ${gr( 'introspector', 'location' )}
-  ${gr( 'introspector', 'locationFromStackFrame' )}
-  ${gr( 'introspector', 'locationToStack' )}
-  ${gr( 'introspector', 'locationNormalize' )}
+/* */  /* end of predefined */ })();
 
-  ${gr( 'path', 'refine' )}
-  ${gr( 'path', '_normalize' )}
-  ${gr( 'path', 'canonize' )}
-  ${gr( 'path', 'canonizeTolerant' )}
-  ${gr( 'path', '_nativizeWindows' )}
-  ${gr( 'path', '_nativizePosix' )}
-  ${gr( 'path', 'isGlob' )}
-  ${gr( 'path', 'isRelative' )}
-  ${gr( 'path', 'isAbsolute' )}
-  ${gr( 'path', 'ext' )}
-  ${gr( 'path', 'isGlobal' )}
-  ${fields( 'path' )}
+`
 
-  /*
-  Uri namespace( parseConsecutive ) is required to make _.include working in a browser
-  */
+  /* early */
 
-  ${gr( 'uri', 'parseConsecutive' )}
-  ${gr( 'uri', 'refine' )}
-  ${gr( 'uri', '_normalize' )}
-  ${gr( 'uri', 'canonize' )}
-  ${gr( 'uri', 'canonizeTolerant' )}
-  ${fields( 'uri' )}
+  r.early =
+`
+/* */  /* begin of early */ ( function _early_() {
 
-  ${cls( 'Procedure' )}
-  ${method( 'Procedure', 'NativeWatchingEnable' )}
-  ${method( 'Procedure', 'init' )}
+  ${_.routineParse( self.EarlyCode.begin ).bodyUnwrapped};
+  ${_.routineParse( self.EarlyCode.end ).bodyUnwrapped};
 
-  ${_.routineParse( self.WareCode.end ).bodyUnwrapped};
+/* */  /* end of early */ })();
+
   `
 
-  if( o.interpreter === 'browser' )
-  r.ware +=
+  /* extract */
+
+  r.extract =
 `
+/* */  /* begin of extract */ ( function _extract_() {
+
+  ${_.routineParse( self.ExtractCode.begin ).bodyUnwrapped};
+
+  ${extract()}
+
+  ${_.routineParse( self.ExtractCode.end ).bodyUnwrapped};
+
+/* */  /* end of extract */ })();
 
 `
 
-  r.ware +=
+  /* proceduring */
+
+  if( o.proceduring )
+  r.proceduring =
 `
-/* */  /* end of ware */ })();
+/* */  /* begin of proceduring */ ( function _proceduring_() {
+
+  ${_.routineParse( self.ProceduringCode.begin ).bodyUnwrapped};
+  ${_.routineParse( self.ProceduringCode.end ).bodyUnwrapped};
+
+/* */  /* end of proceduring */ })();
 
 `
 
@@ -368,7 +307,7 @@ function sourcesJoinSplits( o )
   if( o.interpreter === 'browser' )
   r.interpreter =
 `
-/* */  /* begin of bro */ ( function _Bro_() {
+/* */  /* begin of bro */ ( function _bro_() {
 
   ${_.routineParse( self.BroCode.begin ).bodyUnwrapped};
   ${_.routineParse( self.BroCode.end ).bodyUnwrapped};
@@ -382,7 +321,7 @@ function sourcesJoinSplits( o )
   if( o.interpreter === 'njs' )
   r.interpreter =
 `
-/* */  /* begin of njs */ ( function _Njs_() {
+/* */  /* begin of njs */ ( function _njs_() {
 
   ${_.routineParse( self.NjsCode.begin ).bodyUnwrapped};
   ${_.routineParse( self.NjsCode.end ).bodyUnwrapped};
@@ -395,13 +334,9 @@ function sourcesJoinSplits( o )
 
   r.starter =
 `
-/* */  /* begin of starter */ ( function _Starter_() {
+/* */  /* begin of starter */ ( function _starter_() {
 
   ${_.routineParse( self.StarterCode.begin ).bodyUnwrapped};
-
-/* */  _global_._starter_.interpreter = '${o.interpreter}';
-/* */  _global_._starter_.proceduresWatching = ${o.proceduresWatching};
-
   ${_.routineParse( self.StarterCode.end ).bodyUnwrapped};
 
 /* */  /* end of starter */ })();
@@ -479,6 +414,147 @@ function sourcesJoinSplits( o )
 
   /* */
 
+  function extract()
+  {
+
+  return `
+  ${rou( 'assert' )}
+  ${rou( 'strIs' )}
+  ${rou( 'strDefined' )}
+  ${rou( '_strBeginOf' )}
+  ${rou( '_strEndOf' )}
+  ${rou( '_strRemovedBegin' )}
+  ${rou( '_strRemovedEnd' )}
+  ${rou( 'strBegins' )}
+  ${rou( 'strEnds' )}
+  ${rou( 'strRemoveBegin' )}
+  ${rou( 'strRemoveEnd' )}
+  ${rou( 'regexpIs' )}
+  ${rou( 'longIs' )}
+  ${rou( 'primitiveIs' )}
+  ${rou( 'strBegins' )}
+  ${rou( 'objectIs' )}
+  ${rou( 'objectLike' )}
+  ${rou( 'arrayLike' )}
+  ${rou( 'mapLike' )}
+  ${rou( 'strsLikeAll' )}
+  ${rou( 'arrayIs' )}
+  ${rou( 'numberIs' )}
+  ${rou( 'setIs' )}
+  ${rou( 'setLike' )}
+  ${rou( 'hashMapIs' )}
+  ${rou( 'hashMapLike' )}
+  ${rou( 'argumentsArrayIs' )}
+  ${rou( 'routineIs' )}
+  ${rou( 'routineIsPure' )}
+  ${rou( 'lengthOf' )}
+  ${rou( 'mapIs' )}
+  ${rou( 'sure' )}
+  ${rou( 'mapBut' )}
+  ${rou( 'mapHas' )}
+  ${rou( '_mapKeys' )}
+  ${rou( 'mapOwnKeys' )}
+  ${rou( 'sureMapHasOnly' )}
+  ${rou( 'sureMapHasNoUndefine' )}
+  ${rou( 'mapSupplementStructureless' )}
+  ${rou( 'assertMapHasOnly' )}
+  ${rou( 'assertMapHasNoUndefine' )}
+  ${rou( 'routineOptions' )}
+  ${rou( 'routineExtend' )}
+  ${rou( 'arrayAppendArray' )}
+  ${rou( 'arrayAppendArrays' )}
+  ${rou( 'arrayAppendedArray' )}
+  ${rou( 'arrayAppendedArrays' )}
+  ${rou( 'arrayAppended' )}
+  ${rou( 'arrayAppendOnceStrictly' )}
+  ${rou( 'arrayAppendArrayOnce' )}
+  ${rou( 'arrayAppendedArrayOnce' )}
+  ${rou( 'arrayAppendedOnce' )}
+  ${rou( 'arrayRemoveOnceStrictly' )}
+  ${rou( 'arrayRemoveElementOnceStrictly' )}
+  ${rou( 'arrayRemovedElement' )}
+  ${rou( 'arrayRemovedElementOnce' )}
+  ${rou( 'longLike' )}
+  ${rou( 'longLeft' )}
+  ${rou( 'longLeftIndex' )}
+  ${rou( 'longLeftDefined' )}
+  ${rou( 'longHas' )}
+  ${rou( 'routineFromPreAndBody' )}
+  ${rou( 'arrayAs' )}
+  ${rou( 'errIs' )}
+  ${rou( 'unrollIs' )}
+  ${rou( 'strType' )}
+  ${rou( 'strPrimitiveType' )}
+  ${rou( 'strHas' )}
+  ${rou( 'strLike' )}
+  ${rou( 'rangeIs' )}
+  ${rou( 'numbersAre' )}
+  ${rou( 'bufferTypedIs' )}
+  ${rou( 'bufferNodeIs' )}
+  ${rou( '_strLeftSingle' )}
+  ${rou( '_strRightSingle' )}
+  ${rou( 'strIsolate' )}
+  ${rou( 'strIsolateLeftOrNone' )}
+  ${rou( 'strIsolateRightOrNone' )}
+  ${rou( 'strIsolateLeftOrAll' )}
+  ${rou( 'strIsolateRightOrAll' )}
+  ${rou( 'strQuote' )}
+  ${rou( 'numberFromStrMaybe' )}
+
+  ${rou( 'errOriginalMessage' )}
+  ${rou( 'errOriginalStack' )}
+  ${rou( 'err' )}
+  ${rou( '_err' )}
+  ${rou( 'errLogEnd' )}
+  ${rou( 'errAttend' )}
+  ${rou( '_errFields' )}
+  ${rou( 'errIsStandard' )}
+  ${rou( 'errIsAttended' )}
+  ${rou( 'errProcess' )}
+
+  ${rou( 'setup', '_setupUncaughtErrorHandler2' )}
+  ${rou( 'setup', '_setupUncaughtErrorHandler9' )}
+  ${rou( 'setup', '_errUncaughtPre' )}
+  ${rou( 'setup', '_errUncaughtHandler1' )}
+  ${rou( 'setup', '_errUncaughtHandler2' )}
+
+  ${rou( 'introspector', 'code' )}
+  ${rou( 'introspector', 'stack' )}
+  ${rou( 'introspector', 'stackCondense' )}
+  ${rou( 'introspector', 'location' )}
+  ${rou( 'introspector', 'locationFromStackFrame' )}
+  ${rou( 'introspector', 'locationToStack' )}
+  ${rou( 'introspector', 'locationNormalize' )}
+
+  ${rou( 'path', 'refine' )}
+  ${rou( 'path', '_normalize' )}
+  ${rou( 'path', 'canonize' )}
+  ${rou( 'path', 'canonizeTolerant' )}
+  ${rou( 'path', '_nativizeWindows' )}
+  ${rou( 'path', '_nativizePosix' )}
+  ${rou( 'path', 'isGlob' )}
+  ${rou( 'path', 'isRelative' )}
+  ${rou( 'path', 'isAbsolute' )}
+  ${rou( 'path', 'ext' )}
+  ${rou( 'path', 'isGlobal' )}
+  ${fields( 'path' )}
+
+  /*
+  Uri namespace( parseConsecutive ) is required to make _.include working in a browser
+  */
+
+  ${rou( 'uri', 'parseConsecutive' )}
+  ${rou( 'uri', 'refine' )}
+  ${rou( 'uri', '_normalize' )}
+  ${rou( 'uri', 'canonize' )}
+  ${rou( 'uri', 'canonizeTolerant' )}
+  ${fields( 'uri' )}
+`
+
+  }
+
+  /* */
+
   function elementExport( srcContainer, dstContainerName, name )
   {
     let e = srcContainer[ name ];
@@ -489,8 +565,10 @@ function sourcesJoinSplits( o )
     );
     _.assert
     (
-      _.routineIs( e ) || _.strIs( e ) || _.regexpIs( e ),
-      () => `Cant export ${name} is ${_.strType( e )}`
+         _.routineIs( e ) || _.strIs( e ) || _.regexpIs( e )
+      || ( _.mapIs( e ) && _.lengthOf( e ) === 0 )
+      || ( _.arrayIs( e ) && _.lengthOf( e ) === 0 )
+      , () => `Cant export ${name} is ${_.strType( e )}`
     );
     let str = '';
     if( _.routineIs( e ) )
@@ -529,6 +607,8 @@ function sourcesJoinSplits( o )
 
     return r;
 
+    /* */
+
     function routineProperties( dstContainerName, routine )
     {
       let r = ''
@@ -557,7 +637,6 @@ function sourcesJoinSplits( o )
       `
       if( name === 'routineFromPreAndBody' )
       {
-
         str += `\n${dstContainerName}.${name} = ` + _.strLinesIndentation( e.toString(), '  ' );
         str += `\n${dstContainerName}.${name}.pre = ` + `__${e.name}_pre;`
         str += `\n${dstContainerName}.${name}.body = ` + `__${e.name}_body;`
@@ -571,7 +650,7 @@ function sourcesJoinSplits( o )
     }
   }
 
-  function gr( namesapce, name )
+  function rou( namesapce, name )
   {
     if( arguments.length === 2 )
     {
@@ -592,25 +671,36 @@ function sourcesJoinSplits( o )
     {
       let e = _[ namespace ][ f ];
       if( _.strIs( e ) || _.regexpIs( e ) )
-      result.push( gr( namespace, f ) );
+      result.push( rou( namespace, f ) );
     }
     return result.join( '  ' );
   }
 
   function cls( namesapce, name )
   {
+    let r;
     if( arguments.length === 2 )
     {
-      return elementExport( _[ namesapce ], `_.${namesapce}`, name );
+      r = elementExport( _[ namesapce ], `_.${namesapce}`, name );
     }
     else
     {
       name = arguments[ 0 ];
-      return elementExport( _, '_', name );
+      r = elementExport( _, '_', name );
     }
+    r =
+`
+(function()
+{
+
+  let Self = ${r}
+
+})();
+`
+    return r;
   }
 
-  function method( cls, method )
+  function clr( cls, method )
   {
     let result = '';
     if( _[ cls ][ method ] )
@@ -631,7 +721,10 @@ sourcesJoinSplits.defaults =
   externalBeforePath : null,
   externalAfterPath : null,
   interpreter : 'njs',
-  proceduresWatching : 0,
+  debug : 1,
+  proceduring : 0,
+  catchingUncaughtErrors : 1,
+  loggingApplication : 0,
 }
 
 //
@@ -660,18 +753,12 @@ function sourcesJoin( o )
 
   let result = _.mapVals( o.filesMap ).join( '\n' );
 
-  let splits = self.sourcesJoinSplits
-  ({
-    entryPath : o.entryPath,
-    basePath : o.basePath,
-    externalBeforePath : o.externalBeforePath,
-    externalAfterPath : o.externalAfterPath,
-    outPath : o.outPath,
-    interpreter : o.interpreter,
-    proceduresWatching : o.proceduresWatching,
-  });
+  let o2 = _.mapOnly( o, self.sourcesJoinSplits.defaults );
+  let splits = self.sourcesJoinSplits( o2 );
 
-  result = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + result + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
+  splits.files = result;
+
+  result = self.librarySplitsJoin( splits );
 
   return result;
 }
@@ -680,6 +767,42 @@ var defaults = sourcesJoin.defaults = Object.create( sourcesJoinSplits.defaults 
 
 defaults.filesMap = null;
 defaults.removingShellPrologue = null;
+
+//
+
+function librarySplitsJoin( o )
+{
+  let self = this;
+
+  _.routineOptions( librarySplitsJoin, arguments );
+
+  for( let i in o )
+  {
+    _.assert( _.strIs( o[ i ] ) );
+  }
+
+  let result =
+      o.prefix
+    + o.predefined
+    + o.early
+    + o.extract
+    + o.proceduring
+    + o.interpreter
+    + o.starter
+    + o.env
+    + o.files
+    + o.externalBefore
+    + o.entry
+    + o.externalAfter
+    + o.postfix;
+
+  return result;
+}
+
+var defaults = librarySplitsJoin.defaults =
+{
+  ... LibrarySplits,
+}
 
 // --
 // etc
@@ -832,7 +955,11 @@ let Restricts =
 
 let Statics =
 {
-  WareCode : require( '../l1_boot/Ware.txt.s' ),
+  LibrarySplits,
+  PredefinedCode : require( '../l1_boot/Predefined.txt.s' ),
+  EarlyCode : require( '../l1_boot/Early.txt.s' ),
+  ExtractCode : require( '../l1_boot/Extract.txt.s' ),
+  ProceduringCode : require( '../l1_boot/Proceduring.txt.s' ),
   BroCode : require( '../l1_boot/Bro.txt.s' ),
   NjsCode : require( '../l1_boot/Njs.txt.s' ),
   StarterCode : require( '../l1_boot/Starter.txt.s' ),
@@ -856,6 +983,7 @@ let Proto =
 
   sourcesJoinSplits,
   sourcesJoin,
+  librarySplitsJoin,
 
   htmlSplitsFor,
   htmlFor,
