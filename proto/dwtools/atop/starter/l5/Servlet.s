@@ -25,15 +25,6 @@ function finit()
   let system = servlet.system;
 
   servlet.unform();
-  if( system )
-  {
-    _.assert
-    (
-      system.servletsMap[ servlet.serverPath ] === servlet,
-      `Servlet at ${servlet.serverPath} is already launched`
-    );
-    delete system.servletsMap[ servlet.serverPath ];
-  }
 
   return _.Copyable.prototype.finit.call( servlet );
 }
@@ -44,6 +35,21 @@ function unform()
 {
   let servlet = this;
   let system = servlet.system;
+
+  if( !servlet.formed )
+  return;
+
+  _.arrayRemoveOnceStrictly( system.servletsArray, servlet );
+
+  if( servlet.serverPath )
+  {
+    _.assert
+    (
+      system.servletsMap[ servlet.serverPath ] === servlet,
+      `Found no servlet::${servlet.serverPath}`
+    );
+    delete system.servletsMap[ servlet.serverPath ];
+  }
 
   if( servlet.loggerSocket )
   {
@@ -58,6 +64,7 @@ function unform()
     servlet.httpServer = null;
   }
 
+  servlet.formed = 0;
 }
 
 //
@@ -66,6 +73,37 @@ function form()
 {
   let servlet = this;
   let system = servlet.system;
+
+  if( servlet.system === null )
+  system = servlet.system = new _.starter.System();
+
+  _.assert( system instanceof _.starter.System );
+
+  _.arrayAppendOnceStrictly( system.servletsArray, servlet );
+  servlet.formed = 1;
+
+  // let o2 = _.mapOnly( servlet, servlet.scriptWrap_functor.defaults );
+  // o2.starterMaker = servlet.system.maker;
+  // servlet._requestScriptWrapHandler = servlet.scriptWrap_functor( o2 );
+  servlet._requestScriptWrapHandler = servlet.scriptWrap_functor();
+
+  if( servlet.serverPath )
+  servlet.serverForm();
+
+  if( servlet.serverPath && servlet.loggingApplication )
+  servlet.serverLoggingForm();
+
+  return servlet;
+}
+
+//
+
+function serverForm()
+{
+  let servlet = this;
+  let system = servlet.system;
+
+  _.assert( _.routineIs( servlet._requestScriptWrapHandler ) );
 
   _.assert
   (
@@ -100,10 +138,10 @@ function form()
 
   express.use( ( request, response, next ) => servlet.requestMidHandler({ request, response, next }) );
 
-  let o2 = _.mapOnly( servlet, servlet.ScriptWrap_functor.defaults );
-  o2.starterMaker = servlet.system.maker;
-
-  servlet._requestScriptWrapHandler = servlet.ScriptWrap_functor( o2 );
+  // let o2 = _.mapOnly( servlet, servlet.scriptWrap_functor.defaults );
+  // o2.starterMaker = servlet.system.maker;
+  // servlet._requestScriptWrapHandler = servlet.scriptWrap_functor( o2 );
+  // servlet._requestScriptWrapHandler = servlet.scriptWrap_functor();
   express.use( ( request, response, next ) => servlet._requestScriptWrapHandler({ request, response, next }) );
 
   express.use( parsedServerPath.resourcePath, Express.static( _.path.nativize( servlet.basePath ) ) );
@@ -136,27 +174,35 @@ function form()
   servlet.express = o3.express;
   servlet.serverPath = o3.serverPath;
 
-  if( servlet.loggingApplication )
-  {
-    _.assert( servlet.loggerSocket === null );
-    let loggerServerPath = _.uri.join( servlet.serverPath, '.log/' );
-    loggerServerPath = _.uri.parseAtomic( loggerServerPath );
-    loggerServerPath.protocol = 'ws';
-    delete loggerServerPath.protocols;
-    loggerServerPath = _.uri.str( loggerServerPath );
-    servlet.loggerSocket = _.LoggerSocketReceiver
-    ({
-      httpServer : servlet.httpServer,
-      owningHttpServer : 0,
-      serverPath : loggerServerPath,
-    });
-    servlet.loggerSocket.form();
-    servlet.loggerSocket.outputTo( logger );
-  }
-
   /* - */
 
   return servlet;
+}
+
+//
+
+function serverLoggingForm()
+{
+  let servlet = this;
+
+  _.assert( _.strDefined( servlet.serverPath ) );
+  _.assert( !!servlet.httpServer );
+
+  _.assert( servlet.loggerSocket === null );
+  let loggerServerPath = _.uri.join( servlet.serverPath, '.log/' );
+  loggerServerPath = _.uri.parseAtomic( loggerServerPath );
+  loggerServerPath.protocol = 'ws';
+  delete loggerServerPath.protocols;
+  loggerServerPath = _.uri.str( loggerServerPath );
+  servlet.loggerSocket = _.LoggerSocketReceiver
+  ({
+    httpServer : servlet.httpServer,
+    owningHttpServer : 0,
+    serverPath : loggerServerPath,
+  });
+  servlet.loggerSocket.form();
+  servlet.loggerSocket.outputTo( logger );
+
 }
 
 //
@@ -182,11 +228,6 @@ function requestPreHandler( o )
 function requestMidHandler( o )
 {
   let servlet = this;
-
-  // debugger;
-  // let filePath = _.uri.reroot( servlet.basePath, o.request.originalUrl );
-  // _.assert( _.uri.isLocal( filePath ) );
-
   o.next();
 }
 
@@ -237,7 +278,7 @@ function _verbosityGet()
 
 //
 
-function openPathGet()
+function openUriGet()
 {
   let servlet = this;
 
@@ -249,46 +290,377 @@ function openPathGet()
   return _.uri.str( parsedServerPath );
 }
 
+//
+
+function htmlForHtml( o )
+{
+  let servlet = this;
+  let system = servlet.system;
+  // let resourcePath = o.uri.resourcePath;
+  // let resourcePath = o.resourcePath;
+
+  _.routineOptions( htmlForHtml, o );
+
+  if( o.realPath === null )
+  o.realPath = _.path.reroot( servlet.basePath, o.resourcePath );
+
+  let title = _.path.fullName( o.realPath );
+
+  servlet.surePathAllowed( o.realPath );
+
+  let template = _.fileProvider.fileRead( o.realPath );
+  let html = system.maker.htmlFor
+  ({
+    title,
+    template,
+  });
+
+  if( o.response )
+  {
+    o.response.setHeader( 'Content-Type', 'text/html; charset=UTF-8' );
+    o.response.write( html );
+    o.response.end();
+  }
+
+  return html;
+}
+
+htmlForHtml.defaults =
+{
+  resourcePath : null,
+  realPath : null,
+  response : null,
+  next : null,
+}
+
+//
+
+function htmlForJs( o )
+{
+  let servlet = this;
+  let system = servlet.system;
+
+  if( o.realPath === null )
+  o.realPath = _.path.reroot( servlet.basePath, o.resourcePath );
+
+  _.routineOptions( htmlForJs, o );
+
+  let filter = { filePath : _.path.detrail( o.realPath ), basePath : servlet.basePath };
+  let resolvedFilePath = _.fileProvider.filesFind
+  ({
+    filter,
+    mode : 'distinct',
+    mandatory : 0,
+    withDirs : 0,
+    withDefunct : 0,
+    withStem : 1
+  });
+
+  if( !resolvedFilePath.length )
+  {
+    let err = _.err( `Found no ${o.resourcePath || o.realPath}` );
+    if( o.request && o.response )
+    {
+      return _.servlet.errorHandle
+      ({
+        request : o.request,
+        response : o.response,
+        err : err,
+      });
+    }
+    else
+    {
+      throw err;
+    }
+  }
+
+  let srcScriptsMap = Object.create( null );
+  resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p.absolute ) );
+  resolvedFilePath.forEach( ( p ) =>
+  {
+    srcScriptsMap[ _.path.join( '/', p.relative ) ] = _.fileProvider.fileRead( p.absolute );
+  });
+  let title = _.path.fullName( resolvedFilePath[ 0 ].absolute );
+
+  let template = null;
+  if( servlet.templatePath )
+  template = _.fileProvider.fileRead( servlet.templatePath );
+
+  let html = system.maker.htmlFor
+  ({
+    srcScriptsMap,
+    title,
+    template
+  });
+
+  if( o.response )
+  {
+    o.response.setHeader( 'Content-Type', 'text/html; charset=UTF-8' );
+    o.response.write( html );
+    o.response.end();
+  }
+
+  return html;
+}
+
+htmlForJs.defaults =
+{
+  resourcePath : null,
+  realPath : null,
+  request : null,
+  response : null,
+  next : null,
+}
+
+//
+
+function jsForJs( o )
+{
+  let servlet = this;
+  let system = servlet.system;
+
+  _.routineOptions( jsForJs, arguments );
+
+  if( o.realPath === null )
+  o.realPath = _.path.reroot( servlet.basePath, o.resourcePath );
+
+  let splits = system.maker.sourceWrapSplits
+  ({
+    basePath : servlet.basePath,
+    filePath : o.realPath,
+    running : o.query.running,
+    interpreter : 'browser',
+  });
+
+  let stream = _.fileProvider.streamRead
+  ({
+    filePath : o.realPath,
+    throwing : 0,
+  });
+
+  if( !stream )
+  return o.next();
+
+  o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
+
+  let state = 0;
+
+  debugger;
+  if( servlet.verbosity )
+  console.log( ' . scriptWrap', o.uri.resourcePath, 'of', o.realPath );
+
+  stream.on( 'open', function()
+  {
+    state = 1;
+    o.response.write( splits.prefix1 );
+    o.response.write( splits.prefix2 );
+  });
+
+  stream.on( 'data', function( d )
+  {
+    state = 1;
+    o.response.write( d );
+  });
+
+  stream.on( 'end', function()
+  {
+    if( state < 2 )
+    {
+      o.response.write( splits.postfix2 );
+      o.response.write( splits.ware );
+      o.response.write( splits.postfix1 );
+      o.response.end();
+    }
+    state = 2;
+  });
+
+  stream.on( 'error', function( err )
+  {
+    if( !state )
+    {
+      o.next();
+    }
+    else
+    return _.servlet.errorHandle
+    ({
+      err : err,
+      request : o.request,
+      response : o.response,
+    });
+    state = 2;
+  });
+
+}
+
+jsForJs.defaults =
+{
+  resourcePath : null,
+  realPath : null,
+  query : null,
+  request : null,
+  response : null,
+  next : null,
+}
+
+//
+
+function remoteResolve( o )
+{
+  let servlet = this;
+  // let filePath = _.strRemoveBegin( o.uri.resourcePath, '/.resolve/' );
+  // filePath = _.path.reroot( servlet.basePath, filePath );
+
+  _.routineOptions( remoteResolve, arguments );
+
+  if( o.realPath === null )
+  o.realPath = _.path.reroot( servlet.basePath, _.strRemoveBegin( o.resourcePath, '/.resolve/' ) );
+
+  _.assert( _.strBegins( o.resourcePath, '/.resolve/' ) );
+
+  let basePath = _.path.fromGlob( o.realPath );
+
+  debugger;
+  servlet.surePathAllowed( basePath );
+
+  let resolvedFilePath = [];
+  if( _.path.isGlob( o.realPath ) )
+  {
+
+    if( !servlet.resolvingGlob )
+    {
+      let err = _.err( `Cant resolve ${o.realPath} because {- servlet.resolvingGlob -} is off` );
+      if( o.request && o.response )
+      {
+        return _.servlet.errorHandle
+        ({
+          request : o.request,
+          response : o.response,
+          err : err,
+        });
+      }
+      else
+      {
+        throw err;
+      }
+    }
+
+    let filter = { filePath : o.realPath, basePath : servlet.basePath };
+    resolvedFilePath = _.fileProvider.filesFind
+    ({
+      filter,
+      mode : 'distinct',
+      mandatory : 0,
+      withDirs : 0,
+    });
+
+    resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p.absolute ) );
+    resolvedFilePath = resolvedFilePath.map( ( p ) => _.path.join( '/', p.relative ) );
+
+  }
+  else
+  {
+
+    if( !servlet.resolvingNpm )
+    {
+      let err = _.err( `Cant resolve ${o.realPath} because {- servlet.resolvingNpm -} is off` );
+      if( o.request && o.response )
+      {
+        return _.servlet.errorHandle
+        ({
+          request : o.request,
+          response : o.response,
+          err : err,
+        });
+      }
+      else
+      {
+        throw err;
+      }
+    }
+
+    debugger;
+  }
+
+  if( o.response )
+  o.response.json( resolvedFilePath );
+
+  return resolvedFilePath;
+}
+
+remoteResolve.defaults =
+{
+  resourcePath : null,
+  realPath : null,
+  request : null,
+  response : null,
+}
+
+//
+
+function starterWareReturn( o )
+{
+  let servlet = this;
+  o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
+  o.response.write( o.fop.ware );
+  o.response.end();
+  return null;
+}
+
+//
+
+function surePathAllowed( filePath )
+{
+  let servlet = this;
+  _.all( filePath, ( p ) =>
+  {
+    _.sure( _.path.begins( p, servlet.allowedPath ), () => `Path ${p} is beyond allowed path ${servlet.allowedPath}` );
+  });
+}
+
 // --
 //
 // --
 
-function ScriptWrap_functor( fop )
+function scriptWrap_functor( fop )
 {
-  fop = _.routineOptions( ScriptWrap_functor, arguments );
+  let servlet = this;
+  let system = servlet.system;
 
-  if( fop.system === null )
-  fop.system = new _.starter.System();
+  fop = _.routineOptions( scriptWrap_functor, arguments );
 
-  if( fop.incudingExts === null )
-  fop.incudingExts = [ 's', 'js', 'ss' ];
+  // if( servlet.system === null )
+  // servlet.system = new _.starter.System();
+  //
+  // if( servlet.incudingExts === null )
+  // servlet.incudingExts = [ 's', 'js', 'ss' ];
+  //
+  // if( servlet.excludingExts === null )
+  // servlet.excludingExts = [ 'raw', 'usefile' ];
 
-  if( fop.excludingExts === null )
-  fop.excludingExts = [ 'raw', 'usefile' ];
-
-  _.assert( _.strDefined( fop.basePath ) );
-  _.assert( _.strDefined( fop.allowedPath ) );
-  _.assert( fop.starterMaker instanceof _.starter.Maker );
+  _.assert( servlet instanceof _.starter.Servlet );
+  _.assert( system instanceof _.starter.System );
+  _.assert( system.maker instanceof _.starter.Maker );
+  _.assert( _.strDefined( servlet.basePath ) );
+  _.assert( _.strDefined( servlet.allowedPath ) );
+  _.assert( _.arrayIs( servlet.incudingExts ) );
+  _.assert( _.arrayIs( servlet.excludingExts ) );
 
   if( !Querystring )
   Querystring = require( 'querystring' );
 
-  let ware;
-
-  if( !ware )
+  if( !fop.ware )
   {
-    let splits = fop.starterMaker.sourcesJoinSplits
+    let splits = system.maker.sourcesJoinSplits
     ({
       interpreter : 'browser',
       libraryName : 'Application',
-      proceduring : fop.proceduring,
-      loggingApplication : fop.loggingApplication,
+      proceduring : servlet.proceduring,
+      loggingApplication : servlet.loggingApplication,
     });
-    // ware = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + '' + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
-    ware = fop.starterMaker.librarySplitsJoin( splits );
+    fop.ware = system.maker.librarySplitsJoin( splits );
   }
 
-  let fileProvider = _.FileProvider.HardDrive({ encoding : 'utf8' });
+  // let fileProvider = _.FileProvider.HardDrive({ encoding : 'utf8' });
 
   scriptWrap.defaults =
   {
@@ -304,239 +676,92 @@ function ScriptWrap_functor( fop )
 
     _.assertRoutineOptions( scriptWrap, arguments );
 
+    o.fop = fop;
     o.request.url = Querystring.unescape( o.request.url );
+    o.uri = _.uri.parseFull( o.request.url );
+    o.exts = _.uri.exts( o.uri.resourcePath );
+    o.query = o.uri.query ? _.strWebQueryParse( o.uri.query ) : Object.create( null );
 
-    let uri = _.uri.parseFull( o.request.url );
-    let exts = _.uri.exts( uri.resourcePath );
-    let query = uri.query ? _.strWebQueryParse( uri.query ) : Object.create( null );
+    o.query.entry = !!o.query.entry;
+    if( o.query.running === undefined )
+    o.query.running = 1;
+    o.query.running = !!o.query.running;
 
-    query.entry = !!query.entry;
-    if( query.running === undefined )
-    query.running = 1;
-    // if( query.running === undefined && !query.entry )
-    // query.running = 1;
-    // else
-    // query.running = 0;
-    query.running = !!query.running;
+    debugger;
 
-    if( uri.resourcePath === '/.starter' )
+    if( o.uri.resourcePath === '/.starter' )
     {
-      return starterWareReturn();
+      return servlet.starterWareReturn( o );
     }
-    else if( _.strBegins( uri.resourcePath, '/.resolve/' ) )
+    else if( _.strBegins( o.uri.resourcePath, '/.resolve/' ) )
     {
-      return remoteResolve();
-    }
-    else if( query.entry )
-    {
-      return htmlGenerate();
-    }
-
-    if( !_.longHasAny( fop.incudingExts, exts ) )
-    return o.next();
-
-    if( _.longHasAny( fop.excludingExts, exts ) )
-    return o.next();
-
-    let filePath = _.path.normalize( _.path.reroot( fop.basePath, uri.longPath ) );
-    let shortName = _.strVarNameFor( _.path.fullName( filePath ) );
-
-    surePathAllowed( filePath );
-
-    if( !_.fileProvider.isTerminal( filePath ) )
-    return o.next();
-
-    let splits = fop.starterMaker.sourceWrapSplits
-    ({
-      basePath : fop.basePath,
-      filePath : filePath,
-      running : query.running,
-      interpreter : 'browser',
-    });
-
-    let stream = fileProvider.streamRead
-    ({
-      filePath : filePath,
-      throwing : 0,
-    });
-
-    if( !stream )
-    return o.next();
-
-    o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
-
-    let state = 0;
-
-    if( fop.verbosity )
-    console.log( ' . scriptWrap', uri.resourcePath, 'of', filePath );
-
-    stream.on( 'open', function()
-    {
-      state = 1;
-      o.response.write( splits.prefix1 );
-      o.response.write( splits.prefix2 );
-    });
-
-    stream.on( 'data', function( d )
-    {
-      state = 1;
-      o.response.write( d );
-    });
-
-    stream.on( 'end', function()
-    {
-      if( state < 2 )
-      {
-        o.response.write( splits.postfix2 );
-        o.response.write( splits.ware );
-        o.response.write( splits.postfix1 );
-        o.response.end();
-      }
-      state = 2;
-    });
-
-    stream.on( 'error', function( err )
-    {
-      if( !state )
-      {
-        o.next();
-      }
-      else
-      errorHandle
+      return servlet.remoteResolve
       ({
-        err : err,
-        request : o.request,
+        resourcePath : o.uri.resourcePath,
+        realPath : o.realPath,
         response : o.response,
+        request : o.request,
       });
-      state = 2;
+    }
+
+    o.realPath = _.path.normalize( _.path.reroot( servlet.basePath, o.uri.longPath ) );
+    o.shortName = _.strVarNameFor( _.path.fullName( o.realPath ) );
+
+    if( o.query.entry )
+    {
+      if( o.query.format === 'html' )
+      return servlet.htmlForHtml
+      ({
+        resourcePath : o.uri.resourcePath,
+        realPath : o.realPath,
+        response : o.response,
+        next : o.next,
+      });
+      else
+      return servlet.htmlForJs
+      ({
+        resourcePath : o.uri.resourcePath,
+        realPath : o.realPath,
+        response : o.response,
+        request : o.request,
+        next : o.next,
+      });
+    }
+
+    o.realPath = _.path.normalize( _.path.reroot( servlet.basePath, o.uri.longPath ) );
+    o.shortName = _.strVarNameFor( _.path.fullName( o.realPath ) );
+
+    if( _.longHasAny( servlet.excludingExts, o.exts ) )
+    return o.next();
+
+    if( !_.fileProvider.isTerminal( o.realPath ) )
+    return o.next();
+
+    if( _.longHasAny( o.exts, [ 'html', 'htm' ] ) )
+    return servlet.htmlForHtml
+    ({
+      resourcePath : o.uri.resourcePath,
+      realPath : o.realPath,
+      response : o.response,
+      next : o.next,
     });
 
-    /* - */
+    if( servlet.naking )
+    return o.next();
 
-    function htmlGenerate()
-    {
-      let filePath = _.strRemoveBegin( uri.resourcePath, '/.resolve/' );
-      let realPath = _.path.reroot( fop.basePath, filePath );
+    if( !_.longHasAny( servlet.incudingExts, o.exts ) )
+    return o.next();
 
-      let filter = { filePath : _.path.detrail( realPath ), basePath : fop.basePath };
-      let resolvedFilePath = _.fileProvider.filesFind
-      ({
-        filter,
-        mode : 'distinct',
-        mandatory : 0,
-        withDirs : 0,
-        withDefunct : 0,
-        withStem : 1
-      });
+    servlet.surePathAllowed( o.realPath );
 
-      if( !resolvedFilePath.length )
-      return _.servlet.errorHandle
-      ({
-        request : o.request,
-        response : o.response,
-        err : _.err( `Found no ${filePath}` ),
-      });
-
-      let srcScriptsMap = Object.create( null );
-      resolvedFilePath.forEach( ( p ) => surePathAllowed( p.absolute ) );
-      resolvedFilePath.forEach( ( p ) =>
-      {
-        srcScriptsMap[ _.path.join( '/', p.relative ) ] = _.fileProvider.fileRead( p.absolute );
-      });
-      let title = _.path.fullName( resolvedFilePath[ 0 ].absolute );
-
-      let template = null;
-      if( fop.templatePath )
-      template = _.fileProvider.fileRead( fop.templatePath );
-
-      let html = fop.starterMaker.htmlFor
-      ({
-        srcScriptsMap,
-        title,
-        template
-      });
-
-      o.response.setHeader( 'Content-Type', 'text/html; charset=UTF-8' );
-      o.response.write( html );
-      o.response.end();
-
-    }
-
-    /* - */
-
-    function remoteResolve()
-    {
-      let filePath = _.strRemoveBegin( uri.resourcePath, '/.resolve/' );
-      filePath = _.path.reroot( fop.basePath, filePath );
-
-      let basePath = _.path.fromGlob( filePath );
-
-      debugger;
-      surePathAllowed( basePath );
-
-      let resolvedFilePath = [];
-      if( _.path.isGlob( filePath ) )
-      {
-
-        if( !fop.resolvingGlob )
-        return _.servlet.errorHandle
-        ({
-          request : o.request,
-          response : o.response,
-          err : _.err( `Cant resolve ${filePath} because {- fop.resolvingGlob -} is off` ),
-        });
-
-        let filter = { filePath, basePath : fop.basePath };
-        resolvedFilePath = _.fileProvider.filesFind
-        ({
-          filter,
-          mode : 'distinct',
-          mandatory : 0,
-          withDirs : 0,
-        });
-
-        resolvedFilePath.forEach( ( p ) => surePathAllowed( p.absolute ) );
-        resolvedFilePath = resolvedFilePath.map( ( p ) => _.path.join( '/', p.relative ) );
-
-      }
-      else
-      {
-
-        if( !fop.resolvingNpm )
-        return _.servlet.errorHandle
-        ({
-          request : o.request,
-          response : o.response,
-          err : _.err( `Cant resolve ${filePath} because {- fop.resolvingNpm -} is off` ),
-        });
-
-        debugger;
-      }
-
-      o.response.json( resolvedFilePath );
-      return;
-    }
-
-    /* - */
-
-    function starterWareReturn()
-    {
-      o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
-      o.response.write( ware );
-      o.response.end();
-      return null;
-    }
-
-    /* - */
-
-    function surePathAllowed( filePath )
-    {
-      _.all( filePath, ( p ) =>
-      {
-        _.sure( _.path.begins( p, fop.allowedPath ), () => `Path ${p} is beyond allowed path ${fop.allowedPath}` );
-      });
-    }
-
+    return servlet.jsForJs
+    ({
+      resourcePath : o.uri.resourcePath,
+      realPath : o.realPath,
+      query : o.query,
+      response : o.response,
+      request : o.request,
+    });
   }
 
   /* - */
@@ -555,20 +780,57 @@ function ScriptWrap_functor( fop )
 
 }
 
-let defaults = ScriptWrap_functor.defaults = Object.create( null );
+var defaults = scriptWrap_functor.defaults = Object.create( null );
 
+// defaults.system = null;
+// defaults.servlet = null;
+
+// defaults.basePath = null;
+// defaults.allowedPath = '/';
+// defaults.verbosity = 0;
+// defaults.incudingExts = null;
+// defaults.excludingExts = null;
+// defaults.starterMaker = null;
+// defaults.templatePath = null;
+//
+// defaults.resolvingGlob = 1;
+// defaults.resolvingNpm = 1;
+// defaults.proceduring = 0;
+// defaults.loggingApplication = 0;
+
+//
+
+function ScriptWrap_functor( o )
+{
+  o = _.routineOptions( ScriptWrap_functor, arguments );
+
+  if( o.servlet === null )
+  {
+    delete o.servlet;
+    o.servlet = new _.Servlet( o );
+  }
+
+  let result = o.servlet.scriptWrap_functor();
+
+  return result;
+}
+
+var defaults = ScriptWrap_functor.defaults = Object.create( null );
+
+defaults.servlet = null;
+defaults.system = null;
 defaults.basePath = null;
 defaults.allowedPath = '/';
 defaults.verbosity = 0;
 defaults.incudingExts = null;
 defaults.excludingExts = null;
-defaults.starterMaker = null;
 defaults.templatePath = null;
-
 defaults.resolvingGlob = 1;
 defaults.resolvingNpm = 1;
 defaults.proceduring = 0;
 defaults.loggingApplication = 0;
+
+// defaults.starterMaker = null;
 
 // --
 // relations
@@ -582,6 +844,10 @@ let Composes =
   loggingConnection : 0,
   proceduring : 0,
   catchingUncaughtErrors : 1,
+  naking : 0,
+
+  resolvingGlob : 1,
+  resolvingNpm : 1,
 
   owningHttpServer : 1,
 
@@ -606,6 +872,7 @@ let Associates =
 
 let Restricts =
 {
+  formed : 0,
   _requestScriptWrapHandler : null,
 }
 
@@ -616,7 +883,7 @@ let Statics =
 
 let Accessor =
 {
-  verbosity : { getter : _verbosityGet, readOnly : 1 }
+  verbosity : { getter : _verbosityGet, readOnly : 1 },
 }
 
 let Forbids =
@@ -634,6 +901,8 @@ let Proto =
   finit,
   unform,
   form,
+  serverForm,
+  serverLoggingForm,
 
   requestPreHandler,
   requestMidHandler,
@@ -641,8 +910,16 @@ let Proto =
   requestErrorHandler,
 
   _verbosityGet,
-  openPathGet,
+  openUriGet,
 
+  htmlForHtml,
+  htmlForJs,
+  jsForJs,
+  remoteResolve,
+  starterWareReturn,
+  surePathAllowed,
+
+  scriptWrap_functor,
   ScriptWrap_functor,
 
   /* */

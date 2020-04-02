@@ -59,13 +59,14 @@ function unform()
   return;
   session.unforming = 1;
 
+  session.timerCancel();
+
   if( session.cdp )
   ready.then( () => session.cdpClose() );
 
   /*
     do not assign null to field curratedRunState in method unform
   */
-  // ready.then( () => session.curratedRunState = null );
 
   if( session.servlet )
   ready.then( ( arg ) =>
@@ -75,16 +76,20 @@ function unform()
     return arg;
   });
 
+  ready.then( ( arg ) =>
+  {
+    session.entryUri = null;
+    session.entryWithQueryUri = null;
+    return arg;
+  });
+
   ready.finally( ( err, arg ) =>
   {
     session.unforming = 0;
     if( err )
     {
       err = _.err( err, '\nError unforming Session' );
-      if( !session.error )
-      session.error = err;
-      logger.error( _.errOnce( err ) );
-      throw err;
+      throw session.errorEncounterEnd( err );
     }
     return arg;
   });
@@ -102,35 +107,52 @@ function form()
 
   _.assert( session.error === null );
 
-  for( let k in session.Bools )
+  try
   {
-    if( session[ k ] === null )
-     session[ k ] = session.Bools[ k ];
-    _.assert( _.boolLike( session[ k ] ) );
+
+    for( let k in session.Bools )
+    {
+      if( session[ k ] === null )
+       session[ k ] = session.Bools[ k ];
+      _.assert( _.boolLike( session[ k ] ) );
+    }
+
+    if( session._cdpPort === null )
+    session._cdpPort = session._CdpPortDefault;
+
+    if( session.loggingSessionEvents )
+    session.on( _.anything, ( e ) =>
+    {
+      logger.log( ` . event::${e.kind}` );
+    });
+
+    session.pathsForm();
+    if( !session.servlet )
+    session.servletOpen();
+
+    if( session.entryPath )
+    session.entryFind();
+
+    if( session.curating )
+    session.curratedRunOpen();
+
+    session.timerForm();
+
+    if( session.loggingOptions )
+    logger.log( session.exportString() );
+
   }
-
-  if( session._cdpPort === null )
-  session._cdpPort = session._CdpPortDefault;
-
-  session.on( _.anything, ( e ) =>
+  catch( err )
   {
-    logger.log( `! event::${e.kind}` );
-  });
-
-  session.pathsForm();
-  if( !session.servlet )
-  session.servletOpen();
-
-  if( session.entryPath )
-  session.entryFind();
-
-  if( session.curating )
-  session.curratedRunOpen();
+    throw session.errorEncounterEnd( err );
+  }
 
   return session;
 }
 
-//
+// --
+// forming
+// --
 
 function pathsForm()
 {
@@ -139,6 +161,27 @@ function pathsForm()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
+
+  if( session.withModule !== null )
+  session.withModule = _.arrayAs( session.withModule );
+
+  if( session.basePath === null )
+  {
+    let common = [];
+    if( session.withModule )
+    for( let b = 0 ; b < session.withModule.length ; b++ )
+    {
+      common.push( _.module.resolve( session.withModule[ b ] ) );
+    }
+    if( session.entryPath )
+    {
+      session.entryPath = path.canonize( path.resolve( session.entryPath ) );
+      common.push( session.entryPath );
+    }
+    session.basePath = path.canonize( path.common( common ) );
+    if( session.basePath === session.entryPath )
+    session.basePath = path.dir( session.basePath );
+  }
 
   session.basePath = path.resolve( session.basePath || '.' );
   if( session.allowedPath === null )
@@ -178,7 +221,16 @@ function entryFind()
 
   session.entryPath = found[ 0 ].absolute;
 
-  if( session.servlet && path.isAbsolute( session.entryPath ) )
+  if( session.format === null )
+  {
+    let exts = path.exts( session.entryPath );
+    if( _.longHas( exts, 'html' ) || _.longHas( exts, 'htm' ) )
+    session.format = 'html';
+    if( session.format === null )
+    session.format = 'js';
+  }
+
+  if( session.servlet && path.isAbsolute( session.entryPath ) && session.format )
   session.entryUriForm();
 
 }
@@ -194,21 +246,11 @@ function servletOpen()
 
   _.assert( session.servlet === null );
 
-  // let o2 = Object.create( null );
-  // o2.basePath = session.basePath;
-  // o2.templatePath = session.templatePath;
-  // o2.allowedPath = session.allowedPath;
-  // o2.system = session.system;
-  // o2.loggingApplication = session.loggingApplication;
-  // o2.loggingConnection = session.loggingConnection;
-  // o2.proceduring = session.proceduring;
-  // o2.catchingUncaughtErrors = session.catchingUncaughtErrors;
-
   let o2 = _.mapOnly( session, _.starter.Servlet.FieldsOfRelationsGroups );
   session.servlet = new _.starter.Servlet( o2 );
   session.servlet.form();
 
-  if( session.servlet && path.isAbsolute( session.entryPath ) )
+  if( session.servlet && path.isAbsolute( session.entryPath ) && session.format )
   session.entryUriForm();
 
 }
@@ -222,12 +264,148 @@ function entryUriForm()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
-  session.entryShortUri = _.uri.join( session.servlet.openPathGet(), _.path.relative( session.basePath, session.entryPath ) );
-  session.entryFullUri = _.uri.join( session.entryShortUri, '?entry:1' );
+  _.assert( _.strDefined( session.format ) );
+  _.assert( session.entryUri === null );
+  _.assert( session.entryWithQueryUri === null );
+
+  session.entryUri = _.uri.join( session.servlet.openUriGet(), _.path.relative( session.basePath, session.entryPath ) );
+
+  if( session.format === 'html' )
+  session.entryWithQueryUri = session.entryUri;
+  else if( session.format === 'js' )
+  session.entryWithQueryUri = _.uri.join( session.entryUri, `://?entry:1` );
+  else
+  session.entryWithQueryUri = _.uri.join( session.entryUri, `://?entry:1&format:${session.format}` );
+
+}
+
+// --
+// error
+// --
+
+function errorEncounterEnd( err )
+{
+  let session = this;
+
+  err = _.err( err );
+  if( session.error === null )
+  session.error = err;
+  logger.error( _.errOnce( err ) );
+
+  logger.log( '' );
+  logger.log( session.exportString() );
+  logger.log( '' );
+
+  return err;
+}
+
+// --
+// export
+// --
+
+function exportStructure( o )
+{
+  let session = this;
+
+  o = _.routineOptions( exportStructure, arguments );
+
+  let dst = _.mapOnly( session, session.Composes );
+
+  if( o.contraction )
+  for( let k in dst )
+  if( dst[ k ] === null )
+  delete dst[ k ];
+
+  if( o.dst === null )
+  o.dst = dst;
+  else
+  _.mapExtend( o.dst, dst );
+
+  return o.dst;
+}
+
+exportStructure.defaults =
+{
+  dst : null,
+  contraction : 1,
+}
+
+//
+
+function exportString()
+{
+  let session = this;
+
+  let structure = session.exportStructure();
+  let result = _.toStrNice( structure );
+
+  return result;
+}
+
+// --
+// time
+// --
+
+function timerForm()
+{
+  let session = this;
+  let system = session.system;
+  let fileProvider = system.fileProvider;
+  let path = system.fileProvider.path;
+
+  _.assert( session._timeOutTimer === null );
+
+  if( session.timeOut )
+  session._timeOutTimer = _.time.begin( session.timeOut, () =>
+  {
+    if( session.unforming )
+    return;
+    if( _.workpiece.isFinited( session ) )
+    return;
+
+    session._timeOutTimer = null;
+
+    session._timerTimeOutEnd();
+
+  });
 
 }
 
 //
+
+function timerCancel()
+{
+  let session = this;
+  let system = session.system;
+  let fileProvider = system.fileProvider;
+  let path = system.fileProvider.path;
+
+  if( session._timeOutTimer )
+  {
+    debugger;
+    _.time.cancel( session._timeOutTimer );
+    session._timeOutTimer = null
+  }
+
+}
+
+//
+
+function _timerTimeOutEnd()
+{
+  let session = this;
+  let system = session.system;
+  let fileProvider = system.fileProvider;
+  let path = system.fileProvider.path;
+
+  session.eventGive({ kind : 'timeOut' });
+  session.unform();
+
+}
+
+// --
+// currated
+// --
 
 function curratedRunOpen()
 {
@@ -246,23 +424,17 @@ function curratedRunOpen()
 
   let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome` );
   fileProvider.dirMake( tempDir );
-  debugger;
   _.assert( fileProvider.isDir( tempDir ) );
 
   if( opts.app )
   opts.app.push( `--user-data-dir=${_.path.nativize( tempDir )}` )
 
-  _.Consequence.Try( () => Open( session.entryFullUri, opts ) )
+  _.Consequence.Try( () => Open( session.entryWithQueryUri, opts ) )
   .finally( ( err, process ) =>
   {
     session.process = process;
     if( err )
-    {
-      err = _.err( err );
-      if( !session.error )
-      session.error = err;
-      return logger.error( _.errOnce( err ) ) || null;
-    }
+    return session.errorEncounterEnd( err );
     session.process.on( 'exit', () =>
     {
     });
@@ -388,9 +560,9 @@ function _curratedRunPageClose( o )
     if( o.targetId === undefined || o.targetId === null )
     {
       let targets = await session.cdp.Target.getTargets();
-      let filtered = _.filter( targets.targetInfos, { url : session.entryFullUri } );
-      _.sure( filtered.length >= 1, `Found no tab with URI::${session.entryFullUri}` );
-      _.sure( filtered.length <= 1, `Found ${filtered.length} tabs with URI::${session.entryFullUri}` );
+      let filtered = _.filter( targets.targetInfos, { url : session.entryWithQueryUri } );
+      _.sure( filtered.length >= 1, `Found no tab with URI::${session.entryWithQueryUri}` );
+      _.sure( filtered.length <= 1, `Found ${filtered.length} tabs with URI::${session.entryWithQueryUri}` );
       o.targetId = filtered[ 0 ].targetId;
     }
     return await session.cdp.Target.closeTarget( o );
@@ -483,13 +655,7 @@ async function _cdpConnect( o )
   catch( err )
   {
     if( o.throwing )
-    {
-      err = _.err( err );
-      if( session.error === null )
-      session.error = err;
-      logger.error( _.errOnce( err ) );
-      throw err;
-    }
+    throw session.errorEncounterEnd( err );
   }
   // finally
   // {
@@ -592,11 +758,7 @@ function cdpClose()
 
   ready.catch( ( err ) =>
   {
-    err = _.err( err );
-    if( !session.error )
-    session.error = err;
-    logger.error( _.errOnce( err ) )
-    return null;
+    return session.errorEncounterEnd( err );
   });
 
   ready.then( ( arg ) =>
@@ -619,8 +781,11 @@ let Bools =
   headless : 0, /* qqq xxx : cover? */
   loggingApplication : 1, /* qqq xxx : cover */
   loggingConnection : 0, /* qqq xxx : cover */
+  loggingSessionEvents : 1, /* qqq xxx : cover */
+  loggingOptions : 0, /* qqq xxx : cover */
   proceduring : 1, /* qqq xxx : cover */
   catchingUncaughtErrors : 1, /* qqq xxx : cover */
+  naking : 0, /* qqq xxx : cover */
 
 }
 
@@ -631,8 +796,12 @@ let Composes =
   entryPath : null,
   allowedPath : null,
   templatePath : null,
-  entryShortUri : null,
-  entryFullUri : null,
+  entryUri : null,
+  entryWithQueryUri : null,
+  format : null,
+  withModule : null,
+
+  timeOut : 0,
 
   ... Bools,
 
@@ -655,6 +824,8 @@ let Restricts =
   curratedRunState : null,
   unforming : 0,
 
+  _timeOutTimer : null,
+
   cdp : null,
   _cdpTrackingPeriod : 500,
   _cdpPort : null,
@@ -672,6 +843,7 @@ let Events =
   'curatedRunLaunchBegin' : {},
   'curatedRunLaunchEnd' : {},
   'curatedRunTerminateEnd' : {},
+  'timeOut' : {},
 }
 
 let Accessor =
@@ -685,19 +857,34 @@ let Accessor =
 let Proto =
 {
 
+  // inter
+
   finit,
   init,
   unform,
   form,
-
-  /* */
 
   pathsForm,
   entryFind,
   servletOpen,
   entryUriForm,
 
-  /* curated run */
+  // etc
+
+  errorEncounterEnd,
+
+  // export
+
+  exportStructure,
+  exportString,
+
+  // time
+
+  timerForm,
+  timerCancel,
+  _timerTimeOutEnd,
+
+  // curated run
 
   curratedRunOpen,
   _curatedRunLaunchBegin,
@@ -709,14 +896,14 @@ let Proto =
   _curratedRunPageClose,
   _CurratedRunWindowIsOpened,
 
-  /* cdp */
+  // cdp
 
   _cdpConnect,
   cdpConnect,
   _cdpReconnectAndClose,
   cdpClose,
 
-  /* */
+  // relations
 
   Bools,
   Composes,

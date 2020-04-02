@@ -4,8 +4,11 @@ starter .start proto/experiment/F1.js
 cls && local-starter .start builder/include/experiment/F1.js
 */
 
+debugger;
 console.log( 'F1:before' );
-require( './F2.js' );
+let got = require( './F2.js' );
+console.log( `F1:${typeof got}`,  );
 console.log( 'F1:after' );
+module.exports = 'F1';
 
-setTimeout( () => process.exit(), 3000 );
+// setTimeout( () => process.exit(), 3000 );

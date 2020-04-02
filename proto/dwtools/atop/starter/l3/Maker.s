@@ -81,18 +81,14 @@ function sourceWrapSplits( o )
 
   if( o.interpreter === 'browser' )
   ware +=
-`
-/* */  if( typeof _starter_ === 'undefined' && importScripts ) /* qqq xxx : ? */
+`/* */  if( typeof _starter_ === 'undefined' && typeof importScripts !== 'undefined' ) /* qqq xxx : ? */
 /* */  importScripts( '/.starter' );
 /* */  let _filePath_ = _starter_._pathResolve( null, '/', '${relativeFilePath}' );
-/* */  let _dirPath_ = _starter_._pathResolve( null, '/', '${relativeDirPath}' );
-`
+/* */  let _dirPath_ = _starter_._pathResolve( null, '/', '${relativeDirPath}' );`
   else
   ware +=
-`
-/* */  let _filePath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeFilePath}' );
-/* */  let _dirPath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeDirPath}' );
-`
+`/* */  let _filePath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeFilePath}' );
+/* */  let _dirPath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeDirPath}' );`
 
   ware +=
 `
@@ -104,8 +100,11 @@ function sourceWrapSplits( o )
 /* */  let include = module.include;
 `
 
+  // if( o.running )
+  // ware += `/* */  ${fileNameNaked}();`;
+
   if( o.running )
-  ware += `/* */  ${fileNameNaked}();`;
+  ware += `/* */  _starter_._sourceIncludeAct( null, module, module.filePath );`;
 
   let postfix1 =
 `
@@ -867,23 +866,26 @@ function htmlSplitsFor( o )
     let document = dom.window.document;
 
     if( o.starterIncluding === 'include' )
-    appendScript( '/.starter' );
+    addScript( document, '/.starter' );
 
     for( let filePath in o.srcScriptsMap )
-    appendScript( filePath );
+    addScript( document, filePath );
 
     return dom.serialize();
-
-    /* */
-
-    function appendScript( src )
-    {
-      let script = document.createElement( 'script' );
-      script.type = 'text/javascript';
-      script.src = src;
-      document.head.appendChild( script );
-    }
   }
+
+  /* */
+
+  function addScript( document, filePath )
+  {
+    let script = document.createElement( 'script' );
+    script.type = 'text/javascript';
+    script.src = filePath;
+    document.head.insertBefore( script, document.head.children[ 0 ] )
+  }
+
+  /* */
+
 }
 
 htmlSplitsFor.defaults =

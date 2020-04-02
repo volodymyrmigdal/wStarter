@@ -277,9 +277,6 @@ function htmlFor( o )
 
   o.outPath = o.outPath || sourcesJoin.defaults.outPath;
   o.outPath = path.resolve( o.basePath, o.outPath );
-
-  /* */
-
   o.basePath = path.resolve( basePath || '.' );
 
   /* */
@@ -348,10 +345,15 @@ httpOpen.defaults =
   basePath : null,
   allowedPath : null,
   templatePath : null,
+  withModule : null,
   loggingApplication : 0,
   loggingConnection : 1,
+  loggingSessionEvents : null,
+  loggingOptions : null,
   proceduring : null,
   catchingUncaughtErrors : null,
+  naking : null,
+  timeOut : null,
 }
 
 //
@@ -379,7 +381,6 @@ var defaults = start.defaults = _.mapExtend( null, httpOpen.defaults );
 
 defaults.loggingApplication = 1;
 defaults.loggingConnection = 0;
-
 defaults.entryPath = null;
 defaults.curating = 1;
 defaults.headless = 0;
@@ -393,6 +394,7 @@ let Composes =
 
   verbosity : 3,
   servletsMap : _.define.own({}),
+  servletsArray : _.define.own([]),
   sessionArray : _.define.own([]),
   sessionCounter : 0,
 

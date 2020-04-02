@@ -28,7 +28,7 @@ function onSuiteBegin()
   context.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
   context.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
   context.willbeExecPath = _.module.resolve( 'willbe' );
-  context.execJsPath = _.module.resolve( 'wStarter' );
+  context.appJsPath = _.module.resolve( 'wStarter' );
 
 }
 
@@ -216,17 +216,17 @@ async function includeCss( test )
     curating : 0
   })
 
+  var parsed = _.uri.parse( session.entryWithQueryUri );
+
   try
   {
     window = await _.puppet.windowOpen({ headless : true });
     page = await window.pageOpen();
 
-    debugger;
-    await page.goto( session.entryFullUri );
-    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryWithQueryUri );
 
     var got = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
-    test.identical( got, [ 'http://127.0.0.1:5000/.starter', 'http://127.0.0.1:5000/index.js' ] )
+    test.identical( got, [ `${parsed.origin}/.starter`, `${parsed.origin}/index.js` ] );
 
     var got = await page.eval( () =>
     {
@@ -264,18 +264,19 @@ async function includeExcludingManual( test )
     curating : 0,
   })
 
+  var parsed = _.uri.parse( session.entryWithQueryUri );
+
   try
   {
     window = await _.puppet.windowOpen({ headless : true });
     page = await window.pageOpen();
 
-    await page.goto( session.entryFullUri );
-    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryWithQueryUri );
 
     var scripts = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
     test.identical( scripts.length, 3 );
-    test.identical( scripts[ 0 ], 'http://127.0.0.1:5000/.starter' );
-    test.identical( scripts[ 1 ], 'http://127.0.0.1:5000/index.js' );
+    test.identical( scripts[ 0 ], `${parsed.origin}/.starter` );
+    test.identical( scripts[ 1 ], `${parsed.origin}/index.js` );
     test.is( _.strHas( scripts[ 2 ], './src/File.js' ) );
 
     await window.close();
@@ -309,13 +310,14 @@ async function includeModule( test )
     curating : 0,
   })
 
+  var parsed = _.uri.parse( session.entryWithQueryUri );
+
   try
   {
     window = await _.puppet.windowOpen({ headless : true });
     page = await window.pageOpen();
 
-    await page.goto( session.entryFullUri );
-    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryWithQueryUri );
 
     var result = await page.eval( () =>
     {
@@ -358,6 +360,8 @@ async function workerWithInclude( test )
     curating : 0,
   })
 
+  var parsed = _.uri.parse( session.entryWithQueryUri );
+
   try
   {
     window = await _.puppet.windowOpen({ headless : true });
@@ -366,8 +370,7 @@ async function workerWithInclude( test )
 
     page.on( 'console', msg => output += msg.text() + '\n' );
 
-    await page.goto( session.entryFullUri );
-    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryWithQueryUri );
     await _.time.out( 1500 );
 
     test.is( _.strHas( output, 'Global: Window' ) )
@@ -408,6 +411,8 @@ async function includeModuleInWorker( test )
     curating : 0,
   })
 
+  var parsed = _.uri.parse( session.entryWithQueryUri );
+
   try
   {
     window = await _.puppet.windowOpen({ headless : true });
@@ -416,8 +421,7 @@ async function includeModuleInWorker( test )
 
     page.on( 'console', msg => output += msg.text() + '\n' );
 
-    await page.goto( session.entryFullUri );
-    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryWithQueryUri );
 
     await _.time.out( 5000 );
 
@@ -463,6 +467,8 @@ async function includeModuleInWorkerThrowing( test )
     curating : 0,
   })
 
+  var parsed = _.uri.parse( session.entryWithQueryUri );
+
   try
   {
     window = await _.puppet.windowOpen({ headless : true });
@@ -471,8 +477,7 @@ async function includeModuleInWorkerThrowing( test )
 
     page.on( 'console', msg => output += msg.text() + '\n' );
 
-    await page.goto( session.entryFullUri );
-    // await page.goto( 'http://127.0.0.1:5000/index.js/?entry:1' );
+    await page.goto( session.entryWithQueryUri );
 
     await _.time.out( 5000 );
 
@@ -511,6 +516,7 @@ async function curatedRunWindowOpenCloseAutomatic( test )
   var session = await starter.start
   ({
     entryPath : a.originalAbs( './F1.js' ),
+    headless : 1,
   })
 
   test.identical( session.curratedRunState, 'launching' );
@@ -547,6 +553,7 @@ async function curatedRunWindowOpenCloseWindowManually( test )
   var session = await starter.start
   ({
     entryPath : a.originalAbs( './F1.js' ),
+    headless : 1,
   })
 
   test.identical( session.curratedRunState, 'launching' );
@@ -585,6 +592,7 @@ async function curatedRunWindowOpenClosePageManually( test )
   var session = await starter.start
   ({
     entryPath : a.originalAbs( './F1.js' ),
+    headless : 1,
   })
 
   test.identical( session.curratedRunState, 'launching' );
@@ -626,6 +634,7 @@ async function curatedRunEventsCloseAutomatic( test )
   {
     system,
     entryPath : a.originalAbs( './F1.js' ),
+    headless : 1,
   }
   let session = new _.starter.Session( opts );
 
@@ -682,6 +691,7 @@ async function curatedRunEventsCloseWindowManually( test )
   {
     system,
     entryPath : a.originalAbs( './F1.js' ),
+    headless : 1,
   }
   let session = new _.starter.Session( opts );
 
@@ -740,6 +750,7 @@ async function curatedRunEventsClosePageManually( test )
   {
     system,
     entryPath : a.originalAbs( './F1.js' ),
+    headless : 1,
   }
   let session = new _.starter.Session( opts );
 
@@ -804,13 +815,13 @@ var Self =
 
     suiteTempPath : null,
     assetsOriginalSuitePath : null,
-    execJsPath : null,
+    appJsPath : null,
     willbeExecPath : null,
     find : null,
 
     deltaTime1 : 250,
-    deltaTime2 : 1000,
-    deltaTime3 : 5000,
+    deltaTime2 : 3000,
+    deltaTime3 : 15000,
 
   },
 
