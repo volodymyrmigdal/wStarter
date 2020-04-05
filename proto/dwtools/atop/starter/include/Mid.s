@@ -11,12 +11,10 @@ if( typeof module !== 'undefined' )
 
   require( '../l3/Maker.s' );
 
-  if( Config.interpreter === 'njs' )
-  {
-    require( '../l5/Center.s' );
-    require( '../l5/Servlet.s' );
-    require( '../l5/Session.s' );
-  }
+  require( '../l5/Center.s' );
+  require( '../l5/Maker2.s' );
+  require( '../l5/Servlet.s' );
+  require( '../l5/Session.s' );
 
   require( '../l7/System.s' );
 

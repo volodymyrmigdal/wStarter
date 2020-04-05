@@ -31,6 +31,21 @@ function finit()
 
 //
 
+function instanceOptions( o )
+{
+  let self = this;
+
+  for( let k in o )
+  {
+    if( o[ k ] === null && self[ k ] !== null && self[ k ] !== undefined )
+    o[ k ] = self[ k ];
+  }
+
+  return o;
+}
+
+//
+
 function unform()
 {
   let servlet = this;
@@ -82,9 +97,6 @@ function form()
   _.arrayAppendOnceStrictly( system.servletsArray, servlet );
   servlet.formed = 1;
 
-  // let o2 = _.mapOnly( servlet, servlet.scriptWrap_functor.defaults );
-  // o2.starterMaker = servlet.system.maker;
-  // servlet._requestScriptWrapHandler = servlet.scriptWrap_functor( o2 );
   servlet._requestScriptWrapHandler = servlet.scriptWrap_functor();
 
   if( servlet.serverPath )
@@ -138,10 +150,6 @@ function serverForm()
 
   express.use( ( request, response, next ) => servlet.requestMidHandler({ request, response, next }) );
 
-  // let o2 = _.mapOnly( servlet, servlet.scriptWrap_functor.defaults );
-  // o2.starterMaker = servlet.system.maker;
-  // servlet._requestScriptWrapHandler = servlet.scriptWrap_functor( o2 );
-  // servlet._requestScriptWrapHandler = servlet.scriptWrap_functor();
   express.use( ( request, response, next ) => servlet._requestScriptWrapHandler({ request, response, next }) );
 
   express.use( parsedServerPath.resourcePath, Express.static( _.path.nativize( servlet.basePath ) ) );
@@ -214,7 +222,7 @@ function requestPreHandler( o )
   _.servlet.controlRequestPreHandle
   ({
     allowCrossDomain : servlet.allowCrossDomain,
-    verbosity : servlet.verbosity,
+    verbosity : servlet.verbosity-2,
     request : o.request,
     response : o.response,
     next : o.next,
@@ -296,24 +304,21 @@ function htmlForHtml( o )
 {
   let servlet = this;
   let system = servlet.system;
-  // let resourcePath = o.uri.resourcePath;
-  // let resourcePath = o.resourcePath;
 
   _.routineOptions( htmlForHtml, o );
 
   if( o.realPath === null )
-  o.realPath = _.path.reroot( servlet.basePath, o.resourcePath );
+  o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.resourcePath ) );
 
-  let title = _.path.fullName( o.realPath );
+  let o2 = Object.create( null );
+  o2.inPath = false;
+  o2.basePath = servlet.basePath;
+  o2.outPath = false;
+  o2.templatePath = o.realPath;
+  o2.allowedPath = servlet.allowedPath;
+  o2.withScripts = servlet.withScripts;
 
-  servlet.surePathAllowed( o.realPath );
-
-  let template = _.fileProvider.fileRead( o.realPath );
-  let html = system.maker.htmlFor
-  ({
-    title,
-    template,
-  });
+  let html = system.maker.htmlForFiles( o2 );
 
   if( o.response )
   {
@@ -323,6 +328,26 @@ function htmlForHtml( o )
   }
 
   return html;
+
+  // let title = _.path.fullName( o.realPath );
+  //
+  // servlet.surePathAllowed( o.realPath );
+  //
+  // let template = _.fileProvider.fileRead( o.realPath );
+  // let html = system.maker.htmlFor
+  // ({
+  //   title,
+  //   template,
+  // });
+  //
+  // if( o.response )
+  // {
+  //   o.response.setHeader( 'Content-Type', 'text/html; charset=UTF-8' );
+  //   o.response.write( html );
+  //   o.response.end();
+  // }
+  //
+  // return html;
 }
 
 htmlForHtml.defaults =
@@ -340,58 +365,69 @@ function htmlForJs( o )
   let servlet = this;
   let system = servlet.system;
 
-  if( o.realPath === null )
-  o.realPath = _.path.reroot( servlet.basePath, o.resourcePath );
-
   _.routineOptions( htmlForJs, o );
 
-  let filter = { filePath : _.path.detrail( o.realPath ), basePath : servlet.basePath };
-  let resolvedFilePath = _.fileProvider.filesFind
-  ({
-    filter,
-    mode : 'distinct',
-    mandatory : 0,
-    withDirs : 0,
-    withDefunct : 0,
-    withStem : 1
-  });
+  if( o.realPath === null )
+  o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.resourcePath ) );
 
-  if( !resolvedFilePath.length )
-  {
-    let err = _.err( `Found no ${o.resourcePath || o.realPath}` );
-    if( o.request && o.response )
-    {
-      return _.servlet.errorHandle
-      ({
-        request : o.request,
-        response : o.response,
-        err : err,
-      });
-    }
-    else
-    {
-      throw err;
-    }
-  }
+  let o2 = Object.create( null );
+  o2.inPath = o.realPath;
+  o2.basePath = servlet.basePath;
+  o2.outPath = false;
+  o2.templatePath = servlet.templatePath;
+  o2.allowedPath = servlet.allowedPath;
+  o2.withScripts = servlet.withScripts;
 
-  let srcScriptsMap = Object.create( null );
-  resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p.absolute ) );
-  resolvedFilePath.forEach( ( p ) =>
-  {
-    srcScriptsMap[ _.path.join( '/', p.relative ) ] = _.fileProvider.fileRead( p.absolute );
-  });
-  let title = _.path.fullName( resolvedFilePath[ 0 ].absolute );
+  let html = system.maker.htmlForFiles( o2 );
 
-  let template = null;
-  if( servlet.templatePath )
-  template = _.fileProvider.fileRead( servlet.templatePath );
-
-  let html = system.maker.htmlFor
-  ({
-    srcScriptsMap,
-    title,
-    template
-  });
+  // let filter = { filePath : _.path.detrail( o.realPath ), basePath : servlet.basePath };
+  // let resolvedFilePath = _.fileProvider.filesFind
+  // ({
+  //   filter,
+  //   mode : 'distinct',
+  //   mandatory : 0,
+  //   withDirs : 0,
+  //   withDefunct : 0,
+  //   withStem : 1
+  // });
+  //
+  // if( !resolvedFilePath.length )
+  // {
+  //   let err = _.err( `Found no ${o.resourcePath || o.realPath}` );
+  //   if( o.request && o.response )
+  //   {
+  //     return _.servlet.errorHandle
+  //     ({
+  //       request : o.request,
+  //       response : o.response,
+  //       err : err,
+  //     });
+  //   }
+  //   else
+  //   {
+  //     throw err;
+  //   }
+  // }
+  //
+  // let srcScriptsMap = Object.create( null );
+  // resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p.absolute ) );
+  // resolvedFilePath.forEach( ( p ) =>
+  // {
+  //   srcScriptsMap[ _.path.join( '/', p.relative ) ] = '';
+  //   // srcScriptsMap[ _.path.join( '/', p.relative ) ] = _.fileProvider.fileRead( p.absolute );
+  // });
+  // let title = _.path.fullName( resolvedFilePath[ 0 ].absolute );
+  //
+  // let template = null;
+  // if( servlet.templatePath )
+  // template = _.fileProvider.fileRead( servlet.templatePath );
+  //
+  // let html = system.maker.htmlFor
+  // ({
+  //   srcScriptsMap,
+  //   title,
+  //   template
+  // });
 
   if( o.response )
   {
@@ -414,15 +450,83 @@ htmlForJs.defaults =
 
 //
 
+function jsSingleForJs( o )
+{
+  let servlet = this;
+  let system = servlet.system;
+  let maker = servlet.maker;
+
+  o = _.routineOptions( jsSingleForJs, arguments );
+
+  try
+  {
+
+    let o2 = _.mapOnly( servlet, system.maker.sourcesJoinFiles.defaults );
+    o2.entryPath = o.realPath
+    o2.inPath = servlet.basePath + '/**';
+    o2.basePath = servlet.basePath;
+    o2.interpreter = 'browser';
+    o2.libraryName = _.path.fullName( o.realPath );
+    o2.outPath = null;
+
+    _.assert( _.strDefined( o2.entryPath ) );
+    _.assert( _.strDefined( o2.inPath ) );
+    _.assert( _.strDefined( o2.basePath ) );
+
+    debugger;
+    let data = system.maker.sourcesJoinFiles( o2 );
+    debugger;
+
+    if( o.response )
+    {
+      o.response.write( data );
+      o.response.end();
+    }
+
+    return data;
+  }
+  catch( err )
+  {
+    err = _.err( err );
+    if( o.request && o.response )
+    {
+      return _.servlet.errorHandle
+      ({
+        request : o.request,
+        response : o.response,
+        err : err,
+      });
+    }
+    else
+    {
+      throw err;
+    }
+  }
+
+}
+
+jsSingleForJs.defaults =
+{
+  realPath : null,
+  request : null,
+  response : null,
+}
+
+//
+
 function jsForJs( o )
 {
   let servlet = this;
   let system = servlet.system;
 
-  _.routineOptions( jsForJs, arguments );
+  o =_.routineOptions( jsForJs, arguments );
+  // servlet.instanceOptions( o ); /* xxx : remove */
 
   if( o.realPath === null )
-  o.realPath = _.path.reroot( servlet.basePath, o.resourcePath );
+  o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.resourcePath ) );
+
+  if( o.withScripts === 'single' )
+  return servlet.jsSingleForJs({ realPath, request, response });
 
   let splits = system.maker.sourceWrapSplits
   ({
@@ -445,9 +549,8 @@ function jsForJs( o )
 
   let state = 0;
 
-  debugger;
-  if( servlet.verbosity )
-  console.log( ' . scriptWrap', o.uri.resourcePath, 'of', o.realPath );
+  if( servlet.verbosity >= 5 )
+  console.log( ' . scriptWrap', o.resourcePath, 'of', o.realPath );
 
   stream.on( 'open', function()
   {
@@ -500,6 +603,7 @@ jsForJs.defaults =
   request : null,
   response : null,
   next : null,
+  withScripts : null,
 }
 
 //
@@ -507,8 +611,6 @@ jsForJs.defaults =
 function remoteResolve( o )
 {
   let servlet = this;
-  // let filePath = _.strRemoveBegin( o.uri.resourcePath, '/.resolve/' );
-  // filePath = _.path.reroot( servlet.basePath, filePath );
 
   _.routineOptions( remoteResolve, arguments );
 
@@ -628,15 +730,6 @@ function scriptWrap_functor( fop )
 
   fop = _.routineOptions( scriptWrap_functor, arguments );
 
-  // if( servlet.system === null )
-  // servlet.system = new _.starter.System();
-  //
-  // if( servlet.incudingExts === null )
-  // servlet.incudingExts = [ 's', 'js', 'ss' ];
-  //
-  // if( servlet.excludingExts === null )
-  // servlet.excludingExts = [ 'raw', 'usefile' ];
-
   _.assert( servlet instanceof _.starter.Servlet );
   _.assert( system instanceof _.starter.System );
   _.assert( system.maker instanceof _.starter.Maker );
@@ -650,17 +743,12 @@ function scriptWrap_functor( fop )
 
   if( !fop.ware )
   {
-    let splits = system.maker.sourcesJoinSplits
-    ({
-      interpreter : 'browser',
-      libraryName : 'Application',
-      proceduring : servlet.proceduring,
-      loggingApplication : servlet.loggingApplication,
-    });
-    fop.ware = system.maker.librarySplitsJoin( splits );
+    let o2 = _.mapOnly( servlet, system.maker.sourcesJoinSplits.defaults );
+    o2.interpreter = 'browser';
+    o2.libraryName = 'Starter';
+    let splits = system.maker.sourcesJoinSplits( o2 );
+    fop.ware = system.maker.sourcesSplitsJoin( splits );
   }
-
-  // let fileProvider = _.FileProvider.HardDrive({ encoding : 'utf8' });
 
   scriptWrap.defaults =
   {
@@ -687,8 +775,6 @@ function scriptWrap_functor( fop )
     o.query.running = 1;
     o.query.running = !!o.query.running;
 
-    debugger;
-
     if( o.uri.resourcePath === '/.starter' )
     {
       return servlet.starterWareReturn( o );
@@ -704,8 +790,18 @@ function scriptWrap_functor( fop )
       });
     }
 
-    o.realPath = _.path.normalize( _.path.reroot( servlet.basePath, o.uri.longPath ) );
+    o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.uri.longPath ) );
     o.shortName = _.strVarNameFor( _.path.fullName( o.realPath ) );
+
+    if( o.query.withScripts === 'single' )
+    {
+      return servlet.jsSingleForJs
+      ({
+        realPath : o.realPath,
+        response : o.response,
+        request : o.request,
+      });
+    }
 
     if( o.query.entry )
     {
@@ -727,9 +823,6 @@ function scriptWrap_functor( fop )
         next : o.next,
       });
     }
-
-    o.realPath = _.path.normalize( _.path.reroot( servlet.basePath, o.uri.longPath ) );
-    o.shortName = _.strVarNameFor( _.path.fullName( o.realPath ) );
 
     if( _.longHasAny( servlet.excludingExts, o.exts ) )
     return o.next();
@@ -762,6 +855,7 @@ function scriptWrap_functor( fop )
       response : o.response,
       request : o.request,
     });
+
   }
 
   /* - */
@@ -781,22 +875,6 @@ function scriptWrap_functor( fop )
 }
 
 var defaults = scriptWrap_functor.defaults = Object.create( null );
-
-// defaults.system = null;
-// defaults.servlet = null;
-
-// defaults.basePath = null;
-// defaults.allowedPath = '/';
-// defaults.verbosity = 0;
-// defaults.incudingExts = null;
-// defaults.excludingExts = null;
-// defaults.starterMaker = null;
-// defaults.templatePath = null;
-//
-// defaults.resolvingGlob = 1;
-// defaults.resolvingNpm = 1;
-// defaults.proceduring = 0;
-// defaults.loggingApplication = 0;
 
 //
 
@@ -830,8 +908,6 @@ defaults.resolvingNpm = 1;
 defaults.proceduring = 0;
 defaults.loggingApplication = 0;
 
-// defaults.starterMaker = null;
-
 // --
 // relations
 // --
@@ -845,6 +921,7 @@ let Composes =
   proceduring : 0,
   catchingUncaughtErrors : 1,
   naking : 0,
+  withScripts : 'include',
 
   resolvingGlob : 1,
   resolvingNpm : 1,
@@ -864,7 +941,7 @@ let Composes =
 
 let Associates =
 {
-  system : null,
+  system : null, /* xxx : remove? */
   httpServer : null,
   express : null,
   loggerSocket : null,
@@ -881,7 +958,7 @@ let Statics =
   ScriptWrap_functor,
 }
 
-let Accessor =
+let Accessors =
 {
   verbosity : { getter : _verbosityGet, readOnly : 1 },
 }
@@ -899,6 +976,7 @@ let Proto =
 {
 
   finit,
+  instanceOptions,
   unform,
   form,
   serverForm,
@@ -914,6 +992,7 @@ let Proto =
 
   htmlForHtml,
   htmlForJs,
+  jsSingleForJs,
   jsForJs,
   remoteResolve,
   starterWareReturn,
@@ -928,7 +1007,7 @@ let Proto =
   Associates,
   Restricts,
   Statics,
-  Accessor,
+  Accessors,
 
 }
 

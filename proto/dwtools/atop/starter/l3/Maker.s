@@ -8,6 +8,7 @@
 
 //
 
+let Jsdom, Pretty;
 let _ = _global_.wTools;
 let Parent = null
 let Self = function wStarterMakerLight( o )
@@ -44,12 +45,21 @@ let LibrarySplits =
 
 function instanceOptions( o )
 {
-  let self = this;
+  let maker = this;
 
+  _.assert( arguments.length === 0 || arguments.length === 1 );
+
+  if( o )
   for( let k in o )
   {
-    if( o[ k ] === null && _.longHas( self.InstanceDefaults, k ) )
-    o[ k ] = self[ k ];
+    if( o[ k ] === null && maker.InstanceDefaults[ k ] !== undefined )
+    o[ k ] = maker[ k ];
+  }
+  else
+  for( let k in maker.InstanceDefaults )
+  {
+    if( maker[ k ] === null && maker.InstanceDefaults[ k ] !== undefined )
+    maker[ k ] = maker.InstanceDefaults[ k ];
   }
 
   return o;
@@ -61,7 +71,7 @@ function instanceOptions( o )
 
 function sourceWrapSplits( o )
 {
-  let self = this;
+  let maker = this;
 
   _.routineOptions( sourceWrapSplits, arguments );
   _.assert( arguments.length === 1 );
@@ -100,9 +110,6 @@ function sourceWrapSplits( o )
 /* */  let include = module.include;
 `
 
-  // if( o.running )
-  // ware += `/* */  ${fileNameNaked}();`;
-
   if( o.running )
   ware += `/* */  _starter_._sourceIncludeAct( null, module, module.filePath );`;
 
@@ -132,15 +139,15 @@ sourceWrapSplits.defaults =
 
 function sourceWrap( o )
 {
-  let self = this;
+  let maker = this;
   _.assert( arguments.length === 1 );
   _.routineOptions( sourceWrap, arguments );
-  self.instanceOptions( o );
+  maker.instanceOptions( o );
 
   if( o.removingShellPrologue )
-  o.fileData = self.sourceRemoveShellPrologue( o.fileData );
+  o.fileData = maker.sourceRemoveShellPrologue( o.fileData );
 
-  let splits = self.sourceWrapSplits({ filePath : o.filePath, basePath : o.basePath });
+  let splits = maker.sourceWrapSplits({ filePath : o.filePath, basePath : o.basePath });
   let result = splits.prefix1 + splits.prefix2 + o.fileData + splits.postfix2 + splits.ware + splits.postfix1;
   return result;
 }
@@ -153,13 +160,13 @@ defaults.removingShellPrologue = null;
 
 function sourceWrapSimple( o )
 {
-  let self = this;
+  let maker = this;
   _.assert( arguments.length === 1 );
   _.routineOptions( sourceWrapSimple, arguments );
-  self.instanceOptions( o );
+  maker.instanceOptions( o );
 
   if( o.removingShellPrologue )
-  o.fileData = self.sourceRemoveShellPrologue( o.fileData );
+  o.fileData = maker.sourceRemoveShellPrologue( o.fileData );
 
   let fileName = _.strCamelize( _.path.fullName( o.filePath ) );
 
@@ -192,7 +199,7 @@ qqq : investigate and add test case for such case
 
 function sourceRemoveShellPrologue( fileData )
 {
-  let self = this;
+  let maker = this;
   let splits = _.strSplitFast( fileData, /^\s*\#\![^\n]*\n/ );
   _.assert( arguments.length === 1 );
   if( splits.length > 1 )
@@ -207,8 +214,8 @@ function sourceRemoveShellPrologue( fileData )
 
 function sourcesJoinSplits( o )
 {
-  let self = this;
-  let r = _.mapExtend( null, self.LibrarySplits );
+  let maker = this;
+  let r = _.mapExtend( null, maker.LibrarySplits );
   Object.preventExtensions( r );
 
   o = _.routineOptions( sourcesJoinSplits, arguments );
@@ -242,7 +249,7 @@ function sourcesJoinSplits( o )
 `
 /* */  /* begin of predefined */ ( function _predefined_() {
 
-  ${_.routineParse( self.PredefinedCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.PredefinedCode.begin ).bodyUnwrapped};
 
 /* */  _global_._starter_.debug = ${o.debug};
 /* */  _global_._starter_.interpreter = '${o.interpreter}';
@@ -252,7 +259,7 @@ function sourcesJoinSplits( o )
 
 /* */  _global_.Config.debug = ${o.debug};
 
-  ${_.routineParse( self.PredefinedCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.PredefinedCode.end ).bodyUnwrapped};
 
 /* */  /* end of predefined */ })();
 
@@ -264,8 +271,8 @@ function sourcesJoinSplits( o )
 `
 /* */  /* begin of early */ ( function _early_() {
 
-  ${_.routineParse( self.EarlyCode.begin ).bodyUnwrapped};
-  ${_.routineParse( self.EarlyCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.EarlyCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.EarlyCode.end ).bodyUnwrapped};
 
 /* */  /* end of early */ })();
 
@@ -277,11 +284,11 @@ function sourcesJoinSplits( o )
 `
 /* */  /* begin of extract */ ( function _extract_() {
 
-  ${_.routineParse( self.ExtractCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.ExtractCode.begin ).bodyUnwrapped};
 
   ${extract()}
 
-  ${_.routineParse( self.ExtractCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.ExtractCode.end ).bodyUnwrapped};
 
 /* */  /* end of extract */ })();
 
@@ -294,8 +301,8 @@ function sourcesJoinSplits( o )
 `
 /* */  /* begin of proceduring */ ( function _proceduring_() {
 
-  ${_.routineParse( self.ProceduringCode.begin ).bodyUnwrapped};
-  ${_.routineParse( self.ProceduringCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.ProceduringCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.ProceduringCode.end ).bodyUnwrapped};
 
 /* */  /* end of proceduring */ })();
 
@@ -308,8 +315,8 @@ function sourcesJoinSplits( o )
 `
 /* */  /* begin of bro */ ( function _bro_() {
 
-  ${_.routineParse( self.BroCode.begin ).bodyUnwrapped};
-  ${_.routineParse( self.BroCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.BroCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.BroCode.end ).bodyUnwrapped};
 
 /* */  /* end of bro */ })();
 
@@ -322,8 +329,8 @@ function sourcesJoinSplits( o )
 `
 /* */  /* begin of njs */ ( function _njs_() {
 
-  ${_.routineParse( self.NjsCode.begin ).bodyUnwrapped};
-  ${_.routineParse( self.NjsCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.NjsCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.NjsCode.end ).bodyUnwrapped};
 
 /* */  /* end of njs */ })();
 
@@ -335,8 +342,8 @@ function sourcesJoinSplits( o )
 `
 /* */  /* begin of starter */ ( function _starter_() {
 
-  ${_.routineParse( self.StarterCode.begin ).bodyUnwrapped};
-  ${_.routineParse( self.StarterCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.StarterCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.StarterCode.end ).bodyUnwrapped};
 
 /* */  /* end of starter */ })();
 
@@ -370,7 +377,7 @@ function sourcesJoinSplits( o )
   /* external */
 
   if( o.externalBeforePath || o.externalAfterPath )
-  _.assert( _.strIs( o.outPath ), 'Expects out path' );
+  _.assert( _.strDefined( o.outPath ), 'Expects option::outPath if option::externalBeforePath or option::externalAfterPath defined' );
 
   r.externalBefore = '\n';
   if( o.externalBeforePath )
@@ -397,7 +404,10 @@ function sourcesJoinSplits( o )
   o.entryPath.forEach( ( entryPath ) =>
   {
     entryPath = _.path.relative( o.basePath, entryPath );
+    if( o.interpreter === 'njs' )
     r.entry += `/* */  module.exports = _starter_._sourceInclude( null, _libraryFilePath_, './${entryPath}' );\n`;
+    else
+    r.entry += `/* */  _starter_._sourceInclude( null, _libraryFilePath_, './${entryPath}' );\n`;
   });
 
   /* postfix */
@@ -416,7 +426,7 @@ function sourcesJoinSplits( o )
   function extract()
   {
 
-  return `
+    return `
   ${rou( 'assert' )}
   ${rou( 'strIs' )}
   ${rou( 'strDefined' )}
@@ -730,16 +740,16 @@ sourcesJoinSplits.defaults =
 
 function sourcesJoin( o )
 {
-  let self = this;
+  let maker = this;
 
   _.routineOptions( sourcesJoin, arguments );
-  self.instanceOptions( o );
+  maker.instanceOptions( o );
 
   /* */
 
   o.filesMap = _.map( o.filesMap, ( fileData, filePath ) =>
   {
-    return self.sourceWrap
+    return maker.sourceWrap
     ({
       filePath,
       fileData,
@@ -752,12 +762,12 @@ function sourcesJoin( o )
 
   let result = _.mapVals( o.filesMap ).join( '\n' );
 
-  let o2 = _.mapOnly( o, self.sourcesJoinSplits.defaults );
-  let splits = self.sourcesJoinSplits( o2 );
+  let o2 = _.mapOnly( o, maker.sourcesJoinSplits.defaults );
+  let splits = maker.sourcesJoinSplits( o2 );
 
   splits.files = result;
 
-  result = self.librarySplitsJoin( splits );
+  result = maker.sourcesSplitsJoin( splits );
 
   return result;
 }
@@ -769,11 +779,11 @@ defaults.removingShellPrologue = null;
 
 //
 
-function librarySplitsJoin( o )
+function sourcesSplitsJoin( o )
 {
-  let self = this;
+  let maker = this;
 
-  _.routineOptions( librarySplitsJoin, arguments );
+  _.routineOptions( sourcesSplitsJoin, arguments );
 
   for( let i in o )
   {
@@ -798,7 +808,7 @@ function librarySplitsJoin( o )
   return result;
 }
 
-var defaults = librarySplitsJoin.defaults =
+var defaults = sourcesSplitsJoin.defaults =
 {
   ... LibrarySplits,
 }
@@ -809,79 +819,115 @@ var defaults = librarySplitsJoin.defaults =
 
 function htmlSplitsFor( o )
 {
-  let self = this;
+  let maker = this;
   let r = Object.create( null );
 
   _.routineOptions( htmlSplitsFor, arguments );
 
-  if( o.starterIncluding === null )
-  o.starterIncluding = htmlSplitsFor.defaults.starterIncluding;
-  _.assert( _.longHas( [ 'include', 'inline', 0, false ], o.starterIncluding ) );
-  _.assert( o.starterIncluding !== 'inline', 'not implemented' );
-
-  if( o.template )
+  if( o.withScripts === null )
   {
-    r.all = onTemplate();
-    return r;
+    o.withScripts = 'include';
+  }
+  if( o.withStarter === null )
+  {
+    if( o.withScripts === 'single' )
+    o.withStarter = false;
+    else
+    o.withStarter = 'include';
   }
 
-  r.prefix =
+  _.assert( _.longHas( [ 'include', 'inline', 0, false ], o.withStarter ), () => `Expects option::withStarter [ include, inkine, false ], but got ${o.withStarter}` );
+  _.assert( _.longHas( [ 'include', 0, false ], o.withStarter ) );
+  _.assert( _.longHas( [ 'single', 'include', 'inline', 0, false ], o.withScripts ) );
+  _.assert( _.longHas( [ 'single', 'include' ], o.withScripts ) );
+  _.assert( o.withScripts !== 'single' || _.lengthOf( o.srcScriptsMap ) <= 1, 'not implemented' );
+  _.assert( o.withScripts !== 'single' || !o.withStarter, 'If option::withScripts is single then option::withStarter should be off' );
+
+  if( o.template === null )
+  o.template =
 `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${o.title}</title>
-`
-
-  if( o.starterIncluding === 'include' )
-  r.starter = `  <script src="/.starter"></script>\n`;
-
-  r.scripts = [];
-  for( let filePath in o.srcScriptsMap )
-  {
-    let split = `  <script src="${filePath}"></script>`;
-    r.scripts.push( split );
-  }
-
-  r.postfix =
-`
 </head>
 <body>
 </body>
 </html>
 `
 
+  r = templateHandle();
+
   return r;
 
   /* */
 
-  function onTemplate()
+  function templateHandle()
   {
     _.assert( _.strDefined( o.template ) );
 
-    let jsdom = require( 'jsdom' );
-    let dom = new jsdom.JSDOM( o.template );
+    if( !Jsdom )
+    Jsdom = require( 'jsdom' );
+    if( !Pretty && maker.pretty )
+    Pretty = require( 'pretty' );
+
+    let dom = new Jsdom.JSDOM( o.template );
     let document = dom.window.document;
 
-    if( o.starterIncluding === 'include' )
-    addScript( document, '/.starter' );
+    if( o.title )
+    {
+      let title = document.head.querySelector( 'title' );
+      if( !title )
+      {
+        title = document.createElement( 'title' );
+        document.head.insertBefore( title, document.head.children[ 0 ] )
+      }
+      title.text = o.title;
+    }
+
+    if( o.withStarter === 'include' )
+    prependScript( document, '/.starter' );
 
     for( let filePath in o.srcScriptsMap )
-    addScript( document, filePath );
+    {
+      if( o.withScripts === 'include' )
+      appendScript( document, filePath );
+      else if( o.withScripts === 'single' )
+      appendScript( document, filePath + '?withScripts:single' );
+      else _.assert( 0 );
+    }
 
-    return dom.serialize();
+    let result = dom.serialize();
+
+    if( maker.pretty )
+    result = Pretty( result );
+
+    return result;
   }
 
   /* */
 
-  function addScript( document, filePath )
+  function prependScript( document, filePath )
   {
     let script = document.createElement( 'script' );
     script.type = 'text/javascript';
     script.src = filePath;
-    document.head.insertBefore( script, document.head.children[ 0 ] )
+    let child = document.head.querySelector( 'script' ) || document.head.children[ 0 ];
+    if( child )
+    document.head.insertBefore( script, child );
+    else
+    document.head.append( script )
+  }
+
+  /* */
+
+  function appendScript( document, filePath )
+  {
+    let script = document.createElement( 'script' );
+    script.type = 'text/javascript';
+    script.src = filePath;
+    document.head.append( script )
   }
 
   /* */
@@ -891,25 +937,31 @@ function htmlSplitsFor( o )
 htmlSplitsFor.defaults =
 {
   srcScriptsMap : null,
-  starterIncluding : 'include',
-  title : 'Title',
-  template : null
+  template : null,
+  // withStarter : 'include',
+  // withScripts : 'include',
+  withStarter : null,
+  withScripts : null,
+  title : null,
 }
 
 //
 
 function htmlFor( o )
 {
-  let self = this;
+  let maker = this;
 
   _.routineOptions( htmlFor, arguments );
 
-  let splits = self.htmlSplitsFor( o );
+  let result = maker.htmlSplitsFor( o );
 
-  if( splits.all )
-  return splits.all;
-
-  let result = splits.prefix + splits.starter + splits.scripts.join( '\n' ) + splits.postfix;
+  // let splits = maker.htmlSplitsFor( o );
+  //
+  // // if( splits.all )
+  // // return splits.all;
+  //
+  // // let result = splits.prefix + splits.starter + splits.scripts.join( '\n' ) + splits.postfix;
+  // let result = maker.htmlSplitsJoin( splits );
 
   return result;
 }
@@ -936,15 +988,51 @@ htmlFor.defaults = Object.create( htmlSplitsFor.defaults );
 
 */
 
+// //
+//
+// function htmlSplitsJoin( o )
+// {
+//   let maker = this;
+//
+//   _.routineOptions( htmlSplitsJoin, arguments );
+//
+//   o.scripts = o.scripts || [];
+//
+//   if( Config.debug )
+//   for( let s in o )
+//   {
+//     if( s !== 'scripts' )
+//     _.assert( _.strIs( o[ s ] ), () => `Split::${s} should be string, but ${_.strType( o.scripts[ s ] )}` );
+//   }
+//
+//   _.assert( _.arrayIs( o.scripts ) );
+//
+//   let result = o.prefix + o.starter + o.scripts.join( '\n' ) + o.postfix;
+//
+//   return result;
+// }
+//
+// htmlSplitsJoin.defaults =
+// {
+//   prefix : '',
+//   starter : '',
+//   scripts : null,
+//   postfix : '',
+// }
+
 // --
 // relations
 // --
 
-let InstanceDefaults = [ 'removingShellPrologue' ];
+let InstanceDefaults =
+{
+  removingShellPrologue : 1,
+};
 
 let Composes =
 {
   removingShellPrologue : 1,
+  pretty : 1,
 }
 
 let Associates =
@@ -985,10 +1073,11 @@ let Proto =
 
   sourcesJoinSplits,
   sourcesJoin,
-  librarySplitsJoin,
+  sourcesSplitsJoin,
 
   htmlSplitsFor,
   htmlFor,
+  // htmlSplitsJoin,
 
   /* */
 

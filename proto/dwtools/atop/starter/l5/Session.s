@@ -49,6 +49,30 @@ function init()
 
 //
 
+function instanceOptions( o )
+{
+  let session = this;
+
+  _.assert( arguments.length === 0 || arguments.length === 1 );
+
+  if( o )
+  for( let k in o )
+  {
+    if( o[ k ] === null && session.InstanceDefaults[ k ] !== undefined )
+    o[ k ] = session[ k ];
+  }
+  else
+  for( let k in session.InstanceDefaults )
+  {
+    if( session[ k ] === null && session.InstanceDefaults[ k ] !== undefined )
+    session[ k ] = session.InstanceDefaults[ k ];
+  }
+
+  return o;
+}
+
+//
+
 function unform()
 {
   let session = this;
@@ -105,17 +129,20 @@ function form()
   let system = session.system;
   let logger = system.logger;
 
-  _.assert( session.error === null );
-
   try
   {
 
+    session.instanceOptions();
+
     for( let k in session.Bools )
     {
-      if( session[ k ] === null )
-       session[ k ] = session.Bools[ k ];
+      // if( session[ k ] === null )
+      // session[ k ] = session.Bools[ k ];
       _.assert( _.boolLike( session[ k ] ) );
     }
+
+    _.assert( session.error === null );
+    _.assert( _.longHas( [ 'single', 'include', 'inline', 0, false ], session.withScripts ), `Unknown value of option::withScripts ${session.withScripts}` );
 
     if( session._cdpPort === null )
     session._cdpPort = session._CdpPortDefault;
@@ -246,7 +273,7 @@ function servletOpen()
 
   _.assert( session.servlet === null );
 
-  let o2 = _.mapOnly( session, _.starter.Servlet.FieldsOfRelationsGroups );
+  let o2 = _.mapOnly( session, _.starter.Servlet.FieldsOfCopyableGroups );
   session.servlet = new _.starter.Servlet( o2 );
   session.servlet.form();
 
@@ -494,6 +521,8 @@ function _curatedRunTerminateEnd()
   if( session.curratedRunState === 'terminated' )
   return;
 
+  logger.log( _.introspector.stack() );
+
   session.curratedRunState = 'terminated';
   session.eventGive({ kind : 'curatedRunTerminateEnd' });
 
@@ -509,13 +538,17 @@ function _curratedRunWindowClose()
   let system = session.system;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
+  // let cdp = session.cdp;
+  let cdp = session._cdpConnect({});
 
   _.assert( _.longHas( [ 'launching', 'launched' ], session.curratedRunState ) );
-  _.assert( !!session.cdp );
+  _.assert( !!cdp );
 
-  return _.Consequence.Try( () =>
+  return _.Consequence.From( cdp )
+  .then( ( cdp ) =>
   {
-    return session.cdp.Browser.close();
+    _.assert( !!cdp );
+    return cdp.Browser.close();
   });
 }
 
@@ -527,17 +560,21 @@ function _curratedRunPageEmptyOpen( o )
   let system = session.system;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
+  // let cdp = session.cdp;
+  let cdp = session._cdpConnect({});
 
   o = o || Object.create( null );
 
   _.assert( _.longHas( [ 'launching', 'launched' ], session.curratedRunState ) );
-  _.assert( !!session.cdp );
+  _.assert( !!cdp );
 
-  return _.Consequence.Try( () =>
+  return _.Consequence.From( cdp )
+  .then( ( cdp ) =>
   {
+    _.assert( !!cdp );
     if( o.url === undefined || o.url === null )
     o.url = 'http://google.com';
-    return session.cdp.Target.createTarget( o );
+    return cdp.Target.createTarget( o );
   });
 }
 
@@ -549,23 +586,30 @@ function _curratedRunPageClose( o )
   let system = session.system;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
+  // let cdp = session.cdp;
+  let cdp = session._cdpConnect({});
 
   o = o || Object.create( null );
 
   _.assert( _.longHas( [ 'launching', 'launched' ], session.curratedRunState ) );
-  _.assert( !!session.cdp );
+  _.assert( !!cdp );
 
-  return _.Consequence.Try( async function()
+  return _.Consequence.From( cdp )
+  .then( async function( cdp )
   {
+    _.assert( !!cdp );
     if( o.targetId === undefined || o.targetId === null )
     {
-      let targets = await session.cdp.Target.getTargets();
+      // logger.log( 'await cdp.Target.getTargets()' );
+      let targets = await cdp.Target.getTargets();
+      // logger.log( 'targets', targets.targetInfos.length, targets.targetInfos );
       let filtered = _.filter( targets.targetInfos, { url : session.entryWithQueryUri } );
       _.sure( filtered.length >= 1, `Found no tab with URI::${session.entryWithQueryUri}` );
       _.sure( filtered.length <= 1, `Found ${filtered.length} tabs with URI::${session.entryWithQueryUri}` );
       o.targetId = filtered[ 0 ].targetId;
     }
-    return await session.cdp.Target.closeTarget( o );
+    // logger.log( `await cdp.Target.closeTarget({ targetId : ${o.targetId} })` );
+    return await cdp.Target.closeTarget( o );
   });
 }
 
@@ -598,77 +642,30 @@ async function _cdpConnect( o )
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let Cdp = require( 'chrome-remote-interface' );
+  let cdp;
 
-  _.routineOptions( _cdpConnect, o );
+  o = _.routineOptions( _cdpConnect, o );
 
-  // logger.log( '_cdpConnect' );
+  if( o.port == null )
+  o.port = session._cdpPort;
 
   try
   {
-    session.cdp = await Cdp({ port : session._cdpPort });
-    // debugger;
-    // session.cdp.Network.requestWillBeSent( ( params ) =>
-    // {
-    //   console.log( params.request.url ); debugger;
-    // });
-    // await session.cdp.Network.enable();
-    // await session.cdp.Page.navigate({ url : 'https://github.com' });
-    // session.cdp.Page.lifecycleEvent( ( e ) =>
-    // {
-    //   // debugger;
-    //   logger.log( e );
-    // });
-    // debugger;
-    // await session.cdp.Page.setLifecycleEventsEnabled({ enabled : true });
-    // await session.cdp.Page.enable();
-    // await session.cdp.Page.loadEventFired();
-    // debugger;
-    // session.eventGive({ kind : 'curatedRunLaunchEnd' });
-    // let window = await session.cdp.Browser.getWindowForTarget();
-    // let manifest = await session.cdp.Page.getAppManifest();
-    // let history = await session.cdp.Page.getNavigationHistory();
-    // let history2 = await session.cdp.Page.getNavigationHistory();
-    // await session.cdp.Browser.close();
-    // debugger;
-
-    // _.time._periodic( 1000, async function()
-    // {
-    //   debugger;
-    //   try
-    //   {
-    //     let history = await session.cdp.Page.getNavigationHistory();
-    //     logger.log( _.toStr( history.entries, { levels : 5 } ) );
-    //   }
-    //   catch( err )
-    //   {
-    //     _cdpReconnectAndClose();
-    //   }
-    //   debugger;
-    // });
-    //
-    // session.cdp.on( 'close', () =>
-    // {
-    //   session.eventGive({ kind : 'curatedRunTerminateEnd' });
-    // });
-
+    cdp = await Cdp({ port : o.port }); debugger;
   }
   catch( err )
   {
     if( o.throwing )
     throw session.errorEncounterEnd( err );
   }
-  // finally
-  // {
-  //   // if( session.cdp )
-  //   // await session.cdp.close();
-  // }
 
-  return session.cdp;
+  return cdp;
 }
 
 _cdpConnect.defaults =
 {
   throwing : 1,
+  port : null,
 }
 
 //
@@ -684,18 +681,17 @@ async function cdpConnect()
 
   session._curatedRunLaunchBegin();
 
-  await session._cdpConnect({ throwing : 1 });
+  session.cdp = await session._cdpConnect({ throwing : 1 });
 
   session._curatedRunLaunchEnd();
   session.cdp.on( 'close', () => session._curatedRunTerminateEnd() );
   session.cdp.on( 'end', () => session._curatedRunTerminateEnd() );
-
+xxx
   _.time._periodic( session._cdpTrackingPeriod, async function( timer )
   {
     try
     {
       let history = await session.cdp.Page.getNavigationHistory();
-      // logger.log( _.toStr( history.entries, { levels : 5 } ) );
     }
     catch( err )
     {
@@ -715,21 +711,37 @@ async function _cdpReconnectAndClose()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
+  if( session._cdpClosing )
+  return;
+
   if( session.curratedRunState !== 'terminated' )
   session.curratedRunState = 'terminating';
 
+  if( session.cdp )
   try
   {
-    await session._cdpConnect({ throwing : 0 });
+    await session.cdp.close();
+    session.cdp = null;
+  }
+  catch( err )
+  {
+    session.cdp = null;
+  }
+
+  try
+  {
+    session.cdp = await session._cdpConnect({ throwing : 0 });
     await session.cdp.Browser.close();
     debugger;
     await session.cdp.close();
     debugger;
+    session.cdp = null;
     session._curatedRunTerminateEnd();
   }
   catch( err )
   {
     debugger;
+    session.cdp = null;
     session._curatedRunTerminateEnd();
   }
 
@@ -744,25 +756,41 @@ function cdpClose()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let ready = _.Consequence().take( null );
+  session._cdpClosing = 1;
 
   _.assert( !!session.cdp );
 
+  if( session._cdpClosing )
+  return ready;
   if( session.curratedRunState === 'terminated' || session.curratedRunState === 'terminating' )
   return ready;
 
   session.curratedRunState = 'terminating';
 
   if( session.cdp )
-  ready.then( () => session.cdp.Browser.close() );
-  ready.then( () => session.cdp.close() );
+  ready.then( () =>
+  {
+    // console.log( 'cdpClose.a' );
+    return session.cdp.Browser.close(); /* qqq xxx : stuck here sometimes! */
+  });
+  ready.then( () =>
+  {
+    // console.log( 'cdpClose.b' );
+    return session.cdp.close();
+  });
 
   ready.catch( ( err ) =>
   {
+    session._cdpClosing = 0;
+    session.cdp = null;
     return session.errorEncounterEnd( err );
   });
 
   ready.then( ( arg ) =>
   {
+    // console.log( 'cdpClose.c' );
+    session._cdpClosing = 0;
+    session.cdp = null;
     session._curatedRunTerminateEnd();
     return arg;
   });
@@ -777,15 +805,15 @@ function cdpClose()
 let Bools =
 {
 
-  curating : 1, /* qqq xxx : cover */
-  headless : 0, /* qqq xxx : cover? */
-  loggingApplication : 1, /* qqq xxx : cover */
-  loggingConnection : 0, /* qqq xxx : cover */
-  loggingSessionEvents : 1, /* qqq xxx : cover */
-  loggingOptions : 0, /* qqq xxx : cover */
-  proceduring : 1, /* qqq xxx : cover */
-  catchingUncaughtErrors : 1, /* qqq xxx : cover */
-  naking : 0, /* qqq xxx : cover */
+  curating : 1, /* qqq : cover */
+  headless : 0, /* qqq : cover? */
+  loggingApplication : 1, /* qqq : cover */
+  loggingConnection : 0, /* qqq : cover */
+  loggingSessionEvents : 1, /* qqq : cover */
+  loggingOptions : 0, /* qqq : cover */
+  proceduring : 1, /* qqq : cover */
+  catchingUncaughtErrors : 1, /* qqq : cover */
+  naking : 0, /* qqq : cover */
 
 }
 
@@ -796,15 +824,19 @@ let Composes =
   entryPath : null,
   allowedPath : null,
   templatePath : null,
-  entryUri : null,
-  entryWithQueryUri : null,
-  format : null,
-  withModule : null,
 
-  timeOut : 0,
+  withModule : null, /* qqq : cover */
+  withScripts : 'include', /* [ single, include, inline, 0, false ] */ /* qqq : cover */
+  format : null, /* qqq : cover */
+  timeOut : null, /* qqq : cover */
 
   ... Bools,
 
+}
+
+let InstanceDefaults =
+{
+  ... Composes,
 }
 
 let Associates =
@@ -824,11 +856,15 @@ let Restricts =
   curratedRunState : null,
   unforming : 0,
 
+  entryUri : null,
+  entryWithQueryUri : null,
+
   _timeOutTimer : null,
 
   cdp : null,
   _cdpTrackingPeriod : 500,
   _cdpPort : null,
+  _cdpClosing : 0,
 
 }
 
@@ -861,6 +897,8 @@ let Proto =
 
   finit,
   init,
+  instanceOptions,
+
   unform,
   form,
 
@@ -907,6 +945,7 @@ let Proto =
 
   Bools,
   Composes,
+  InstanceDefaults,
   Associates,
   Restricts,
   Statics,

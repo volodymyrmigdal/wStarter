@@ -5,6 +5,7 @@
 if( typeof module !== 'undefined' )
 {
 
+  var Jsdom = require( 'jsdom' );
   var _ = require( '../../../dwtools/Tools.s' );
 
   _.include( 'wTesting' );
@@ -80,7 +81,7 @@ function assetFor( test, name )
 // tests
 // --
 
-function sourcesJoin( test )
+function sourcesJoinFiles( test )
 {
   let context = this;
   let a = context.assetFor( test, 'several' );
@@ -98,7 +99,7 @@ function sourcesJoin( test )
     ready : ready,
   });
 
-  starter.sourcesJoin
+  starter.sourcesJoinFiles
   ({
     inPath : '**',
     entryPath : 'File2.js',
@@ -136,7 +137,7 @@ function sourcesJoin( test )
 
 //
 
-function htmlFor( test )
+function htmlForFilesBasic( test )
 {
   let context = this;
   let a = context.assetFor( test, 'several' );
@@ -150,23 +151,104 @@ function htmlFor( test )
 
   a.reflect();
 
-  starter.htmlFor
+  starter.htmlForFiles
   ({
     inPath : '**',
     basePath : a.routinePath,
-    title : 'Html for test',
   })
 
   var files = a.find( a.routinePath );
   test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
-  var read = _.fileProvider.fileRead( outputPath );
-  test.identical( _.strCount( read, '<html' ), 1 );
-  test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
-  test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-  test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-  test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
-  test.identical( _.strCount( read, '<script src' ), 3 );
+  var read = a.fileProvider.fileRead( outputPath );
+  var dom = new Jsdom.JSDOM( read );
+  var document = dom.window.document;
+
+  test.description = 'scripts';
+  var exp = [ '/.starter', './File1.js', './File2.js' ];
+  var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+  test.identical( got, exp );
+
+  test.description = 'title';
+  var exp = [ 'File1.js' ];
+  var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+  test.identical( got, exp );
+
+  var got = document.querySelectorAll( 'html' );
+  test.identical( got.length, 1 );
+
+  /* */
+
+  return ready;
+}
+
+//
+
+function htmlForFilesOptionTitle( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'several' );
+  let outputPath = _.path.join( a.routinePath, 'Index.html' );
+  let ready = new _.Consequence().take( null );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  test.case = 'default';
+
+  a.reflect();
+
+  starter.htmlForFiles
+  ({
+    inPath : '**',
+    basePath : a.routinePath,
+  })
+
+  var read = a.fileProvider.fileRead( outputPath );
+  var dom = new Jsdom.JSDOM( read );
+  var document = dom.window.document;
+
+  test.description = 'title';
+  var exp = [ 'File1.js' ];
+  var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+  test.identical( got, exp );
+
+  /* */
+
+  test.case = 'explicit';
+
+  a.reflect();
+
+  starter.htmlForFiles
+  ({
+    inPath : '**',
+    basePath : a.routinePath,
+    title : 'Explicit Title',
+  })
+
+  var read = a.fileProvider.fileRead( outputPath );
+  var dom = new Jsdom.JSDOM( read );
+  var document = dom.window.document;
+
+  test.description = 'title';
+  var exp = [ 'Explicit Title' ];
+  var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+  test.identical( got, exp );
+
+  /* */
+
+  return ready;
+}
+
+//
+
+function htmlForFilesOptionWithStarter( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'several' );
+  let outputPath = _.path.join( a.routinePath, 'Index.html' );
+  let ready = new _.Consequence().take( null );
+  let starter = new _.starter.System().form();
 
   /* */
 
@@ -174,24 +256,25 @@ function htmlFor( test )
 
   a.reflect();
 
-  starter.htmlFor
+  starter.htmlForFiles
   ({
     inPath : '**',
     basePath : a.routinePath,
     title : 'Html for test',
-    starterIncluding : 0,
+    withStarter : 0,
   })
 
   var files = a.find( a.routinePath );
   test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
-  var read = _.fileProvider.fileRead( outputPath );
-  test.identical( _.strCount( read, '<html' ), 1 );
-  test.identical( _.strCount( read, 'src="/.starter"' ), 0 );
-  test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-  test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-  test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
-  test.identical( _.strCount( read, '<script src' ), 2 );
+  var read = a.fileProvider.fileRead( outputPath );
+  var dom = new Jsdom.JSDOM( read );
+  var document = dom.window.document;
+
+  test.description = 'scripts';
+  var exp = [ './File1.js', './File2.js' ];
+  var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+  test.identical( got, exp );
 
   /* */
 
@@ -509,31 +592,42 @@ async function curatedRunWindowOpenCloseAutomatic( test )
   let context = this;
   let a = context.assetFor( test, 'minute' );
   let starter = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
+  let session;
 
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
+  try
+  {
 
-  var session = await starter.start
-  ({
-    entryPath : a.originalAbs( './F1.js' ),
-    headless : 1,
-  })
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
 
-  test.identical( session.curratedRunState, 'launching' );
+    session = await starter.start
+    ({
+      entryPath : a.originalAbs( './F1.js' ),
+      headless : 1,
+    })
 
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, true );
+    test.identical( session.curratedRunState, 'launching' );
 
-  await _.time.out( context.deltaTime2 );
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, true );
 
-  test.identical( session.curratedRunState, 'launched' );
+    await _.time.out( context.deltaTime2 );
 
-  await session.unform();
+    test.identical( session.curratedRunState, 'launched' );
 
-  test.identical( session.curratedRunState, 'terminated' );
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
-  test.identical( session.curratedRunState, 'terminated' );
+    await session.unform(); /* qqq xxx : stuck here sometimes */
+
+    test.identical( session.curratedRunState, 'terminated' );
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+    test.identical( session.curratedRunState, 'terminated' );
+
+  }
+  catch( err )
+  {
+    if( session )
+    await session.unform();
+  }
 
 }
 
@@ -546,33 +640,44 @@ async function curatedRunWindowOpenCloseWindowManually( test )
   let context = this;
   let a = context.assetFor( test, 'minute' );
   let starter = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
+  let session;
 
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
+  try
+  {
 
-  var session = await starter.start
-  ({
-    entryPath : a.originalAbs( './F1.js' ),
-    headless : 1,
-  })
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
 
-  test.identical( session.curratedRunState, 'launching' );
+    session = await starter.start
+    ({
+      entryPath : a.originalAbs( './F1.js' ),
+      headless : 1,
+    })
 
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, true );
+    test.identical( session.curratedRunState, 'launching' );
 
-  await _.time.out( context.deltaTime2 );
+    await _.time.out( context.deltaTime2 );
 
-  test.identical( session.curratedRunState, 'launched' );
+    test.identical( session.curratedRunState, 'launched' );
 
-  await session._curratedRunWindowClose();
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, true );
 
-  await _.time.out( context.deltaTime3 );
+    await session._curratedRunWindowClose();
 
-  test.identical( session.curratedRunState, 'terminated' );
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
-  test.identical( session.curratedRunState, 'terminated' );
+    await _.time.out( context.deltaTime3 );
+
+    test.identical( session.curratedRunState, 'terminated' );
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+    test.identical( session.curratedRunState, 'terminated' );
+
+  }
+  catch( err )
+  {
+    if( session )
+    await session.unform();
+  }
 
 }
 
@@ -585,34 +690,48 @@ async function curatedRunWindowOpenClosePageManually( test )
   let context = this;
   let a = context.assetFor( test, 'minute' );
   let starter = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
+  let session;
 
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
+  try
+  {
 
-  var session = await starter.start
-  ({
-    entryPath : a.originalAbs( './F1.js' ),
-    headless : 1,
-  })
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
 
-  test.identical( session.curratedRunState, 'launching' );
+    session = await starter.start
+    ({
+      entryPath : a.originalAbs( './F1.js' ),
+      headless : 1,
+    })
 
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, true );
+    test.identical( session.curratedRunState, 'launching' );
 
-  await _.time.out( context.deltaTime2 );
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, true );
 
-  test.identical( session.curratedRunState, 'launched' );
+    await _.time.out( context.deltaTime2 );
 
-  var page = await session._curratedRunPageEmptyOpen();
-  await session._curratedRunPageClose();
+    test.identical( session.curratedRunState, 'launched' );
 
-  await _.time.out( context.deltaTime3 );
+    // console.log( 'a' );
+    await session._curratedRunPageEmptyOpen();
+    // console.log( 'b' );
+    await session._curratedRunPageClose(); /* qqq xxx : stuck here sometimes, event::curatedRunTerminateEnd comes */
+    // console.log( 'c' );
 
-  test.identical( session.curratedRunState, 'terminated' );
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
-  test.identical( session.curratedRunState, 'terminated' );
+    await _.time.out( context.deltaTime3 );
+
+    test.identical( session.curratedRunState, 'terminated' );
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+    test.identical( session.curratedRunState, 'terminated' );
+
+  }
+  catch( err )
+  {
+    if( session )
+    await session.unform();
+  }
 
 }
 
@@ -626,50 +745,61 @@ async function curatedRunEventsCloseAutomatic( test )
   let a = context.assetFor( test, 'minute' );
   let system = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   let encountered = Object.create( null );
+  let session;
 
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
-
-  let opts =
+  try
   {
-    system,
-    entryPath : a.originalAbs( './F1.js' ),
-    headless : 1,
+
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+
+    let opts =
+    {
+      system,
+      entryPath : a.originalAbs( './F1.js' ),
+      headless : 1,
+    }
+    session = new _.starter.Session( opts );
+
+    session.on( [ 'curatedRunLaunchBegin', 'curatedRunLaunchEnd', 'curatedRunTerminateEnd' ], ( e ) =>
+    {
+      encountered[ e.kind ] = encountered[ e.kind ] || 0;
+      encountered[ e.kind ] += 1;
+    });
+
+    test.identical( session.curratedRunState, null );
+
+    await session.form();
+
+    test.identical( session.curratedRunState, 'launching' );
+    await session.eventWaitFor( 'curatedRunLaunchEnd' );
+    test.identical( session.curratedRunState, 'launched' );
+
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, true );
+    test.identical( session.curratedRunState, 'launched' );
+
+    await session.unform();
+
+    test.identical( session.curratedRunState, 'terminated' );
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+    test.identical( session.curratedRunState, 'terminated' );
+
+    var exp =
+    {
+      curatedRunLaunchBegin : 1,
+      curatedRunLaunchEnd : 1,
+      curatedRunTerminateEnd : 1,
+    }
+    test.identical( encountered, exp );
+
   }
-  let session = new _.starter.Session( opts );
-
-  session.on( [ 'curatedRunLaunchBegin', 'curatedRunLaunchEnd', 'curatedRunTerminateEnd' ], ( e ) =>
+  catch( err )
   {
-    encountered[ e.kind ] = encountered[ e.kind ] || 0;
-    encountered[ e.kind ] += 1;
-  });
-
-  test.identical( session.curratedRunState, null );
-
-  await session.form();
-
-  test.identical( session.curratedRunState, 'launching' );
-  await session.eventWaitFor( 'curatedRunLaunchEnd' );
-  test.identical( session.curratedRunState, 'launched' );
-
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, true );
-  test.identical( session.curratedRunState, 'launched' );
-
-  await session.unform();
-
-  test.identical( session.curratedRunState, 'terminated' );
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
-  test.identical( session.curratedRunState, 'terminated' );
-
-  var exp =
-  {
-    curatedRunLaunchBegin : 1,
-    curatedRunLaunchEnd : 1,
-    curatedRunTerminateEnd : 1,
+    if( session )
+    await session.unform();
   }
-  test.identical( encountered, exp );
 
 }
 
@@ -683,52 +813,63 @@ async function curatedRunEventsCloseWindowManually( test )
   let a = context.assetFor( test, 'minute' );
   let system = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   let encountered = Object.create( null );
+  let session;
 
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
-
-  let opts =
+  try
   {
-    system,
-    entryPath : a.originalAbs( './F1.js' ),
-    headless : 1,
+
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+
+    let opts =
+    {
+      system,
+      entryPath : a.originalAbs( './F1.js' ),
+      headless : 1,
+    }
+    session = new _.starter.Session( opts );
+
+    session.on( [ 'curatedRunLaunchBegin', 'curatedRunLaunchEnd', 'curatedRunTerminateEnd' ], ( e ) =>
+    {
+      encountered[ e.kind ] = encountered[ e.kind ] || 0;
+      encountered[ e.kind ] += 1;
+    });
+
+    test.identical( session.curratedRunState, null );
+
+    await session.form();
+
+    test.identical( session.curratedRunState, 'launching' );
+    await session.eventWaitFor( 'curatedRunLaunchEnd' );
+    test.identical( session.curratedRunState, 'launched' );
+
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, true );
+    test.identical( session.curratedRunState, 'launched' );
+
+    await session._curratedRunWindowClose();
+
+    await session.eventWaitFor( 'curatedRunTerminateEnd' );
+
+    test.identical( session.curratedRunState, 'terminated' );
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+    test.identical( session.curratedRunState, 'terminated' );
+
+    var exp =
+    {
+      curatedRunLaunchBegin : 1,
+      curatedRunLaunchEnd : 1,
+      curatedRunTerminateEnd : 1,
+    }
+    test.identical( encountered, exp );
+
   }
-  let session = new _.starter.Session( opts );
-
-  session.on( [ 'curatedRunLaunchBegin', 'curatedRunLaunchEnd', 'curatedRunTerminateEnd' ], ( e ) =>
+  catch( err )
   {
-    encountered[ e.kind ] = encountered[ e.kind ] || 0;
-    encountered[ e.kind ] += 1;
-  });
-
-  test.identical( session.curratedRunState, null );
-
-  await session.form();
-
-  test.identical( session.curratedRunState, 'launching' );
-  await session.eventWaitFor( 'curatedRunLaunchEnd' );
-  test.identical( session.curratedRunState, 'launched' );
-
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, true );
-  test.identical( session.curratedRunState, 'launched' );
-
-  await session._curratedRunWindowClose();
-
-  await session.eventWaitFor( 'curatedRunTerminateEnd' );
-
-  test.identical( session.curratedRunState, 'terminated' );
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
-  test.identical( session.curratedRunState, 'terminated' );
-
-  var exp =
-  {
-    curatedRunLaunchBegin : 1,
-    curatedRunLaunchEnd : 1,
-    curatedRunTerminateEnd : 1,
+    if( session )
+    await session.unform();
   }
-  test.identical( encountered, exp );
 
 }
 
@@ -742,53 +883,69 @@ async function curatedRunEventsClosePageManually( test )
   let a = context.assetFor( test, 'minute' );
   let system = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   let encountered = Object.create( null );
+  let session;
 
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
-
-  let opts =
+  try
   {
-    system,
-    entryPath : a.originalAbs( './F1.js' ),
-    headless : 1,
+
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+
+    let opts =
+    {
+      system,
+      entryPath : a.originalAbs( './F1.js' ),
+      headless : 1,
+    }
+    session = new _.starter.Session( opts );
+
+    session.on( [ 'curatedRunLaunchBegin', 'curatedRunLaunchEnd', 'curatedRunTerminateEnd' ], ( e ) =>
+    {
+      encountered[ e.kind ] = encountered[ e.kind ] || 0;
+      encountered[ e.kind ] += 1;
+    });
+
+    test.identical( session.curratedRunState, null );
+
+    await session.form();
+
+    test.identical( session.curratedRunState, 'launching' );
+    await session.eventWaitFor( 'curatedRunLaunchEnd' );
+    test.identical( session.curratedRunState, 'launched' );
+
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, true );
+    test.identical( session.curratedRunState, 'launched' );
+
+    // console.log( 'a' );
+    await session._curratedRunPageEmptyOpen();
+    // console.log( 'b' );
+    await session._curratedRunPageClose(); /* qqq xxx : stuck here sometimes, event::curatedRunTerminateEnd comes */
+
+    // console.log( 'c' );
+    /* event curatedRunTerminateEnd can come before return of _curratedRunPageClose! */
+    await session.eventWaitFor( 'curatedRunTerminateEnd' );
+    // console.log( 'd' );
+
+    test.identical( session.curratedRunState, 'terminated' );
+    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+    test.identical( session.curratedRunState, 'terminated' );
+
+    var exp =
+    {
+      curatedRunLaunchBegin : 1,
+      curatedRunLaunchEnd : 1,
+      curatedRunTerminateEnd : 1,
+    }
+    test.identical( encountered, exp );
+
   }
-  let session = new _.starter.Session( opts );
-
-  session.on( [ 'curatedRunLaunchBegin', 'curatedRunLaunchEnd', 'curatedRunTerminateEnd' ], ( e ) =>
+  catch( err )
   {
-    encountered[ e.kind ] = encountered[ e.kind ] || 0;
-    encountered[ e.kind ] += 1;
-  });
-
-  test.identical( session.curratedRunState, null );
-
-  await session.form();
-
-  test.identical( session.curratedRunState, 'launching' );
-  await session.eventWaitFor( 'curatedRunLaunchEnd' );
-  test.identical( session.curratedRunState, 'launched' );
-
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, true );
-  test.identical( session.curratedRunState, 'launched' );
-
-  await session._curratedRunPageEmptyOpen();
-  await session._curratedRunPageClose();
-
-  await session.eventWaitFor( 'curatedRunTerminateEnd' );
-
-  test.identical( session.curratedRunState, 'terminated' );
-  var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
-  test.identical( !!cdp, false );
-  test.identical( session.curratedRunState, 'terminated' );
-
-  var exp =
-  {
-    curatedRunLaunchBegin : 1,
-    curatedRunLaunchEnd : 1,
-    curatedRunTerminateEnd : 1,
+    if( session )
+    await session.unform();
   }
-  test.identical( encountered, exp );
 
 }
 
@@ -828,13 +985,15 @@ var Self =
   tests :
   {
 
-    // sourcesJoin
+    // sourcesJoinFiles
 
-    sourcesJoin,
+    sourcesJoinFiles,
 
     // html for
 
-    htmlFor,
+    htmlForFilesBasic,
+    htmlForFilesOptionTitle,
+    htmlForFilesOptionWithStarter,
 
     // include
 

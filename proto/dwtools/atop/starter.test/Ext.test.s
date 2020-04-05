@@ -5,6 +5,7 @@
 if( typeof module !== 'undefined' )
 {
 
+  var Jsdom = require( 'jsdom' );
   var _ = require( '../../../dwtools/Tools.s' );
 
   _.include( 'wTesting' );
@@ -901,7 +902,7 @@ F1:after
 // html for
 // --
 
-function htmlFor( test )
+function htmlForBasic( test )
 {
   let context = this;
   let a = context.assetFor( test, 'several' );
@@ -922,79 +923,19 @@ function htmlFor( test )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ html saved to .*htmlFor\/Index\.html/ ), 1 )
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
-    var read = _.fileProvider.fileRead( outputPath );
-    test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-    test.identical( _.strCount( read, '<title>' ), 1 );
-    test.identical( _.strCount( read, '<script src' ), 3 );
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
 
-    return op;
-  })
-
-  /* */
-
-  a.ready.then( () =>
-  {
-    test.case = 'with title';
-    _.fileProvider.filesDelete( a.routinePath );
-    a.reflect();
-    return null;
-  })
-
-  a.appStart( `.html.for ${a.routinePath}/** title:"Html for test"` )
-  .then( ( op ) =>
-  {
-    test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ html saved to .*htmlFor\/Index\.html/ ), 1 )
-
-    var files = a.find( a.routinePath );
-    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
-
-    var read = _.fileProvider.fileRead( outputPath );
-    test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-    test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
-    test.identical( _.strCount( read, '<title>' ), 1 );
-    test.identical( _.strCount( read, '<script src' ), 3 );
-
-    return op;
-  })
-
-  /* */
-
-  a.ready.then( () =>
-  {
-    test.case = 'without starter';
-    _.fileProvider.filesDelete( a.routinePath );
-    a.reflect();
-    return null;
-  })
-
-  a.appStart( `.html.for ${a.routinePath}/** title:"Html for test" starterIncluding:0` )
-  .then( ( op ) =>
-  {
-    test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ html saved to .*htmlFor\/Index\.html/ ), 1 )
-
-    var files = a.find( a.routinePath );
-    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
-
-    var read = _.fileProvider.fileRead( outputPath );
-    test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter"' ), 0 );
-    test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-    test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
-    test.identical( _.strCount( read, '<script src' ), 2 );
+    test.description = 'scripts';
+    var exp = [ '/.starter', './File1.js', './File2.js' ];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
 
     return op;
   })
@@ -1013,17 +954,202 @@ function htmlFor( test )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ html saved to .*htmlFor\/Index\.html/ ), 1 )
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 );
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
-    var read = _.fileProvider.fileRead( outputPath );
-    test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
-    test.identical( _.strCount( read, './src="File1.js"' ), 0 );
-    test.identical( _.strCount( read, './src="File2.js"' ), 0 );
-    test.identical( _.strCount( read, '<script src' ), 1 );
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'scripts';
+    var exp = [ '/.starter' ];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+//
+
+function htmlForOptionTitle( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'several' );
+  let outputPath = a.abs( 'Index.html' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'default';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for ${a.routinePath}/**` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'title';
+    var exp = [ 'File1.js' ];
+    var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'with title';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for ${a.routinePath}/** title:"Html for test"` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'title';
+    var exp = [ 'Html for test' ];
+    var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+//
+
+function htmlForOptionWithStarter( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'several' );
+  let outputPath = a.abs( 'Index.html' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'withStarter:include';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for ${a.routinePath}/** withStarter:include` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'scripts';
+    var exp = [ '/.starter', './File1.js', './File2.js' ];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'withStarter:0';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for ${a.routinePath}/** withStarter:0` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'scripts';
+    var exp = [ './File1.js', './File2.js' ];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'empty';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for [] withStarter:0` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 );
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'scripts';
+    var exp = [];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
 
     return op;
   })
@@ -1077,6 +1203,52 @@ F1:after
 }
 
 startRecursion.description =
+`
+  - Recursive "require" works the same way it does under nodejs.
+`
+
+//
+
+function startRecursionSingle( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'recursion' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  a.appStart( `.start F1.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 joining:1` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+F1:before
+F2:before
+F2:object
+F2:after
+F1:string
+F1:after
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startRecursionSingle.description =
 `
   - Recursive "require" works the same way it does under nodejs.
 `
@@ -1279,11 +1451,14 @@ var Self =
 
     // html for
 
-    htmlFor,
+    htmlForBasic,
+    htmlForOptionTitle,
+    htmlForOptionWithStarter, /* qqq : extend */
 
     // start
 
     startRecursion,
+    startRecursionSingle,
     // startTestSuite,
     startHtml,
 

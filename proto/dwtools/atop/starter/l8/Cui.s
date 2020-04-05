@@ -234,7 +234,7 @@ function commandHtmlFor( e )
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.inPath = o2.inPath || request.subject;
 
-  let html = starter.htmlFor( o2 );
+  let html = starter.htmlForFiles( o2 );
 
   if( starter.verbosity > 3 )
   logger.log( html );
@@ -278,7 +278,7 @@ function commandSourcesJoin( e )
     + _.color.strFormat( 'starter .files.wrap ./proto', 'code' )
   );
 
-  let r = starter.sourcesJoin( o2 );
+  let r = starter.sourcesJoinFiles( o2 );
 
   if( starter.verbosity )
   logger.log( ' + sourcesJoin to ' + _.color.strFormat( o2.outPath, 'path' ) )
@@ -349,6 +349,7 @@ commandHttpOpen.commandProperties =
   proceduring : 'Watching asynchronous procedures to terminate the application when all will run out. Default : true',
   catchingUncaughtErrors : 'Catching uncaught errors and handling them properly. Default : true',
   naking : 'Disable wrapping of scripts. Default : false',
+  withScripts : 'How to ship scripts. Alternatives : [ include, inline, single, 0 ]. Default : include',
 }
 
 commandHttpOpen.hint = 'Run HTTP server to serve files in a specified directory.';
