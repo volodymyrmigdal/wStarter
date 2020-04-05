@@ -196,6 +196,7 @@ module:
           - ../proto/dwtools/atop/starter/l3/Maker.s
           - ../proto/dwtools/atop/starter/l5
           - ../proto/dwtools/atop/starter/l5/Center.s
+          - ../proto/dwtools/atop/starter/l5/Maker2.s
           - ../proto/dwtools/atop/starter/l5/Servlet.s
           - ../proto/dwtools/atop/starter/l5/Session.s
           - ../proto/dwtools/atop/starter/l7
