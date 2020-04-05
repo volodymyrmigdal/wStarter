@@ -779,7 +779,7 @@ async function curatedRunEventsCloseAutomatic( test )
     test.identical( !!cdp, true );
     test.identical( session.curratedRunState, 'launched' );
 
-    await session.unform();
+    await session.unform(); /* qqq xxx : stuck here sometimes */
 
     test.identical( session.curratedRunState, 'terminated' );
     var cdp = await _.starter.Session._CurratedRunWindowIsOpened();

@@ -521,7 +521,7 @@ function _curatedRunTerminateEnd()
   if( session.curratedRunState === 'terminated' )
   return;
 
-  logger.log( _.introspector.stack() );
+  // console.log( _.introspector.stack() );
 
   session.curratedRunState = 'terminated';
   session.eventGive({ kind : 'curatedRunTerminateEnd' });
@@ -651,7 +651,7 @@ async function _cdpConnect( o )
 
   try
   {
-    cdp = await Cdp({ port : o.port }); debugger;
+    cdp = await Cdp({ port : o.port });
   }
   catch( err )
   {
@@ -686,7 +686,7 @@ async function cdpConnect()
   session._curatedRunLaunchEnd();
   session.cdp.on( 'close', () => session._curatedRunTerminateEnd() );
   session.cdp.on( 'end', () => session._curatedRunTerminateEnd() );
-xxx
+
   _.time._periodic( session._cdpTrackingPeriod, async function( timer )
   {
     try
@@ -711,8 +711,12 @@ async function _cdpReconnectAndClose()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
+  // console.log( '_cdpReconnectAndClose.a' );
+
   if( session._cdpClosing )
   return;
+
+  // console.log( '_cdpReconnectAndClose.b' );
 
   if( session.curratedRunState !== 'terminated' )
   session.curratedRunState = 'terminating';
@@ -720,6 +724,7 @@ async function _cdpReconnectAndClose()
   if( session.cdp )
   try
   {
+    // console.log( 'session.cdp.close():_cdpReconnectAndClose:1' );
     await session.cdp.close();
     session.cdp = null;
   }
@@ -733,6 +738,7 @@ async function _cdpReconnectAndClose()
     session.cdp = await session._cdpConnect({ throwing : 0 });
     await session.cdp.Browser.close();
     debugger;
+    // console.log( 'session.cdp.close():_cdpReconnectAndClose:2' );
     await session.cdp.close();
     debugger;
     session.cdp = null;
@@ -756,26 +762,33 @@ function cdpClose()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let ready = _.Consequence().take( null );
-  session._cdpClosing = 1;
+  let closed = 0;
 
   _.assert( !!session.cdp );
+
+  // console.log( 'cdpClose.a' );
 
   if( session._cdpClosing )
   return ready;
   if( session.curratedRunState === 'terminated' || session.curratedRunState === 'terminating' )
   return ready;
 
+  session._cdpClosing = 1;
   session.curratedRunState = 'terminating';
 
   if( session.cdp )
   ready.then( () =>
   {
-    // console.log( 'cdpClose.a' );
-    return session.cdp.Browser.close(); /* qqq xxx : stuck here sometimes! */
+    // console.log( 'cdpClose.b' );
+    return new _.Consequence().take( null ).or([ browserCloseAttempt( 0 ), browserCloseAttempt( 10 ) ]);
+    // return session.cdp.Browser.close(); /* qqq xxx : stuck here sometimes! */
   });
+
   ready.then( () =>
   {
-    // console.log( 'cdpClose.b' );
+    closed = true;
+    // console.log( 'cdpClose.c' );
+    // console.log( 'session.cdp.close():cdpClose' );
     return session.cdp.close();
   });
 
@@ -788,7 +801,7 @@ function cdpClose()
 
   ready.then( ( arg ) =>
   {
-    // console.log( 'cdpClose.c' );
+    // console.log( 'cdpClose.d' );
     session._cdpClosing = 0;
     session.cdp = null;
     session._curatedRunTerminateEnd();
@@ -796,6 +809,28 @@ function cdpClose()
   });
 
   return ready;
+
+  function browserCloseAttempt( delay )
+  {
+
+    if( !delay )
+    return browserClose();
+
+    /* hack to fix bug */
+
+    return _.time.out( 10, () =>
+    {
+      return browserClose();
+    });
+  }
+
+  function browserClose()
+  {
+    if( session.cdp && session._cdpClosing && !closed )
+    return session.cdp.Browser.close()
+    return null
+  }
+
 }
 
 // --
@@ -862,7 +897,7 @@ let Restricts =
   _timeOutTimer : null,
 
   cdp : null,
-  _cdpTrackingPeriod : 500,
+  _cdpTrackingPeriod : 50,
   _cdpPort : null,
   _cdpClosing : 0,
 

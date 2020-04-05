@@ -1226,7 +1226,7 @@ function startRecursionSingle( test )
     return null;
   })
 
-  a.appStart( `.start F1.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 joining:1` )
+  a.appStart( `.start F1.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 withScripts:single` )
   .then( ( op ) =>
   {
     var output =
