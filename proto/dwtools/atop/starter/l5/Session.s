@@ -517,7 +517,6 @@ function _curatedRunTerminateEnd()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
-  debugger;
   if( session.curratedRunState === 'terminated' )
   return;
 
@@ -740,13 +739,11 @@ async function _cdpReconnectAndClose()
     debugger;
     // console.log( 'session.cdp.close():_cdpReconnectAndClose:2' );
     await session.cdp.close();
-    debugger;
     session.cdp = null;
     session._curatedRunTerminateEnd();
   }
   catch( err )
   {
-    debugger;
     session.cdp = null;
     session._curatedRunTerminateEnd();
   }

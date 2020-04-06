@@ -454,7 +454,7 @@ async function workerWithInclude( test )
     page.on( 'console', msg => output += msg.text() + '\n' );
 
     await page.goto( session.entryWithQueryUri );
-    await _.time.out( 1500 );
+    await _.time.out( context.deltaTime2 );
 
     test.is( _.strHas( output, 'Global: Window' ) )
     test.is( _.strHas( output, 'Global: DedicatedWorkerGlobalScope' ) )
@@ -506,7 +506,7 @@ async function includeModuleInWorker( test )
 
     await page.goto( session.entryWithQueryUri );
 
-    await _.time.out( 5000 );
+    await _.time.out( context.deltaTime2 );
 
     console.log( output )
 
@@ -562,9 +562,9 @@ async function includeModuleInWorkerThrowing( test )
 
     await page.goto( session.entryWithQueryUri );
 
-    await _.time.out( 5000 );
+    await _.time.out( context.deltaTime2 );
 
-    console.log( output )
+    // console.log( '!' + output + '!' );
 
     test.is( !_.strHas( output, `Module was included` ) );
     test.is( _.strHas( output, `Module error` ) );

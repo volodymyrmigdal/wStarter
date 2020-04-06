@@ -246,7 +246,7 @@ function _Begin()
     socket.onopen = function( e )
     {
       socket.send( JSON.stringify( o.data ) );
-      setTimeout( () => socket.close(), 1000 );
+      setTimeout( () => socket.close(), 250 );
     };
   }
   socketWrite.defaults =
@@ -266,6 +266,12 @@ function _Begin()
   function _broLog( o )
   {
     let starter = this;
+
+    _._socketCounter += 1;
+    o.id = _._socketCounter;
+    if( !_._socketSubject )
+    _._socketSubject = Date.now();
+    o.subject = _._socketSubject;
 
     let response = starter.socketWrite
     ({
@@ -411,7 +417,9 @@ function _Begin()
     }
     catch( err )
     {
+      err = _.err( err );
       end();
+      debugger;
       throw err;
     }
 
@@ -433,7 +441,8 @@ function _Begin()
 
     starter._includingSource = resolvedFilePath;
 
-    importScripts( resolvedFilePath + '?running:0' );
+    importScripts( resolvedFilePath + '' );
+    // importScripts( resolvedFilePath + '?running:0' ); /* qqq xxx : ? */
 
     let childSource = starter._sourceForPathGet( resolvedFilePath );
     let result = starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
@@ -577,8 +586,10 @@ function _Begin()
 function _End()
 {
 
-  let Extend =
+  let Extension =
   {
+
+    //
 
     fileReadAct,
     fileRead,
@@ -597,9 +608,14 @@ function _End()
     _broSetup,
     _sourceCodeModule,
 
+    // fields
+
+    _socketCounter : 0,
+    _socketSubject : null,
+
   }
 
-  Object.assign( _starter_, Extend );
+  Object.assign( _starter_, Extension );
 
 }
 

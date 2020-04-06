@@ -1,3 +1,3 @@
 
-include( '/script.js' )
+include( '/Script.js' )
 tools.routine();

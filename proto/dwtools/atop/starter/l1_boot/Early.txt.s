@@ -124,7 +124,8 @@ function _Begin()
     }
     catch( err )
     {
-      return '<COMPLEX>';
+      debugger;
+      return '{- UNKNOWN DATA TYPE -}';
     }
   }
 

@@ -11,7 +11,11 @@
   }
   catch( err )
   {
-    _.errLogOnce( err );
+    console.log( '-' );
+    // debugger;
+    logger.error( String( err ) );
+    // debugger;
+    // _.errLogOnce( err );
   }
 
 })();

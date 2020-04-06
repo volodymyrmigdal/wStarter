@@ -1353,7 +1353,7 @@ startHtml.description =
 // etc
 // --
 
-async function logging( test )
+async function loggingError( test )
 {
   let context = this;
   let a = context.assetFor( test, 'asyncError' );
@@ -1374,10 +1374,166 @@ async function logging( test )
   return a.ready;
 }
 
-logging.description =
+loggingError.description =
 `
-  - Client-side log appears on server-side.
-  - Client-side uncaught errors appears on server side.
+- Client-side log appears on server-side.
+- Client-side uncaught errors appears on server side.
+`
+
+//
+
+async function workerEnvironment( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+
+  a.reflect();
+
+  a.appStart( `.start index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    var exp =
+`
+Index.js
+_filePath_ : /index.js
+_dirPath_ : /
+__filename : /index.js
+__dirname : /
+module : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp =
+`
+Worker.js
+_filePath_ : /Worker.js
+_dirPath_ : /
+__filename : /Worker.js
+__dirname : /
+module : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    test.identical( _.strCount( op.output, 'error' ), 0 );
+    test.identical( _.strCount( op.output, 'Error' ), 0 );
+
+    return op;
+  })
+
+  return a.ready;
+}
+
+workerEnvironment.description =
+`
+- xxx
+`
+
+//
+
+async function loggingErrorInWorker( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'errorInWorker' );
+
+  a.reflect();
+
+  a.appStart( `.start index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    var exp =
+`
+ . event::curatedRunLaunchBegin
+ . event::curatedRunLaunchEnd
+index:begin
+index:end
+worker:begin
+m1:begin
+err:begin
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    test.identical( _.strCount( op.output, 'Some error' ), 1 );
+    test.identical( _.strCount( op.output, 'Error including source file /m1.js' ), 1 );
+
+    var exp =
+`
+err:end
+worker:end
+ . event::timeOut
+ . event::curatedRunTerminateEnd
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    return op;
+  })
+
+  return a.ready;
+}
+
+loggingErrorInWorker.description =
+`
+- throwen error in included from worker file shows up in the log
+`
+
+//
+
+async function loggingErrorInWorkerNoFile( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'errorInWorkerNoFile' );
+
+  a.reflect();
+
+  a.appStart( `.start index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    var exp =
+`
+ . event::curatedRunLaunchBegin
+ . event::curatedRunLaunchEnd
+index:begin
+index:end
+worker:begin
+m1:begin
+err:begin
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    test.identical( _.strCount( op.output, 'Some error' ), 1 );
+    test.identical( _.strCount( op.output, 'Error including source file /m1.js' ), 1 );
+
+    var exp =
+`
+err:end
+worker:end
+ . event::timeOut
+ . event::curatedRunTerminateEnd
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    return op;
+  })
+
+  return a.ready;
+}
+
+loggingErrorInWorkerNoFile.description =
+`
+- xxx
 `
 
 //
@@ -1464,7 +1620,10 @@ var Self =
 
     // etc
 
-    logging,
+    loggingError,
+    workerEnvironment,
+    loggingErrorInWorker,
+    loggingErrorInWorkerNoFile,
     version,
 
   }
