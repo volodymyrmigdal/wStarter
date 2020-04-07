@@ -312,7 +312,7 @@ function htmlForHtml( o )
 
   let o2 = Object.create( null );
   o2.inPath = false;
-  o2.basePath = servlet.basePath;
+  // o2.basePath = servlet.basePath;
   o2.outPath = false;
   o2.templatePath = o.realPath;
   o2.allowedPath = servlet.allowedPath;
@@ -372,62 +372,13 @@ function htmlForJs( o )
 
   let o2 = Object.create( null );
   o2.inPath = o.realPath;
-  o2.basePath = servlet.basePath;
+  // o2.basePath = servlet.basePath;
   o2.outPath = false;
   o2.templatePath = servlet.templatePath;
   o2.allowedPath = servlet.allowedPath;
   o2.withScripts = servlet.withScripts;
 
   let html = system.maker.htmlForFiles( o2 );
-
-  // let filter = { filePath : _.path.detrail( o.realPath ), basePath : servlet.basePath };
-  // let resolvedFilePath = _.fileProvider.filesFind
-  // ({
-  //   filter,
-  //   mode : 'distinct',
-  //   mandatory : 0,
-  //   withDirs : 0,
-  //   withDefunct : 0,
-  //   withStem : 1
-  // });
-  //
-  // if( !resolvedFilePath.length )
-  // {
-  //   let err = _.err( `Found no ${o.resourcePath || o.realPath}` );
-  //   if( o.request && o.response )
-  //   {
-  //     return _.servlet.errorHandle
-  //     ({
-  //       request : o.request,
-  //       response : o.response,
-  //       err : err,
-  //     });
-  //   }
-  //   else
-  //   {
-  //     throw err;
-  //   }
-  // }
-  //
-  // let srcScriptsMap = Object.create( null );
-  // resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p.absolute ) );
-  // resolvedFilePath.forEach( ( p ) =>
-  // {
-  //   srcScriptsMap[ _.path.join( '/', p.relative ) ] = '';
-  //   // srcScriptsMap[ _.path.join( '/', p.relative ) ] = _.fileProvider.fileRead( p.absolute );
-  // });
-  // let title = _.path.fullName( resolvedFilePath[ 0 ].absolute );
-  //
-  // let template = null;
-  // if( servlet.templatePath )
-  // template = _.fileProvider.fileRead( servlet.templatePath );
-  //
-  // let html = system.maker.htmlFor
-  // ({
-  //   srcScriptsMap,
-  //   title,
-  //   template
-  // });
 
   if( o.response )
   {
@@ -520,10 +471,11 @@ function jsForJs( o )
   let system = servlet.system;
 
   o =_.routineOptions( jsForJs, arguments );
-  // servlet.instanceOptions( o ); /* xxx : remove */
 
   if( o.realPath === null )
   o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.resourcePath ) );
+
+  debugger;
 
   if( o.withScripts === 'single' )
   return servlet.jsSingleForJs({ realPath, request, response });

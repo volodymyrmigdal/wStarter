@@ -184,6 +184,7 @@ function httpOpen( o )
   {
     system,
     curating : 0,
+    fallbackPath : path.current(),
     ... o,
   }
   let session = new _.starter.Session( opts );
@@ -222,6 +223,7 @@ function start( o )
   let opts =
   {
     system,
+    fallbackPath : path.current(),
     ... o,
   }
   let session = new _.starter.Session( opts );

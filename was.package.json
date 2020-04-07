@@ -1,6 +1,6 @@
 {
   "name" : "wstarter", 
-  "version" : "0.4.78", 
+  "version" : "0.4.79", 
   "description" : "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.", 
   "author" : "Kostiantyn Wandalen <wanalen@willbe.so>", 
   "license" : "MIT", 
@@ -38,7 +38,8 @@
     "wloggersocket" : "", 
     "express" : "4.17.1", 
     "jsdom" : "16.2.2", 
-    "pretty" : "2.0.0"
+    "pretty" : "2.0.0", 
+    "chrome-remote-interface" : "0.28.1"
   }, 
   "devDependencies" : { "wTesting" : "", "willbe" : "", "wpuppet" : "" }, 
   "keywords" : [ "wTools" ]

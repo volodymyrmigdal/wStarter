@@ -48,7 +48,7 @@ function sourcesJoinFiles( o )
 
   o.inPath = fileProvider.recordFilter( o.inPath );
   o.inPath.basePathUse( o.basePath );
-  let basePath = o.inPath.basePathSimplest();
+  o.basePath = o.inPath.basePathSimplest(); debugger;
 
   o.inPath = fileProvider.filesFind
   ({
@@ -132,7 +132,7 @@ function sourcesJoinFiles( o )
 
   /* */
 
-  o.basePath = path.resolve( basePath || '.' );
+  o.basePath = path.resolve( o.basePath || '.' );
 
   /* */
 
@@ -179,13 +179,19 @@ function htmlForFiles( o )
 
   /* */
 
-  let basePath = o.basePath;
+  debugger;
+
   if( o.inPath !== false )
-  if( !_.arrayIs( o.inPath ) || o.inPath.length ) /* xxx : ? */
+  if( !_.arrayIs( o.inPath ) || o.inPath.length ) /* if not empty array */
   {
     o.inPath = fileProvider.recordFilter( o.inPath );
     o.inPath.basePathUse( o.basePath );
-    let basePath = o.inPath.basePathSimplest();
+    if( o.basePath === null )
+    o.basePath = o.inPath.basePathSimplest();
+
+    if( o.basePath === o.inPath.filePath )
+    o.basePath = path.dir( o.basePath );
+
     o.inPath = fileProvider.filesFind
     ({
       filter : o.inPath,
@@ -206,7 +212,7 @@ function htmlForFiles( o )
     o.outPath = o.outPath || sourcesJoin.defaults.outPath;
     o.outPath = path.resolve( o.basePath, o.outPath );
   }
-  o.basePath = path.resolve( basePath || '.' );
+  o.basePath = path.resolve( o.basePath || '.' );
 
   /* */
 
@@ -234,6 +240,7 @@ function htmlForFiles( o )
   if( _.lengthOf( srcScriptsMap ) > 0 )
   o.title = path.fullName( _.mapKeys( srcScriptsMap )[ 0 ] );
 
+  debugger;
   let o2 = _.mapOnly( o, maker.htmlFor.defaults );
   o2.srcScriptsMap = srcScriptsMap;
   let data = maker.htmlFor( o2 );

@@ -205,6 +205,8 @@ function pathsForm()
       session.entryPath = path.canonize( path.resolve( session.entryPath ) );
       common.push( session.entryPath );
     }
+    if( session.fallbackPath )
+    common.push( session.fallbackPath ); /* xxx : cover basePath deducing strategy */
     session.basePath = path.canonize( path.common( common ) );
     if( session.basePath === session.entryPath )
     session.basePath = path.dir( session.basePath );
@@ -855,6 +857,7 @@ let Composes =
   basePath : null,
   entryPath : null,
   allowedPath : null,
+  fallbackPath : null,
   templatePath : null,
 
   withModule : null, /* qqq : cover */
