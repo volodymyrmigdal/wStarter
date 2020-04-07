@@ -510,16 +510,21 @@ function sourcesJoinSplits( o )
   ${rou( 'strQuote' )}
   ${rou( 'numberFromStrMaybe' )}
 
+  ${rou( 'errInStr' )}
+  ${rou( 'errFromStr' )}
   ${rou( 'errOriginalMessage' )}
   ${rou( 'errOriginalStack' )}
   ${rou( 'err' )}
   ${rou( '_err' )}
+  ${rou( '_errMake' )}
   ${rou( 'errLogEnd' )}
   ${rou( 'errAttend' )}
   ${rou( '_errFields' )}
   ${rou( 'errIsStandard' )}
   ${rou( 'errIsAttended' )}
   ${rou( 'errProcess' )}
+  ${field( '_errorCounter' )}
+  ${field( '_errorMaking' )}
 
   ${rou( 'setup', '_setupUncaughtErrorHandler2' )}
   ${rou( 'setup', '_setupUncaughtErrorHandler9' )}
@@ -574,7 +579,7 @@ function sourcesJoinSplits( o )
     );
     _.assert
     (
-         _.routineIs( e ) || _.strIs( e ) || _.regexpIs( e )
+         _.routineIs( e ) || _.primitiveIs( e ) || _.regexpIs( e )
       || ( _.mapIs( e ) && _.lengthOf( e ) === 0 )
       || ( _.arrayIs( e ) && _.lengthOf( e ) === 0 )
       , () => `Cant export ${name} is ${_.strType( e )}`
@@ -659,6 +664,23 @@ function sourcesJoinSplits( o )
     }
   }
 
+  /* */
+
+  function field( namesapce, name )
+  {
+    if( arguments.length === 2 )
+    {
+      return elementExport( _[ namesapce ], `_.${namesapce}`, name );
+    }
+    else
+    {
+      name = arguments[ 0 ];
+      return elementExport( _, '_', name );
+    }
+  }
+
+  /* */
+
   function rou( namesapce, name )
   {
     if( arguments.length === 2 )
@@ -672,6 +694,8 @@ function sourcesJoinSplits( o )
     }
   }
 
+  /* */
+
   function fields( namespace )
   {
     let result = [];
@@ -684,6 +708,8 @@ function sourcesJoinSplits( o )
     }
     return result.join( '  ' );
   }
+
+  /* */
 
   function cls( namesapce, name )
   {
@@ -709,6 +735,8 @@ function sourcesJoinSplits( o )
     return r;
   }
 
+  /* */
+
   function clr( cls, method )
   {
     let result = '';
@@ -718,6 +746,8 @@ function sourcesJoinSplits( o )
     result += '\n' + elementExport( _[ cls ][ 'prototype' ], `_.${cls}.prototype`, method );
     return result;
   }
+
+  /* */
 
 }
 

@@ -46,9 +46,19 @@ function sourcesJoinFiles( o )
 
   /* */
 
+  debugger;
+
   o.inPath = fileProvider.recordFilter( o.inPath );
+
+  if( o.basePath === null )
+  o.basePath = o.inPath.basePathSimplest()
+  if( o.basePath === null )
+  o.basePath = path.current();
+  if( o.inPath.prefixPath && path.isRelative( o.inPath.prefixPath ) )
+  o.basePath = path.resolve( o.basePath );
+
   o.inPath.basePathUse( o.basePath );
-  o.basePath = o.inPath.basePathSimplest(); debugger;
+  // o.basePath = o.inPath.basePathSimplest();
 
   o.inPath = fileProvider.filesFind
   ({
@@ -186,8 +196,13 @@ function htmlForFiles( o )
   {
     o.inPath = fileProvider.recordFilter( o.inPath );
     o.inPath.basePathUse( o.basePath );
+
     if( o.basePath === null )
-    o.basePath = o.inPath.basePathSimplest();
+    o.basePath = o.inPath.basePathSimplest()
+    if( o.basePath === null )
+    o.basePath = path.current();
+    if( o.inPath.prefixPath && path.isRelative( o.inPath.prefixPath ) )
+    o.basePath = path.resolve( o.basePath );
 
     if( o.basePath === o.inPath.filePath )
     o.basePath = path.dir( o.basePath );
