@@ -6,8 +6,8 @@ consistency:
     hash: ff7444ed508cec35d77f667bb5c5ab5a
     size: 2235
   ../.im.will.yml: &ref_1
-    hash: 9629c64d8842f6dfb9e5f95e53e91f53
-    size: 5868
+    hash: 385310495c945022e27a69d9eafe3e0c
+    size: 5975
 module:
   wStarter.out:
     about:
@@ -360,6 +360,10 @@ module:
         enabled: 0
       wloggersocket:
         path: 'npm:///wloggersocket'
+        autoExporting: 0
+        enabled: 0
+      chrome-remote-interface:
+        path: 'npm:///chrome-remote-interface#0.28.1'
         autoExporting: 0
         enabled: 0
       express:
@@ -1162,6 +1166,10 @@ module:
         path: 'npm:///wloggersocket'
         autoExporting: 0
         enabled: 0
+      chrome-remote-interface:
+        path: 'npm:///chrome-remote-interface#0.28.1'
+        autoExporting: 0
+        enabled: 0
       express:
         path: 'npm:///express#4.17.1'
         autoExporting: 0
@@ -1742,5 +1750,5 @@ module:
         hash: ff7444ed508cec35d77f667bb5c5ab5a
         size: 2235
       ../.im.will.yml:
-        hash: 9629c64d8842f6dfb9e5f95e53e91f53
-        size: 5868
+        hash: 385310495c945022e27a69d9eafe3e0c
+        size: 5975
