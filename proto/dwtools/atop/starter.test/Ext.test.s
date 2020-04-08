@@ -297,8 +297,8 @@ app0/File1.js:timeout numberIs:true
   })
 
   a.shell( `npm i` );
-  a.appStart( `.sources.join app2/** outPath:out/app2` );
-  a.appStart( `.sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:out/app2` );
+  a.appStart( `.sources.join ** basePath:app2 outPath:../out/app2` );
+  a.appStart( `.sources.join ** basePath:app0 outPath:../out/app0 entryPath:File2.js externalBeforePath:../out/app2` );
   a.ready.then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -360,8 +360,8 @@ app0/File1.js:timeout numberIs:true
   })
 
   a.shell( `npm i` )
-  a.appStart( `.sources.join app0/** outPath:out/dir/app0` )
-  a.appStart( `.sources.join app2/** outPath:out/dir/app2` )
+  a.appStart( `.sources.join ** basePath:app0 outPath:../out/dir/app0` )
+  a.appStart( `.sources.join ** basePath:app2 outPath:../out/dir/app2` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -426,9 +426,9 @@ app0/File1.js:timeout true
   })
 
   a.shell( `npm i` )
-  a.appStart( `.sources.join app2/** outPath:out/app2` )
-  a.appStart( `.sources.join app1/** outPath:out/app1` )
-  a.appStart( `.sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:[out/app1, out/app2]` )
+  a.appStart( `.sources.join ** basePath:app2 outPath:../out/app2` )
+  a.appStart( `.sources.join ** basePath:app1 outPath:../out/app1` )
+  a.appStart( `.sources.join ** basePath:app0 outPath:../out/app0 entryPath:File2.js externalBeforePath:[ ../out/app1 ../out/app2 ]` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -481,7 +481,7 @@ function sourcesJoinTree( test )
     return null;
   })
 
-  a.appStart( `.sources.join in/app1/** outPath:out/app1 entryPath:in/app1/dir1/File1.js` )
+  a.appStart( `.sources.join ** basePath:in/app1 outPath:../../out/app1 entryPath:dir1/File1.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -533,7 +533,7 @@ app1/File1.js:end main:true
     return null;
   })
 
-  a.appStart( `.sources.join in/app1/** outPath:out/app1 entryPath:in/app1/dir1/dir2/File2.js` )
+  a.appStart( `.sources.join ** basePath:in/app1 outPath:../../out/app1 entryPath:dir1/dir2/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -585,8 +585,8 @@ app1/File2.js:end main:true
     return null;
   })
 
-  a.appStart( `.sources.join in/app1/** outPath:out/app1` )
-  a.appStart( `.sources.join in/app2/** outPath:out/app2 entryPath:in/app2/File2.js externalBeforePath:out/app1` )
+  a.appStart( `.sources.join ** basePath:in/app1 outPath:../../out/app1` )
+  a.appStart( `.sources.join ** basePath:in/app2 outPath:../../out/app2 entryPath:File2.js externalBeforePath:../../out/app1` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );

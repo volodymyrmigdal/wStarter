@@ -1,4 +1,4 @@
-
+debugger;
 console.log( 'app0/File2.js:begin main:' + !module.parent );
 
 let f = require( '../app2/File2.js' );
