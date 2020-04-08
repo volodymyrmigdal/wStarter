@@ -1,46 +1,46 @@
 {
-  "name" : "wstarter",
-  "version" : "0.4.80",
-  "description" : "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.",
-  "author" : "Kostiantyn Wandalen <wanalen@willbe.so>",
-  "license" : "MIT",
-  "main" : "proto/dwtools/atop/starter/Main.s",
-  "files" : [ "proto/dwtools/atop/starter", "proto/dwtools/Tools.s" ],
-  "scripts" :
+  "name" : "wstarter", 
+  "version" : "0.4.80", 
+  "description" : "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.", 
+  "author" : "Kostiantyn Wandalen <wanalen@willbe.so>", 
+  "license" : "MIT", 
+  "main" : "proto/dwtools/atop/starter/Main.s", 
+  "files" : [ "proto/dwtools/atop/starter", "proto/dwtools/Tools.s" ], 
+  "scripts" : 
   {
-    "test" : "wtest .run proto/**",
-    "docgen" : "wdocgen proto",
-    "single-process-starter" : "node proto/dwtools/atop/starter/Exec",
-    "debug-starter" : "node proto/dwtools/atop/starter/ExecDebug",
+    "test" : "wtest .run proto/**", 
+    "docgen" : "wdocgen proto", 
+    "single-process-starter" : "node proto/dwtools/atop/starter/Exec", 
+    "debug-starter" : "node proto/dwtools/atop/starter/ExecDebug", 
     "starter" : "node proto/dwtools/atop/starter/ExecUnrestricted"
-  },
-  "bin" :
+  }, 
+  "bin" : 
   {
-    "starter" : "proto/dwtools/atop/starter/ExecUnrestricted",
-    "single-process-starter" : "proto/dwtools/atop/starter/Exec",
+    "starter" : "proto/dwtools/atop/starter/ExecUnrestricted", 
+    "single-process-starter" : "proto/dwtools/atop/starter/Exec", 
     "debug-starter" : "proto/dwtools/atop/starter/ExecDebug"
-  },
-  "repository" : { "type" : "git", "url" : "https://github.com/Wandalen/wStarter.git" },
-  "bugs" :
+  }, 
+  "repository" : { "type" : "git", "url" : "https://github.com/Wandalen/wStarter.git" }, 
+  "bugs" : 
   {
     "url" : "https://github.com/Wandalen/wStarter/issues"
-  },
-  "dependencies" :
+  }, 
+  "dependencies" : 
   {
-    "wTools" : "",
-    "wCopyable" : "",
-    "wFiles" : "",
-    "wverbal" : "",
-    "wtemplatetreeenvironment" : "",
-    "wcommandsaggregator" : "",
-    "wservlettools" : "",
-    "open" : "",
-    "wloggersocket" : "",
-    "express" : "4.17.1",
-    "jsdom" : "16.2.2",
-    "pretty" : "2.0.0",
+    "wTools" : "", 
+    "wCopyable" : "", 
+    "wFiles" : "", 
+    "wverbal" : "", 
+    "wtemplatetreeenvironment" : "", 
+    "wcommandsaggregator" : "", 
+    "wservlettools" : "", 
+    "open" : "", 
+    "wloggersocket" : "", 
+    "express" : "4.17.1", 
+    "jsdom" : "16.2.2", 
+    "pretty" : "2.0.0", 
     "chrome-remote-interface" : "0.28.1"
-  },
-  "devDependencies" : { "wTesting" : "", "willbe" : "", "wpuppet" : "" },
+  }, 
+  "devDependencies" : { "wTesting" : "", "willbe" : "", "wpuppet" : "" }, 
   "keywords" : [ "wTools" ]
 }
