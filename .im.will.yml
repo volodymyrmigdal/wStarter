@@ -22,17 +22,20 @@ submodule :
   open:
     path : npm:///open
     enabled : 0 # submodule
-  express :
-    path : npm:///express
-    enabled : 0 # submodule
-  jsdom :
-    path : npm:///jsdom
-    enabled : 0 # submodule
-  chrome-remote-interface :
-    path : npm:///chrome-remote-interface
-    enabled : 0 # submodule
   wloggersocket :
     path : npm:///wloggersocket
+    enabled : 0 # submodule
+  chrome-remote-interface :
+    path : npm:///chrome-remote-interface#0.28.1
+    enabled : 0 # submodule
+  express :
+    path : npm:///express#4.17.1
+    enabled : 0 # submodule
+  jsdom :
+    path : npm:///jsdom#16.2.2
+    enabled : 0 # submodule
+  pretty :
+    path : npm:///pretty#2.0.0
     enabled : 0 # submodule
   wstarter :
     path : hd://.

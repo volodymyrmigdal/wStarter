@@ -3,11 +3,12 @@
 'use strict';
 
 // debugger;
-// console.log( typeof exports );
+// console.log( typeof exports ); /* xxx qqq : write test routine for exports. ask how */
 // debugger;
 
 //
 
+let Jsdom, Pretty;
 let _ = _global_.wTools;
 let Parent = null
 let Self = function wStarterMakerLight( o )
@@ -18,17 +19,47 @@ let Self = function wStarterMakerLight( o )
 Self.shortName = 'Maker';
 
 // --
+// relations
+// --
+
+let LibrarySplits =
+{
+  prefix : '',
+  predefined : '',
+  early : '',
+  extract : '',
+  proceduring : '',
+  interpreter : '',
+  starter : '',
+  env : '',
+  files : '',
+  externalBefore : '',
+  entry : '',
+  externalAfter : '',
+  postfix : '',
+}
+
+// --
 // routines
 // --
 
 function instanceOptions( o )
 {
-  let self = this;
+  let maker = this;
 
+  _.assert( arguments.length === 0 || arguments.length === 1 );
+
+  if( o )
   for( let k in o )
   {
-    if( o[ k ] === null && _.longHas( self.InstanceDefaults, k ) )
-    o[ k ] = self[ k ];
+    if( o[ k ] === null && maker.InstanceDefaults[ k ] !== undefined )
+    o[ k ] = maker[ k ];
+  }
+  else
+  for( let k in maker.InstanceDefaults )
+  {
+    if( maker[ k ] === null && maker.InstanceDefaults[ k ] !== undefined )
+    maker[ k ] = maker.InstanceDefaults[ k ];
   }
 
   return o;
@@ -40,7 +71,7 @@ function instanceOptions( o )
 
 function sourceWrapSplits( o )
 {
-  let self = this;
+  let maker = this;
 
   _.routineOptions( sourceWrapSplits, arguments );
   _.assert( arguments.length === 1 );
@@ -60,18 +91,14 @@ function sourceWrapSplits( o )
 
   if( o.interpreter === 'browser' )
   ware +=
-`
-/* */  if( typeof _starter_ === 'undefined' && importScripts ) /* qqq xxx : ? */
+`/* */  if( typeof _starter_ === 'undefined' && typeof importScripts !== 'undefined' ) /* qqq xxx : ? */
 /* */  importScripts( '/.starter' );
 /* */  let _filePath_ = _starter_._pathResolve( null, '/', '${relativeFilePath}' );
-/* */  let _dirPath_ = _starter_._pathResolve( null, '/', '${relativeDirPath}' );
-`
+/* */  let _dirPath_ = _starter_._pathResolve( null, '/', '${relativeDirPath}' );`
   else
   ware +=
-`
-/* */  let _filePath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeFilePath}' );
-/* */  let _dirPath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeDirPath}' );
-`
+`/* */  let _filePath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeFilePath}' );
+/* */  let _dirPath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeDirPath}' );`
 
   ware +=
 `
@@ -84,7 +111,7 @@ function sourceWrapSplits( o )
 `
 
   if( o.running )
-  ware += `/* */  ${fileNameNaked}();`;
+  ware += `/* */  _starter_._sourceIncludeAct( null, module, module.filePath );`;
 
   let postfix1 =
 `
@@ -112,15 +139,15 @@ sourceWrapSplits.defaults =
 
 function sourceWrap( o )
 {
-  let self = this;
+  let maker = this;
   _.assert( arguments.length === 1 );
   _.routineOptions( sourceWrap, arguments );
-  self.instanceOptions( o );
+  maker.instanceOptions( o );
 
   if( o.removingShellPrologue )
-  o.fileData = self.sourceRemoveShellPrologue( o.fileData );
+  o.fileData = maker.sourceRemoveShellPrologue( o.fileData );
 
-  let splits = self.sourceWrapSplits({ filePath : o.filePath, basePath : o.basePath });
+  let splits = maker.sourceWrapSplits({ filePath : o.filePath, basePath : o.basePath });
   let result = splits.prefix1 + splits.prefix2 + o.fileData + splits.postfix2 + splits.ware + splits.postfix1;
   return result;
 }
@@ -133,13 +160,13 @@ defaults.removingShellPrologue = null;
 
 function sourceWrapSimple( o )
 {
-  let self = this;
+  let maker = this;
   _.assert( arguments.length === 1 );
   _.routineOptions( sourceWrapSimple, arguments );
-  self.instanceOptions( o );
+  maker.instanceOptions( o );
 
   if( o.removingShellPrologue )
-  o.fileData = self.sourceRemoveShellPrologue( o.fileData );
+  o.fileData = maker.sourceRemoveShellPrologue( o.fileData );
 
   let fileName = _.strCamelize( _.path.fullName( o.filePath ) );
 
@@ -172,7 +199,7 @@ qqq : investigate and add test case for such case
 
 function sourceRemoveShellPrologue( fileData )
 {
-  let self = this;
+  let maker = this;
   let splits = _.strSplitFast( fileData, /^\s*\#\![^\n]*\n/ );
   _.assert( arguments.length === 1 );
   if( splits.length > 1 )
@@ -187,21 +214,16 @@ function sourceRemoveShellPrologue( fileData )
 
 function sourcesJoinSplits( o )
 {
-  let self = this;
-  let r = Object.create( null );
-  r.prefix = '';
-  r.ware = '';
-  r.interpreter = '';
-  r.starter = '';
-  r.env = '';
-  r.externalBefore = '';
-  r.entry = '';
-  r.externalAfter = '';
-  r.postfix = '';
+  let maker = this;
+  let r = _.mapExtend( null, maker.LibrarySplits );
   Object.preventExtensions( r );
 
   o = _.routineOptions( sourcesJoinSplits, arguments );
   _.assert( _.longHas( [ 'njs', 'browser' ], o.interpreter ) );
+  _.assert( _.boolLike( o.debug ) );
+  _.assert( _.boolLike( o.proceduring ) );
+  _.assert( _.boolLike( o.catchingUncaughtErrors ) );
+  _.assert( _.boolLike( o.loggingApplication ) );
 
   if( o.entryPath )
   {
@@ -221,142 +243,68 @@ function sourcesJoinSplits( o )
 /* */  /* begin of library ${o.libraryName} */ ( function _library_() {
 `
 
-  /* ware */
-  /* Uri namespace( parseConsecutive ) is required to make _.include working in a browser */
+  /* predefined */
 
-  r.ware =
+  r.predefined =
 `
-/* */  /* begin of ware */ ( function _StarterWare_() {
+/* */  /* begin of predefined */ ( function _predefined_() {
 
-  ${_.routineParse( self.WareCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.PredefinedCode.begin ).bodyUnwrapped};
 
-  ${gr( 'assert' )}
-  ${gr( 'strIs' )}
-  ${gr( 'strDefined' )}
-  ${gr( '_strBeginOf' )}
-  ${gr( '_strEndOf' )}
-  ${gr( '_strRemovedBegin' )}
-  ${gr( '_strRemovedEnd' )}
-  ${gr( 'strBegins' )}
-  ${gr( 'strEnds' )}
-  ${gr( 'strRemoveBegin' )}
-  ${gr( 'strRemoveEnd' )}
-  ${gr( 'regexpIs' )}
-  ${gr( 'longIs' )}
-  ${gr( 'primitiveIs' )}
-  ${gr( 'strBegins' )}
-  ${gr( 'objectIs' )}
-  ${gr( 'objectLike' )}
-  ${gr( 'arrayLike' )}
-  ${gr( 'mapLike' )}
-  ${gr( 'strsLikeAll' )}
-  ${gr( 'arrayIs' )}
-  ${gr( 'numberIs' )}
-  ${gr( 'argumentsArrayIs' )}
-  ${gr( 'routineIs' )}
-  ${gr( 'routineIsPure' )}
-  ${gr( 'mapIs' )}
-  ${gr( 'sure' )}
-  ${gr( 'mapBut' )}
-  ${gr( 'mapHas' )}
-  ${gr( 'sureMapHasOnly' )}
-  ${gr( 'sureMapHasNoUndefine' )}
-  ${gr( 'mapSupplementStructureless' )}
-  ${gr( 'assertMapHasOnly' )}
-  ${gr( 'assertMapHasNoUndefine' )}
-  ${gr( 'routineOptions' )}
-  ${gr( 'routineExtend' )}
-  ${gr( 'arrayAppendArray' )}
-  ${gr( 'arrayAppendArrays' )}
-  ${gr( 'arrayAppendedArray' )}
-  ${gr( 'arrayAppendedArrays' )}
-  ${gr( 'longLike' )}
-  ${gr( 'longLeft' )}
-  ${gr( 'longLeftIndex' )}
-  ${gr( 'longLeftDefined' )}
-  ${gr( 'longHas' )}
-  ${gr( 'routineFromPreAndBody' )}
-  ${gr( 'arrayAs' )}
-  ${gr( 'errIs' )}
-  ${gr( 'unrollIs' )}
-  ${gr( 'strType' )}
-  ${gr( 'strPrimitiveType' )}
-  ${gr( 'strHas' )}
-  ${gr( 'strLike' )}
-  ${gr( 'rangeIs' )}
-  ${gr( 'numbersAre' )}
-  ${gr( 'bufferTypedIs' )}
-  ${gr( 'bufferNodeIs' )}
-  ${gr( '_strLeftSingle' )}
-  ${gr( '_strRightSingle' )}
-  ${gr( 'strIsolate' )}
-  ${gr( 'strIsolateLeftOrNone' )}
-  ${gr( 'strIsolateRightOrNone' )}
-  ${gr( 'strIsolateLeftOrAll' )}
-  ${gr( 'strIsolateRightOrAll' )}
-  ${gr( 'numberFromStrMaybe' )}
+/* */  _global_._starter_.debug = ${o.debug};
+/* */  _global_._starter_.interpreter = '${o.interpreter}';
+/* */  _global_._starter_.proceduring = ${o.proceduring};
+/* */  _global_._starter_.catchingUncaughtErrors = ${o.catchingUncaughtErrors};
+/* */  _global_._starter_.loggingApplication = ${o.loggingApplication};
 
-  ${gr( 'errOriginalMessage' )}
-  ${gr( 'errOriginalStack' )}
-  ${gr( 'err' )}
-  ${gr( '_err' )}
-  ${gr( 'errLogEnd' )}
-  ${gr( 'errAttend' )}
-  ${gr( '_errFields' )}
-  ${gr( 'errIsStandard' )}
-  ${gr( 'errIsAttended' )}
-  ${gr( 'errProcess' )}
+/* */  _global_.Config.debug = ${o.debug};
 
-  ${gr( 'setup', '_setupUncaughtErrorHandler2' )}
-  ${gr( 'setup', '_setupUncaughtErrorHandler9' )}
-  ${gr( 'setup', '_errUncaughtPre' )}
-  ${gr( 'setup', '_errUncaughtHandler1' )}
-  ${gr( 'setup', '_errUncaughtHandler2' )}
+  ${_.routineParse( maker.PredefinedCode.end ).bodyUnwrapped};
 
-  ${gr( 'introspector', 'code' )}
-  ${gr( 'introspector', 'stack' )}
-  ${gr( 'introspector', 'stackCondense' )}
-  ${gr( 'introspector', 'location' )}
-  ${gr( 'introspector', 'locationFromStackFrame' )}
-  ${gr( 'introspector', 'locationToStack' )}
-  ${gr( 'introspector', 'locationNormalize' )}
+/* */  /* end of predefined */ })();
 
-  ${gr( 'path', 'refine' )}
-  ${gr( 'path', '_normalize' )}
-  ${gr( 'path', 'canonize' )}
-  ${gr( 'path', 'canonizeTolerant' )}
-  ${gr( 'path', '_nativizeWindows' )}
-  ${gr( 'path', '_nativizePosix' )}
-  ${gr( 'path', 'isGlob' )}
-  ${gr( 'path', 'isRelative' )}
-  ${gr( 'path', 'isAbsolute' )}
-  ${gr( 'path', 'ext' )}
-  ${gr( 'path', 'isGlobal' )}
-  ${fields( 'path' )}
+`
 
-  ${gr( 'uri', 'parseConsecutive' )}
-  ${gr( 'uri', 'refine' )}
-  ${gr( 'uri', '_normalize' )}
-  ${gr( 'uri', 'canonize' )}
-  ${gr( 'uri', 'canonizeTolerant' )}
-  ${fields( 'uri' )}
+  /* early */
 
-  ${cls( 'Procedure' )}
-  ${method( 'Procedure', 'NativeWatchingEnable' )}
-  ${method( 'Procedure', 'init' )}
+  r.early =
+`
+/* */  /* begin of early */ ( function _early_() {
 
-  ${_.routineParse( self.WareCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.EarlyCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.EarlyCode.end ).bodyUnwrapped};
+
+/* */  /* end of early */ })();
+
   `
 
-  if( o.interpreter === 'browser' )
-  r.ware +=
+  /* extract */
+
+  r.extract =
 `
+/* */  /* begin of extract */ ( function _extract_() {
+
+  ${_.routineParse( maker.ExtractCode.begin ).bodyUnwrapped};
+
+  ${extract()}
+
+  ${_.routineParse( maker.ExtractCode.end ).bodyUnwrapped};
+
+/* */  /* end of extract */ })();
 
 `
 
-  r.ware +=
+  /* proceduring */
+
+  if( o.proceduring )
+  r.proceduring =
 `
-/* */  /* end of ware */ })();
+/* */  /* begin of proceduring */ ( function _proceduring_() {
+
+  ${_.routineParse( maker.ProceduringCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.ProceduringCode.end ).bodyUnwrapped};
+
+/* */  /* end of proceduring */ })();
 
 `
 
@@ -365,10 +313,10 @@ function sourcesJoinSplits( o )
   if( o.interpreter === 'browser' )
   r.interpreter =
 `
-/* */  /* begin of bro */ ( function _Bro_() {
+/* */  /* begin of bro */ ( function _bro_() {
 
-  ${_.routineParse( self.BroCode.begin ).bodyUnwrapped};
-  ${_.routineParse( self.BroCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.BroCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.BroCode.end ).bodyUnwrapped};
 
 /* */  /* end of bro */ })();
 
@@ -379,10 +327,10 @@ function sourcesJoinSplits( o )
   if( o.interpreter === 'njs' )
   r.interpreter =
 `
-/* */  /* begin of njs */ ( function _Njs_() {
+/* */  /* begin of njs */ ( function _njs_() {
 
-  ${_.routineParse( self.NjsCode.begin ).bodyUnwrapped};
-  ${_.routineParse( self.NjsCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.NjsCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.NjsCode.end ).bodyUnwrapped};
 
 /* */  /* end of njs */ })();
 
@@ -392,13 +340,10 @@ function sourcesJoinSplits( o )
 
   r.starter =
 `
-/* */  /* begin of starter */ ( function _Starter_() {
+/* */  /* begin of starter */ ( function _starter_() {
 
-  ${_.routineParse( self.StarterCode.begin ).bodyUnwrapped};
-
-/* */  let _interpreter_ = '${o.interpreter}';
-
-  ${_.routineParse( self.StarterCode.end ).bodyUnwrapped};
+  ${_.routineParse( maker.StarterCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.StarterCode.end ).bodyUnwrapped};
 
 /* */  /* end of starter */ })();
 
@@ -432,7 +377,7 @@ function sourcesJoinSplits( o )
   /* external */
 
   if( o.externalBeforePath || o.externalAfterPath )
-  _.assert( _.strIs( o.outPath ), 'Expects out path' );
+  _.assert( _.strDefined( o.outPath ), 'Expects option::outPath if option::externalBeforePath or option::externalAfterPath defined' );
 
   r.externalBefore = '\n';
   if( o.externalBeforePath )
@@ -459,7 +404,10 @@ function sourcesJoinSplits( o )
   o.entryPath.forEach( ( entryPath ) =>
   {
     entryPath = _.path.relative( o.basePath, entryPath );
+    if( o.interpreter === 'njs' )
     r.entry += `/* */  module.exports = _starter_._sourceInclude( null, _libraryFilePath_, './${entryPath}' );\n`;
+    else
+    r.entry += `/* */  _starter_._sourceInclude( null, _libraryFilePath_, './${entryPath}' );\n`;
   });
 
   /* postfix */
@@ -473,6 +421,154 @@ function sourcesJoinSplits( o )
 
   return r;
 
+  /* */
+
+  function extract()
+  {
+
+    return `
+  ${rou( 'assert' )}
+  ${rou( 'strIs' )}
+  ${rou( 'strDefined' )}
+  ${rou( '_strBeginOf' )}
+  ${rou( '_strEndOf' )}
+  ${rou( '_strRemovedBegin' )}
+  ${rou( '_strRemovedEnd' )}
+  ${rou( 'strBegins' )}
+  ${rou( 'strEnds' )}
+  ${rou( 'strRemoveBegin' )}
+  ${rou( 'strRemoveEnd' )}
+  ${rou( 'regexpIs' )}
+  ${rou( 'longIs' )}
+  ${rou( 'primitiveIs' )}
+  ${rou( 'strBegins' )}
+  ${rou( 'objectIs' )}
+  ${rou( 'objectLike' )}
+  ${rou( 'arrayLike' )}
+  ${rou( 'mapLike' )}
+  ${rou( 'strsLikeAll' )}
+  ${rou( 'arrayIs' )}
+  ${rou( 'numberIs' )}
+  ${rou( 'setIs' )}
+  ${rou( 'setLike' )}
+  ${rou( 'hashMapIs' )}
+  ${rou( 'hashMapLike' )}
+  ${rou( 'argumentsArrayIs' )}
+  ${rou( 'routineIs' )}
+  ${rou( 'routineIsPure' )}
+  ${rou( 'lengthOf' )}
+  ${rou( 'mapIs' )}
+  ${rou( 'sure' )}
+  ${rou( 'mapBut' )}
+  ${rou( 'mapHas' )}
+  ${rou( '_mapKeys' )}
+  ${rou( 'mapOwnKeys' )}
+  ${rou( 'sureMapHasOnly' )}
+  ${rou( 'sureMapHasNoUndefine' )}
+  ${rou( 'mapSupplementStructureless' )}
+  ${rou( 'assertMapHasOnly' )}
+  ${rou( 'assertMapHasNoUndefine' )}
+  ${rou( 'routineOptions' )}
+  ${rou( 'routineExtend' )}
+  ${rou( 'arrayAppendArray' )}
+  ${rou( 'arrayAppendArrays' )}
+  ${rou( 'arrayAppendedArray' )}
+  ${rou( 'arrayAppendedArrays' )}
+  ${rou( 'arrayAppended' )}
+  ${rou( 'arrayAppendOnceStrictly' )}
+  ${rou( 'arrayAppendArrayOnce' )}
+  ${rou( 'arrayAppendedArrayOnce' )}
+  ${rou( 'arrayAppendedOnce' )}
+  ${rou( 'arrayRemoveOnceStrictly' )}
+  ${rou( 'arrayRemoveElementOnceStrictly' )}
+  ${rou( 'arrayRemovedElement' )}
+  ${rou( 'arrayRemovedElementOnce' )}
+  ${rou( 'longLike' )}
+  ${rou( 'longLeft' )}
+  ${rou( 'longLeftIndex' )}
+  ${rou( 'longLeftDefined' )}
+  ${rou( 'longHas' )}
+  ${rou( 'routineFromPreAndBody' )}
+  ${rou( 'arrayAs' )}
+  ${rou( 'errIs' )}
+  ${rou( 'unrollIs' )}
+  ${rou( 'strType' )}
+  ${rou( 'strPrimitiveType' )}
+  ${rou( 'strHas' )}
+  ${rou( 'strLike' )}
+  ${rou( 'rangeIs' )}
+  ${rou( 'numbersAre' )}
+  ${rou( 'bufferTypedIs' )}
+  ${rou( 'bufferNodeIs' )}
+  ${rou( '_strLeftSingle' )}
+  ${rou( '_strRightSingle' )}
+  ${rou( 'strIsolate' )}
+  ${rou( 'strIsolateLeftOrNone' )}
+  ${rou( 'strIsolateRightOrNone' )}
+  ${rou( 'strIsolateLeftOrAll' )}
+  ${rou( 'strIsolateRightOrAll' )}
+  ${rou( 'strQuote' )}
+  ${rou( 'numberFromStrMaybe' )}
+
+  ${rou( 'errInStr' )}
+  ${rou( 'errFromStr' )}
+  ${rou( 'errOriginalMessage' )}
+  ${rou( 'errOriginalStack' )}
+  ${rou( 'err' )}
+  ${rou( '_err' )}
+  ${rou( '_errMake' )}
+  ${rou( 'errLogEnd' )}
+  ${rou( 'errAttend' )}
+  ${rou( '_errFields' )}
+  ${rou( 'errIsStandard' )}
+  ${rou( 'errIsAttended' )}
+  ${rou( 'errProcess' )}
+  ${field( '_errorCounter' )}
+  ${field( '_errorMaking' )}
+
+  ${rou( 'setup', '_setupUncaughtErrorHandler2' )}
+  ${rou( 'setup', '_setupUncaughtErrorHandler9' )}
+  ${rou( 'setup', '_errUncaughtPre' )}
+  ${rou( 'setup', '_errUncaughtHandler1' )}
+  ${rou( 'setup', '_errUncaughtHandler2' )}
+
+  ${rou( 'introspector', 'code' )}
+  ${rou( 'introspector', 'stack' )}
+  ${rou( 'introspector', 'stackCondense' )}
+  ${rou( 'introspector', 'location' )}
+  ${rou( 'introspector', 'locationFromStackFrame' )}
+  ${rou( 'introspector', 'locationToStack' )}
+  ${rou( 'introspector', 'locationNormalize' )}
+
+  ${rou( 'path', 'refine' )}
+  ${rou( 'path', '_normalize' )}
+  ${rou( 'path', 'canonize' )}
+  ${rou( 'path', 'canonizeTolerant' )}
+  ${rou( 'path', '_nativizeWindows' )}
+  ${rou( 'path', '_nativizePosix' )}
+  ${rou( 'path', 'isGlob' )}
+  ${rou( 'path', 'isRelative' )}
+  ${rou( 'path', 'isAbsolute' )}
+  ${rou( 'path', 'ext' )}
+  ${rou( 'path', 'isGlobal' )}
+  ${fields( 'path' )}
+
+  /*
+  Uri namespace( parseConsecutive ) is required to make _.include working in a browser
+  */
+
+  ${rou( 'uri', 'parseConsecutive' )}
+  ${rou( 'uri', 'refine' )}
+  ${rou( 'uri', '_normalize' )}
+  ${rou( 'uri', 'canonize' )}
+  ${rou( 'uri', 'canonizeTolerant' )}
+  ${fields( 'uri' )}
+`
+
+  }
+
+  /* */
+
   function elementExport( srcContainer, dstContainerName, name )
   {
     let e = srcContainer[ name ];
@@ -483,8 +579,10 @@ function sourcesJoinSplits( o )
     );
     _.assert
     (
-      _.routineIs( e ) || _.strIs( e ) || _.regexpIs( e ),
-      () => `Cant export ${name} is ${_.strType( e )}`
+         _.routineIs( e ) || _.primitiveIs( e ) || _.regexpIs( e )
+      || ( _.mapIs( e ) && _.lengthOf( e ) === 0 )
+      || ( _.arrayIs( e ) && _.lengthOf( e ) === 0 )
+      , () => `Cant export ${name} is ${_.strType( e )}`
     );
     let str = '';
     if( _.routineIs( e ) )
@@ -523,6 +621,8 @@ function sourcesJoinSplits( o )
 
     return r;
 
+    /* */
+
     function routineProperties( dstContainerName, routine )
     {
       let r = ''
@@ -551,7 +651,6 @@ function sourcesJoinSplits( o )
       `
       if( name === 'routineFromPreAndBody' )
       {
-
         str += `\n${dstContainerName}.${name} = ` + _.strLinesIndentation( e.toString(), '  ' );
         str += `\n${dstContainerName}.${name}.pre = ` + `__${e.name}_pre;`
         str += `\n${dstContainerName}.${name}.body = ` + `__${e.name}_body;`
@@ -565,7 +664,9 @@ function sourcesJoinSplits( o )
     }
   }
 
-  function gr( namesapce, name )
+  /* */
+
+  function field( namesapce, name )
   {
     if( arguments.length === 2 )
     {
@@ -577,6 +678,23 @@ function sourcesJoinSplits( o )
       return elementExport( _, '_', name );
     }
   }
+
+  /* */
+
+  function rou( namesapce, name )
+  {
+    if( arguments.length === 2 )
+    {
+      return elementExport( _[ namesapce ], `_.${namesapce}`, name );
+    }
+    else
+    {
+      name = arguments[ 0 ];
+      return elementExport( _, '_', name );
+    }
+  }
+
+  /* */
 
   function fields( namespace )
   {
@@ -586,32 +704,50 @@ function sourcesJoinSplits( o )
     {
       let e = _[ namespace ][ f ];
       if( _.strIs( e ) || _.regexpIs( e ) )
-      result.push( gr( namespace, f ) );
+      result.push( rou( namespace, f ) );
     }
     return result.join( '  ' );
   }
 
+  /* */
+
   function cls( namesapce, name )
   {
+    let r;
     if( arguments.length === 2 )
     {
-      return elementExport( _[ namesapce ], `_.${namesapce}`, name );
+      r = elementExport( _[ namesapce ], `_.${namesapce}`, name );
     }
     else
     {
       name = arguments[ 0 ];
-      return elementExport( _, '_', name );
+      r = elementExport( _, '_', name );
     }
+    r =
+`
+(function()
+{
+
+  let Self = ${r}
+
+})();
+`
+    return r;
   }
 
-  function method( cls, method )
+  /* */
+
+  function clr( cls, method )
   {
-    debugger;
+    let result = '';
     if( _[ cls ][ method ] )
-    elementExport( _[ cls ], `_.${cls}.${method}`, method );
+    result = elementExport( _[ cls ], `_.${cls}`, method );
     if( _[ cls ][ 'prototype' ][ method ] )
-    elementExport( _[ cls ][ 'prototype' ], `_.${cls}.prototype.${method}`, method );
+    result += '\n' + elementExport( _[ cls ][ 'prototype' ], `_.${cls}.prototype`, method );
+    return result;
   }
+
+  /* */
 
 }
 
@@ -624,22 +760,26 @@ sourcesJoinSplits.defaults =
   externalBeforePath : null,
   externalAfterPath : null,
   interpreter : 'njs',
+  debug : 1,
+  proceduring : 0,
+  catchingUncaughtErrors : 1,
+  loggingApplication : 0,
 }
 
 //
 
 function sourcesJoin( o )
 {
-  let self = this;
+  let maker = this;
 
   _.routineOptions( sourcesJoin, arguments );
-  self.instanceOptions( o );
+  maker.instanceOptions( o );
 
   /* */
 
   o.filesMap = _.map( o.filesMap, ( fileData, filePath ) =>
   {
-    return self.sourceWrap
+    return maker.sourceWrap
     ({
       filePath,
       fileData,
@@ -652,17 +792,12 @@ function sourcesJoin( o )
 
   let result = _.mapVals( o.filesMap ).join( '\n' );
 
-  let splits = self.sourcesJoinSplits
-  ({
-    entryPath : o.entryPath,
-    basePath : o.basePath,
-    externalBeforePath : o.externalBeforePath,
-    externalAfterPath : o.externalAfterPath,
-    outPath : o.outPath,
-    interpreter : o.interpreter,
-  });
+  let o2 = _.mapOnly( o, maker.sourcesJoinSplits.defaults );
+  let splits = maker.sourcesJoinSplits( o2 );
 
-  result = splits.prefix + splits.ware + splits.interpreter + splits.starter + splits.env + result + splits.externalBefore + splits.entry + splits.externalAfter + splits.postfix;
+  splits.files = result;
+
+  result = maker.sourcesSplitsJoin( splits );
 
   return result;
 }
@@ -672,110 +807,191 @@ var defaults = sourcesJoin.defaults = Object.create( sourcesJoinSplits.defaults 
 defaults.filesMap = null;
 defaults.removingShellPrologue = null;
 
+//
+
+function sourcesSplitsJoin( o )
+{
+  let maker = this;
+
+  _.routineOptions( sourcesSplitsJoin, arguments );
+
+  for( let i in o )
+  {
+    _.assert( _.strIs( o[ i ] ) );
+  }
+
+  let result =
+      o.prefix
+    + o.predefined
+    + o.early
+    + o.extract
+    + o.proceduring
+    + o.interpreter
+    + o.starter
+    + o.env
+    + o.files
+    + o.externalBefore
+    + o.entry
+    + o.externalAfter
+    + o.postfix;
+
+  return result;
+}
+
+var defaults = sourcesSplitsJoin.defaults =
+{
+  ... LibrarySplits,
+}
+
 // --
 // etc
 // --
 
 function htmlSplitsFor( o )
 {
-  let self = this;
+  let maker = this;
   let r = Object.create( null );
 
   _.routineOptions( htmlSplitsFor, arguments );
 
-  if( o.starterIncluding === null )
-  o.starterIncluding = htmlSplitsFor.defaults.starterIncluding;
-  _.assert( _.longHas( [ 'include', 'inline', 0, false ], o.starterIncluding ) );
-  _.assert( o.starterIncluding !== 'inline', 'not implemented' );
-
-  if( o.template )
+  if( o.withScripts === null )
   {
-    r.all = onTemplate();
-    return r;
+    o.withScripts = 'include';
+  }
+  if( o.withStarter === null )
+  {
+    if( o.withScripts === 'single' )
+    o.withStarter = false;
+    else
+    o.withStarter = 'include';
   }
 
-  r.prefix =
+  _.assert( _.longHas( [ 'include', 'inline', 0, false ], o.withStarter ), () => `Expects option::withStarter [ include, inkine, false ], but got ${o.withStarter}` );
+  _.assert( _.longHas( [ 'include', 0, false ], o.withStarter ) );
+  _.assert( _.longHas( [ 'single', 'include', 'inline', 0, false ], o.withScripts ) );
+  _.assert( _.longHas( [ 'single', 'include' ], o.withScripts ) );
+  _.assert( o.withScripts !== 'single' || _.lengthOf( o.srcScriptsMap ) <= 1, 'not implemented' );
+  _.assert( o.withScripts !== 'single' || !o.withStarter, 'If option::withScripts is single then option::withStarter should be off' );
+
+  if( o.template === null )
+  o.template =
 `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${o.title}</title>
-`
-
-  if( o.starterIncluding === 'include' )
-  r.starter = `  <script src="/.starter"></script>\n`;
-
-  r.scripts = [];
-  for( let filePath in o.srcScriptsMap )
-  {
-    let split = `  <script src="${filePath}"></script>`;
-    r.scripts.push( split );
-  }
-
-  r.postfix =
-`
 </head>
 <body>
 </body>
 </html>
 `
 
+  r = templateHandle();
+
   return r;
 
   /* */
 
-  function onTemplate()
+  function templateHandle()
   {
     _.assert( _.strDefined( o.template ) );
 
-    let jsdom = require( 'jsdom' );
-    let dom = new jsdom.JSDOM( o.template );
+    if( !Jsdom )
+    Jsdom = require( 'jsdom' );
+    if( !Pretty && maker.pretty )
+    Pretty = require( 'pretty' );
+
+    let dom = new Jsdom.JSDOM( o.template );
     let document = dom.window.document;
 
-    if( o.starterIncluding === 'include' )
-    appendScript( '/.starter' );
+    if( o.title )
+    {
+      let title = document.head.querySelector( 'title' );
+      if( !title )
+      {
+        title = document.createElement( 'title' );
+        document.head.insertBefore( title, document.head.children[ 0 ] )
+      }
+      title.text = o.title;
+    }
+
+    if( o.withStarter === 'include' )
+    prependScript( document, '/.starter' );
 
     for( let filePath in o.srcScriptsMap )
-    appendScript( filePath );
-
-    return dom.serialize();
-
-    /* */
-
-    function appendScript( src )
     {
-      let script = document.createElement( 'script' );
-      script.type = 'text/javascript';
-      script.src = src;
-      document.head.appendChild( script );
+      if( o.withScripts === 'include' )
+      appendScript( document, filePath );
+      else if( o.withScripts === 'single' )
+      appendScript( document, filePath + '?withScripts:single' );
+      else _.assert( 0 );
     }
+
+    let result = dom.serialize();
+
+    if( maker.pretty )
+    result = Pretty( result );
+
+    return result;
   }
+
+  /* */
+
+  function prependScript( document, filePath )
+  {
+    let script = document.createElement( 'script' );
+    script.type = 'text/javascript';
+    script.src = filePath;
+    let child = document.head.querySelector( 'script' ) || document.head.children[ 0 ];
+    if( child )
+    document.head.insertBefore( script, child );
+    else
+    document.head.append( script )
+  }
+
+  /* */
+
+  function appendScript( document, filePath )
+  {
+    let script = document.createElement( 'script' );
+    script.type = 'text/javascript';
+    script.src = filePath;
+    document.head.append( script )
+  }
+
+  /* */
+
 }
 
 htmlSplitsFor.defaults =
 {
   srcScriptsMap : null,
-  starterIncluding : 'include',
-  title : 'Title',
-  template : null
+  template : null,
+  // withStarter : 'include',
+  // withScripts : 'include',
+  withStarter : null,
+  withScripts : null,
+  title : null,
 }
 
 //
 
 function htmlFor( o )
 {
-  let self = this;
+  let maker = this;
 
   _.routineOptions( htmlFor, arguments );
 
-  let splits = self.htmlSplitsFor( o );
+  let result = maker.htmlSplitsFor( o );
 
-  if( splits.all )
-  return splits.all;
-
-  let result = splits.prefix + splits.starter + splits.scripts.join( '\n' ) + splits.postfix;
+  // let splits = maker.htmlSplitsFor( o );
+  //
+  // // if( splits.all )
+  // // return splits.all;
+  //
+  // // let result = splits.prefix + splits.starter + splits.scripts.join( '\n' ) + splits.postfix;
+  // let result = maker.htmlSplitsJoin( splits );
 
   return result;
 }
@@ -802,15 +1018,51 @@ htmlFor.defaults = Object.create( htmlSplitsFor.defaults );
 
 */
 
+// //
+//
+// function htmlSplitsJoin( o )
+// {
+//   let maker = this;
+//
+//   _.routineOptions( htmlSplitsJoin, arguments );
+//
+//   o.scripts = o.scripts || [];
+//
+//   if( Config.debug )
+//   for( let s in o )
+//   {
+//     if( s !== 'scripts' )
+//     _.assert( _.strIs( o[ s ] ), () => `Split::${s} should be string, but ${_.strType( o.scripts[ s ] )}` );
+//   }
+//
+//   _.assert( _.arrayIs( o.scripts ) );
+//
+//   let result = o.prefix + o.starter + o.scripts.join( '\n' ) + o.postfix;
+//
+//   return result;
+// }
+//
+// htmlSplitsJoin.defaults =
+// {
+//   prefix : '',
+//   starter : '',
+//   scripts : null,
+//   postfix : '',
+// }
+
 // --
 // relations
 // --
 
-let InstanceDefaults = [ 'removingShellPrologue' ];
+let InstanceDefaults =
+{
+  removingShellPrologue : 1,
+};
 
 let Composes =
 {
   removingShellPrologue : 1,
+  pretty : 1,
 }
 
 let Associates =
@@ -823,7 +1075,11 @@ let Restricts =
 
 let Statics =
 {
-  WareCode : require( '../l1_boot/Ware.txt.s' ),
+  LibrarySplits,
+  PredefinedCode : require( '../l1_boot/Predefined.txt.s' ),
+  EarlyCode : require( '../l1_boot/Early.txt.s' ),
+  ExtractCode : require( '../l1_boot/Extract.txt.s' ),
+  ProceduringCode : require( '../l1_boot/Proceduring.txt.s' ),
   BroCode : require( '../l1_boot/Bro.txt.s' ),
   NjsCode : require( '../l1_boot/Njs.txt.s' ),
   StarterCode : require( '../l1_boot/Starter.txt.s' ),
@@ -847,9 +1103,11 @@ let Proto =
 
   sourcesJoinSplits,
   sourcesJoin,
+  sourcesSplitsJoin,
 
   htmlSplitsFor,
   htmlFor,
+  // htmlSplitsJoin,
 
   /* */
 

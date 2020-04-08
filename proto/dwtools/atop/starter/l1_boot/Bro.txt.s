@@ -246,7 +246,7 @@ function _Begin()
     socket.onopen = function( e )
     {
       socket.send( JSON.stringify( o.data ) );
-      setTimeout( () => socket.close(), 1000 );
+      setTimeout( () => socket.close(), 250 );
     };
   }
   socketWrite.defaults =
@@ -267,10 +267,15 @@ function _Begin()
   {
     let starter = this;
 
+    _._socketCounter += 1;
+    o.id = _._socketCounter;
+    if( !_._socketSubject )
+    _._socketSubject = Date.now();
+    o.subject = _._socketSubject;
+
     let response = starter.socketWrite
     ({
-      filePath : 'ws://127.0.0.1:5000/.log/',
-      // filePath : 'ws://127.0.0.1:5000',
+      filePath : 'ws://127.0.0.1:15000/.log/',
       data : o,
     });
 
@@ -412,7 +417,9 @@ function _Begin()
     }
     catch( err )
     {
+      err = _.err( err );
       end();
+      debugger;
       throw err;
     }
 
@@ -434,7 +441,8 @@ function _Begin()
 
     starter._includingSource = resolvedFilePath;
 
-    importScripts( resolvedFilePath + '?running:0' );
+    importScripts( resolvedFilePath + '' );
+    // importScripts( resolvedFilePath + '?running:0' ); /* qqq xxx : ? */
 
     let childSource = starter._sourceForPathGet( resolvedFilePath );
     let result = starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
@@ -480,7 +488,7 @@ function _Begin()
 
   //
 
-  function _broConsoleRedirect( console )
+  function _broConsoleRedirect( o )
   {
     let starter = this;
     let MethodsNames =
@@ -491,13 +499,47 @@ function _Begin()
       'table', 'time', 'timeEnd', 'timeStamp', 'trace'
     ];
 
-    for( let n = 0 ; n < MethodsNames.length ; n++ )
+    _.routineOptions( _broConsoleRedirect, o );
+
+    if( o.console === null )
+    o.console = console;
+
+    let original = o.console._original = o.console._original || Object.create( null );
+
+    if( o.enable )
     {
-      let name = MethodsNames[ n ];
-      _.assert( _.routineIs( console[ name ] ) );
-      console[ name ] = starter._broConsoleMethodRedirect( console, name );
+      _.assert( _.lengthOf( original ) === 0 );
+
+      for( let n = 0 ; n < MethodsNames.length ; n++ )
+      {
+        let name = MethodsNames[ n ];
+        _.assert( _.routineIs( o.console[ name ] ) );
+        original[ name ] = o.console[ name ];
+        o.console[ name ] = starter._broConsoleMethodRedirect( o.console, name );
+      }
+
+    }
+    else
+    {
+      _.assert( _.lengthOf( original ) !== 0 );
+
+      for( let n = 0 ; n < MethodsNames.length ; n++ )
+      {
+        let name = MethodsNames[ n ];
+        _.assert( _.routineIs( o.console[ name ] ) );
+        _.assert( _.routineIs( original[ name ] ) );
+        o.console[ name ] = original[ name ];
+        delete original[ name ];
+      }
+
     }
 
+  }
+
+  _broConsoleRedirect.defaults =
+  {
+    console : null,
+    enable : 1,
   }
 
   //
@@ -531,7 +573,7 @@ function _Begin()
     starter._sourceMake( 'module', '/', _sourceCodeModule );
 
     if( starter.redirectingConsole === null || starter.redirectingConsole )
-    starter._broConsoleRedirect( console );
+    starter._broConsoleRedirect({ console });
 
   }
 
@@ -544,8 +586,10 @@ function _Begin()
 function _End()
 {
 
-  let Extend =
+  let Extension =
   {
+
+    //
 
     fileReadAct,
     fileRead,
@@ -564,9 +608,14 @@ function _End()
     _broSetup,
     _sourceCodeModule,
 
+    // fields
+
+    _socketCounter : 0,
+    _socketSubject : null,
+
   }
 
-  Object.assign( _starter_, Extend );
+  Object.assign( _starter_, Extension );
 
 }
 

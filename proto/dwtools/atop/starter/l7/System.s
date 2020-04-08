@@ -94,8 +94,9 @@ function formAssociates()
   if( !system.fileProvider )
   system.fileProvider = _.FileProvider.Default();
 
+  let o2 = _.mapOnly( system, _.starter.Maker2.FieldsOfCopyableGroups );
   if( !system.maker )
-  system.maker = _.starter.Maker();
+  system.maker = _.starter.Maker2( o2 );
 
   return system;
 }
@@ -135,7 +136,7 @@ function close()
 
 //
 
-function sourcesJoin( o )
+function sourcesJoinFiles( o )
 {
   let system = this;
   let fileProvider = system.fileProvider;
@@ -143,111 +144,16 @@ function sourcesJoin( o )
   let logger = system.logger;
   let maker = system.maker;
 
-  o = _.routineOptions( sourcesJoin, arguments );
-
-  /* */
-
-  o.inPath = fileProvider.recordFilter( o.inPath );
-  o.inPath.basePathUse( o.basePath );
-  let basePath = o.inPath.basePathSimplest();
-
-  o.inPath = fileProvider.filesFind
-  ({
-    filter : o.inPath,
-    mode : 'distinct',
-    outputFormat : 'absolute',
-  });
-
-  /* */
-
-  o.outPath = o.outPath || sourcesJoin.defaults.outPath;
-  o.outPath = path.resolve( o.basePath, o.outPath );
-
-  /* */
-
-  if( o.entryPath )
-  {
-    o.entryPath = fileProvider.recordFilter( o.entryPath );
-    o.entryPath.basePath = path.resolve( o.entryPath.basePath || o.basePath || '.' );
-    o.entryPath = fileProvider.filesFind
-    ({
-      filter : o.entryPath,
-      mode : 'distinct',
-      outputFormat : 'absolute',
-    });
-    if( !_.longHasAll( o.inPath, o.entryPath ) )
-    throw _.errBrief
-    (
-      'List of source files should have all entry files' +
-      '\nSource files\n' + _.toStrNice( o.inPath, { levels : 2 } ) +
-      '\nEntry files\n' + _.toStrNice( o.entryPath, { levels : 2 } )
-    );
-  }
-
-  /* */
-
-  if( o.externalBeforePath )
-  {
-    o.externalBeforePath = fileProvider.recordFilter( o.externalBeforePath );
-    o.externalBeforePath.basePath = path.resolve( o.externalBeforePath.basePath || o.basePath || '.' );
-    o.externalBeforePath = fileProvider.filesFind
-    ({
-      filter : o.externalBeforePath,
-      mode : 'distinct',
-      outputFormat : 'absolute',
-    });
-  }
-
-  /* */
-
-  if( o.externalAfterPath )
-  {
-    o.externalAfterPath = fileProvider.recordFilter( o.externalAfterPath );
-    o.externalAfterPath.basePath = path.resolve( o.externalAfterPath.basePath || o.basePath || '.' );
-    o.externalAfterPath = fileProvider.filesFind
-    ({
-      filter : o.externalAfterPath,
-      mode : 'distinct',
-      outputFormat : 'absolute',
-    });
-  }
-
-  /* */
-
-  o.basePath = path.resolve( basePath || '.' );
-
-  /* */
-
-  let srcScriptsMap = Object.create( null );
-  o.inPath = o.inPath.map( ( inPath ) =>
-  {
-    let srcRelativePath = inPath;
-    srcScriptsMap[ srcRelativePath ] = fileProvider.fileRead( inPath );
-  });
-
-  let o2 = _.mapExtend( null, o )
-  delete o2.inPath;
-  o2.filesMap = srcScriptsMap;
-  let data = maker.sourcesJoin( o2 )
-
-  _.sure( !fileProvider.isDir( o.outPath ), () => 'Can rewrite directory ' + _.color.strFormat( o.outPath, 'path' ) );
-
-  fileProvider.fileWrite
-  ({
-    filePath : o.outPath,
-    data : data,
-  });
+  let data = maker.sourcesJoinFiles( ... arguments );
 
   return data;
 }
 
-var defaults = sourcesJoin.defaults = _.mapBut( _.starter.Maker.prototype.sourcesJoin.defaults, { filesMap : null } );
-defaults.inPath = null;
-defaults.outPath = 'Index.js';
+var defaults = sourcesJoinFiles.defaults = _.mapExtend( null, _.starter.Maker2.prototype.sourcesJoinFiles.defaults );
 
 //
 
-function htmlFor( o )
+function htmlForFiles( o )
 {
   let system = this;
   let fileProvider = system.fileProvider;
@@ -255,70 +161,12 @@ function htmlFor( o )
   let logger = system.logger;
   let maker = system.maker;
 
-  o = _.routineOptions( htmlFor, arguments );
-
-  /* */
-
-  let basePath = o.basePath;
-  if( !_.arrayIs( o.inPath ) || o.inPath.length )
-  {
-    o.inPath = fileProvider.recordFilter( o.inPath );
-    o.inPath.basePathUse( o.basePath );
-    let basePath = o.inPath.basePathSimplest();
-    o.inPath = fileProvider.filesFind
-    ({
-      filter : o.inPath,
-      mode : 'distinct',
-      outputFormat : 'absolute',
-    });
-  }
-
-  /* */
-
-  o.outPath = o.outPath || sourcesJoin.defaults.outPath;
-  o.outPath = path.resolve( o.basePath, o.outPath );
-
-  /* */
-
-  o.basePath = path.resolve( basePath || '.' );
-
-  /* */
-
-  let srcScriptsMap = Object.create( null );
-  o.inPath = o.inPath.map( ( inPath ) =>
-  {
-    let srcRelativePath = inPath;
-    if( o.relative && o.basePath )
-    srcRelativePath = path.dot( path.relative( o.basePath, srcRelativePath ) );
-    if( o.nativize )
-    srcRelativePath = path.nativize( srcRelativePath );
-    if( o.starterIncluding === 'inline' )
-    srcScriptsMap[ srcRelativePath ] = fileProvider.fileRead( inPath );
-    else
-    srcScriptsMap[ srcRelativePath ] = null;
-  });
-
-  let o2 = _.mapOnly( o, maker.htmlFor.defaults );
-  o2.srcScriptsMap = srcScriptsMap;
-  let data = maker.htmlFor( o2 );
-
-  _.sure( !fileProvider.isDir( o.outPath ), () => 'Can rewrite directory ' + _.color.strFormat( o.outPath, 'path' ) );
-
-  fileProvider.fileWrite
-  ({
-    filePath : o.outPath,
-    data : data,
-  });
+  let data = maker.htmlForFiles( ... arguments );
 
   return data;
 }
 
-var defaults = htmlFor.defaults = _.mapBut( _.starter.Maker.prototype.htmlFor.defaults, { srcScriptsMap : null } );
-defaults.inPath = null;
-defaults.outPath = 'Index.html';
-defaults.basePath = null;
-defaults.relative = 1;
-defaults.nativize = 0;
+var defaults = htmlForFiles.defaults = _.mapExtend( null, _.starter.Maker2.prototype.htmlForFiles.defaults );
 
 //
 
@@ -336,6 +184,7 @@ function httpOpen( o )
   {
     system,
     curating : 0,
+    fallbackPath : path.current(),
     ... o,
   }
   let session = new _.starter.Session( opts );
@@ -348,8 +197,16 @@ httpOpen.defaults =
   basePath : null,
   allowedPath : null,
   templatePath : null,
+  withModule : null,
   loggingApplication : 0,
   loggingConnection : 1,
+  loggingSessionEvents : null,
+  loggingOptions : null,
+  proceduring : null,
+  catchingUncaughtErrors : null,
+  naking : null,
+  withScripts : null,
+  timeOut : null,
 }
 
 //
@@ -366,6 +223,7 @@ function start( o )
   let opts =
   {
     system,
+    fallbackPath : path.current(),
     ... o,
   }
   let session = new _.starter.Session( opts );
@@ -377,7 +235,6 @@ var defaults = start.defaults = _.mapExtend( null, httpOpen.defaults );
 
 defaults.loggingApplication = 1;
 defaults.loggingConnection = 0;
-
 defaults.entryPath = null;
 defaults.curating = 1;
 defaults.headless = 0;
@@ -391,6 +248,7 @@ let Composes =
 
   verbosity : 3,
   servletsMap : _.define.own({}),
+  servletsArray : _.define.own([]),
   sessionArray : _.define.own([]),
   sessionCounter : 0,
 
@@ -439,8 +297,8 @@ let Proto =
   formAssociates,
 
   close,
-  sourcesJoin,
-  htmlFor,
+  sourcesJoinFiles,
+  htmlForFiles,
   httpOpen,
   start,
 

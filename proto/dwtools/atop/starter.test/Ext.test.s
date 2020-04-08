@@ -5,6 +5,7 @@
 if( typeof module !== 'undefined' )
 {
 
+  var Jsdom = require( 'jsdom' );
   var _ = require( '../../../dwtools/Tools.s' );
 
   _.include( 'wTesting' );
@@ -28,7 +29,7 @@ function onSuiteBegin()
   context.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
   context.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
   context.willbeExecPath = _.module.resolve( 'willbe' );
-  context.execJsPath = _.module.resolve( 'wStarter' );
+  context.appJsPath = _.module.resolve( 'wStarter' );
 
 }
 
@@ -77,33 +78,22 @@ function assetFor( test, name )
 }
 
 // --
-// tests
+// sourcesJoin
 // --
 
-function shellSourcesJoin( test )
+function sourcesJoin( test )
 {
   let context = this;
   let a = context.assetFor( test, 'several' );
-  let outputPath = _.path.join( a.routinePath, 'Index.js' );
-  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
-  let ready = new _.Consequence().take( null );
-
-  let shell = _.process.starter
-  ({
-    execPath : 'node',
-    currentPath : a.routinePath,
-    mode : 'spawn',
-    outputCollecting : 1,
-    ready : ready,
-  });
+  let outputPath = a.abs( 'Index.js' );
 
   a.reflect();
 
-  shell( `${execPath} .sources.join ${a.routinePath}/** entryPath:File2.js` )
+  a.appStart( `.sources.join ${a.routinePath}/** entryPath:File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoin\/Index\.js/ ), 1 )
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoin\/Index\.js/ ), 1 )
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.js' ] );
@@ -114,7 +104,7 @@ function shellSourcesJoin( test )
     return op;
   })
 
-  shell( _.path.nativize( outputPath ) )
+  a.anotherStart( _.path.nativize( outputPath ) )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -134,33 +124,21 @@ function shellSourcesJoin( test )
     return op;
   });
 
-  return ready;
+  return a.ready;
 }
 
 //
 
-function shellSourcesJoinWithEntry( test )
+function sourcesJoinWithEntry( test )
 {
   let context = this;
   let a = context.assetFor( test, 'dep' );
-  let outputPath = _.path.join( a.routinePath, 'out/app0.js' );
-  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
-  let ready = new _.Consequence().take( null );
+  let outputPath = a.abs( 'out/app0.js' );
   let starter = new _.starter.System().form();
-
-  let shell = _.process.starter
-  ({
-    execPath : 'node',
-    currentPath : a.routinePath,
-    mode : 'spawn',
-    outputCollecting : 1,
-    ready : ready,
-    throwingExitCode : 0,
-  });
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'default';
     _.fileProvider.filesDelete( a.routinePath );
@@ -169,11 +147,11 @@ function shellSourcesJoinWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .sources.join app0/** entryPath:app0/File2.js outPath:out/app0.js` )
+  a.appStart( `.sources.join app0/** entryPath:app0/File2.js outPath:out/app0.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0.js' ] );
@@ -186,7 +164,7 @@ function shellSourcesJoinWithEntry( test )
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'base path : .';
     _.fileProvider.filesDelete( a.routinePath );
@@ -195,11 +173,11 @@ function shellSourcesJoinWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .sources.join app0/** entryPath:app0/File2.js outPath:out/app0.js basePath:.` )
+  a.appStart( `.sources.join app0/** entryPath:app0/File2.js outPath:out/app0.js basePath:.` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0.js' ] );
@@ -212,7 +190,7 @@ function shellSourcesJoinWithEntry( test )
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'base path : app0';
     _.fileProvider.filesDelete( a.routinePath );
@@ -221,11 +199,11 @@ function shellSourcesJoinWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .sources.join ** entryPath:File2.js outPath:../out/app0.js basePath:app0` )
+  a.appStart( `.sources.join ** entryPath:File2.js outPath:../out/app0.js basePath:app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinWithEntry\/out\/app0\.js/ ), 1 );
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0.js' ] );
@@ -238,7 +216,7 @@ function shellSourcesJoinWithEntry( test )
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'bad entry';
     _.fileProvider.filesDelete( a.routinePath );
@@ -247,7 +225,7 @@ function shellSourcesJoinWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .sources.join app0/** entryPath:File2.js outPath:out/app0.js` )
+  a.appStartNonThrowing( `.sources.join app0/** entryPath:File2.js outPath:out/app0.js` )
   .then( ( op ) =>
   {
     test.notIdentical( op.exitCode, 0 );
@@ -261,7 +239,7 @@ function shellSourcesJoinWithEntry( test )
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'bad entry, base path defined';
     _.fileProvider.filesDelete( a.routinePath );
@@ -270,7 +248,7 @@ function shellSourcesJoinWithEntry( test )
     return null;
   })
 
-  shell( `${execPath} .sources.join ** entryPath:app0/File2.js outPath:../out/app0.js basePath:app0` )
+  a.appStartNonThrowing( `.sources.join ** entryPath:app0/File2.js outPath:../out/app0.js basePath:app0` )
   .then( ( op ) =>
   {
     test.notIdentical( op.exitCode, 0 );
@@ -284,17 +262,15 @@ function shellSourcesJoinWithEntry( test )
 
   /* */
 
-  return ready;
+  return a.ready;
 }
 
 //
 
-function shellSourcesJoinDep( test )
+function sourcesJoinDep( test )
 {
   let context = this;
   let a = context.assetFor( test, 'dep' );
-  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
-  let ready = new _.Consequence().take( null );
   var output =
 `
 app0/File2.js:begin main:true
@@ -309,27 +285,9 @@ app0/File1.js:timeout numberIs:true
 app0/File1.js:timeout numberIs:true
 `
 
-  let start = _.process.starter
-  ({
-    currentPath : a.routinePath,
-    mode : 'spawn',
-    outputCollecting : 1,
-    ready : ready,
-    throwingExitCode : 1,
-  });
-
-  let shell = _.process.starter
-  ({
-    mode : 'shell',
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    ready : ready,
-    throwingExitCode : 1,
-  });
-
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'default';
     _.fileProvider.filesDelete( a.routinePath );
@@ -338,13 +296,13 @@ app0/File1.js:timeout numberIs:true
     return null;
   })
 
-  shell( `npm i` )
-  start( `node ${execPath} .sources.join app2/** outPath:out/app2` )
-  start( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:out/app2` )
-  .then( ( op ) =>
+  a.shell( `npm i` );
+  a.appStart( `.sources.join app2/** outPath:out/app2` );
+  a.appStart( `.sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:out/app2` );
+  a.ready.then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinDep\/out\/app0/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinDep\/out\/app0/ ), 1 );
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/app0', './out/app2' ] );
@@ -352,7 +310,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  start( `node out/app0` )
+  a.anotherStart( `out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -360,7 +318,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  start( `node app0/File2.js` )
+  a.anotherStart( `app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -370,17 +328,15 @@ app0/File1.js:timeout numberIs:true
 
   /* */
 
-  return ready;
+  return a.ready;
 }
 
 //
 
-function shellSourcesJoinRequireInternal( test )
+function sourcesJoinRequireInternal( test )
 {
   let context = this;
   let a = context.assetFor( test, 'dep' );
-  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
-  let ready = new _.Consequence().take( null );
   var output =
 `
 app2/File2.js:begin main:false
@@ -392,27 +348,9 @@ app0/File1.js:timeout numberIs:true
 app0/File1.js:timeout numberIs:true
 `
 
-  let start = _.process.starter
-  ({
-    mode : 'spawn',
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    ready : ready,
-    throwingExitCode : 1,
-  });
-
-  let shell = _.process.starter
-  ({
-    mode : 'shell',
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    ready : ready,
-    throwingExitCode : 1,
-  });
-
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'default';
     _.fileProvider.filesDelete( a.routinePath );
@@ -421,13 +359,13 @@ app0/File1.js:timeout numberIs:true
     return null;
   })
 
-  shell( `npm i` )
-  start( `node ${execPath} .sources.join app0/** outPath:out/dir/app0` )
-  start( `node ${execPath} .sources.join app2/** outPath:out/dir/app2` )
+  a.shell( `npm i` )
+  a.appStart( `.sources.join app0/** outPath:out/dir/app0` )
+  a.appStart( `.sources.join app2/** outPath:out/dir/app2` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinRequireInternal\/out\/dir\/app2/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinRequireInternal\/out\/dir\/app2/ ), 1 );
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app2', './app2/File1.js', './app2/File2.js', './ext', './ext/RequireApp2File2.js', './out', './out/dir', './out/dir/app0', './out/dir/app2' ] );
@@ -435,7 +373,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  start( `node ext/RequireApp2File2.js` )
+  a.anotherStart( `ext/RequireApp2File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -445,17 +383,16 @@ app0/File1.js:timeout numberIs:true
 
   /* */
 
-  return ready;
+  return a.ready;
 }
 
 //
 
-function shellSourcesJoinComplex( test )
+function sourcesJoinComplex( test )
 {
   let context = this;
   let a = context.assetFor( test, 'complex' );
-  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
-  let ready = new _.Consequence().take( null );
+
   var output =
 `
 app0/File2.js:begin
@@ -477,27 +414,9 @@ app0/File1.js:timeout true
 app0/File1.js:timeout true
 `
 
-  let start = _.process.starter
-  ({
-    mode : 'spawn',
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    ready : ready,
-    throwingExitCode : 1,
-  });
-
-  let shell = _.process.starter
-  ({
-    mode : 'shell',
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    ready : ready,
-    throwingExitCode : 1,
-  });
-
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'default';
     _.fileProvider.filesDelete( a.routinePath );
@@ -506,14 +425,14 @@ app0/File1.js:timeout true
     return null;
   })
 
-  shell( `npm i` )
-  start( `node ${execPath} .sources.join app2/** outPath:out/app2` )
-  start( `node ${execPath} .sources.join app1/** outPath:out/app1` )
-  start( `node ${execPath} .sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:[out/app1, out/app2]` )
+  a.shell( `npm i` )
+  a.appStart( `.sources.join app2/** outPath:out/app2` )
+  a.appStart( `.sources.join app1/** outPath:out/app1` )
+  a.appStart( `.sources.join app0/** outPath:out/app0 entryPath:app0/File2.js externalBeforePath:[out/app1, out/app2]` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinComplex\/out\/app0/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinComplex\/out\/app0/ ), 1 );
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './app0', './app0/File1.js', './app0/File2.js', './app1', './app1/File1.js', './app1/File2.js', './app2', './app2/File1.js', './app2/File2.js', './out', './out/app0', './out/app1', './out/app2' ] );
@@ -521,7 +440,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  start( `node out/app0` )
+  a.anotherStart( `out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -529,7 +448,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  start( `node app0/File2.js` )
+  a.anotherStart( `app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -540,31 +459,20 @@ app0/File1.js:timeout true
 
   /* */
 
-  return ready;
+  return a.ready;
 }
 
 //
 
-function shellSourcesJoinTree( test )
+function sourcesJoinTree( test )
 {
   let context = this;
   let a = context.assetFor( test, 'tree' );
-  let outPath = _.path.join( a.routinePath, 'out' );
-  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
-  let ready = new _.Consequence().take( null );
-
-  let shell = _.process.starter
-  ({
-    mode : 'spawn',
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    ready : ready,
-    throwingExitCode : 1,
-  });
+  let outPath = a.abs( 'out' );
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'app1, entry:File1';
     _.fileProvider.filesDelete( a.routinePath );
@@ -573,11 +481,11 @@ function shellSourcesJoinTree( test )
     return null;
   })
 
-  shell( `node ${execPath} .sources.join in/app1/** outPath:out/app1 entryPath:in/app1/dir1/File1.js` )
+  a.appStart( `.sources.join in/app1/** outPath:out/app1 entryPath:in/app1/dir1/File1.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinTree\/out\/app1/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinTree\/out\/app1/ ), 1 );
 
     var expected = [ '.', './app1' ];
     var files = a.find( outPath );
@@ -586,7 +494,7 @@ function shellSourcesJoinTree( test )
     return op;
   })
 
-  shell( `node in/app1/dir1/File1.js` )
+  a.anotherStart( `in/app1/dir1/File1.js` )
   .then( ( op ) =>
   {
     var output =
@@ -600,7 +508,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  shell( `node out/app1` )
+  a.anotherStart( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -616,7 +524,7 @@ app1/File1.js:end main:true
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'app1, entry:File2';
     _.fileProvider.filesDelete( a.routinePath );
@@ -625,11 +533,11 @@ app1/File1.js:end main:true
     return null;
   })
 
-  shell( `node ${execPath} .sources.join in/app1/** outPath:out/app1 entryPath:in/app1/dir1/dir2/File2.js` )
+  a.appStart( `.sources.join in/app1/** outPath:out/app1 entryPath:in/app1/dir1/dir2/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinTree\/out\/app1/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinTree\/out\/app1/ ), 1 );
 
     var expected = [ '.', './app1' ];
     var files = a.find( outPath );
@@ -638,7 +546,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  shell( `node in/app1/dir1/dir2/File2.js` )
+  a.anotherStart( `in/app1/dir1/dir2/File2.js` )
   .then( ( op ) =>
   {
     var output =
@@ -652,7 +560,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  shell( `node out/app1` )
+  a.anotherStart( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -668,7 +576,7 @@ app1/File2.js:end main:true
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'app2';
     _.fileProvider.filesDelete( a.routinePath );
@@ -677,12 +585,12 @@ app1/File2.js:end main:true
     return null;
   })
 
-  shell( `node ${execPath} .sources.join in/app1/** outPath:out/app1` )
-  shell( `node ${execPath} .sources.join in/app2/** outPath:out/app2 entryPath:in/app2/File2.js externalBeforePath:out/app1` )
+  a.appStart( `.sources.join in/app1/** outPath:out/app1` )
+  a.appStart( `.sources.join in/app2/** outPath:out/app2 entryPath:in/app2/File2.js externalBeforePath:out/app1` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinTree\/out\/app2/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinTree\/out\/app2/ ), 1 );
 
     var expected = [ '.', './app1', './app2' ];
     var files = a.find( outPath );
@@ -691,7 +599,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  shell( `node in/app2/File2.js` )
+  a.anotherStart( `in/app2/File2.js` )
   .then( ( op ) =>
   {
     var output =
@@ -709,7 +617,7 @@ app0/File2.js:end main:true
     return op;
   })
 
-  shell( `node out/app2` )
+  a.anotherStart( `out/app2` )
   .then( ( op ) =>
   {
     var output =
@@ -729,32 +637,21 @@ app0/File2.js:end main:true
 
   /* */
 
-  return ready;
-} /* end of shellSourcesJoinTree */
+  return a.ready;
+} /* end of sourcesJoinTree */
 
 //
 
-function shellSourcesJoinCycle( test )
+function sourcesJoinCycle( test )
 {
   let context = this;
   let a = context.assetFor( test, 'cycle' );
-  let outPath = _.path.join( a.routinePath, 'out' );
-  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
-  let ready = new _.Consequence().take( null );
+  let outPath = a.abs( 'out' );
   let starter = new _.starter.System().form();
-
-  let shell = _.process.starter
-  ({
-    mode : 'spawn',
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    ready : ready,
-    throwingExitCode : 1,
-  });
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'app1, entry:File1';
     _.fileProvider.filesDelete( a.routinePath );
@@ -763,11 +660,11 @@ function shellSourcesJoinCycle( test )
     return null;
   })
 
-  shell( `node ${execPath} .sources.join in/app1/** outPath:out/app1 entryPath:in/app1/File1.js` )
+  a.appStart( `.sources.join in/app1/** outPath:out/app1 entryPath:in/app1/File1.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinCycle\/out\/app1/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinCycle\/out\/app1/ ), 1 );
 
     var expected = [ '.', './app1' ];
     var files = a.find( outPath );
@@ -776,7 +673,7 @@ function shellSourcesJoinCycle( test )
     return op;
   })
 
-  shell( `node in/app1/File1.js` )
+  a.anotherStart( `in/app1/File1.js` )
   .then( ( op ) =>
   {
     var output =
@@ -791,7 +688,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  shell( `node out/app1` )
+  a.anotherStart( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -808,7 +705,7 @@ app1/File1.js:end main:true
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'app1, entry:File2';
     _.fileProvider.filesDelete( a.routinePath );
@@ -817,11 +714,11 @@ app1/File1.js:end main:true
     return null;
   })
 
-  shell( `node ${execPath} .sources.join in/app1/** outPath:out/app1 entryPath:in/app1/File2.js` )
+  a.appStart( `.sources.join in/app1/** outPath:out/app1 entryPath:in/app1/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*shellSourcesJoinCycle\/out\/app1/ ), 1 );
+    test.identical( _.strCount( op.output, /\+ sourcesJoin to .*sourcesJoinCycle\/out\/app1/ ), 1 );
 
     var expected = [ '.', './app1' ];
     var files = a.find( outPath );
@@ -830,7 +727,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  shell( `node in/app1/File2.js` )
+  a.anotherStart( `in/app1/File2.js` )
   .then( ( op ) =>
   {
     var output =
@@ -845,7 +742,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  shell( `node out/app1` )
+  a.anotherStart( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -862,7 +759,7 @@ app1/File2.js:end main:true
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'cycled-external';
     _.fileProvider.filesDelete( a.routinePath );
@@ -871,8 +768,8 @@ app1/File2.js:end main:true
     return null;
   })
 
-  shell( `node ${execPath} .sources.join in/app1/** outPath:out/app1 entryPath:in/app1/File2.js externalBeforePath:out/app2` )
-  shell( `node ${execPath} .sources.join in/app2/** outPath:out/app2 entryPath:in/app2/File2.js externalBeforePath:out/app1` )
+  a.appStart( `.sources.join in/app1/** outPath:out/app1 entryPath:in/app1/File2.js externalBeforePath:out/app2` )
+  a.appStart( `.sources.join in/app2/** outPath:out/app2 entryPath:in/app2/File2.js externalBeforePath:out/app1` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -884,7 +781,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  shell( `node out/app1` )
+  a.anotherStart( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -903,7 +800,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  shell( `node out/app2` )
+  a.anotherStart( `out/app2` )
   .then( ( op ) =>
   {
     var output =
@@ -924,32 +821,97 @@ app2/File2.js:end main:true
 
   /* */
 
-  return ready;
-} /* end of shellSourcesJoinCycle */
+  return a.ready;
+} /* end of sourcesJoinCycle */
 
 //
 
-function shellHtmlFor( test )
+function sourcesJoinRecursion( test )
 {
   let context = this;
-  let a = context.assetFor( test, 'several' );
-  let outputPath = _.path.join( a.routinePath, 'Index.html' );
-  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
-  let ready = new _.Consequence().take( null );
+  let a = context.assetFor( test, 'recursion' );
+  let outPath = a.abs( 'out' );
   let starter = new _.starter.System().form();
-
-  let shell = _.process.starter
-  ({
-    mode : 'spawn',
-    execPath : 'node',
-    currentPath : a.routinePath,
-    outputCollecting : 1,
-    ready : ready,
-  });
 
   /* */
 
-  ready.then( () =>
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  a.appStart( `.sources.join ** outPath:out/Out.js entryPath:F1.js` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+
+    var expected = [ '.', './F1.js', './F2.js', './out', './out/Out.js' ];
+    var files = a.find( a.abs( '.' ) );
+    test.identical( files, expected );
+
+    return op;
+  })
+
+  a.anotherStart( `out/Out.js` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
+F1:before
+F2:before
+F2:object
+F2:after
+F1:string
+F1:after
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  a.anotherStart( `F1.js` )
+  .then( ( op ) =>
+  {
+    test.description = 'F1.js';
+    var output =
+`
+F1:before
+F2:before
+F2:object
+F2:after
+F1:string
+F1:after
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+} /* end of sourcesJoinRecursion */
+
+// --
+// html for
+// --
+
+function htmlForBasic( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'several' );
+  let outputPath = a.abs( 'Index.html' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
   {
     test.case = 'default';
     _.fileProvider.filesDelete( a.routinePath );
@@ -957,90 +919,30 @@ function shellHtmlFor( test )
     return null;
   })
 
-  shell( `${execPath} .html.for ${a.routinePath}/**` )
+  a.appStart( `.html.for ${a.routinePath}/**` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ html saved to .*shellHtmlFor\/Index\.html/ ), 1 )
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
-    var read = _.fileProvider.fileRead( outputPath );
-    test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-    test.identical( _.strCount( read, '<title>' ), 1 );
-    test.identical( _.strCount( read, '<script src' ), 3 );
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'scripts';
+    var exp = [ '/.starter', './File1.js', './File2.js' ];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
 
     return op;
   })
 
   /* */
 
-  ready.then( () =>
-  {
-    test.case = 'with title';
-    _.fileProvider.filesDelete( a.routinePath );
-    a.reflect();
-    return null;
-  })
-
-  shell( `${execPath} .html.for ${a.routinePath}/** title:"Html for test"` )
-  .then( ( op ) =>
-  {
-    test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ html saved to .*shellHtmlFor\/Index\.html/ ), 1 )
-
-    var files = a.find( a.routinePath );
-    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
-
-    var read = _.fileProvider.fileRead( outputPath );
-    test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-    test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
-    test.identical( _.strCount( read, '<title>' ), 1 );
-    test.identical( _.strCount( read, '<script src' ), 3 );
-
-    return op;
-  })
-
-  /* */
-
-  ready.then( () =>
-  {
-    test.case = 'without starter';
-    _.fileProvider.filesDelete( a.routinePath );
-    a.reflect();
-    return null;
-  })
-
-  shell( `${execPath} .html.for ${a.routinePath}/** title:"Html for test" starterIncluding:0` )
-  .then( ( op ) =>
-  {
-    test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ html saved to .*shellHtmlFor\/Index\.html/ ), 1 )
-
-    var files = a.find( a.routinePath );
-    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
-
-    var read = _.fileProvider.fileRead( outputPath );
-    test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter"' ), 0 );
-    test.identical( _.strCount( read, 'src="./File1.js"' ), 1 );
-    test.identical( _.strCount( read, 'src="./File2.js"' ), 1 );
-    test.identical( _.strCount( read, '<title>Html for test</title>' ), 1 );
-    test.identical( _.strCount( read, '<script src' ), 2 );
-
-    return op;
-  })
-
-  /* */
-
-  ready.then( () =>
+  a.ready.then( () =>
   {
     test.case = 'empty';
     _.fileProvider.filesDelete( a.routinePath );
@@ -1048,46 +950,482 @@ function shellHtmlFor( test )
     return null;
   })
 
-  shell( `${execPath} .html.for []` )
+  a.appStart( `.html.for []` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, /\+ html saved to .*shellHtmlFor\/Index\.html/ ), 1 )
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 );
 
     var files = a.find( a.routinePath );
     test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
 
-    var read = _.fileProvider.fileRead( outputPath );
-    test.identical( _.strCount( read, '<html' ), 1 );
-    test.identical( _.strCount( read, 'src="/.starter"' ), 1 );
-    test.identical( _.strCount( read, './src="File1.js"' ), 0 );
-    test.identical( _.strCount( read, './src="File2.js"' ), 0 );
-    test.identical( _.strCount( read, '<script src' ), 1 );
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'scripts';
+    var exp = [ '/.starter' ];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
 
     return op;
   })
 
   /* */
 
-  return ready;
+  return a.ready;
 }
 
 //
 
-async function logging( test )
+function htmlForOptionTitle( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'several' );
+  let outputPath = a.abs( 'Index.html' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'default';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for ${a.routinePath}/**` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'title';
+    var exp = [ 'File1.js' ];
+    var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'with title';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for ${a.routinePath}/** title:"Html for test"` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'title';
+    var exp = [ 'Html for test' ];
+    var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+//
+
+function htmlForOptionWithStarter( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'several' );
+  let outputPath = a.abs( 'Index.html' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'withStarter:include';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for ${a.routinePath}/** withStarter:include` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'scripts';
+    var exp = [ '/.starter', './File1.js', './File2.js' ];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'withStarter:0';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for ${a.routinePath}/** withStarter:0` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 )
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'scripts';
+    var exp = [ './File1.js', './File2.js' ];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'empty';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.html.for [] withStarter:0` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, /\+ html saved to .*\/Index\.html/ ), 1 );
+
+    var files = a.find( a.routinePath );
+    test.identical( files, [ '.', './File1.js', './File2.js', './Index.html' ] );
+
+    var read = a.fileProvider.fileRead( outputPath );
+    var dom = new Jsdom.JSDOM( read );
+    var document = dom.window.document;
+
+    test.description = 'scripts';
+    var exp = [];
+    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    test.identical( got, exp );
+
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+// --
+// start
+// --
+
+function startRecursion( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'recursion' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  a.appStart( `.start F1.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+F1:before
+F2:before
+F2:object
+F2:after
+F1:string
+F1:after
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startRecursion.description =
+`
+  - Recursive "require" works the same way it does under nodejs.
+`
+
+//
+
+function startRecursionSingle( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'recursion' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  a.appStart( `.start F1.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 withScripts:single` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+F1:before
+F2:before
+F2:object
+F2:after
+F1:string
+F1:after
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startRecursionSingle.description =
+`
+  - Recursive "require" works the same way it does under nodejs.
+`
+
+//
+
+function startTestSuite( test )
+{
+  let context = this;
+  let a = context.assetFor( test, false );
+  let starter = new _.starter.System().form();
+
+  let appStart = a.process.starter
+  ({
+    execPath : context.appJsPath,
+    currentPath : context.assetsOriginalSuitePath,
+    outputCollecting : 1,
+    throwingExitCode : 1,
+    outputGraying : 1,
+    detaching : 0,
+    ready : a.ready,
+    mode : 'fork',
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  /* xxx : use several values feature */
+  appStart( `.start tsuite/Suite1.js timeOut:${context.deltaTime3}0 loggingSessionEvents:0 headless:0 withModule:[ ../../../../dwtools/Tools.s wTesting ]` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+xxx
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startTestSuite.description =
+`
+  - Running test suite in browser works.
+`
+
+//
+
+function startHtml( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'html' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  a.appStart( `.start F1.html timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+F1:begin
+F1:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startHtml.description =
+`
+  - xxx
+`
+
+// --
+// etc
+// --
+
+async function loggingError( test )
 {
   let context = this;
   let a = context.assetFor( test, 'asyncError' );
 
   a.reflect();
 
-  a.js( `.start F1.js` )
+  a.appStart( `.start F1.js timeOut:${context.deltaTime3} headless:1` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, 'F1:begin' ), 1 )
-    test.identical( _.strCount( op.output, 'F1:end' ), 1 )
-    test.identical( _.strCount( op.output, 'Some Error!' ), 1 )
+    test.identical( _.strCount( op.output, 'F1:begin' ), 1 );
+    test.identical( _.strCount( op.output, 'F1:end' ), 1 );
+    test.identical( _.strCount( op.output, 'uncaught error' ), 2 );
+    test.identical( _.strCount( op.output, 'Some Error!' ), 1 );
+    return op;
+  })
+
+  return a.ready;
+}
+
+loggingError.description =
+`
+- Client-side log appears on server-side.
+- Client-side uncaught errors appears on server side.
+`
+
+//
+
+async function workerEnvironment( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+
+  a.reflect();
+
+  a.appStart( `.start index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    var exp =
+`
+Index.js
+_filePath_ : /index.js
+_dirPath_ : /
+__filename : /index.js
+__dirname : /
+module : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp =
+`
+Worker.js
+_filePath_ : /Worker.js
+_dirPath_ : /
+__filename : /Worker.js
+__dirname : /
+module : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    test.identical( _.strCount( op.output, 'error' ), 0 );
+    test.identical( _.strCount( op.output, 'Error' ), 0 );
 
     return op;
   })
@@ -1095,30 +1433,121 @@ async function logging( test )
   return a.ready;
 }
 
+workerEnvironment.description =
+`
+- xxx
+`
+
+//
+
+async function loggingErrorInWorker( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'errorInWorker' );
+
+  a.reflect();
+
+  a.appStart( `.start index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    var exp =
+`
+ . event::curatedRunLaunchBegin
+ . event::curatedRunLaunchEnd
+index:begin
+index:end
+worker:begin
+m1:begin
+err:begin
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    test.identical( _.strCount( op.output, 'Some error' ), 1 );
+    test.identical( _.strCount( op.output, 'Error including source file /m1.js' ), 1 );
+
+    var exp =
+`
+err:end
+worker:end
+ . event::timeOut
+ . event::curatedRunTerminateEnd
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    return op;
+  })
+
+  return a.ready;
+}
+
+loggingErrorInWorker.description =
+`
+- throwen error in included from worker file shows up in the log
+`
+
+//
+
+async function loggingErrorInWorkerNoFile( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'errorInWorkerNoFile' );
+
+  a.reflect();
+
+  a.appStart( `.start index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    var exp =
+`
+ . event::curatedRunLaunchBegin
+ . event::curatedRunLaunchEnd
+index:begin
+index:end
+worker:begin
+m1:begin
+err:begin
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    test.identical( _.strCount( op.output, 'Some error' ), 1 );
+    test.identical( _.strCount( op.output, 'Error including source file /m1.js' ), 1 );
+
+    var exp =
+`
+err:end
+worker:end
+ . event::timeOut
+ . event::curatedRunTerminateEnd
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    return op;
+  })
+
+  return a.ready;
+}
+
+loggingErrorInWorkerNoFile.description =
+`
+- xxx
+`
+
 //
 
 function version( test )
 {
   let context = this;
-  let routinePath = _.path.join( context.suiteTempPath, test.name );
-  let execPath = _.path.nativize( _.path.join( __dirname, '../starter/Exec' ) );
-  let ready = new _.Consequence().take( null );
+  let a = context.assetFor( test, false );
 
-  let shell = _.process.starter
-  ({
-    execPath : 'node ' + execPath,
-    currentPath : routinePath,
-    outputCollecting : 1,
-    throwingExitCode : 0,
-    mode : 'spawn',
-    ready : ready,
-  })
-
-  _.fileProvider.dirMake( routinePath );
+  _.fileProvider.dirMake( a.abs( '.' ) );
 
   /* */
 
-  shell({ execPath : '.version' })
+  a.appStart({ execPath : '.version' })
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -1127,7 +1556,7 @@ function version( test )
     return op;
   })
 
-  return ready;
+  return a.ready;
 }
 
 // --
@@ -1151,10 +1580,14 @@ var Self =
 
     suiteTempPath : null,
     assetsOriginalSuitePath : null,
-    execJsPath : null,
+    appJsPath : null,
 
     willbeExecPath : null,
     find : null,
+
+    deltaTime1 : 250,
+    deltaTime2 : 3000,
+    deltaTime3 : 15000,
 
   },
 
@@ -1163,21 +1596,34 @@ var Self =
 
     // sourcesJoin
 
-    shellSourcesJoin,
-    shellSourcesJoinWithEntry,
-    shellSourcesJoinDep,
-    shellSourcesJoinRequireInternal,
-    shellSourcesJoinComplex,
-    shellSourcesJoinTree,
-    shellSourcesJoinCycle,
+    sourcesJoin,
+    sourcesJoinWithEntry,
+    sourcesJoinDep,
+    sourcesJoinRequireInternal,
+    sourcesJoinComplex,
+    sourcesJoinTree,
+    sourcesJoinCycle,
+    sourcesJoinRecursion,
 
     // html for
 
-    shellHtmlFor,
+    htmlForBasic,
+    htmlForOptionTitle,
+    htmlForOptionWithStarter, /* qqq : extend */
+
+    // start
+
+    startRecursion,
+    startRecursionSingle,
+    // startTestSuite,
+    startHtml,
 
     // etc
 
-    logging,
+    loggingError,
+    workerEnvironment,
+    loggingErrorInWorker,
+    loggingErrorInWorkerNoFile,
     version,
 
   }

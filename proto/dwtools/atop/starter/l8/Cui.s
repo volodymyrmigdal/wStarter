@@ -234,7 +234,7 @@ function commandHtmlFor( e )
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.inPath = o2.inPath || request.subject;
 
-  let html = starter.htmlFor( o2 );
+  let html = starter.htmlForFiles( o2 );
 
   if( starter.verbosity > 3 )
   logger.log( html );
@@ -278,7 +278,7 @@ function commandSourcesJoin( e )
     + _.color.strFormat( 'starter .files.wrap ./proto', 'code' )
   );
 
-  let r = starter.sourcesJoin( o2 );
+  let r = starter.sourcesJoinFiles( o2 );
 
   if( starter.verbosity )
   logger.log( ' + sourcesJoin to ' + _.color.strFormat( o2.outPath, 'path' ) )
@@ -307,7 +307,7 @@ function commandHttpOpen( e )
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
-  let request = _.strRequestParse( e.argument );
+  let request = _.strRequestParse({ src : e.argument, severalValues : 1 });
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.basePath = o2.basePath || request.subject;
@@ -339,8 +339,17 @@ commandHttpOpen.commandProperties =
 {
   basePath : 'Path to make available over HTTP.',
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
+  templatePath : 'Path to html file to use as template',
+  format : 'Explicitly specified format of entry file. Could be: js / html.',
+  withModule : 'Specify one or several modules to include extending basePath. If basePath is specified explicitly then option::withModule has no effect.',
   loggingApplication : 'Enable printing of application output. Default : false',
   loggingConnection : 'Enable logging of request to the server. Default : true',
+  loggingSessionEvents : 'Enable logging of events of session. Default : false',
+  loggingOptions : 'Enable logging of options of session. Default : false',
+  proceduring : 'Watching asynchronous procedures to terminate the application when all will run out. Default : true',
+  catchingUncaughtErrors : 'Catching uncaught errors and handling them properly. Default : true',
+  naking : 'Disable wrapping of scripts. Default : false',
+  withScripts : 'How to ship scripts. Alternatives : [ include, inline, single, 0 ]. Default : include',
 }
 
 commandHttpOpen.hint = 'Run HTTP server to serve files in a specified directory.';
@@ -356,7 +365,7 @@ function commandStart( e )
 
   let ca = e.ca;
   let logger = starter.logger;
-  let request = _.strRequestParse( e.argument );
+  let request = _.strRequestParse({ src : e.argument, severalValues : 1 });
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.entryPath = o2.entryPath || request.subject;
@@ -381,10 +390,7 @@ function commandStart( e )
 
 commandStart.commandProperties =
 {
-  entryPath : 'Path to enty source file to launch.',
-  basePath : 'Path to make available over HTTP.',
-  allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
-  templatePath : 'Path to html file to use as template',
+  ... commandHttpOpen.commandProperties,
   loggingApplication : 'Enable printing of application output. Default : true',
   loggingConnection : 'Enable logging of request to the server. Default : false',
   curating : 'Automatic opening of the application in curated window. Default : true',

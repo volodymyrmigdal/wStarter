@@ -16,8 +16,8 @@ function _Begin()
   let _global = _global_;
   let _starter_ = _global_._starter_;
   let _ = _starter_;
-  let path = _starter_.path;
-  let sourcesMap = _starter_.sourcesMap;
+  let path = _starter_.path; // xxx
+  let sourcesMap = _starter_.sourcesMap; // xxx
 
   // if( _global._starter_ && _global._starter_._inited ) // xxx
   // return;
