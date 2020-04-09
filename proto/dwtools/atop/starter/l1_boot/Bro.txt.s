@@ -242,12 +242,55 @@ function _Begin()
 
   function socketWrite( o )
   {
-    let socket = new WebSocket( o.filePath );
-    socket.onopen = function( e )
+    let socket = _._sockets[ o.filePath ];
+
+    if( !socket )
     {
-      socket.send( JSON.stringify( o.data ) );
-      setTimeout( () => socket.close(), 250 );
-    };
+      // console._original.log.call( console, `new socket ${o.filePath}` );
+      socket = _._sockets[ o.filePath ] = new WebSocket( o.filePath );
+      socket.que = [];
+      socket.que.push( o.data );
+      socket.onopen = function( e )
+      {
+        send();
+        setTimeout( () => handleTime(), 1000 );
+      };
+    }
+    else
+    {
+      socket.que.push( o.data );
+      if( socket.readyState === WebSocket.OPEN )
+      send();
+    }
+
+    function handleTime()
+    {
+      if( socket.que.length )
+      {
+        // debugger;
+        // console._original.log.call( console, `not closing socker ${o.filePath}` );
+        send();
+        setTimeout( () => handleTime(), 1000 );
+        return;
+      }
+      // debugger;
+      // console._original.log.call( console, `closing socker ${o.filePath}` );
+      socket.close();
+      delete _._sockets[ o.filePath ];
+      Object.freeze( socket.que );
+    }
+
+    function send()
+    {
+      // console._original.log.call( console, `sending ${socket.que.length} messages` );
+      while( socket.que.length )
+      {
+        let data = socket.que[ 0 ];
+        socket.que.splice( 0, 1 );
+        socket.send( JSON.stringify( data ) );
+      }
+    }
+
   }
   socketWrite.defaults =
   {
@@ -272,6 +315,7 @@ function _Begin()
     if( !_._socketSubject )
     _._socketSubject = Date.now();
     o.subject = _._socketSubject;
+    o.clientTime = Date.now();
 
     let response = starter.socketWrite
     ({
@@ -322,14 +366,23 @@ function _Begin()
 
   function _broResolve( parentSource, basePath, filePath )
   {
+
     let resolvedFilePath = this._pathResolve( parentSource, basePath, filePath );
+    let isAbsolute = resolvedFilePath[ 0 ] === '/';
+
     try
     {
-      let read = this.fileRead
-      ({
-        filePath : resolvedFilePath,
-        sync : 1,
-      });
+      if( !isAbsolute )
+      throw 'not tested';
+      if( !isAbsolute )
+      resolvedFilePath = starter._broResolveRemote( joinedFilePath );
+
+      // let read = this.fileRead
+      // ({
+      //   filePath : resolvedFilePath,
+      //   sync : 1,
+      // });
+
       return resolvedFilePath;
     }
     catch( err )
@@ -378,9 +431,15 @@ function _Begin()
         return this._importInWorker( parentSource, resolvedFilePath );
       }
 
+      // let read = starter.fileRead
+      // ({
+      //   filePath : resolvedFilePath + '?running:0',
+      //   sync : 1,
+      // });
+
       let read = starter.fileRead
       ({
-        filePath : resolvedFilePath + '?running:0',
+        filePath : resolvedFilePath,
         sync : 1,
       });
 
@@ -612,6 +671,7 @@ function _End()
 
     _socketCounter : 0,
     _socketSubject : null,
+    _sockets : Object.create( null ),
 
   }
 

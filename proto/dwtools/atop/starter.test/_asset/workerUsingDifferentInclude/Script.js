@@ -1,3 +1,4 @@
+
 let global = typeof window !== 'undefined' ? window : self;
 
 if( global.tools )
@@ -5,7 +6,7 @@ throw "Already included"
 
 function routine()
 {
-  console.log( "Global:", global.constructor.name );
+  console.log( `Script.js : Global : ${global.constructor.name}` );
 }
 
 var Routines =

@@ -1350,6 +1350,202 @@ startHtml.description =
 `
 
 // --
+// worker
+// --
+
+function startWorkerUsingTheSameInclude( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'workerUsingTheSameInclude' );
+
+  a.reflect();
+
+  a.appStart( `.start Index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1 loggingRequests:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    test.identical( _.strCount( op.output, 'ncaught' ), 0 );
+    test.identical( _.strCount( op.output, 'error' ), 0 );
+    test.identical( _.strCount( op.output, 'Error' ), 0 );
+
+    var exp =
+`
+Index.js : scriptPath : /Script.js
+Script.js : Global : Window
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp =
+`
+Worker.js : scriptPath : /Script.js
+Script.js : Global : DedicatedWorkerGlobalScope
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp = `. request /.starter`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /Index.js?entry:1`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+    var exp = `. request /Index.js`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /Script.js`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /Worker.js`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+
+    return op;
+  })
+
+  return a.ready;
+}
+
+//
+
+function startWorkerUsingTheSameIncludeSubDir( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'workerUsingTheSameIncludeSubDir' );
+
+  a.reflect();
+
+  a.appStart( `.start proto/Index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1 loggingRequests:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    test.identical( _.strCount( op.output, 'ncaught' ), 0 );
+    test.identical( _.strCount( op.output, 'error' ), 0 );
+    test.identical( _.strCount( op.output, 'Error' ), 0 );
+
+    var exp =
+`
+Index.js : scriptPath : /proto/Script.js
+Script.js : Global : Window
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp =
+`
+Worker.js : scriptPath : /proto/Script.js
+Script.js : Global : DedicatedWorkerGlobalScope
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp = `. request /.starter`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /proto/Index.js?entry:1`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+    var exp = `. request /proto/Index.js`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /proto/Script.js`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /proto/Worker.js`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+
+    return op;
+  })
+
+  return a.ready;
+}
+
+//
+
+function startWorkerUsingDifferentInclude( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'workerUsingDifferentInclude' );
+
+  a.reflect();
+
+  a.appStart( `.start Index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1 loggingRequests:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    test.identical( _.strCount( op.output, 'ncaught' ), 0 );
+    test.identical( _.strCount( op.output, 'error' ), 0 );
+    test.identical( _.strCount( op.output, 'Error' ), 0 );
+
+    var exp =
+`
+Index.js : begin
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp =
+`
+Worker.js : scriptPath : /Script.js
+Script.js : Global : DedicatedWorkerGlobalScope
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp = `. request /.starter`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /Index.js?entry:1`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+    var exp = `. request /Index.js`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /Script.js`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+    var exp = `. request /Worker.js`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+
+    return op;
+  })
+
+  return a.ready;
+}
+
+//
+
+function startWorkerUsingDifferentIncludeSubDir( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'workerUsingDifferentIncludeSubDir' );
+
+  a.reflect();
+
+  a.appStart( `.start proto/Index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1 loggingRequests:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    test.identical( _.strCount( op.output, 'ncaught' ), 0 );
+    test.identical( _.strCount( op.output, 'error' ), 0 );
+    test.identical( _.strCount( op.output, 'Error' ), 0 );
+
+    var exp =
+`
+Index.js : begin
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp =
+`
+Worker.js : scriptPath : /proto/Script.js
+Script.js : Global : DedicatedWorkerGlobalScope
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp = `. request /.starter`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /proto/Index.js?entry:1`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+    var exp = `. request /proto/Index.js`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /proto/Script.js`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+    var exp = `. request /proto/Worker.js`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+
+    return op;
+  })
+
+  return a.ready;
+}
+
+// --
 // etc
 // --
 
@@ -1389,7 +1585,7 @@ async function workerEnvironment( test )
 
   a.reflect();
 
-  a.appStart( `.start index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
+  a.appStart( `.start Index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1 loggingRequests:1` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -1397,9 +1593,9 @@ async function workerEnvironment( test )
     var exp =
 `
 Index.js
-_filePath_ : /index.js
+_filePath_ : /Index.js
 _dirPath_ : /
-__filename : /index.js
+__filename : /Index.js
 __dirname : /
 module : object
 exports : object
@@ -1427,6 +1623,32 @@ _starter_.interpreter : browser
     test.identical( _.strCount( op.output, 'error' ), 0 );
     test.identical( _.strCount( op.output, 'Error' ), 0 );
 
+    var exp =
+`
+W1.js
+_filePath_ : /W1.js
+_dirPath_ : /
+__filename : /W1.js
+__dirname : /
+module : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+`
+    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
+    var exp = `. request /.starter`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /Index.js?entry:1`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+    var exp = `. request /Index.js`;
+    test.identical( _.strCount( op.output, exp ), 2 );
+    var exp = `. request /Worker.js`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+    var exp = `. request /W1.js`;
+    test.identical( _.strCount( op.output, exp ), 1 );
+
     return op;
   })
 
@@ -1447,7 +1669,7 @@ async function loggingErrorInWorker( test )
 
   a.reflect();
 
-  a.appStart( `.start index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
+  a.appStart( `.start Index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -1456,21 +1678,21 @@ async function loggingErrorInWorker( test )
 `
  . event::curatedRunLaunchBegin
  . event::curatedRunLaunchEnd
-index:begin
-index:end
-worker:begin
-m1:begin
+Index:begin
+Index:end
+Worker:begin
+W1:begin
 err:begin
 `
     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
 
     test.identical( _.strCount( op.output, 'Some error' ), 1 );
-    test.identical( _.strCount( op.output, 'Error including source file /m1.js' ), 1 );
+    test.identical( _.strCount( op.output, 'Error including source file /W1.js' ), 1 );
 
     var exp =
 `
 err:end
-worker:end
+Worker:end
  . event::timeOut
  . event::curatedRunTerminateEnd
 `
@@ -1496,30 +1718,27 @@ async function loggingErrorInWorkerNoFile( test )
 
   a.reflect();
 
-  a.appStart( `.start index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
+  a.appStart( `.start Index.js timeOut:${context.deltaTime3} headless:1 loggingSessionEvents:1` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
 
-    var exp =
-`
- . event::curatedRunLaunchBegin
- . event::curatedRunLaunchEnd
-index:begin
-index:end
-worker:begin
-m1:begin
-err:begin
-`
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( op.output, '. event::curatedRunLaunchBegin' ), 1 );
+    test.identical( _.strCount( op.output, '. event::curatedRunLaunchEnd' ), 1 );
+    test.identical( _.strCount( op.output, 'Index:begin' ), 1 );
+    test.identical( _.strCount( op.output, 'Index:end' ), 1 );
+    test.identical( _.strCount( op.output, 'Worker:begin' ), 1 );
+    test.identical( _.strCount( op.output, 'err:begin' ), 1 );
 
-    test.identical( _.strCount( op.output, 'Some error' ), 1 );
-    test.identical( _.strCount( op.output, 'Error including source file /m1.js' ), 1 );
+    test.identical( _.strCount( op.output, 'nhandled' ), 0 );
+    test.identical( _.strCount( op.output, 'ncaught' ), 0 );
+    test.identical( _.strCount( op.output, '= Message of error' ), 1 );
+    test.identical( _.strCount( op.output, `Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:15000/W1.js' failed to load.` ), 2 );
 
     var exp =
 `
 err:end
-worker:end
+Worker:end
  . event::timeOut
  . event::curatedRunTerminateEnd
 `
@@ -1587,7 +1806,7 @@ var Self =
 
     deltaTime1 : 250,
     deltaTime2 : 3000,
-    deltaTime3 : 15000,
+    deltaTime3 : _.process.isDebugged() ? 150000 : 15000,
 
   },
 
@@ -1617,6 +1836,13 @@ var Self =
     startRecursionSingle,
     // startTestSuite,
     startHtml,
+
+    // worker
+
+    startWorkerUsingTheSameInclude,
+    startWorkerUsingTheSameIncludeSubDir,
+    startWorkerUsingDifferentInclude,
+    startWorkerUsingDifferentIncludeSubDir,
 
     // etc
 

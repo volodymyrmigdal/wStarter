@@ -849,7 +849,8 @@ let Bools =
   headless : 0, /* qqq : cover? */
   loggingApplication : 1, /* qqq : cover */
   loggingConnection : 0, /* qqq : cover */
-  loggingSessionEvents : 1, /* qqq : cover */
+  loggingRequests  : 0, /* qqq : cover */
+  loggingSessionEvents : 0, /* qqq : cover */
   loggingOptions : 0, /* qqq : cover */
   proceduring : 1, /* qqq : cover */
   catchingUncaughtErrors : 1, /* qqq : cover */
@@ -903,7 +904,7 @@ let Restricts =
   _timeOutTimer : null,
 
   cdp : null,
-  _cdpTrackingPeriod : 50,
+  _cdpTrackingPeriod : 250,
   _cdpPort : null,
   _cdpClosing : 0,
 

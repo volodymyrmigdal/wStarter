@@ -430,7 +430,7 @@ includeModule.timeOut = 300000;
 async function workerWithInclude( test )
 {
   let context = this;
-  let a = context.assetFor( test, 'worker' );
+  let a = context.assetFor( test, 'workerUsingTheSameInclude' );
   let starter = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
   let window, page;
 
@@ -456,8 +456,8 @@ async function workerWithInclude( test )
     await page.goto( session.entryWithQueryUri );
     await _.time.out( context.deltaTime2 );
 
-    test.is( _.strHas( output, 'Global: Window' ) )
-    test.is( _.strHas( output, 'Global: DedicatedWorkerGlobalScope' ) )
+    test.is( _.strHas( output, 'Global : Window' ) )
+    test.is( _.strHas( output, 'Global : DedicatedWorkerGlobalScope' ) )
 
     await window.close();
   }

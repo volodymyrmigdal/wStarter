@@ -342,14 +342,15 @@ commandHttpOpen.commandProperties =
   templatePath : 'Path to html file to use as template',
   format : 'Explicitly specified format of entry file. Could be: js / html.',
   withModule : 'Specify one or several modules to include extending basePath. If basePath is specified explicitly then option::withModule has no effect.',
-  loggingApplication : 'Enable printing of application output. Default : false',
-  loggingConnection : 'Enable logging of request to the server. Default : true',
-  loggingSessionEvents : 'Enable logging of events of session. Default : false',
-  loggingOptions : 'Enable logging of options of session. Default : false',
-  proceduring : 'Watching asynchronous procedures to terminate the application when all will run out. Default : true',
-  catchingUncaughtErrors : 'Catching uncaught errors and handling them properly. Default : true',
-  naking : 'Disable wrapping of scripts. Default : false',
-  withScripts : 'How to ship scripts. Alternatives : [ include, inline, single, 0 ]. Default : include',
+  loggingApplication : 'Enable printing of application output. Default : false.',
+  loggingConnection : 'Enable logging of request to the server. Default : true.',
+  loggingRequests : 'Enable printing requests to the servlet. Default : false.',
+  loggingSessionEvents : 'Enable logging of events of session. Default : false.',
+  loggingOptions : 'Enable logging of options of session. Default : false.',
+  proceduring : 'Watching asynchronous procedures to terminate the application when all will run out. Default : true.',
+  catchingUncaughtErrors : 'Catching uncaught errors and handling them properly. Default : true.',
+  naking : 'Disable wrapping of scripts. Default : false.',
+  withScripts : 'How to ship scripts. Alternatives : [ include, inline, single, 0 ]. Default : include.',
 }
 
 commandHttpOpen.hint = 'Run HTTP server to serve files in a specified directory.';

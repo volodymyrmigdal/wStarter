@@ -190,8 +190,6 @@ function htmlForFiles( o )
 
   /* */
 
-  debugger;
-
   if( o.inPath !== false )
   if( !_.arrayIs( o.inPath ) || o.inPath.length ) /* if not empty array */
   {
@@ -256,7 +254,6 @@ function htmlForFiles( o )
   if( _.lengthOf( srcScriptsMap ) > 0 )
   o.title = path.fullName( _.mapKeys( srcScriptsMap )[ 0 ] );
 
-  debugger;
   let o2 = _.mapOnly( o, maker.htmlFor.defaults );
   o2.srcScriptsMap = srcScriptsMap;
   let data = maker.htmlFor( o2 );

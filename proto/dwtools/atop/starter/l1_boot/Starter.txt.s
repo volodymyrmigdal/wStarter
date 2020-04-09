@@ -254,11 +254,12 @@ function _Begin()
       throw 'Base path is not specified, neither script file';
     }
 
-    let isRelative = _.strBegins( filePath, './' ) || _.strBegins( filePath, '../' ) || filePath === '.' || filePath === '..';
+    let isAbsolute = filePath[ 0 ] === '/';
+    let isDoted = _.strBegins( filePath, './' ) || _.strBegins( filePath, '../' ) || filePath === '.' || filePath === '..';
 
     filePath = starter.path.canonizeTolerant( filePath );
 
-    if( isRelative && filePath[ 0 ] !== '/' )
+    if( isDoted && !isAbsolute )
     {
       filePath = starter.path.canonizeTolerant( basePath + '/' + filePath );
       if( filePath[ 0 ] !== '/' )

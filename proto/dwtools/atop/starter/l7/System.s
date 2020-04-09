@@ -200,6 +200,7 @@ httpOpen.defaults =
   withModule : null,
   loggingApplication : 0,
   loggingConnection : 1,
+  loggingRequests : null,
   loggingSessionEvents : null,
   loggingOptions : null,
   proceduring : null,

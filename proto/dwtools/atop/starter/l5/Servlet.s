@@ -475,8 +475,6 @@ function jsForJs( o )
   if( o.realPath === null )
   o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.resourcePath ) );
 
-  debugger;
-
   if( o.withScripts === 'single' )
   return servlet.jsSingleForJs({ realPath, request, response });
 
@@ -563,80 +561,86 @@ jsForJs.defaults =
 function remoteResolve( o )
 {
   let servlet = this;
+  let resolvedFilePath;
 
   _.routineOptions( remoteResolve, arguments );
 
-  if( o.realPath === null )
-  o.realPath = _.path.reroot( servlet.basePath, _.strRemoveBegin( o.resourcePath, '/.resolve/' ) );
-
-  _.assert( _.strBegins( o.resourcePath, '/.resolve/' ) );
-
-  let basePath = _.path.fromGlob( o.realPath );
-
-  debugger;
-  servlet.surePathAllowed( basePath );
-
-  let resolvedFilePath = [];
-  if( _.path.isGlob( o.realPath ) )
+  try
   {
 
-    if( !servlet.resolvingGlob )
-    {
-      let err = _.err( `Cant resolve ${o.realPath} because {- servlet.resolvingGlob -} is off` );
-      if( o.request && o.response )
-      {
-        return _.servlet.errorHandle
-        ({
-          request : o.request,
-          response : o.response,
-          err : err,
-        });
-      }
-      else
-      {
-        throw err;
-      }
-    }
+    if( o.realPath === null )
+    o.realPath = _.path.reroot( servlet.basePath, _.strRemoveBegin( o.resourcePath, '/.resolve/' ) );
 
-    let filter = { filePath : o.realPath, basePath : servlet.basePath };
-    resolvedFilePath = _.fileProvider.filesFind
-    ({
-      filter,
-      mode : 'distinct',
-      mandatory : 0,
-      withDirs : 0,
-    });
+    _.assert( _.strBegins( o.resourcePath, '/.resolve/' ) );
 
-    resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p.absolute ) );
-    resolvedFilePath = resolvedFilePath.map( ( p ) => _.path.join( '/', p.relative ) );
-
-  }
-  else
-  {
-
-    if( !servlet.resolvingNpm )
-    {
-      let err = _.err( `Cant resolve ${o.realPath} because {- servlet.resolvingNpm -} is off` );
-      if( o.request && o.response )
-      {
-        return _.servlet.errorHandle
-        ({
-          request : o.request,
-          response : o.response,
-          err : err,
-        });
-      }
-      else
-      {
-        throw err;
-      }
-    }
+    let basePath = _.path.fromGlob( o.realPath );
 
     debugger;
-  }
 
-  if( o.response )
-  o.response.json( resolvedFilePath );
+    servlet.surePathAllowed( basePath );
+
+    if( _.path.isGlob( o.realPath ) )
+    {
+
+      if( !servlet.resolvingGlob )
+      {
+        let err = _.err( `Field {- servlet.resolvingGlob -} is off` );
+        throw err;
+      }
+
+      let filter = { filePath : o.realPath, basePath : servlet.basePath };
+      resolvedFilePath = _.fileProvider.filesFind
+      ({
+        filter,
+        mode : 'distinct',
+        mandatory : 0,
+        withDirs : 0,
+      });
+
+      resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p.absolute ) );
+      resolvedFilePath = resolvedFilePath.map( ( p ) => _.path.join( '/', p.relative ) );
+
+    }
+    else
+    {
+
+      debugger;
+      resolvedFilePath = [ o.realPath ];
+      resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p ) );
+      resolvedFilePath = resolvedFilePath.map( ( p ) => _.path.join( '/', _.path.relative( servlet.basePath, p ) ) );
+      debugger;
+
+      if( !servlet.resolvingNpm )
+      {
+        let err = _.err( `Field {- servlet.resolvingNpm -} is off` );
+        debugger;
+        throw err;
+      }
+
+      debugger;
+    }
+
+    if( o.response )
+    o.response.json( resolvedFilePath );
+
+  }
+  catch( err )
+  {
+    err = _.err( err, `\nFailed to resolve ${o.realPath}` );
+    if( o.request && o.response )
+    {
+      return _.servlet.errorHandle
+      ({
+        request : o.request,
+        response : o.response,
+        err : err,
+      });
+    }
+    else
+    {
+      throw err;
+    }
+  }
 
   return resolvedFilePath;
 }
@@ -726,6 +730,9 @@ function scriptWrap_functor( fop )
     if( o.query.running === undefined )
     o.query.running = 1;
     o.query.running = !!o.query.running;
+
+    if( servlet.loggingRequests )
+    logger.log( ` . request ${_.ct.format( _.uri.str( o.uri ), 'path' )} ` );
 
     if( o.uri.resourcePath === '/.starter' )
     {
@@ -870,6 +877,7 @@ let Composes =
   servingDirs : 0,
   loggingApplication : 1,
   loggingConnection : 0,
+  loggingRequests : 0,
   proceduring : 0,
   catchingUncaughtErrors : 1,
   naking : 0,

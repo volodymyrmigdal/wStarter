@@ -447,6 +447,7 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayLike' )}
   ${rou( 'mapLike' )}
   ${rou( 'strsLikeAll' )}
+  ${rou( 'boolLike' )}
   ${rou( 'arrayIs' )}
   ${rou( 'numberIs' )}
   ${rou( 'setIs' )}
@@ -500,6 +501,10 @@ function sourcesJoinSplits( o )
   ${rou( 'numbersAre' )}
   ${rou( 'bufferTypedIs' )}
   ${rou( 'bufferNodeIs' )}
+  ${rou( 'strLinesStrip' )}
+  ${rou( 'strLinesSplit' )}
+  ${rou( 'strLinesJoin' )}
+  ${rou( 'strSplitFast' )}
   ${rou( '_strLeftSingle' )}
   ${rou( '_strRightSingle' )}
   ${rou( 'strIsolate' )}
@@ -508,6 +513,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strIsolateLeftOrAll' )}
   ${rou( 'strIsolateRightOrAll' )}
   ${rou( 'strQuote' )}
+  ${rou( 'strLinesIndentation' )}
   ${rou( 'numberFromStrMaybe' )}
 
   ${rou( 'errInStr' )}
