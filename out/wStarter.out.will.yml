@@ -261,6 +261,15 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/dep2/ext
           - >-
             ../proto/dwtools/atop/starter.test/_asset/dep2/ext/RequireApp2File2.js
+          - ../proto/dwtools/atop/starter.test/_asset/errorInWorker
+          - ../proto/dwtools/atop/starter.test/_asset/errorInWorker/Index.js
+          - ../proto/dwtools/atop/starter.test/_asset/errorInWorker/W1.js
+          - ../proto/dwtools/atop/starter.test/_asset/errorInWorker/Worker.js
+          - ../proto/dwtools/atop/starter.test/_asset/errorInWorkerNoFile
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/errorInWorkerNoFile/Index.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/errorInWorkerNoFile/Worker.js
           - ../proto/dwtools/atop/starter.test/_asset/exclude
           - ../proto/dwtools/atop/starter.test/_asset/exclude/index.js
           - ../proto/dwtools/atop/starter.test/_asset/exclude/src
@@ -328,10 +337,46 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/tree/in/app2/File2.js
           - ../proto/dwtools/atop/starter.test/_asset/tsuite
           - ../proto/dwtools/atop/starter.test/_asset/tsuite/Suite1.js
-          - ../proto/dwtools/atop/starter.test/_asset/worker
-          - ../proto/dwtools/atop/starter.test/_asset/worker/index.js
-          - ../proto/dwtools/atop/starter.test/_asset/worker/script.js
-          - ../proto/dwtools/atop/starter.test/_asset/worker/worker.js
+          - ../proto/dwtools/atop/starter.test/_asset/workerEnvironment
+          - ../proto/dwtools/atop/starter.test/_asset/workerEnvironment/Index.js
+          - ../proto/dwtools/atop/starter.test/_asset/workerEnvironment/W1.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerEnvironment/Worker.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentInclude
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentInclude/Index.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentInclude/Script.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentInclude/Worker.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Index.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Script.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Worker.js
+          - ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameInclude
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameInclude/Index.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameInclude/Script.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameInclude/Worker.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Index.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Script.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Worker.js
     submodule:
       wTools:
         path: 'npm:///wTools'
