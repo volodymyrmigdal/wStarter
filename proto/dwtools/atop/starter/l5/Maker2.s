@@ -58,7 +58,6 @@ function sourcesJoinFiles( o )
   o.basePath = path.resolve( o.basePath );
 
   o.inPath.basePathUse( o.basePath );
-  // o.basePath = o.inPath.basePathSimplest();
 
   o.inPath = fileProvider.filesFind
   ({

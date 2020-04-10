@@ -553,9 +553,9 @@ function _Begin()
     let MethodsNames =
     [
       'log', 'debug', 'error', 'warn', 'info',
-      'assert', 'clear', 'count', 'dir', 'dirxml',
-      'group', 'groupCollapsed', 'groupEnd',
-      'table', 'time', 'timeEnd', 'timeStamp', 'trace'
+      // 'assert', 'clear', 'count', 'dir', 'dirxml',
+      // 'group', 'groupCollapsed', 'groupEnd',
+      // 'table', 'time', 'timeEnd', 'timeStamp', 'trace'
     ];
 
     _.routineOptions( _broConsoleRedirect, o );
