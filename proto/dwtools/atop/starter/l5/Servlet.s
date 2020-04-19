@@ -680,10 +680,6 @@ function surePathAllowed( filePath )
 {
   let servlet = this;
   return _.sure( _.starter.pathAllowedIs( servlet.allowedPath, filePath ), `Path "${filePath}" is not allowed` );
-  // _.all( filePath, ( p ) =>
-  // {
-  //   _.sure( _.path.begins( p, servlet.allowedPath ), () => `Path ${p} is beyond allowed path ${servlet.allowedPath}` );
-  // });
 }
 
 //

@@ -1255,16 +1255,71 @@ startRecursionSingle.description =
 
 //
 
-function startOptionWithModule( test )
+function startBaseDeducingFromAllowed( test )
 {
   let context = this;
-  let a = context.assetFor( test, false );
+  let a = context.assetFor( test );
   let starter = new _.starter.System().form();
 
   let appStart = a.process.starter
   ({
     execPath : context.appJsPath,
-    currentPath : context.assetsOriginalSuitePath,
+    currentPath : a.originalAbs( '.' ),
+    outputCollecting : 1,
+    throwingExitCode : 1,
+    outputGraying : 1,
+    detaching : 0,
+    ready : a.ready,
+    mode : 'fork',
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    return null;
+  })
+
+  appStart( `.start File1.js timeOut:${context.deltaTime3} loggingOptions:1 headless:1 allowedPath:../../../../..` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    test.identical( _.strCount( op.output, '/node_modules : true' ), 1 );
+    test.identical( _.strCount( op.output, 'File1.js object object' ), 1 );
+
+    test.identical( _.strCount( op.output, 'catchingUncaughtErrors : 1' ), 1 );
+    test.identical( _.strCount( op.output, 'ncaught' ), 1 );
+    test.identical( _.strCount( op.output, 'error' ), 0 );
+    test.identical( _.strCount( op.output, 'Error' ), 1 );
+
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startBaseDeducingFromAllowed.description =
+`
+- basePath is deduced form allowedPath
+- application run
+`
+
+//
+
+function startOptionWithModule( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  let appStart = a.process.starter
+  ({
+    execPath : context.appJsPath,
+    currentPath : a.originalAbs( '.' ),
     outputCollecting : 1,
     throwingExitCode : 1,
     outputGraying : 1,
@@ -1366,13 +1421,13 @@ startWithNpmPackage.description =
 function startTestSuite( test )
 {
   let context = this;
-  let a = context.assetFor( test, false );
+  let a = context.assetFor( test );
   let starter = new _.starter.System().form();
 
   let appStart = a.process.starter
   ({
     execPath : context.appJsPath,
-    currentPath : context.assetsOriginalSuitePath,
+    currentPath : a.originalAbs( '.' ),
     outputCollecting : 1,
     throwingExitCode : 1,
     outputGraying : 1,
@@ -1392,8 +1447,7 @@ function startTestSuite( test )
     return null;
   })
 
-  /* xxx : implement "several values" for _.strRequestParse */
-  appStart( `.start dwtools/atop/starter.test/_asset/tsuite/Suite1.js basePath:../../../.. timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 loggingOptions:1` )
+  appStart( `.start dwtools/atop/starter.test/_asset/startTestSuite/Suite1.js basePath:../../../../.. timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 loggingOptions:1` )
   .then( ( op ) =>
   {
     var output =
@@ -1942,6 +1996,7 @@ var Self =
 
     startRecursion,
     startRecursionSingle,
+    startBaseDeducingFromAllowed,
     // startOptionWithModule,
     startWithNpmPackage,
     // startTestSuite,

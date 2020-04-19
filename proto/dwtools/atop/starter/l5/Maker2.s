@@ -15,26 +15,6 @@ Self.shortName = 'Maker2';
 // routines
 // --
 
-// function PathExcludeNotAllowed( filePath, allowedPath )
-// {
-//
-//   _.assert( _.arrayIs( filePath ) );
-//   _.assert( _.strIs( allowedPath ) );
-//
-//   if( filePath && allowedPath )
-//   {
-//     filePath = filePath.filter( ( filePath ) =>
-//     {
-//       if( _.path.begins( filePath, allowedPath ) )
-//       return filePath;
-//     });
-//   }
-//
-//   return filePath;
-// }
-
-//
-
 function sourcesJoinFiles( o )
 {
   let maker = this;
@@ -312,8 +292,6 @@ let Proto =
 {
 
   /* */
-
-  // PathExcludeNotAllowed,
 
   sourcesJoinFiles,
   htmlForFiles,

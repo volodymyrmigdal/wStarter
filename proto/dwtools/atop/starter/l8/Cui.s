@@ -338,8 +338,9 @@ function commandHttpOpen( e )
 commandHttpOpen.commandProperties =
 {
   basePath : 'Path to make available over HTTP.',
-  allowedPath : 'Restrict access of client-side to files in specified directory. Default : "/".',
-  templatePath : 'Path to html file to use as template',
+  allowedPath : 'Restrict access of client-side to files in specified directory. Default : same as basePath.',
+  templatePath : 'Path to HTML file to use as a template.',
+  // includePath : 'Path to make available. Could be specidied several such paths. If basePath is not specified then includePath is used to deduce basePath.',
   format : 'Explicitly specified format of entry file. Could be: js / html.',
   withModule : 'Specify one or several modules to include extending basePath. If basePath is specified explicitly then option::withModule has no effect.',
   withNpm : 'Include npm paths into the list of allowed paths and enable npm packages to be available. Default : true',

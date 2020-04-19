@@ -195,6 +195,8 @@ function pathsForm()
   if( session.withModule !== null )
   session.withModule = _.arrayAs( session.withModule );
 
+  allowedPathDeduce1();
+
   if( session.basePath === null )
   basePathDeduce();
 
@@ -203,11 +205,11 @@ function pathsForm()
   if( session.templatePath )
   session.templatePath = path.resolve( session.basePath, session.templatePath );
 
-  allowedPathDeduce();
+  allowedPathDeduce2();
 
   /* */
 
-  function basePathDeduce()
+  function basePathDeduce() /* qqq : cover basePath deducing strategy. ask */
   {
     let common = [];
     if( session.withModule )
@@ -220,8 +222,18 @@ function pathsForm()
       session.entryPath = path.canonize( path.resolve( session.entryPath ) );
       common.push( session.entryPath );
     }
+    if( session.allowedPath )
+    {
+      let allowedPath = _.path.mapExtend( null, session.allowedPath, true );
+      for( let p in allowedPath )
+      {
+        common.push( path.canonize( path.resolve( p ) ) );
+      }
+    }
     if( session.fallbackPath )
-    common.push( session.fallbackPath ); /* xxx : cover basePath deducing strategy */
+    {
+      common.push( session.fallbackPath );
+    }
     session.basePath = path.canonize( path.common( common ) );
     if( session.basePath === session.entryPath )
     session.basePath = path.dir( session.basePath );
@@ -229,12 +241,20 @@ function pathsForm()
 
   /* */
 
-  function allowedPathDeduce()
+  function allowedPathDeduce1()
   {
+    let basePath = path.resolve( session.basePath || '.' );
 
     if( session.allowedPath === null )
     session.allowedPath = '.';
     session.allowedPath = _.starter.pathAllowedNormalize( session.allowedPath );
+    session.allowedPath = path.s.resolve( basePath, session.allowedPath );
+  }
+
+  /* */
+
+  function allowedPathDeduce2()
+  {
 
     if( session.withNpm )
     {
@@ -248,7 +268,9 @@ function pathsForm()
       }
     }
 
-    session.allowedPath = path.s.resolve( session.basePath, session.allowedPath );
+    debugger;
+    session.allowedPath = path.mapOptimize( session.allowedPath );
+    debugger;
 
   }
 
