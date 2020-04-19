@@ -97,6 +97,8 @@ function form()
   _.arrayAppendOnceStrictly( system.servletsArray, servlet );
   servlet.formed = 1;
 
+  servlet.pathsForm();
+
   servlet._requestScriptWrapHandler = servlet.scriptWrap_functor();
 
   if( servlet.serverPath )
@@ -141,7 +143,7 @@ function serverForm()
 
   express.use( ( request, response, next ) => servlet.requestPreHandler({ request, response, next }) );
 
-  if( Config.debug && servlet.loggingConnection )
+  if( Config.debug && servlet.loggingRequestsAll )
   {
     if( !ExpressLogger )
     ExpressLogger = require( 'morgan' );
@@ -172,7 +174,7 @@ function serverForm()
   let o3 = _.servlet.controlExpressStart
   ({
     name : servlet.qualifiedName,
-    verbosity : servlet.loggingApplication ? 0 : system.verbosity - 1, /* xxx : use servlet.verbosity? */
+    verbosity : servlet.loggingRequestsAll ? system.verbosity - 1 : 0, /* xxx : use servlet.verbosity? */
     server : servlet.httpServer,
     express : servlet.express,
     serverPath : servlet.serverPath,
@@ -308,11 +310,10 @@ function htmlForHtml( o )
   _.routineOptions( htmlForHtml, o );
 
   if( o.realPath === null )
-  o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.resourcePath ) );
+  o.realPath = servlet.pathVirtualToReal( o.resourcePath );
 
   let o2 = Object.create( null );
   o2.inPath = false;
-  // o2.basePath = servlet.basePath;
   o2.outPath = false;
   o2.templatePath = o.realPath;
   o2.allowedPath = servlet.allowedPath;
@@ -328,26 +329,6 @@ function htmlForHtml( o )
   }
 
   return html;
-
-  // let title = _.path.fullName( o.realPath );
-  //
-  // servlet.surePathAllowed( o.realPath );
-  //
-  // let template = _.fileProvider.fileRead( o.realPath );
-  // let html = system.maker.htmlFor
-  // ({
-  //   title,
-  //   template,
-  // });
-  //
-  // if( o.response )
-  // {
-  //   o.response.setHeader( 'Content-Type', 'text/html; charset=UTF-8' );
-  //   o.response.write( html );
-  //   o.response.end();
-  // }
-  //
-  // return html;
 }
 
 htmlForHtml.defaults =
@@ -368,11 +349,10 @@ function htmlForJs( o )
   _.routineOptions( htmlForJs, o );
 
   if( o.realPath === null )
-  o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.resourcePath ) );
+  o.realPath = servlet.pathVirtualToReal( o.resourcePath );
 
   let o2 = Object.create( null );
   o2.inPath = o.realPath;
-  // o2.basePath = servlet.basePath;
   o2.outPath = false;
   o2.templatePath = servlet.templatePath;
   o2.allowedPath = servlet.allowedPath;
@@ -472,76 +452,92 @@ function jsForJs( o )
 
   o =_.routineOptions( jsForJs, arguments );
 
-  if( o.realPath === null )
-  o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.resourcePath ) );
-
-  if( o.withScripts === 'single' )
-  return servlet.jsSingleForJs({ realPath, request, response });
-
-  let splits = system.maker.sourceWrapSplits
-  ({
-    basePath : servlet.basePath,
-    filePath : o.realPath,
-    running : o.query.running,
-    interpreter : 'browser',
-  });
-
-  let stream = _.fileProvider.streamRead
-  ({
-    filePath : o.realPath,
-    throwing : 0,
-  });
-
-  if( !stream )
-  return o.next();
-
-  o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
-
-  let state = 0;
-
-  if( servlet.verbosity >= 5 )
-  console.log( ' . scriptWrap', o.resourcePath, 'of', o.realPath );
-
-  stream.on( 'open', function()
+  try
   {
-    state = 1;
-    o.response.write( splits.prefix1 );
-    o.response.write( splits.prefix2 );
-  });
 
-  stream.on( 'data', function( d )
-  {
-    state = 1;
-    o.response.write( d );
-  });
+    if( o.realPath === null )
+    o.realPath = servlet.pathVirtualToReal( o.resourcePath );
 
-  stream.on( 'end', function()
-  {
-    if( state < 2 )
+    if( o.withScripts === 'single' )
+    return servlet.jsSingleForJs({ realPath, request, response });
+
+    let splits = system.maker.sourceWrapSplits
+    ({
+      basePath : servlet.basePath,
+      realToVirtualMap : servlet.realToVirtualMap,
+      filePath : o.realPath,
+      running : o.query.running,
+      interpreter : 'browser',
+      loggingPathTranslations : servlet.loggingPathTranslations,
+    });
+
+    let stream = _.fileProvider.streamRead
+    ({
+      filePath : o.realPath,
+      throwing : 0,
+    });
+
+    if( !stream )
+    return o.next();
+
+    o.response.setHeader( 'Content-Type', 'application/javascript; charset=UTF-8' );
+
+    let state = 0;
+
+    if( servlet.verbosity >= 5 )
+    console.log( ' . scriptWrap', o.resourcePath, 'of', o.realPath );
+
+    stream.on( 'open', function()
     {
-      o.response.write( splits.postfix2 );
-      o.response.write( splits.ware );
-      o.response.write( splits.postfix1 );
-      o.response.end();
-    }
-    state = 2;
-  });
+      state = 1;
+      o.response.write( splits.prefix1 );
+      o.response.write( splits.prefix2 );
+    });
 
-  stream.on( 'error', function( err )
-  {
-    if( !state )
+    stream.on( 'data', function( d )
     {
-      o.next();
-    }
-    else
+      state = 1;
+      o.response.write( d );
+    });
+
+    stream.on( 'end', function()
+    {
+      if( state < 2 )
+      {
+        o.response.write( splits.postfix2 );
+        o.response.write( splits.ware );
+        o.response.write( splits.postfix1 );
+        o.response.end();
+      }
+      state = 2;
+    });
+
+    stream.on( 'error', function( err )
+    {
+      if( !state )
+      {
+        o.next();
+      }
+      else
+      return _.servlet.errorHandle
+      ({
+        err : _.err( err ),
+        request : o.request,
+        response : o.response,
+      });
+      state = 2;
+    });
+
+  }
+  catch( err )
+  {
     return _.servlet.errorHandle
     ({
-      err : err,
+      err : _.err( err ),
       request : o.request,
       response : o.response,
     });
-    state = 2;
-  });
+  }
 
 }
 
@@ -568,19 +564,20 @@ function remoteResolve( o )
   try
   {
 
-    if( o.realPath === null )
-    o.realPath = _.path.reroot( servlet.basePath, _.strRemoveBegin( o.resourcePath, '/.resolve/' ) );
-
     _.assert( _.strBegins( o.resourcePath, '/.resolve/' ) );
 
-    let basePath = _.path.fromGlob( o.realPath );
+    if( o.realPath === null )
+    o.realPath = _.strRemoveBegin( o.resourcePath, '/.resolve/' );
 
-    debugger;
-
-    servlet.surePathAllowed( basePath );
+    if( _.path.isAbsolute( o.realPath ) || _.path.isDotted( o.realPath ) )
+    o.realPath = _.path.reroot( servlet.basePath, o.realPath );
 
     if( _.path.isGlob( o.realPath ) )
     {
+
+      _.sure( _.path.isAbsolute( o.realPath ) );
+      let basePath = _.path.fromGlob( o.realPath );
+      servlet.surePathAllowed( basePath );
 
       if( !servlet.resolvingGlob )
       {
@@ -589,36 +586,31 @@ function remoteResolve( o )
       }
 
       let filter = { filePath : o.realPath, basePath : servlet.basePath };
+
       resolvedFilePath = _.fileProvider.filesFind
       ({
         filter,
         mode : 'distinct',
         mandatory : 0,
         withDirs : 0,
+        outputFormat : 'absolute',
       });
 
-      resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p.absolute ) );
-      resolvedFilePath = resolvedFilePath.map( ( p ) => _.path.join( '/', p.relative ) );
-
     }
-    else
+    else if( !_.path.isAbsolute( o.realPath ) )
     {
-
-      debugger;
-      resolvedFilePath = [ o.realPath ];
-      resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p ) );
-      resolvedFilePath = resolvedFilePath.map( ( p ) => _.path.join( '/', _.path.relative( servlet.basePath, p ) ) );
-      debugger;
 
       if( !servlet.resolvingNpm )
       {
-        let err = _.err( `Field {- servlet.resolvingNpm -} is off` );
+        let err = _.err( `Cant resolve npm modules. Field {- servlet.resolvingNpm -} is disabled.` );
         debugger;
         throw err;
       }
 
-      debugger;
+      resolvedFilePath = _.path.canonize( _.module.resolve( o.realPath ) );
     }
+
+    resolvedFilePath = end( resolvedFilePath );
 
     if( o.response )
     o.response.json( resolvedFilePath );
@@ -626,7 +618,7 @@ function remoteResolve( o )
   }
   catch( err )
   {
-    err = _.err( err, `\nFailed to resolve ${o.realPath}` );
+    err = _.err( err, `\nFailed to resolve ${o.resourcePath}` );
     if( o.request && o.response )
     {
       return _.servlet.errorHandle
@@ -643,6 +635,24 @@ function remoteResolve( o )
   }
 
   return resolvedFilePath;
+
+  /* */
+
+  function end( resolvedFilePath )
+  {
+    if( _.arrayIs( resolvedFilePath ) )
+    return resolvedFilePath.map( ( p ) => end( p ) );
+
+    // resolvedFilePath = _.arrayAs( resolvedFilePath );
+    // resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p ) );
+
+    servlet.surePathAllowed( resolvedFilePath );
+    resolvedFilePath = servlet.pathRealToVirtual( resolvedFilePath );
+    return resolvedFilePath;
+  }
+
+  /* */
+
 }
 
 remoteResolve.defaults =
@@ -669,10 +679,70 @@ function starterWareReturn( o )
 function surePathAllowed( filePath )
 {
   let servlet = this;
-  _.all( filePath, ( p ) =>
-  {
-    _.sure( _.path.begins( p, servlet.allowedPath ), () => `Path ${p} is beyond allowed path ${servlet.allowedPath}` );
+  return _.sure( _.starter.pathAllowedIs( servlet.allowedPath, filePath ), `Path "${filePath}" is not allowed` );
+  // _.all( filePath, ( p ) =>
+  // {
+  //   _.sure( _.path.begins( p, servlet.allowedPath ), () => `Path ${p} is beyond allowed path ${servlet.allowedPath}` );
+  // });
+}
+
+//
+
+function pathRealToVirtual( realPath )
+{
+  let servlet = this;
+  let result = _.starter.pathRealToVirtual
+  ({
+    realPath,
+    basePath : servlet.basePath,
+    realToVirtualMap : servlet.realToVirtualMap,
+    verbosity : servlet.loggingPathTranslations,
   });
+  return _.path.s.join( '/', result );
+}
+
+//
+
+function pathVirtualToReal( virtualPath )
+{
+  let servlet = this;
+  let result = _.starter.pathVirtualToReal
+  ({
+    virtualPath,
+    basePath : servlet.basePath,
+    virtualToRealMap : servlet.virtualToRealMap,
+    verbosity : servlet.loggingPathTranslations,
+  });
+  return result;
+}
+
+//
+
+function pathsForm()
+{
+  let servlet = this;
+
+  _.assert( servlet.virtualToRealMap === null );
+  _.assert( servlet.realToVirtualMap === null );
+  _.assert( _.mapIs( servlet.allowedPath ) );
+
+  servlet.virtualToRealMap = Object.create( null );
+  servlet.realToVirtualMap = Object.create( null );
+
+  for( let absolutePath in servlet.allowedPath )
+  {
+    _.assert( _.path.isAbsolute( absolutePath ) );
+    if( !servlet.allowedPath[ absolutePath ] )
+    continue;
+    let relativePath = _.path.relative( servlet.basePath, absolutePath );
+    if( _.path.isDotted( relativePath ) && relativePath !== '.' )
+    {
+      let virtualPath = '_' + ( _.lengthOf( servlet.realToVirtualMap ) + 1 ) + '_';
+      servlet.virtualToRealMap[ virtualPath ] = absolutePath;
+      servlet.realToVirtualMap[ absolutePath ] = virtualPath;
+    }
+  }
+
 }
 
 // --
@@ -690,7 +760,7 @@ function scriptWrap_functor( fop )
   _.assert( system instanceof _.starter.System );
   _.assert( system.maker instanceof _.starter.Maker );
   _.assert( _.strDefined( servlet.basePath ) );
-  _.assert( _.strDefined( servlet.allowedPath ) );
+  _.assert( _.mapIs( servlet.allowedPath ) );
   _.assert( _.arrayIs( servlet.incudingExts ) );
   _.assert( _.arrayIs( servlet.excludingExts ) );
 
@@ -749,7 +819,7 @@ function scriptWrap_functor( fop )
       });
     }
 
-    o.realPath = _.path.canonize( _.path.reroot( servlet.basePath, o.uri.longPath ) );
+    o.realPath = servlet.pathVirtualToReal( o.uri.longPath );
     o.shortName = _.strVarNameFor( _.path.fullName( o.realPath ) );
 
     if( o.query.withScripts === 'single' )
@@ -866,6 +936,8 @@ defaults.resolvingGlob = 1;
 defaults.resolvingNpm = 1;
 defaults.proceduring = 0;
 defaults.loggingApplication = 0;
+defaults.loggingSourceFiles = 0;
+defaults.loggingPathTranslations = 1;
 
 // --
 // relations
@@ -876,8 +948,10 @@ let Composes =
 
   servingDirs : 0,
   loggingApplication : 1,
-  loggingConnection : 0,
+  loggingSourceFiles : 0,
+  loggingRequestsAll : 0,
   loggingRequests : 0,
+  loggingPathTranslations : 0,
   proceduring : 0,
   catchingUncaughtErrors : 1,
   naking : 0,
@@ -891,6 +965,8 @@ let Composes =
   serverPath : 'http://127.0.0.1:15000',
   // serverPath : 'http://0.0.0.0:15000',
   basePath : null,
+  virtualToRealMap : null,
+  realToVirtualMap : null,
   allowedPath : '/',
   templatePath : null,
 
@@ -956,7 +1032,11 @@ let Proto =
   jsForJs,
   remoteResolve,
   starterWareReturn,
+
   surePathAllowed,
+  pathRealToVirtual,
+  pathVirtualToReal,
+  pathsForm,
 
   scriptWrap_functor,
   ScriptWrap_functor,

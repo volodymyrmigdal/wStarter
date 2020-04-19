@@ -77,8 +77,22 @@ function sourceWrapSplits( o )
   _.assert( arguments.length === 1 );
   _.assert( _.longHas( [ 'njs', 'browser' ], o.interpreter ) );
 
-  let relativeFilePath = _.path.dot( _.path.relative( o.basePath, o.filePath ) );
-  let relativeDirPath = _.path.dot( _.path.dir( relativeFilePath ) );
+  // logger.log( ` . sourceWrapSplits ${o.filePath}` );
+
+  let relativeFilePath = _.starter.pathRealToVirtual
+  ({
+    realPath : o.filePath,
+    basePath : o.basePath,
+    realToVirtualMap : o.realToVirtualMap,
+    verbosity : o.loggingPathTranslations,
+  });
+
+  _.assert( !_.path.isDotted( relativeFilePath ) || relativeFilePath === '.', `Path ${o.filePath} is beyond base path` );
+
+  relativeFilePath = _.path.dot( relativeFilePath );
+  let relativeDirPath = _.path.dir( relativeFilePath );
+  relativeDirPath = _.path.dot( relativeDirPath );
+
   let fileName = _.strVarNameFor( _.path.fullName( o.filePath ) );
   let fileNameNaked = fileName + '_naked';
 
@@ -93,12 +107,12 @@ function sourceWrapSplits( o )
   ware +=
 `/* */  if( typeof _starter_ === 'undefined' && typeof importScripts !== 'undefined' ) /* qqq xxx : ? */
 /* */  importScripts( '/.starter' );
-/* */  let _filePath_ = _starter_._pathResolve( null, '/', '${relativeFilePath}' );
-/* */  let _dirPath_ = _starter_._pathResolve( null, '/', '${relativeDirPath}' );`
+/* */  let _filePath_ = _starter_._pathResolveLocal( null, '/', '${relativeFilePath}' );
+/* */  let _dirPath_ = _starter_._pathResolveLocal( null, '/', '${relativeDirPath}' );`
   else
   ware +=
-`/* */  let _filePath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeFilePath}' );
-/* */  let _dirPath_ = _starter_._pathResolve( null, _libraryFilePath_, '${relativeDirPath}' );`
+`/* */  let _filePath_ = _starter_._pathResolveLocal( null, _libraryFilePath_, '${relativeFilePath}' );
+/* */  let _dirPath_ = _starter_._pathResolveLocal( null, _libraryFilePath_, '${relativeDirPath}' );`
 
   ware +=
 `
@@ -111,7 +125,7 @@ function sourceWrapSplits( o )
 `
 
   if( o.running )
-  ware += `/* */  _starter_._sourceIncludeAct( null, module, module.filePath );`;
+  ware += `/* */  _starter_._sourceIncludeCall( null, module, module.filePath );`;
 
   let postfix1 =
 `
@@ -133,6 +147,8 @@ sourceWrapSplits.defaults =
   basePath : null,
   running : 0,
   interpreter : 'njs',
+  realToVirtualMap : null,
+  loggingPathTranslations : null,
 }
 
 //
@@ -224,6 +240,7 @@ function sourcesJoinSplits( o )
   _.assert( _.boolLike( o.proceduring ) );
   _.assert( _.boolLike( o.catchingUncaughtErrors ) );
   _.assert( _.boolLike( o.loggingApplication ) );
+  _.assert( _.boolLike( o.loggingSourceFiles ) );
 
   if( o.entryPath )
   {
@@ -256,6 +273,7 @@ function sourcesJoinSplits( o )
 /* */  _global_._starter_.proceduring = ${o.proceduring};
 /* */  _global_._starter_.catchingUncaughtErrors = ${o.catchingUncaughtErrors};
 /* */  _global_._starter_.loggingApplication = ${o.loggingApplication};
+/* */  _global_._starter_.loggingSourceFiles = ${o.loggingSourceFiles};
 
 /* */  _global_.Config.debug = ${o.debug};
 
@@ -770,6 +788,7 @@ sourcesJoinSplits.defaults =
   proceduring : 0,
   catchingUncaughtErrors : 1,
   loggingApplication : 0,
+  loggingSourceFiles : 1,
 }
 
 //

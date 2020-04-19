@@ -1,4 +1,4 @@
-( function _StarterMaker_test_s_() {
+( function _Int_test_s_() {
 
 'use strict';
 

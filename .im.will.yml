@@ -19,11 +19,12 @@ submodule :
   wServletTools :
     path : npm:///wservlettools
     enabled : 0 # submodule
-  open:
-    path : npm:///open
-    enabled : 0 # submodule
-  wloggersocket :
+  wLoggerSocket :
     path : npm:///wloggersocket
+    enabled : 0 # submodule
+
+  open:
+    path : npm:///open#7.0.3
     enabled : 0 # submodule
   'chrome-remote-interface' :
     path : npm:///chrome-remote-interface#0.28.1
@@ -37,6 +38,7 @@ submodule :
   pretty :
     path : npm:///pretty#2.0.0
     enabled : 0 # submodule
+
   wstarter :
     path : hd://.
     enabled : 0 # submodule
@@ -54,6 +56,11 @@ submodule :
       development : 1
   wPuppet :
     path : npm:///wpuppet
+    enabled : 0 # submodule
+    criterion :
+      development : 1
+  wModuleForTesting1a :
+    path : npm:///wmodulefortesting1a
     enabled : 0 # submodule
     criterion :
       development : 1

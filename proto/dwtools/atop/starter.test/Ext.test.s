@@ -1,4 +1,4 @@
-( function _StarterMaker_test_s_() {
+( function _Ext_test_s_() {
 
 'use strict';
 
@@ -1255,6 +1255,114 @@ startRecursionSingle.description =
 
 //
 
+function startOptionWithModule( test )
+{
+  let context = this;
+  let a = context.assetFor( test, false );
+  let starter = new _.starter.System().form();
+
+  let appStart = a.process.starter
+  ({
+    execPath : context.appJsPath,
+    currentPath : context.assetsOriginalSuitePath,
+    outputCollecting : 1,
+    throwingExitCode : 1,
+    outputGraying : 1,
+    detaching : 0,
+    ready : a.ready,
+    mode : 'fork',
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    // _.fileProvider.filesDelete( a.routinePath );
+    // a.reflect();
+    // _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  // appStart( `.start startOptionWithModule/File1.js timeOut:${context.deltaTime3}0 loggingSessionEvents:1 headless:1 withModule:../../../../dwtools/Tools.s withModule:wCopyable` )
+  appStart( `.start startOptionWithModule/File1.js timeOut:${context.deltaTime3}0 loggingSessionEvents:1 headless:1 withModule:wTools withModule:wCopyable` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+xxx
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startOptionWithModule.description =
+`
+- xxx
+`
+
+//
+
+function startWithNpmPackage( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  let appStart = a.process.starter
+  ({
+    execPath : context.appJsPath,
+    currentPath : a.originalAbs( '.' ),
+    outputCollecting : 1,
+    throwingExitCode : 1,
+    outputGraying : 1,
+    detaching : 0,
+    ready : a.ready,
+    mode : 'fork',
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    return null;
+  })
+
+  appStart( `.start File1.js timeOut:${context.deltaTime3} loggingOptions:1 headless:1` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+
+    test.identical( _.strCount( op.output, '/node_modules : true' ), 1 );
+    test.identical( _.strCount( op.output, 'File1.js object 9' ), 1 );
+
+    test.identical( _.strCount( op.output, 'catchingUncaughtErrors : 1' ), 1 );
+    test.identical( _.strCount( op.output, 'ncaught' ), 1 );
+    test.identical( _.strCount( op.output, 'error' ), 0 );
+    test.identical( _.strCount( op.output, 'Error' ), 1 );
+
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startWithNpmPackage.description =
+`
+- resolving of npm package works
+`
+
+//
+
 function startTestSuite( test )
 {
   let context = this;
@@ -1278,14 +1386,14 @@ function startTestSuite( test )
   a.ready.then( () =>
   {
     test.case = 'basic';
-    _.fileProvider.filesDelete( a.routinePath );
-    a.reflect();
-    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    // _.fileProvider.filesDelete( a.routinePath );
+    // a.reflect();
+    // _.fileProvider.filesDelete( a.routinePath + '/out' );
     return null;
   })
 
-  /* xxx : use several values feature */
-  appStart( `.start tsuite/Suite1.js timeOut:${context.deltaTime3}0 loggingSessionEvents:0 headless:0 withModule:[ ../../../../dwtools/Tools.s wTesting ]` )
+  /* xxx : implement "several values" for _.strRequestParse */
+  appStart( `.start dwtools/atop/starter.test/_asset/tsuite/Suite1.js basePath:../../../.. timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 loggingOptions:1` )
   .then( ( op ) =>
   {
     var output =
@@ -1834,6 +1942,8 @@ var Self =
 
     startRecursion,
     startRecursionSingle,
+    // startOptionWithModule,
+    startWithNpmPackage,
     // startTestSuite,
     startHtml,
 

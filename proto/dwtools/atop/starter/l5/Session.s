@@ -134,10 +134,13 @@ function form()
 
     session.instanceOptions();
 
+    if( session.resolvingNpm === null )
+    session.resolvingNpm = !!session.withNpm;
+    if( session.withNpm === null )
+    session.withNpm = !!session.resolvingNpm;
+
     for( let k in session.Bools )
     {
-      // if( session[ k ] === null )
-      // session[ k ] = session.Bools[ k ];
       _.assert( _.boolLike( session[ k ] ) );
     }
 
@@ -193,6 +196,18 @@ function pathsForm()
   session.withModule = _.arrayAs( session.withModule );
 
   if( session.basePath === null )
+  basePathDeduce();
+
+  session.basePath = path.resolve( session.basePath || '.' );
+
+  if( session.templatePath )
+  session.templatePath = path.resolve( session.basePath, session.templatePath );
+
+  allowedPathDeduce();
+
+  /* */
+
+  function basePathDeduce()
   {
     let common = [];
     if( session.withModule )
@@ -212,12 +227,32 @@ function pathsForm()
     session.basePath = path.dir( session.basePath );
   }
 
-  session.basePath = path.resolve( session.basePath || '.' );
-  if( session.allowedPath === null )
-  session.allowedPath = '.';
-  session.allowedPath = path.resolve( session.basePath, session.allowedPath );
-  if( session.templatePath )
-  session.templatePath = path.resolve( session.basePath, session.templatePath );
+  /* */
+
+  function allowedPathDeduce()
+  {
+
+    if( session.allowedPath === null )
+    session.allowedPath = '.';
+    session.allowedPath = _.starter.pathAllowedNormalize( session.allowedPath );
+
+    if( session.withNpm )
+    {
+      let paths = path.traceToRoot( session.basePath );
+      for( var i = paths.length - 1; i >= 0; i-- )
+      {
+        let p = paths[ i ];
+        let modulesPath = path.join( p, 'node_modules' );
+        if( fileProvider.isDir( modulesPath ) )
+        session.allowedPath[ modulesPath ] = true;
+      }
+    }
+
+    session.allowedPath = path.s.resolve( session.basePath, session.allowedPath );
+
+  }
+
+  /* */
 
 }
 
@@ -848,11 +883,15 @@ let Bools =
   curating : 1, /* qqq : cover */
   headless : 0, /* qqq : cover? */
   loggingApplication : 1, /* qqq : cover */
-  loggingConnection : 0, /* qqq : cover */
+  loggingRequestsAll : 0, /* qqq : cover */
   loggingRequests  : 0, /* qqq : cover */
   loggingSessionEvents : 0, /* qqq : cover */
   loggingOptions : 0, /* qqq : cover */
+  loggingSourceFiles : 0, /* qqq : cover */
+  loggingPathTranslations : 0, /* qqq : cover */
   proceduring : 1, /* qqq : cover */
+  resolvingNpm : null, /* qqq : cover */
+  withNpm : 1, /* qqq : cover */
   catchingUncaughtErrors : 1, /* qqq : cover */
   naking : 0, /* qqq : cover */
 

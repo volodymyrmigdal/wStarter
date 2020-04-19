@@ -78,6 +78,9 @@ function _Begin()
 
     /* */
 
+    if( starter.loggingSourceFile )
+    console.log( ` . SourceFile ${o.filePath}` );
+
     starter.sourcesMap[ o.filePath ] = sourceFile;
     Object.preventExtensions( sourceFile );
     return sourceFile;
@@ -116,7 +119,7 @@ function _Begin()
 
   //
 
-  function _sourceIncludeAct( parentSource, childSource, sourcePath )
+  function _sourceIncludeCall( parentSource, childSource, sourcePath )
   {
     let starter = this;
 
@@ -141,6 +144,7 @@ function _Begin()
     }
     catch( err )
     {
+      debugger;
       err = _.err( err, `\nError including source file ${ childSource ? childSource.filePath : sourcePath }` );
       if( childSource )
       {
@@ -175,12 +179,23 @@ function _Begin()
 
     let childSource = starter._sourceForIncludeGet.apply( starter, arguments );
     if( childSource )
-    return starter._sourceIncludeAct( parentSource, childSource, filePath );
+    return starter._sourceIncludeCall( parentSource, childSource, filePath );
 
-    if( starter.interpreter === 'browser' )
-    return starter._broInclude( parentSource, basePath, filePath );
-    else
-    return starter._njsInclude( parentSource, basePath, filePath );
+    try
+    {
+
+      if( starter.interpreter === 'browser' )
+      return starter._broInclude( parentSource, basePath, filePath );
+      else
+      return starter._njsInclude( parentSource, basePath, filePath );
+
+    }
+    catch( err )
+    {
+      debugger;
+      err = _.err( err, `\nError including source file ${ filePath }` );
+      throw err;
+    }
 
   }
 
@@ -195,7 +210,7 @@ function _Begin()
 
     if( starter.interpreter === 'browser' )
     {
-      return starter._broResolve( parentSource, basePath, filePath );
+      return starter._broSourcePathResolve( parentSource, basePath, filePath );
     }
     else
     {
@@ -230,7 +245,7 @@ function _Begin()
 
   function _sourceForIncludeGet( sourceFile, basePath, filePath )
   {
-    let resolvedFilePath = this._pathResolve( sourceFile, basePath, filePath );
+    let resolvedFilePath = this._pathResolveLocal( sourceFile, basePath, filePath );
     let childSource = this.sourcesMap[ resolvedFilePath ];
     if( childSource )
     return childSource;
@@ -239,7 +254,7 @@ function _Begin()
 
   //
 
-  function _pathResolve( sourceFile, basePath, filePath )
+  function _pathResolveLocal( sourceFile, basePath, filePath )
   {
     let starter = this;
 
@@ -255,11 +270,12 @@ function _Begin()
     }
 
     let isAbsolute = filePath[ 0 ] === '/';
-    let isDoted = _.strBegins( filePath, './' ) || _.strBegins( filePath, '../' ) || filePath === '.' || filePath === '..';
+    let isDotted = _.strBegins( filePath, './' ) || _.strBegins( filePath, '../' ) || filePath === '.' || filePath === '..';
 
+    if( !isDotted )
     filePath = starter.path.canonizeTolerant( filePath );
 
-    if( isDoted && !isAbsolute )
+    if( isDotted && !isAbsolute )
     {
       filePath = starter.path.canonizeTolerant( basePath + '/' + filePath );
       if( filePath[ 0 ] !== '/' )
@@ -311,14 +327,14 @@ function _End()
     SourceFile,
 
     _sourceMake,
-    _sourceIncludeAct,
+    _sourceIncludeCall,
     _sourceInclude,
     _sourceResolve,
     _sourceOwnResolve,
     _sourceForPathGet,
     _sourceForIncludeGet,
 
-    _pathResolve,
+    _pathResolveLocal,
 
     _Setup,
 

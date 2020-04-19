@@ -198,11 +198,15 @@ httpOpen.defaults =
   allowedPath : null,
   templatePath : null,
   withModule : null,
+  withNpm : null,
+  resolvingNpm : null,
   loggingApplication : 0,
-  loggingConnection : 1,
+  loggingRequestsAll : 1,
   loggingRequests : null,
   loggingSessionEvents : null,
   loggingOptions : null,
+  loggingSourceFiles : null,
+  loggingPathTranslations : null,
   proceduring : null,
   catchingUncaughtErrors : null,
   naking : null,
@@ -235,7 +239,7 @@ function start( o )
 var defaults = start.defaults = _.mapExtend( null, httpOpen.defaults );
 
 defaults.loggingApplication = 1;
-defaults.loggingConnection = 0;
+defaults.loggingRequestsAll = 0;
 defaults.entryPath = null;
 defaults.curating = 1;
 defaults.headless = 0;

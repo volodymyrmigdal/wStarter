@@ -136,7 +136,7 @@ function _Begin()
   function _njsSourceIncludeFromNjsAct( njsModule, childSource, sourcePath )
   {
     let parentSource = njsModule.sourceFile || null;
-    return this._sourceIncludeAct( parentSource, childSource, sourcePath );
+    return this._sourceIncludeCall( parentSource, childSource, sourcePath );
   }
 
   //
@@ -144,7 +144,7 @@ function _Begin()
   function _njsInclude( parentSource, basePath, filePath )
   {
     let starter = this;
-    let resolvedFilePath = this._pathResolve( parentSource, basePath, filePath );
+    let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
     resolvedFilePath = _.path.nativize( resolvedFilePath );
     let _natInclude = parentSource ? parentSource._natInclude : starter._natInclude;
     return _natInclude( resolvedFilePath );

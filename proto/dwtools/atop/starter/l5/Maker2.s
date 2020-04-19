@@ -15,23 +15,23 @@ Self.shortName = 'Maker2';
 // routines
 // --
 
-function PathExcludeNotAllowed( filePath, allowedPath )
-{
-
-  _.assert( _.arrayIs( filePath ) );
-  _.assert( _.strIs( allowedPath ) );
-
-  if( filePath && allowedPath )
-  {
-    filePath = filePath.filter( ( filePath ) =>
-    {
-      if( _.path.begins( filePath, allowedPath ) )
-      return filePath;
-    });
-  }
-
-  return filePath;
-}
+// function PathExcludeNotAllowed( filePath, allowedPath )
+// {
+//
+//   _.assert( _.arrayIs( filePath ) );
+//   _.assert( _.strIs( allowedPath ) );
+//
+//   if( filePath && allowedPath )
+//   {
+//     filePath = filePath.filter( ( filePath ) =>
+//     {
+//       if( _.path.begins( filePath, allowedPath ) )
+//       return filePath;
+//     });
+//   }
+//
+//   return filePath;
+// }
 
 //
 
@@ -69,7 +69,7 @@ function sourcesJoinFiles( o )
   /* */
 
   if( o.inPath && o.allowedPath )
-  o.inPath = maker.PathExcludeNotAllowed( o.inPath, o.allowedPath );
+  o.inPath = _.starter.pathAllowedFilter( o.allowedPath, o.inPath );
 
   /* */
 
@@ -93,7 +93,7 @@ function sourcesJoinFiles( o )
     });
 
     if( o.entryPath && o.allowedPath )
-    o.entryPath = maker.PathExcludeNotAllowed( o.entryPath, o.allowedPath );
+    o.entryPath = _.starter.pathAllowedFilter( o.allowedPath, o.entryPath );
 
     if( !_.longHasAll( o.inPath, o.entryPath ) )
     {
@@ -120,7 +120,7 @@ function sourcesJoinFiles( o )
       outputFormat : 'absolute',
     });
     if( o.externalBeforePath && o.allowedPath )
-    o.externalBeforePath = maker.PathExcludeNotAllowed( o.externalBeforePath, o.allowedPath );
+    o.externalBeforePath = _.starter.pathAllowedFilter( o.allowedPath, o.externalBeforePath );
   }
 
   /* */
@@ -136,7 +136,7 @@ function sourcesJoinFiles( o )
       outputFormat : 'absolute',
     });
     if( o.externalAfterPath && o.allowedPath )
-    o.externalAfterPath = maker.PathExcludeNotAllowed( o.externalAfterPath, o.allowedPath );
+    o.externalAfterPath = _.starter.pathAllowedFilter( o.allowedPath, o.externalAfterPath );
   }
 
   /* */
@@ -216,7 +216,7 @@ function htmlForFiles( o )
   /* */
 
   if( o.inPath && o.allowedPath )
-  o.inPath = maker.PathExcludeNotAllowed( o.inPath, o.allowedPath );
+  o.inPath = _.starter.pathAllowedFilter( o.allowedPath, o.inPath );
 
   /* */
 
@@ -300,7 +300,7 @@ let Restricts =
 let Statics =
 {
 
-  PathExcludeNotAllowed,
+  // PathExcludeNotAllowed,
 
 }
 
@@ -313,7 +313,7 @@ let Proto =
 
   /* */
 
-  PathExcludeNotAllowed,
+  // PathExcludeNotAllowed,
 
   sourcesJoinFiles,
   htmlForFiles,

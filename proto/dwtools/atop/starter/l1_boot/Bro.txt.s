@@ -28,7 +28,7 @@ function _Begin()
   function fileReadAct( o )
   {
     let self = this;
-    let Reqeust, request, total, result;
+    let Reqeust, request, total, result, error;
 
     _.assertRoutineOptions( fileReadAct, arguments );
     _.assert( arguments.length === 1, 'Expects single argument' );
@@ -89,7 +89,14 @@ function _Begin()
 
     _.assert( o.sync );
     if( o.sync )
-    return result;
+    {
+      if( error )
+      {
+        debugger;
+        throw _.err( error );
+      }
+      return result;
+    }
     // else
     // return con;
 
@@ -154,9 +161,9 @@ function _Begin()
 
     function handleError( err )
     {
-
+      error = err;
+      // error = _.err( err );
       o.ended = 1;
-
       // con.error( err );
     }
 
@@ -334,28 +341,27 @@ function _Begin()
 
   //
 
-  function _broResolveRemote( filePath )
+  function _broPathResolveRemote( filePath )
   {
     let starter = this;
 
-    if( _.path.isGlob( filePath ) )
+    if( _.path.isGlob( filePath ) || _.path.isRelative( filePath ) )
     {
       filePath = starter.fileRead
       ({
         filePath : '/.resolve/' + filePath,
         encoding : 'json',
       });
-      filePath = JSON.parse( filePath );
-      return filePath;
-    }
-    else if( _.path.isRelative( filePath ) )
-    {
-      filePath = starter.fileRead
-      ({
-        filePath : '/.resolve/' + filePath,
-        encoding : 'json',
-      });
-      filePath = JSON.parse( filePath );
+      try
+      {
+        filePath = JSON.parse( filePath );
+      }
+      catch( err )
+      {
+        debugger;
+        console.error( filePath );
+        throw _.err( err );
+      }
       return filePath;
     }
 
@@ -364,10 +370,10 @@ function _Begin()
 
   //
 
-  function _broResolve( parentSource, basePath, filePath )
+  function _broSourcePathResolve( parentSource, basePath, filePath )
   {
 
-    let resolvedFilePath = this._pathResolve( parentSource, basePath, filePath );
+    let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
     let isAbsolute = resolvedFilePath[ 0 ] === '/';
 
     try
@@ -375,13 +381,7 @@ function _Begin()
       if( !isAbsolute )
       throw 'not tested';
       if( !isAbsolute )
-      resolvedFilePath = starter._broResolveRemote( joinedFilePath );
-
-      // let read = this.fileRead
-      // ({
-      //   filePath : resolvedFilePath,
-      //   sync : 1,
-      // });
+      resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
 
       return resolvedFilePath;
     }
@@ -397,8 +397,8 @@ function _Begin()
   function _broInclude( parentSource, basePath, filePath )
   {
     let starter = this;
-    let joinedFilePath = this._pathResolve( parentSource, basePath, filePath );
-    let resolvedFilePath = starter._broResolveRemote( joinedFilePath );
+    let joinedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
+    let resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
 
     if( _.arrayIs( resolvedFilePath ) )
     {
@@ -414,7 +414,6 @@ function _Begin()
           if( starter.exclude.test( resolvedFilePath[ f ] ) )
           continue;
         }
-
         let r = starter._sourceInclude( parentSource, basePath, resolvedFilePath[ f ] );
         if( r !== undefined )
         _.arrayAppendArrays( result, r );
@@ -424,55 +423,19 @@ function _Begin()
       return result;
     }
 
+    starter._includingSource = resolvedFilePath;
+
     try
     {
       if( typeof window === 'undefined' )
       {
-        return this._importInWorker( parentSource, resolvedFilePath );
-      }
-
-      // let read = starter.fileRead
-      // ({
-      //   filePath : resolvedFilePath + '?running:0',
-      //   sync : 1,
-      // });
-
-      let read = starter.fileRead
-      ({
-        filePath : resolvedFilePath,
-        sync : 1,
-      });
-
-      starter._includingSource = resolvedFilePath;
-
-      let ext = _.path.ext( resolvedFilePath );
-      if( ext === 'css' || ext === 'less' )
-      {
-        let link = document.createElement( 'link' );
-        link.href = resolvedFilePath;
-        link.rel = 'stylesheet'
-        link.type = 'text/' + ext
-        document.head.appendChild( link );
-        end();
+        return this._broIncludeInWorkerAct( parentSource, resolvedFilePath );
       }
       else
       {
-        // read = '//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n' + read;
-        read = read + '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
-        read = read + '\n//# sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
-
-        let script = document.createElement( 'script' );
-        script.type = 'text/javascript';
-        let scriptCode = document.createTextNode( read );
-        script.appendChild( scriptCode );
-        document.head.appendChild( script );
-
-        let childSource = starter._sourceForPathGet( resolvedFilePath );
-        let result = starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
-
-        end();
-        return result;
+        return this._broIncludeAct( parentSource, resolvedFilePath );
       }
+      end();
     }
     catch( err )
     {
@@ -487,28 +450,73 @@ function _Begin()
       starter._includingSource = null;
     }
 
-
   }
 
   //
 
-  function _importInWorker( parentSource, resolvedFilePath )
+  function _broIncludeInWorkerAct( parentSource, resolvedFilePath )
   {
     let starter = this;
+    let result;
 
     _.assert( typeof importScripts !== 'undefined' );
 
-    starter._includingSource = resolvedFilePath;
-
     importScripts( resolvedFilePath + '' );
     // importScripts( resolvedFilePath + '?running:0' ); /* qqq xxx : ? */
-
     let childSource = starter._sourceForPathGet( resolvedFilePath );
-    let result = starter._sourceIncludeAct( parentSource, childSource, resolvedFilePath );
-
-    starter._includingSource = null;
+    result = starter._sourceIncludeCall( parentSource, childSource, resolvedFilePath );
 
     return result;
+  }
+
+  //
+
+  function _broIncludeAct( parentSource, resolvedFilePath )
+  {
+    let starter = this;
+
+    // let read = starter.fileRead
+    // ({
+    //   filePath : resolvedFilePath + '?running:0',
+    //   sync : 1,
+    // });
+
+    let read = starter.fileRead
+    ({
+      filePath : resolvedFilePath,
+      sync : 1,
+    });
+
+    // starter._includingSource = resolvedFilePath;
+
+    let ext = _.path.ext( resolvedFilePath );
+    if( ext === 'css' || ext === 'less' )
+    {
+      let link = document.createElement( 'link' );
+      link.href = resolvedFilePath;
+      link.rel = 'stylesheet'
+      link.type = 'text/' + ext
+      document.head.appendChild( link );
+      // end();
+    }
+    else
+    {
+      // read = '//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n' + read;
+      read = read + '\n//@ sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
+      read = read + '\n//# sourceURL=' + _realGlobal_.location.origin + '/' + resolvedFilePath + '\n'
+
+      let script = document.createElement( 'script' );
+      script.type = 'text/javascript';
+      let scriptCode = document.createTextNode( read );
+      script.appendChild( scriptCode );
+      document.head.appendChild( script );
+
+      let childSource = starter._sourceForPathGet( resolvedFilePath );
+      let result = starter._sourceIncludeCall( parentSource, childSource, resolvedFilePath );
+
+      // end();
+      return result;
+    }
 
   }
 
@@ -656,10 +664,11 @@ function _End()
 
     _broSourceFile,
     _broLog,
-    _broResolveRemote,
-    _broResolve,
+    _broPathResolveRemote,
+    _broSourcePathResolve,
     _broInclude,
-    _importInWorker,
+    _broIncludeInWorkerAct,
+    _broIncludeAct,
 
     _broConsoleRedirect,
     _broConsoleMethodRedirect,
