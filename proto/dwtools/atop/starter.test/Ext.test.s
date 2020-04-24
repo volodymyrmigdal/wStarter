@@ -906,8 +906,19 @@ function sourcesJoinExpressServer( test )
   let a = context.assetFor( test, 'express' );
   let outPath = a.abs( 'out' );
   let starter = new _.starter.System().form();
-
-  /* */
+  
+  /* How to run webpack: 
+    ## install express
+    cd proto/dwtools/atop/starter.test/_asset/express
+    npm i 
+    
+    ## install webpack
+    cd webpack
+    npm i 
+    
+    ## pack server script
+    npm run pack
+  */
 
   a.ready.then( () =>
   {
