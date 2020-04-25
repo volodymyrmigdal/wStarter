@@ -992,7 +992,7 @@ let Statics =
 
 let Accessors =
 {
-  verbosity : { getter : _verbosityGet, readOnly : 1 },
+  verbosity : { get : _verbosityGet, readOnly : 1 },
 }
 
 let Forbids =
