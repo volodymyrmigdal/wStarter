@@ -92,7 +92,7 @@ function _Begin()
     {
       if( error )
       {
-        debugger;
+        // debugger;
         throw _.err( error );
       }
       return result;
@@ -387,7 +387,7 @@ function _Begin()
     }
     catch( err )
     {
-      debugger;
+      // debugger;
       return null;
     }
   }
