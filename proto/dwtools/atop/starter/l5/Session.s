@@ -268,9 +268,9 @@ function pathsForm()
       }
     }
 
-    debugger;
+    //debugger;
     session.allowedPath = path.mapOptimize( session.allowedPath );
-    debugger;
+    //debugger;
 
   }
 
@@ -537,8 +537,12 @@ function curratedRunOpen()
       if( system.verbosity >= 5 )
       logger.log( `Started ${_.ct.format( session.entryPath, 'path' )}` );
     }
-    session.cdpConnect();
-    return process;
+    session._curatedRunLaunchBegin();
+    return _.time.out( 500, () => /* xxx */
+    {
+      session.cdpConnect();
+      return process;
+    });
   });
 
 }
@@ -552,7 +556,10 @@ function _curatedRunLaunchBegin()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
-  _.assert( session.curratedRunState === null || session.curratedRunState === 'terminated' );
+  _.assert( session.curratedRunState === null || session.curratedRunState === 'terminated' || session.curratedRunState === 'launching' );
+
+  if( session.curratedRunState === 'launching' )
+  return;
 
   session.curratedRunState = 'launching';
   session.eventGive({ kind : 'curatedRunLaunchBegin' });
@@ -743,7 +750,7 @@ async function cdpConnect()
 
   _.assert( session.cdp === null );
 
-  session._curatedRunLaunchBegin();
+  // session._curatedRunLaunchBegin();
 
   session.cdp = await session._cdpConnect({ throwing : 1 });
 

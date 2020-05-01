@@ -295,7 +295,7 @@ async function includeCss( test )
   let session = starter.start
   ({
     basePath : a.routinePath,
-    entryPath : 'index.js',
+    entryPath : 'Index.js',
     curating : 0
   })
 
@@ -309,7 +309,7 @@ async function includeCss( test )
     await page.goto( session.entryWithQueryUri );
 
     var got = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.src ) );
-    test.identical( got, [ `${parsed.origin}/.starter`, `${parsed.origin}/index.js` ] );
+    test.identical( got, [ `${parsed.origin}/.starter`, `${parsed.origin}/Index.js` ] );
 
     var got = await page.eval( () =>
     {
@@ -343,7 +343,7 @@ async function includeExcludingManual( test )
   let session = starter.start
   ({
     basePath : a.routinePath,
-    entryPath : 'index.js',
+    entryPath : 'Index.js',
     curating : 0,
   })
 
@@ -359,7 +359,7 @@ async function includeExcludingManual( test )
     var scripts = await page.selectEval( 'script', ( scripts ) => scripts.map( ( s ) => s.innerHTML || s.src ) )
     test.identical( scripts.length, 3 );
     test.identical( scripts[ 0 ], `${parsed.origin}/.starter` );
-    test.identical( scripts[ 1 ], `${parsed.origin}/index.js` );
+    test.identical( scripts[ 1 ], `${parsed.origin}/Index.js` );
     test.is( _.strHas( scripts[ 2 ], './src/File.js' ) );
 
     await window.close();
@@ -389,7 +389,7 @@ async function includeModule( test )
   let session = starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
-    entryPath : 'index.js',
+    entryPath : 'Index.js',
     curating : 0,
   })
 
@@ -436,10 +436,14 @@ async function workerWithInclude( test )
 
   a.reflect();
 
+  // debugger;
+  // var files = a.fileProvider.dirRead( a.routinePath );
+  // logger.log( `files : ${files}` );
+
   let session = starter.start
   ({
     basePath : a.routinePath,
-    entryPath : 'index.js',
+    entryPath : 'Index.js',
     curating : 0,
   })
 
@@ -490,7 +494,7 @@ async function includeModuleInWorker( test )
   let session = starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
-    entryPath : 'index.js',
+    entryPath : 'Index.js',
     curating : 0,
   })
 
@@ -546,7 +550,7 @@ async function includeModuleInWorkerThrowing( test )
   let session = starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ), /* xxx : replace */
-    entryPath : 'index.js',
+    entryPath : 'Index.js',
     curating : 0,
   })
 
@@ -568,7 +572,7 @@ async function includeModuleInWorkerThrowing( test )
 
     test.is( !_.strHas( output, `Module was included` ) );
     test.is( _.strHas( output, `Module error` ) );
-    test.is( _.strHas( output, `Error including source file /module.js` ) );
+    test.is( _.strHas( output, `Error including source file /Module.js` ) );
 
     await window.close();
   }
@@ -600,6 +604,9 @@ async function curatedRunWindowOpenCloseAutomatic( test )
     var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
 
+    // await _.time.out( context.deltaTime3 ); /* xxx : remove later and find fix working for linux */
+    // debugger;
+
     session = await starter.start
     ({
       entryPath : a.originalAbs( './F1.js' ),
@@ -608,8 +615,11 @@ async function curatedRunWindowOpenCloseAutomatic( test )
 
     test.identical( session.curratedRunState, 'launching' );
 
+    await _.time.out( context.deltaTime2 ); /* xxx : remove later and find fix working for linux */
+
     var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
     test.identical( !!cdp, true );
+    debugger;
 
     await _.time.out( context.deltaTime2 );
 
@@ -705,6 +715,8 @@ async function curatedRunWindowOpenClosePageManually( test )
     })
 
     test.identical( session.curratedRunState, 'launching' );
+
+    await _.time.out( context.deltaTime2 ); /* xxx : remove later and find fix working for linux */
 
     var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
     test.identical( !!cdp, true );

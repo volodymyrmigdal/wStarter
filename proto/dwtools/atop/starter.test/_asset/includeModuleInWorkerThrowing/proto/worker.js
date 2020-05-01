@@ -6,7 +6,7 @@
 
   try
   {
-    _.include( '/module.js' );
+    _.include( '/Module.js' );
     throw _.err( 'Module was included' );
   }
   catch( err )
