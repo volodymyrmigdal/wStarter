@@ -1891,15 +1891,25 @@ async function loggingErrorInWorkerNoFile( test )
     test.identical( _.strCount( op.output, 'Index:end' ), 1 );
     test.identical( _.strCount( op.output, 'Worker:begin' ), 1 );
     test.identical( _.strCount( op.output, 'err:begin' ), 1 );
+    test.identical( _.strCount( op.output, 'err:end' ), 1 );
 
     test.identical( _.strCount( op.output, 'nhandled' ), 0 );
     test.identical( _.strCount( op.output, 'ncaught' ), 0 );
     test.identical( _.strCount( op.output, '= Message of error' ), 1 );
     test.identical( _.strCount( op.output, `Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:15000/W1.js' failed to load.` ), 2 );
 
+//     var exp =
+// `
+// err:end
+// Worker:end
+//  . event::timeOut
+//  . event::curatedRunTerminateEnd
+// `
+//     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+// xxx
+
     var exp =
 `
-err:end
 Worker:end
  . event::timeOut
  . event::curatedRunTerminateEnd
