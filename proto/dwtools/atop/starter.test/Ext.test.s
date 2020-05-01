@@ -898,6 +898,66 @@ F1:after
   return a.ready;
 } /* end of sourcesJoinRecursion */
 
+//
+
+function sourcesJoinExpressServer( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'express' );
+  let outPath = a.abs( 'out' );
+  let starter = new _.starter.System().form();
+  
+  /* How to run webpack: 
+    ## install express
+    cd proto/dwtools/atop/starter.test/_asset/express
+    npm i 
+    
+    ## install webpack
+    cd webpack
+    npm i 
+    
+    ## pack server script
+    npm run pack
+  */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+  
+  a.shell( `npm i` )
+  a.appStart( `.sources.join ** outPath:out/server.js entryPath:server.js basePath : . allowPath : [ node_modules ]` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+
+    var expected = [ '.', 'server.js' ];
+    var files = a.find( a.abs( 'out' ) );
+    test.identical( files, expected );
+
+    return op;
+  })
+
+  a.anotherStart( `out/server.js` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/server.js';
+    var output = `Go to http://localhost:4444`;
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+} /* end of sourcesJoinExpressServer */
+
 // --
 // html for
 // --
@@ -1995,6 +2055,7 @@ var Self =
     sourcesJoinTree,
     sourcesJoinCycle,
     sourcesJoinRecursion,
+    sourcesJoinExpressServer,
 
     // html for
 

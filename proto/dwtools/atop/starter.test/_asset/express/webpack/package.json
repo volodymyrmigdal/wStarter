@@ -1,0 +1,12 @@
+{
+  "engine": "node >= 8.0.0",
+  "scripts": {
+    "pack": "webpack --config ./webpack/webpack.config.js"
+  },
+  "devDependencies": {
+    "babel-loader": "",
+    "babel-polyfill": "",
+    "webpack": "",
+    "webpack-cli": ""
+  }
+}
