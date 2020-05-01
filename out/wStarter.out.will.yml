@@ -261,6 +261,10 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/dep2/ext
           - >-
             ../proto/dwtools/atop/starter.test/_asset/dep2/ext/RequireApp2File2.js
+          - ../proto/dwtools/atop/starter.test/_asset/depLocal
+          - ../proto/dwtools/atop/starter.test/_asset/depLocal/in
+          - ../proto/dwtools/atop/starter.test/_asset/depLocal/in/Dep1.js
+          - ../proto/dwtools/atop/starter.test/_asset/depLocal/in/Index.js
           - ../proto/dwtools/atop/starter.test/_asset/errorInWorker
           - ../proto/dwtools/atop/starter.test/_asset/errorInWorker/Index.js
           - ../proto/dwtools/atop/starter.test/_asset/errorInWorker/W1.js
