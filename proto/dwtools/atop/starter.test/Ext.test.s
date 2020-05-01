@@ -900,22 +900,133 @@ F1:after
 
 //
 
+function sourcesJoinOptionInterpreter( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'depLocal' );
+  let outPath = a.abs( 'out' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+//   a.ready.then( () =>
+//   {
+//     test.case = 'control';
+//     _.fileProvider.filesDelete( a.routinePath );
+//     a.reflect();
+//     _.fileProvider.filesDelete( a.routinePath + '/out' );
+//     return null;
+//   })
+//
+//   a.appStart( `.sources.join in/** outPath:out/Out.js entryPath:in/Index.js` )
+//   .then( ( op ) =>
+//   {
+//     test.identical( op.exitCode, 0 );
+//     test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+//
+//     var expected = [ '.', './in', './in/Dep1.js', './in/Index.js', './out', './out/Out.js' ];
+//     var files = a.find( a.abs( '.' ) );
+//     test.identical( files, expected );
+//
+//     return op;
+//   })
+//
+//   a.anotherStart( `out/Out.js` )
+//   .then( ( op ) =>
+//   {
+//     test.description = 'out/Out.js';
+//     var output =
+// `
+// Index.js:begin
+// Dep1.js:begin
+// Dep1.js:begin
+// Index.js:begin
+// `
+//     test.identical( op.exitCode, 0 );
+//     test.equivalent( op.output, output );
+//     return op;
+//   })
+//
+//   a.anotherStart( `in/Index.js` )
+//   .then( ( op ) =>
+//   {
+//     test.description = 'in/Index.js';
+//     var output =
+// `
+// Index.js:begin
+// Dep1.js:begin
+// Dep1.js:begin
+// Index.js:begin
+// `
+//     test.identical( op.exitCode, 0 );
+//     test.equivalent( op.output, output );
+//     return op;
+//   })
+// xxx
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  a.appStart( `.sources.join in/** outPath:out/Out.js entryPath:in/Index.js interpreter:browser` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+
+    var expected = [ '.', './in', './in/Dep1.js', './in/Index.js', './out', './out/Out.js' ];
+    var files = a.find( a.abs( '.' ) );
+    test.identical( files, expected );
+
+    return op;
+  })
+
+  a.appStart( `.start out/Out.js timeOut:15000` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
+Index.js:begin
+Dep1.js:begin
+Dep1.js:begin
+Index.js:begin
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+} /* end of sourcesJoinOptionInterpreter */
+
+//
+
 function sourcesJoinExpressServer( test )
 {
   let context = this;
   let a = context.assetFor( test, 'express' );
   let outPath = a.abs( 'out' );
   let starter = new _.starter.System().form();
-  
-  /* How to run webpack: 
+
+  /* How to run webpack:
     ## install express
     cd proto/dwtools/atop/starter.test/_asset/express
-    npm i 
-    
+    npm i
+
     ## install webpack
     cd webpack
-    npm i 
-    
+    npm i
+
     ## pack server script
     npm run pack
   */
@@ -928,7 +1039,7 @@ function sourcesJoinExpressServer( test )
     _.fileProvider.filesDelete( a.routinePath + '/out' );
     return null;
   })
-  
+
   a.shell( `npm i` )
   a.appStart( `.sources.join ** outPath:out/server.js entryPath:server.js basePath : . allowPath : [ node_modules ]` )
   .then( ( op ) =>
@@ -2055,6 +2166,7 @@ var Self =
     sourcesJoinTree,
     sourcesJoinCycle,
     sourcesJoinRecursion,
+    sourcesJoinOptionInterpreter,
     sourcesJoinExpressServer,
 
     // html for
