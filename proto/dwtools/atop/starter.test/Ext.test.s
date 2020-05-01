@@ -909,60 +909,103 @@ function sourcesJoinOptionInterpreter( test )
 
   /* */
 
-//   a.ready.then( () =>
-//   {
-//     test.case = 'control';
-//     _.fileProvider.filesDelete( a.routinePath );
-//     a.reflect();
-//     _.fileProvider.filesDelete( a.routinePath + '/out' );
-//     return null;
-//   })
-//
-//   a.appStart( `.sources.join in/** outPath:out/Out.js entryPath:in/Index.js` )
-//   .then( ( op ) =>
-//   {
-//     test.identical( op.exitCode, 0 );
-//     test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
-//
-//     var expected = [ '.', './in', './in/Dep1.js', './in/Index.js', './out', './out/Out.js' ];
-//     var files = a.find( a.abs( '.' ) );
-//     test.identical( files, expected );
-//
-//     return op;
-//   })
-//
-//   a.anotherStart( `out/Out.js` )
-//   .then( ( op ) =>
-//   {
-//     test.description = 'out/Out.js';
-//     var output =
-// `
-// Index.js:begin
-// Dep1.js:begin
-// Dep1.js:begin
-// Index.js:begin
-// `
-//     test.identical( op.exitCode, 0 );
-//     test.equivalent( op.output, output );
-//     return op;
-//   })
-//
-//   a.anotherStart( `in/Index.js` )
-//   .then( ( op ) =>
-//   {
-//     test.description = 'in/Index.js';
-//     var output =
-// `
-// Index.js:begin
-// Dep1.js:begin
-// Dep1.js:begin
-// Index.js:begin
-// `
-//     test.identical( op.exitCode, 0 );
-//     test.equivalent( op.output, output );
-//     return op;
-//   })
-// xxx
+  a.ready.then( () =>
+  {
+    test.case = 'control';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  a.appStart( `.sources.join in/** outPath:out/Out.js entryPath:in/Index.js` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+
+    var expected = [ '.', './in', './in/Dep1.js', './in/Index.js', './out', './out/Out.js' ];
+    var files = a.find( a.abs( '.' ) );
+    test.identical( files, expected );
+
+    return op;
+  })
+
+  a.anotherStart( `out/Out.js` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
+Index.js:begin
+Dep1.js:begin
+
+Dep1.js
+_filePath_ : ${a.routinePath}/out/Out.js/in/Dep1.js
+_dirPath_ : ${a.routinePath}/out/Out.js/in
+__filename : ${a.routinePath}/out/Out.js/in/Dep1.js
+__dirname : ${a.routinePath}/out/Out.js/in
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : njs
+
+Dep1.js:end
+
+Index.js
+_filePath_ : ${a.routinePath}/out/Out.js/in/Index.js
+_dirPath_ : ${a.routinePath}/out/Out.js/in
+__filename : ${a.routinePath}/out/Out.js/in/Index.js
+__dirname : ${a.routinePath}/out/Out.js/in
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : njs
+
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  a.anotherStart( `in/Index.js` )
+  .then( ( op ) =>
+  {
+    test.description = 'in/Index.js';
+    var output =
+`
+Index.js:begin
+Dep1.js:begin
+
+Dep1.js
+__filename : ${a.routinePath}/in/Dep1.js
+__dirname : ${a.routinePath}/in
+module : object
+module.parent : object
+exports : object
+require : function
+
+Dep1.js:end
+
+Index.js
+__filename : ${a.routinePath}/in/Index.js
+__dirname : ${a.routinePath}/in
+module : object
+module.parent : object
+exports : object
+require : function
+
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
 
   /* */
 
@@ -988,7 +1031,7 @@ function sourcesJoinOptionInterpreter( test )
     return op;
   })
 
-  a.appStart( `.start out/Out.js timeOut:15000` )
+  a.appStart( `.start out/Out.js timeOut:15000 headless:1` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
@@ -996,8 +1039,118 @@ function sourcesJoinOptionInterpreter( test )
 `
 Index.js:begin
 Dep1.js:begin
-Dep1.js:begin
+
+Dep1.js
+_filePath_ : /in/Dep1.js
+_dirPath_ : /in
+__filename : /in/Dep1.js
+__dirname : /in
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep1.js:end
+
+Index.js
+_filePath_ : /in/Index.js
+_dirPath_ : /in
+__filename : /in/Index.js
+__dirname : /in
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  a.appStart( `.start out/Out.js timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
 Index.js:begin
+Dep1.js:begin
+
+Dep1.js
+_filePath_ : /in/Dep1.js
+_dirPath_ : /in
+__filename : /in/Dep1.js
+__dirname : /in
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep1.js:end
+
+Index.js
+_filePath_ : /in/Index.js
+_dirPath_ : /in
+__filename : /in/Index.js
+__dirname : /in
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  a.appStart( `.start out/Out.js naking:1 timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
+Index.js:begin
+Dep1.js:begin
+
+Dep1.js
+_filePath_ : /in/Dep1.js
+_dirPath_ : /in
+__filename : /in/Dep1.js
+__dirname : /in
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep1.js:end
+
+Index.js
+_filePath_ : /in/Index.js
+_dirPath_ : /in
+__filename : /in/Index.js
+__dirname : /in
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Index.js:end
 `
     test.identical( op.exitCode, 0 );
     test.equivalent( op.output, output );
