@@ -271,7 +271,7 @@ module:
           - >-
             ../proto/dwtools/atop/starter.test/_asset/errorInWorkerNoFile/Worker.js
           - ../proto/dwtools/atop/starter.test/_asset/exclude
-          - ../proto/dwtools/atop/starter.test/_asset/exclude/index.js
+          - ../proto/dwtools/atop/starter.test/_asset/exclude/Index.js
           - ../proto/dwtools/atop/starter.test/_asset/exclude/src
           - ../proto/dwtools/atop/starter.test/_asset/exclude/src/File.js
           - ../proto/dwtools/atop/starter.test/_asset/exclude/src/File.manual.js
@@ -279,24 +279,24 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/html/F1.html
           - ../proto/dwtools/atop/starter.test/_asset/html/F1.js
           - ../proto/dwtools/atop/starter.test/_asset/includeCss
-          - ../proto/dwtools/atop/starter.test/_asset/includeCss/index.js
-          - ../proto/dwtools/atop/starter.test/_asset/includeCss/style.css
+          - ../proto/dwtools/atop/starter.test/_asset/includeCss/Index.js
+          - ../proto/dwtools/atop/starter.test/_asset/includeCss/Style.css
           - ../proto/dwtools/atop/starter.test/_asset/includeModule
           - ../proto/dwtools/atop/starter.test/_asset/includeModule/.will.yml
           - ../proto/dwtools/atop/starter.test/_asset/includeModule/proto
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModule/proto/index.js
+            ../proto/dwtools/atop/starter.test/_asset/includeModule/proto/Index.js
           - ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker
           - >-
             ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/.will.yml
           - >-
             ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/index.js
+            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/Index.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/module.js
+            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/Module.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/worker.js
+            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/Worker.js
           - >-
             ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing
           - >-
@@ -304,11 +304,11 @@ module:
           - >-
             ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/index.js
+            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/Index.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/module.js
+            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/Module.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/worker.js
+            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/Worker.js
           - ../proto/dwtools/atop/starter.test/_asset/legacy-trivial
           - ../proto/dwtools/atop/starter.test/_asset/legacy-trivial/.will.yml
           - ../proto/dwtools/atop/starter.test/_asset/minute
