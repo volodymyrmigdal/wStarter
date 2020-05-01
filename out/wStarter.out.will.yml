@@ -275,6 +275,16 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/exclude/src
           - ../proto/dwtools/atop/starter.test/_asset/exclude/src/File.js
           - ../proto/dwtools/atop/starter.test/_asset/exclude/src/File.manual.js
+          - ../proto/dwtools/atop/starter.test/_asset/express
+          - ../proto/dwtools/atop/starter.test/_asset/express/package.json
+          - ../proto/dwtools/atop/starter.test/_asset/express/server.js
+          - ../proto/dwtools/atop/starter.test/_asset/express/webpack
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/express/webpack/package.json
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/express/webpack/server-packed.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/express/webpack/webpack.config.js
           - ../proto/dwtools/atop/starter.test/_asset/html
           - ../proto/dwtools/atop/starter.test/_asset/html/F1.html
           - ../proto/dwtools/atop/starter.test/_asset/html/F1.js
