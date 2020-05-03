@@ -1115,7 +1115,7 @@ Index.js:end
     return op;
   })
 
-  a.appStart( `.start out/Out.js naking:1 timeOut:15000 headless:1` )
+  a.appStart( `.start out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';

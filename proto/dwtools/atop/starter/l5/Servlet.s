@@ -318,7 +318,9 @@ function htmlForHtml( o )
   o2.templatePath = o.realPath;
   o2.allowedPath = servlet.allowedPath;
   o2.withScripts = servlet.withScripts;
+  o2.withStarter = servlet.withStarter;
 
+  debugger;
   let html = system.maker.htmlForFiles( o2 );
 
   if( o.response )
@@ -357,6 +359,7 @@ function htmlForJs( o )
   o2.templatePath = servlet.templatePath;
   o2.allowedPath = servlet.allowedPath;
   o2.withScripts = servlet.withScripts;
+  o2.withStarter = servlet.withStarter;
 
   let html = system.maker.htmlForFiles( o2 );
 
@@ -952,6 +955,7 @@ let Composes =
   catchingUncaughtErrors : 1,
   naking : 0,
   withScripts : 'include',
+  withStarter : 'include',
 
   resolvingGlob : 1,
   resolvingNpm : 1,

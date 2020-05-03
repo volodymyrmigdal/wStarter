@@ -937,6 +937,7 @@ let Composes =
 
   withModule : null, /* qqq : cover */
   withScripts : 'include', /* [ single, include, inline, 0, false ] */ /* qqq : cover */
+  withStarter : 'include', /* xxx qqq : cover */
   format : null, /* qqq : cover */
   timeOut : null, /* qqq : cover */
 

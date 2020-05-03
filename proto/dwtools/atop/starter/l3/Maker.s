@@ -891,7 +891,7 @@ function htmlSplitsFor( o )
     o.withStarter = 'include';
   }
 
-  _.assert( _.longHas( [ 'include', 'inline', 0, false ], o.withStarter ), () => `Expects option::withStarter [ include, inkine, false ], but got ${o.withStarter}` );
+  _.assert( _.longHas( [ 'include', 'inline', 0, false ], o.withStarter ), () => `Expects option::withStarter [ include, inline, false ], but got ${o.withStarter}` );
   _.assert( _.longHas( [ 'include', 0, false ], o.withStarter ) );
   _.assert( _.longHas( [ 'single', 'include', 'inline', 0, false ], o.withScripts ) );
   _.assert( _.longHas( [ 'single', 'include' ], o.withScripts ) );

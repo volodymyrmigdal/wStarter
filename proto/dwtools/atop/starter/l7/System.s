@@ -211,6 +211,7 @@ httpOpen.defaults =
   catchingUncaughtErrors : null,
   naking : null,
   withScripts : null,
+  withStarter : null,
   timeOut : null,
 }
 

@@ -110,7 +110,10 @@ function pathRealToVirtual( o )
   if( _.path.isDotted( relativePath ) && relativePath !== '.' )
   {
     if( !o.realToVirtualMap )
-    throw _.err( `Cant convet real path "${o.realPath}" to virtual path` );
+    {
+      debugger;
+      throw _.err( `Cant convet real path "${o.realPath}" to virtual path` );
+    }
     for( let basePath in o.realToVirtualMap )
     {
       relativePath = _.path.relative( basePath, o.realPath );

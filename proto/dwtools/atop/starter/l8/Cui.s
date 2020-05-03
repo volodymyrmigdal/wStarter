@@ -356,6 +356,7 @@ commandHttpOpen.commandProperties =
   catchingUncaughtErrors : 'Catching uncaught errors and handling them properly. Default : true.',
   naking : 'Disable wrapping of scripts. Default : false.',
   withScripts : 'How to ship scripts. Alternatives : [ include, inline, single, 0 ]. Default : include.',
+  withStarter : 'Run-time environment. Alternatives : [ include, inline, 0 ]. Default : include.',
 }
 
 commandHttpOpen.hint = 'Run HTTP server to serve files in a specified directory.';
