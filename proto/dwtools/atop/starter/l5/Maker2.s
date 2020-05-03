@@ -26,8 +26,6 @@ function sourcesJoinFiles( o )
 
   /* */
 
-  debugger;
-
   o.inPath = fileProvider.recordFilter( o.inPath );
 
   if( o.basePath === null )
@@ -135,7 +133,6 @@ function sourcesJoinFiles( o )
   let o2 = _.mapExtend( null, o )
   delete o2.inPath;
   o2.filesMap = srcScriptsMap;
-  debugger;
   let data = maker.sourcesJoin( o2 )
 
   if( o.outPath )

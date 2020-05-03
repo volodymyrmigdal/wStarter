@@ -144,8 +144,22 @@ function form()
       _.assert( _.boolLike( session[ k ] ) );
     }
 
+    if( session.withStarter === null )
+    {
+      if( session.withScripts === 'single' )
+      session.withStarter = 0;
+      else
+      session.withStarter = 'include';
+    }
+
+    if( session.withScripts === null )
+    {
+      session.withScripts = 'include';
+    }
+
     _.assert( session.error === null );
     _.assert( _.longHas( [ 'single', 'include', 'inline', 0, false ], session.withScripts ), `Unknown value of option::withScripts ${session.withScripts}` );
+    _.assert( _.longHas( [ 'include', 'inline', 0, false ], session.withStarter ), `Unknown value of option::withStarter ${session.withStarter}` );
 
     if( session._cdpPort === null )
     session._cdpPort = session._CdpPortDefault;
@@ -936,8 +950,8 @@ let Composes =
   templatePath : null,
 
   withModule : null, /* qqq : cover */
-  withScripts : 'include', /* [ single, include, inline, 0, false ] */ /* qqq : cover */
-  withStarter : 'include', /* xxx qqq : cover */
+  withScripts : null, /* [ single, include, inline, 0, false ] */ /* qqq : cover */
+  withStarter : null, /* [ include, inline, 0, false ] */ /* qqq : cover */
   format : null, /* qqq : cover */
   timeOut : null, /* qqq : cover */
 

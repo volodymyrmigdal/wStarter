@@ -245,6 +245,8 @@ function _Begin()
 
   function _sourceForIncludeGet( sourceFile, basePath, filePath )
   {
+    if( filePath && _.strHas( filePath, 'l2_blueprint' ) )
+    debugger;
     let resolvedFilePath = this._pathResolveLocal( sourceFile, basePath, filePath );
     let childSource = this.sourcesMap[ resolvedFilePath ];
     if( childSource )

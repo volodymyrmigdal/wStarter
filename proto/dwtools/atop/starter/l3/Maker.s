@@ -421,7 +421,7 @@ function sourcesJoinSplits( o )
   if( o.entryPath )
   o.entryPath.forEach( ( entryPath ) =>
   {
-    entryPath = _.path.relative( o.basePath, entryPath ); debugger;
+    entryPath = _.path.relative( o.basePath, entryPath );
     if( o.interpreter === 'njs' )
     r.entry += `/* */  module.exports = _starter_._sourceInclude( null, _libraryFilePath_, './${entryPath}' );\n`;
     else
