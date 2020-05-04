@@ -241,6 +241,8 @@ function sourcesJoinSplits( o )
   _.assert( _.boolLike( o.proceduring ) );
   _.assert( _.boolLike( o.globing ) );
   _.assert( _.boolLike( o.catchingUncaughtErrors ) );
+  // _.assert( _.boolLike( o.catchingUncaughtErrors ) );
+  // _.assert( _.longHas( [ 'single', 'include' ], o.withScripts ) ); xxx
   _.assert( _.boolLike( o.loggingApplication ) );
   _.assert( _.boolLike( o.loggingSourceFiles ) );
 
@@ -332,7 +334,7 @@ function sourcesJoinSplits( o )
 
   /* globing */
 
-  if( 1 )
+  if( 0 )
   if( o.globing )
   r.globing =
 `
@@ -869,6 +871,7 @@ sourcesJoinSplits.defaults =
   catchingUncaughtErrors : 1,
   loggingApplication : 0,
   loggingSourceFiles : 0,
+  // withScripts : null,
 }
 
 //
