@@ -2004,6 +2004,7 @@ sourcesJoinRoutineInclude.description =
 `
 - routine _.include works properly for both interpreters
 `
+sourcesJoinRoutineInclude.timeOut = 300000;
 
 //
 

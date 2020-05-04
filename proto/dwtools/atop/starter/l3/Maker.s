@@ -603,6 +603,8 @@ function sourcesJoinSplits( o )
   Uri namespace( parseConsecutive ) is required to make _.include working in a browser
   */
 
+  // parseFull maybe?
+
   ${rou( 'uri', 'parseConsecutive' )}
   ${rou( 'uri', 'refine' )}
   ${rou( 'uri', '_normalize' )}
