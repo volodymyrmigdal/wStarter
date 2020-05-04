@@ -332,6 +332,7 @@ function sourcesJoinSplits( o )
 
   /* globing */
 
+  if( 0 )
   if( o.globing )
   r.globing =
 `

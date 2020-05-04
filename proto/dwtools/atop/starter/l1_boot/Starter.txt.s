@@ -180,7 +180,7 @@ function _Begin()
         return result;
       }
 
-      if( _.path.isGlob( filePath ) ) /* xxx : workaround */
+      if( 0 && _.path.isGlob( filePath ) ) /* xxx : workaround */
       {
         debugger;
         let resolvedFilePath = starter._pathResolveLocal( parentSource, basePath, filePath );
