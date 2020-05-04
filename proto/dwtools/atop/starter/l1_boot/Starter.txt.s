@@ -78,7 +78,7 @@ function _Begin()
 
     /* */
 
-    if( starter.loggingSourceFile )
+    if( starter.loggingSourceFiles )
     console.log( ` . SourceFile ${o.filePath}` );
 
     starter.sourcesMap[ o.filePath ] = sourceFile;
@@ -163,26 +163,37 @@ function _Begin()
   {
     let starter = this;
 
-    if( _.arrayIs( filePath ) )
-    {
-      let result = [];
-      for( let f = 0 ; f < filePath.length ; f++ )
-      {
-        let r = starter._sourceInclude( parentSource, basePath, filePath[ f ] );
-        if( r !== undefined )
-        _.arrayAppendArrays( result, r );
-        else
-        result.push( r );
-      }
-      return result;
-    }
-
-    let childSource = starter._sourceForIncludeGet.apply( starter, arguments );
-    if( childSource )
-    return starter._sourceIncludeCall( parentSource, childSource, filePath );
-
     try
     {
+
+      if( _.arrayIs( filePath ) )
+      {
+        let result = [];
+        for( let f = 0 ; f < filePath.length ; f++ )
+        {
+          let r = starter._sourceInclude( parentSource, basePath, filePath[ f ] );
+          if( r !== undefined )
+          _.arrayAppendArrays( result, r );
+          else
+          result.push( r );
+        }
+        return result;
+      }
+
+      if( _.path.isGlob( filePath ) ) /* xxx : workaround */
+      {
+        debugger;
+        let resolvedFilePath = starter._pathResolveLocal( parentSource, basePath, filePath );
+        let filtered = _.mapKeys( _.path.globFilterKeys( starter.sourcesMap, resolvedFilePath ) );
+        if( filteted.length )
+        return starter._sourceInclude( filteted );
+      }
+      else
+      {
+        let childSource = starter._sourceForIncludeGet.apply( starter, arguments );
+        if( childSource )
+        return starter._sourceIncludeCall( parentSource, childSource, filePath );
+      }
 
       if( starter.interpreter === 'browser' )
       return starter._broInclude( parentSource, basePath, filePath );
@@ -245,8 +256,8 @@ function _Begin()
 
   function _sourceForIncludeGet( sourceFile, basePath, filePath )
   {
-    if( filePath && _.strHas( filePath, 'l2_blueprint' ) )
-    debugger;
+    // if( filePath && _.strHas( filePath, 'l2_blueprint' ) )
+    // debugger;
     let resolvedFilePath = this._pathResolveLocal( sourceFile, basePath, filePath );
     let childSource = this.sourcesMap[ resolvedFilePath ];
     if( childSource )

@@ -382,12 +382,10 @@ function _Begin()
       throw 'not tested';
       if( !isAbsolute )
       resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
-
       return resolvedFilePath;
     }
     catch( err )
     {
-      // debugger;
       return null;
     }
   }
@@ -429,11 +427,11 @@ function _Begin()
     {
       if( typeof window === 'undefined' )
       {
-        return this._broIncludeInWorkerAct( parentSource, resolvedFilePath );
+        return this._broIncludeInWorkerResolved( parentSource, resolvedFilePath );
       }
       else
       {
-        return this._broIncludeAct( parentSource, resolvedFilePath );
+        return this._broIncludeResolved( parentSource, resolvedFilePath );
       }
       end();
     }
@@ -454,15 +452,15 @@ function _Begin()
 
   //
 
-  function _broIncludeInWorkerAct( parentSource, resolvedFilePath )
+  function _broIncludeInWorkerResolved( parentSource, resolvedFilePath )
   {
     let starter = this;
     let result;
 
     _.assert( typeof importScripts !== 'undefined' );
 
-    importScripts( resolvedFilePath + '' );
-    // importScripts( resolvedFilePath + '?running:0' ); /* qqq xxx : ? */
+    importScripts( resolvedFilePath );
+
     let childSource = starter._sourceForPathGet( resolvedFilePath );
     result = starter._sourceIncludeCall( parentSource, childSource, resolvedFilePath );
 
@@ -471,7 +469,7 @@ function _Begin()
 
   //
 
-  function _broIncludeAct( parentSource, resolvedFilePath )
+  function _broIncludeResolved( parentSource, resolvedFilePath )
   {
     let starter = this;
 
@@ -667,8 +665,8 @@ function _End()
     _broPathResolveRemote,
     _broSourcePathResolve,
     _broInclude,
-    _broIncludeInWorkerAct,
-    _broIncludeAct,
+    _broIncludeInWorkerResolved,
+    _broIncludeResolved,
 
     _broConsoleRedirect,
     _broConsoleMethodRedirect,

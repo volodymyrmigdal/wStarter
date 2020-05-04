@@ -29,6 +29,7 @@ let LibrarySplits =
   early : '',
   extract : '',
   proceduring : '',
+  globing : '',
   interpreter : '',
   starter : '',
   env : '',
@@ -238,6 +239,7 @@ function sourcesJoinSplits( o )
   _.assert( _.longHas( [ 'njs', 'browser' ], o.interpreter ) );
   _.assert( _.boolLike( o.debug ) );
   _.assert( _.boolLike( o.proceduring ) );
+  _.assert( _.boolLike( o.globing ) );
   _.assert( _.boolLike( o.catchingUncaughtErrors ) );
   _.assert( _.boolLike( o.loggingApplication ) );
   _.assert( _.boolLike( o.loggingSourceFiles ) );
@@ -271,6 +273,7 @@ function sourcesJoinSplits( o )
 /* */  _global_._starter_.debug = ${o.debug};
 /* */  _global_._starter_.interpreter = '${o.interpreter}';
 /* */  _global_._starter_.proceduring = ${o.proceduring};
+/* */  _global_._starter_.globing = ${o.globing};
 /* */  _global_._starter_.catchingUncaughtErrors = ${o.catchingUncaughtErrors};
 /* */  _global_._starter_.loggingApplication = ${o.loggingApplication};
 /* */  _global_._starter_.loggingSourceFiles = ${o.loggingSourceFiles};
@@ -320,9 +323,27 @@ function sourcesJoinSplits( o )
 /* */  /* begin of proceduring */ ( function _proceduring_() {
 
   ${_.routineParse( maker.ProceduringCode.begin ).bodyUnwrapped};
+
   ${_.routineParse( maker.ProceduringCode.end ).bodyUnwrapped};
 
 /* */  /* end of proceduring */ })();
+
+`
+
+  /* globing */
+
+  if( o.globing )
+  r.globing =
+`
+/* */  /* begin of globing */ ( function _proceduring_() {
+
+  ${_.routineParse( maker.GlobingCode.begin ).bodyUnwrapped};
+
+  ${globingExtract()}
+
+  ${_.routineParse( maker.GlobingCode.end ).bodyUnwrapped};
+
+/* */  /* end of globing */ })();
 
 `
 
@@ -575,6 +596,7 @@ function sourcesJoinSplits( o )
   ${rou( 'path', 'isAbsolute' )}
   ${rou( 'path', 'ext' )}
   ${rou( 'path', 'isGlobal' )}
+
   ${fields( 'path' )}
 
   /*
@@ -593,183 +615,228 @@ function sourcesJoinSplits( o )
 
   /* */
 
-  function elementExport( srcContainer, dstContainerName, name )
+  function globingExtract()
   {
-    let e = srcContainer[ name ];
-    _.assert
-    (
-      _.strDefined( name ),
-      () => `Cant export, expects defined name, but got ${_.strType( name )}`
-    );
-    _.assert
-    (
-         _.routineIs( e ) || _.primitiveIs( e ) || _.regexpIs( e )
-      || ( _.mapIs( e ) && _.lengthOf( e ) === 0 )
-      || ( _.arrayIs( e ) && _.lengthOf( e ) === 0 )
-      , () => `Cant export ${name} is ${_.strType( e )}`
-    );
-    let str = '';
-    if( _.routineIs( e ) )
-    {
 
-      if( e.pre || e.body )
-      {
-        _.assert( _.routineIs( e.pre ) && _.routineIs( e.body ) );
-        str = routineFromPreAndBodyToString( e )
-        return str;
-      }
+    // return '';
+    return `
 
-      if( e.functor )
-      str = '(' + e.functor.toString() + ')();';
-      else
-      str = e.toString();
+  ${rou( 'mapExtend' )}
+  ${rou( 'mapSupplement' )}
+  ${rou( 'vectorize' )}
+  ${rou( 'strsAreAll' )}
 
-      if( e.defaults )
-      {
-        str += `\n${dstContainerName}.${name}.defaults =\n` + _.toJs( e.defaults )
-      }
-    }
-    else
-    {
-      str = _.toJs( e );
-    }
-
-    /* */
-
-    if( _.routineIs( e ) )
-    str += `;\nvar ${name} = ${dstContainerName + '.' + name}`
-
-    let r = dstContainerName + '.' + name + ' = ' + _.strLinesIndentation( str, '  ' ) + ';\n\n//\n';
-
-    /* */
-
-    return r;
-
-    /* */
-
-    function routineProperties( dstContainerName, routine )
-    {
-      let r = ''
-      for( var k in routine )
-      r += `${dstContainerName}.${k} = ` + _.toJs( routine[ k ] ) + '\n'
-      if( r )
-      r = _.strLinesIndentation( r, '  ' );
-      return r;
-    }
-
-    function routineToString( routine )
-    {
-      return _.strLinesIndentation( routine.toString(), '  ' ) + '\n\n  //\n'
-    }
-
-    function routineFromPreAndBodyToString( e )
-    {
-      let str =
-      `\
-        \n  var __${e.name}_pre = ${routineToString( e.pre )}\
-        \n  var ${e.pre.name} = __${e.name}_pre\
-        \n  ${routineProperties( `__${e.name}_pre`, e.pre )}\
-        \n  var __${e.name}_body = ${routineToString( e.body )}\
-        \n  var ${e.body.name} = __${e.name}_body\
-        \n  ${routineProperties( `__${e.name}_body`, e.body )}\
-      `
-      if( name === 'routineFromPreAndBody' )
-      {
-        str += `\n${dstContainerName}.${name} = ` + _.strLinesIndentation( e.toString(), '  ' );
-        str += `\n${dstContainerName}.${name}.pre = ` + `__${e.name}_pre;`
-        str += `\n${dstContainerName}.${name}.body = ` + `__${e.name}_body;`
-        str += `\n${dstContainerName}.${name}.defaults = ` + 'Object.create( ' + `__${e.name}_body.defaults` + ' );'
-      }
-      else
-      {
-        str += `\n  ${dstContainerName}.${name} = _.routineFromPreAndBody( __${e.name}_pre, __${e.name}_body );`
-      }
-      return str;
-    }
-  }
-
-  /* */
-
-  function field( namesapce, name )
-  {
-    if( arguments.length === 2 )
-    {
-      return elementExport( _[ namesapce ], `_.${namesapce}`, name );
-    }
-    else
-    {
-      name = arguments[ 0 ];
-      return elementExport( _, '_', name );
-    }
-  }
-
-  /* */
-
-  function rou( namesapce, name )
-  {
-    if( arguments.length === 2 )
-    {
-      return elementExport( _[ namesapce ], `_.${namesapce}`, name );
-    }
-    else
-    {
-      name = arguments[ 0 ];
-      return elementExport( _, '_', name );
-    }
-  }
-
-  /* */
-
-  function fields( namespace )
-  {
-    let result = [];
-    _.assert( _.objectIs( _[ namespace ] ) );
-    for( let f in _[ namespace ] )
-    {
-      let e = _[ namespace ][ f ];
-      if( _.strIs( e ) || _.regexpIs( e ) )
-      result.push( rou( namespace, f ) );
-    }
-    return result.join( '  ' );
-  }
-
-  /* */
-
-  function cls( namesapce, name )
-  {
-    let r;
-    if( arguments.length === 2 )
-    {
-      r = elementExport( _[ namesapce ], `_.${namesapce}`, name );
-    }
-    else
-    {
-      name = arguments[ 0 ];
-      r = elementExport( _, '_', name );
-    }
-    r =
+  ${rou( 'path', 'globFilterKeys' )}
+  ${rou( 'path', 'globSplitsToRegexps' )}
+  ${rou( 'path', 'globFilterKeys' )}
+  ${rou( 'path', 'globFilterKeys' )}
+  ${rou( 'path', 'globFilterKeys' )}
+  ${rou( 'path', 'globFilterKeys' )}
+  ${rou( 'path', 'globFilterKeys' )}
 `
-(function()
-{
 
-  let Self = ${r}
-
-})();
-`
-    return r;
   }
 
   /* */
 
-  function clr( cls, method )
+  function rou()
   {
-    let result = '';
-    if( _[ cls ][ method ] )
-    result = elementExport( _[ cls ], `_.${cls}`, method );
-    if( _[ cls ][ 'prototype' ][ method ] )
-    result += '\n' + elementExport( _[ cls ][ 'prototype' ], `_.${cls}.prototype`, method );
-    return result;
+    return _.introspector.rou( ... arguments );
   }
+
+  /* */
+
+  function fields()
+  {
+    return _.introspector.fields( ... arguments );
+  }
+
+  /* */
+
+  function field()
+  {
+    return _.introspector.field( ... arguments );
+  }
+
+//   function elementExport( srcContainer, dstContainerName, name )
+//   {
+//     let e = srcContainer[ name ];
+//
+//     _.assert
+//     (
+//       _.strDefined( name ),
+//       () => `Cant export, expects defined name, but got ${_.strType( name )}`
+//     );
+//     _.assert
+//     (
+//          _.routineIs( e ) || _.primitiveIs( e ) || _.regexpIs( e )
+//       || ( _.mapIs( e ) && _.lengthOf( e ) === 0 )
+//       || ( _.arrayIs( e ) && _.lengthOf( e ) === 0 )
+//       , () => `Cant export ${name} is ${_.strType( e )}`
+//     );
+//
+//     let str = '';
+//     if( _.routineIs( e ) )
+//     {
+//
+//       if( e.pre || e.body )
+//       {
+//         _.assert( _.routineIs( e.pre ) && _.routineIs( e.body ) );
+//         str = routineFromPreAndBodyToString( e )
+//         return str;
+//       }
+//
+//       if( e.functor )
+//       str = '(' + e.functor.toString() + ')();';
+//       else
+//       str = e.toString();
+//
+//       if( e.defaults )
+//       {
+//         str += `\n${dstContainerName}.${name}.defaults =\n` + _.toJs( e.defaults )
+//       }
+//     }
+//     else
+//     {
+//       str = _.toJs( e );
+//     }
+//
+//     /* */
+//
+//     if( _.routineIs( e ) )
+//     str += `;\nvar ${name} = ${dstContainerName + '.' + name}`
+//
+//     let r = dstContainerName + '.' + name + ' = ' + _.strLinesIndentation( str, '  ' ) + ';\n\n//\n';
+//
+//     /* */
+//
+//     return r;
+//
+//     /* */
+//
+//     function routineProperties( dstContainerName, routine )
+//     {
+//       let r = ''
+//       for( var k in routine )
+//       r += `${dstContainerName}.${k} = ` + _.toJs( routine[ k ] ) + '\n'
+//       if( r )
+//       r = _.strLinesIndentation( r, '  ' );
+//       return r;
+//     }
+//
+//     function routineToString( routine )
+//     {
+//       return _.strLinesIndentation( routine.toString(), '  ' ) + '\n\n  //\n'
+//     }
+//
+//     function routineFromPreAndBodyToString( e )
+//     {
+//       let str =
+//       `\
+//         \n  var __${e.name}_pre = ${routineToString( e.pre )}\
+//         \n  var ${e.pre.name} = __${e.name}_pre\
+//         \n  ${routineProperties( `__${e.name}_pre`, e.pre )}\
+//         \n  var __${e.name}_body = ${routineToString( e.body )}\
+//         \n  var ${e.body.name} = __${e.name}_body\
+//         \n  ${routineProperties( `__${e.name}_body`, e.body )}\
+//       `
+//       if( name === 'routineFromPreAndBody' )
+//       {
+//         str += `\n${dstContainerName}.${name} = ` + _.strLinesIndentation( e.toString(), '  ' );
+//         str += `\n${dstContainerName}.${name}.pre = ` + `__${e.name}_pre;`
+//         str += `\n${dstContainerName}.${name}.body = ` + `__${e.name}_body;`
+//         str += `\n${dstContainerName}.${name}.defaults = ` + 'Object.create( ' + `__${e.name}_body.defaults` + ' );'
+//       }
+//       else
+//       {
+//         str += `\n  ${dstContainerName}.${name} = _.routineFromPreAndBody( __${e.name}_pre, __${e.name}_body );`
+//       }
+//       return str;
+//     }
+//   }
+//
+//   /* */
+//
+//   function field( namesapce, name )
+//   {
+//     if( arguments.length === 2 )
+//     {
+//       return elementExport( _[ namesapce ], `_.${namesapce}`, name );
+//     }
+//     else
+//     {
+//       name = arguments[ 0 ];
+//       return elementExport( _, '_', name );
+//     }
+//   }
+//
+//   /* */
+//
+//   function rou( namesapce, name )
+//   {
+//     if( arguments.length === 2 )
+//     {
+//       return elementExport( _[ namesapce ], `_.${namesapce}`, name );
+//     }
+//     else
+//     {
+//       name = arguments[ 0 ];
+//       return elementExport( _, '_', name );
+//     }
+//   }
+//
+//   /* */
+//
+//   function fields( namespace )
+//   {
+//     let result = [];
+//     _.assert( _.objectIs( _[ namespace ] ) );
+//     for( let f in _[ namespace ] )
+//     {
+//       let e = _[ namespace ][ f ];
+//       if( _.strIs( e ) || _.regexpIs( e ) )
+//       result.push( rou( namespace, f ) );
+//     }
+//     return result.join( '  ' );
+//   }
+//
+//   /* */
+//
+//   function cls( namesapce, name )
+//   {
+//     let r;
+//     if( arguments.length === 2 )
+//     {
+//       r = elementExport( _[ namesapce ], `_.${namesapce}`, name );
+//     }
+//     else
+//     {
+//       name = arguments[ 0 ];
+//       r = elementExport( _, '_', name );
+//     }
+//     r =
+// `
+// (function()
+// {
+//
+//   let Self = ${r}
+//
+// })();
+// `
+//     return r;
+//   }
+//
+//   /* */
+//
+//   function clr( cls, method )
+//   {
+//     let result = '';
+//     if( _[ cls ][ method ] )
+//     result = elementExport( _[ cls ], `_.${cls}`, method );
+//     if( _[ cls ][ 'prototype' ][ method ] )
+//     result += '\n' + elementExport( _[ cls ][ 'prototype' ], `_.${cls}.prototype`, method );
+//     return result;
+//   }
 
   /* */
 
@@ -786,9 +853,10 @@ sourcesJoinSplits.defaults =
   interpreter : 'njs',
   debug : 1,
   proceduring : 0,
+  globing : 1,
   catchingUncaughtErrors : 1,
   loggingApplication : 0,
-  loggingSourceFiles : 1,
+  loggingSourceFiles : 0,
 }
 
 //
@@ -851,6 +919,7 @@ function sourcesSplitsJoin( o )
     + o.early
     + o.extract
     + o.proceduring
+    + o.globing
     + o.interpreter
     + o.starter
     + o.env
@@ -1105,6 +1174,7 @@ let Statics =
   EarlyCode : require( '../l1_boot/Early.txt.s' ),
   ExtractCode : require( '../l1_boot/Extract.txt.s' ),
   ProceduringCode : require( '../l1_boot/Proceduring.txt.s' ),
+  GlobingCode : require( '../l1_boot/Globing.txt.s' ),
   BroCode : require( '../l1_boot/Bro.txt.s' ),
   NjsCode : require( '../l1_boot/Njs.txt.s' ),
   StarterCode : require( '../l1_boot/Starter.txt.s' ),

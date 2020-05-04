@@ -115,8 +115,8 @@ function _Begin()
 
   function _njsResolve( parentSource, basePath, filePath )
   {
+    let _natResolve;
 
-    let _natResolve
     if( parentSource )
     {
       debugger;

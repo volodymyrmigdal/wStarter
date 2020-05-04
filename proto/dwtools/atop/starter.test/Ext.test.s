@@ -1816,7 +1816,7 @@ function sourcesJoinRoutineInclude( test )
 {
   let context = this;
   let a = context.assetFor( test, 'depInclude' );
-  let outPath = a.abs( 'out' );
+  let outPath = a.abs( 'out' ); /* xxx : remove */
   let starter = new _.starter.System().form();
 
   /* */
@@ -1828,23 +1828,21 @@ function sourcesJoinRoutineInclude( test )
     a.reflect();
     // _.fileProvider.filesDelete( a.routinePath + '/out' ); /* xxx : replace */
     a.fileProvider.filesDelete( a.abs( 'out' ) );
-    // a.fileProvider.filesDelete( a.abs( 'in/node_modules' ) );
-    // a.fileProvider.filesDelete( a.abs( 'in/package-lock.json' ) );
+    a.fileProvider.filesDelete( a.abs( 'in/build' ) );
+    a.fileProvider.filesDelete( a.abs( 'in/.modules' ) );
     return null;
   })
 
-  // a.shell({ execPath : `npm i`, currentPath : a.abs( 'in' ) }) /* xxx */
+  a.anotherStart({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
   a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
 
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
-
     var expected = [ '.', './Out.js' ];
     var files = a.find( a.abs( 'out' ) );
     test.identical( files, expected );
-
     return op;
   })
 
@@ -1857,10 +1855,10 @@ function sourcesJoinRoutineInclude( test )
 Index.js:begin
 
 Index.js
-_filePath_ : ${a.routinePath}/out/Out.js/in/Index.js
-_dirPath_ : ${a.routinePath}/out/Out.js/in
-__filename : ${a.routinePath}/out/Out.js/in/Index.js
-__dirname : ${a.routinePath}/out/Out.js/in
+_filePath_ : ${a.routinePath}/out/Out.js/Index.js
+_dirPath_ : ${a.routinePath}/out/Out.js
+__filename : ${a.routinePath}/out/Out.js/Index.js
+__dirname : ${a.routinePath}/out/Out.js
 module : object
 module.parent : object
 exports : object
@@ -1871,10 +1869,10 @@ _starter_.interpreter : njs
 Dep1.js:begin
 
 Dep1.js
-_filePath_ : ${a.routinePath}/out/Out.js/in/dep/Dep1.js
-_dirPath_ : ${a.routinePath}/out/Out.js/in/dep
-__filename : ${a.routinePath}/out/Out.js/in/dep/Dep1.js
-__dirname : ${a.routinePath}/out/Out.js/in/dep
+_filePath_ : ${a.routinePath}/out/Out.js/dep/Dep1.js
+_dirPath_ : ${a.routinePath}/out/Out.js/dep
+__filename : ${a.routinePath}/out/Out.js/dep/Dep1.js
+__dirname : ${a.routinePath}/out/Out.js/dep
 module : object
 module.parent : object
 exports : object
@@ -1928,63 +1926,158 @@ Index.js:end
 
   /* */
 
-//   a.ready.then( () =>
-//   {
-//     test.case = 'interpreter:browser';
-//     _.fileProvider.filesDelete( a.routinePath );
-//     a.reflect();
-//     _.fileProvider.filesDelete( a.routinePath + '/out' );
-//     return null;
-//   })
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:njs';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    a.fileProvider.filesDelete( a.abs( 'out' ) );
+    a.fileProvider.filesDelete( a.abs( 'in/build' ) );
+    a.fileProvider.filesDelete( a.abs( 'in/.modules' ) );
+    return null;
+  })
+
+  a.anotherStart({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
+  a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:browser` )
+
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+
+    var expected = [ '.', './Out.js' ];
+    var files = a.find( a.abs( 'out' ) );
+    test.identical( files, expected );
+
+    return op;
+  })
+
+  a.appStart( `.start out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = '.start naking:1 withStarter:0';
+    var output =
+`
+Index.js:begin
+
+Index.js
+_filePath_ : /Index.js
+_dirPath_ : /
+__filename : /Index.js
+__dirname : /
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep1.js:begin
+
+Dep1.js
+_filePath_ : /dep/Dep1.js
+_dirPath_ : /dep
+__filename : /dep/Dep1.js
+__dirname : /dep
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+wTools.blueprint.is : function
+
+Dep1.js:end
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+sourcesJoinRoutineInclude.description =
+`
+- routine _.include works properly for both interpreters
+`
+
 //
-//   a.appStart( `.sources.join in/** outPath:out/Out.js entryPath:in/Index.js interpreter:browser` )
+
+function sourcesJoinRequireGlob( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'depGlob' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:njs';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    a.fileProvider.filesDelete( a.abs( 'out' ) );
+    return null;
+  })
+
+  a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
+
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+    var expected = [ '.', './Out.js' ];
+    var files = a.find( a.abs( 'out' ) );
+    test.identical( files, expected );
+    return op;
+  })
+
+  a.anotherStart( `out/Out.js` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
+xxx
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+// xxx
+//   a.anotherStart( `.start entryPath:in/Index.js interpreter:njs` )
 //   .then( ( op ) =>
 //   {
-//     test.identical( op.exitCode, 0 );
-//     test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
-//
-//     var expected = [ '.', './in', './in/Index.js', './in/dir', './in/dir/Dep1.js', './out1', './out', './out/Out.js' ];
-//     var files = a.find( a.abs( '.' ) );
-//     test.identical( files, expected );
-//
-//     return op;
-//   })
-//
-//   a.appStart( `.start out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
-//   .then( ( op ) =>
-//   {
-//     test.description = '.start naking:1 withStarter:0';
+//     test.description = '.start entryPath:in/Index.js interpreter:njs';
 //     var output =
 // `
 // Index.js:begin
+//
+// Index.js
+// __filename : ${a.routinePath}/in/Index.js
+// __dirname : ${a.routinePath}/in
+// module : object
+// module.parent : object
+// exports : object
+// require : function
+//
 // Dep1.js:begin
 //
 // Dep1.js
-// _filePath_ : /in/dir/Dep1.js
-// _dirPath_ : /in/dir
-// __filename : /in/dir/Dep1.js
-// __dirname : /in/dir
+// __filename : ${a.routinePath}/in/dep/Dep1.js
+// __dirname : ${a.routinePath}/in/dep
 // module : object
 // module.parent : object
 // exports : object
 // require : function
-// include : function
-// _starter_.interpreter : browser
+// wTools.blueprint.is : function
 //
 // Dep1.js:end
-//
-// Index.js
-// _filePath_ : /in/Index.js
-// _dirPath_ : /in
-// __filename : /in/Index.js
-// __dirname : /in
-// module : object
-// module.parent : object
-// exports : object
-// require : function
-// include : function
-// _starter_.interpreter : browser
-//
 // Index.js:end
 // `
 //     test.identical( op.exitCode, 0 );
@@ -1997,9 +2090,9 @@ Index.js:end
   return a.ready;
 }
 
-sourcesJoinRoutineInclude.description =
+sourcesJoinRequireGlob.description =
 `
-- routine _.include works properly for such build
+- routine require with glob path finds many files
 `
 
 //
@@ -3163,6 +3256,7 @@ var Self =
     sourcesJoinOptionInterpreter,
     sourcesJoinOptionInterpreterOptionBasePath,
     sourcesJoinRoutineInclude,
+    sourcesJoinRequireGlob,
     sourcesJoinExpressServer,
 
     // html for
