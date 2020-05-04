@@ -152,6 +152,7 @@ function sourcesJoinFiles( o )
 var defaults = sourcesJoinFiles.defaults = _.mapBut( _.starter.Maker.prototype.sourcesJoin.defaults, { filesMap : null } );
 defaults.inPath = null;
 defaults.outPath = 'Index.js';
+defaults.withServer = 0;
 
 //
 

@@ -180,27 +180,26 @@ function _Begin()
         return result;
       }
 
-      debugger;
-      if( 0 && _.path.isGlob( filePath ) ) /* xxx : workaround */
+      // debugger; /* ttt */
+      if( !_starter_.withServer && _.path.isGlob( filePath ) ) /* xxx : workaround */
       {
-        // debugger;
         let resolvedFilePath = starter._pathResolveLocal( parentSource, basePath, filePath );
         let filtered = _.mapKeys( _.path.globFilterKeys( starter.sourcesMap, resolvedFilePath ) );
-        // debugger;
         if( filtered.length )
         return starter._sourceInclude( parentSource, basePath, filtered );
       }
       else
       {
-        let childSource = starter._sourceForIncludeGet.apply( starter, arguments );
+        let childSource = starter._sourceForInclude.apply( starter, arguments );
         if( childSource )
         return starter._sourceIncludeCall( parentSource, childSource, filePath );
       }
 
-      if( starter.interpreter === 'browser' )
-      return starter._broInclude( parentSource, basePath, filePath );
-      else
-      return starter._njsInclude( parentSource, basePath, filePath );
+      return starter._includeAct( parentSource, basePath, filePath );
+      // if( starter.interpreter === 'browser' )
+      // return starter._includeAct( parentSource, basePath, filePath );
+      // else
+      // return starter._includeAct( parentSource, basePath, filePath );
 
     }
     catch( err )
@@ -221,14 +220,17 @@ function _Begin()
     if( result !== null )
     return result;
 
-    if( starter.interpreter === 'browser' )
-    {
-      return starter._broSourcePathResolve( parentSource, basePath, filePath );
-    }
-    else
-    {
-      return starter._njsResolve( parentSource, basePath, filePath );
-    }
+    return starter._sourceResolveAct( parentSource, basePath, filePath );
+
+    // xxx
+    // if( starter.interpreter === 'browser' )
+    // {
+    //   return starter._sourceResolveAct( parentSource, basePath, filePath );
+    // }
+    // else
+    // {
+    //   return starter._sourceResolveAct( parentSource, basePath, filePath );
+    // }
 
   }
 
@@ -237,7 +239,7 @@ function _Begin()
   function _sourceOwnResolve( parentSource, basePath, filePath )
   {
     let starter = this;
-    let childSource = starter._sourceForIncludeGet.apply( starter, arguments );
+    let childSource = starter._sourceForInclude.apply( starter, arguments );
     if( !childSource )
     return null;
     return childSource.filePath;
@@ -256,10 +258,8 @@ function _Begin()
 
   //
 
-  function _sourceForIncludeGet( sourceFile, basePath, filePath )
+  function _sourceForInclude( sourceFile, basePath, filePath )
   {
-    // if( filePath && _.strHas( filePath, 'l2_blueprint' ) )
-    // debugger;
     let resolvedFilePath = this._pathResolveLocal( sourceFile, basePath, filePath );
     let childSource = this.sourcesMap[ resolvedFilePath ];
     if( childSource )
@@ -343,11 +343,13 @@ function _End()
 
     _sourceMake,
     _sourceIncludeCall,
+    _includeAct : null,
     _sourceInclude,
+    _sourceResolveAct : null,
     _sourceResolve,
     _sourceOwnResolve,
     _sourceForPathGet,
-    _sourceForIncludeGet,
+    _sourceForInclude,
 
     _pathResolveLocal,
 

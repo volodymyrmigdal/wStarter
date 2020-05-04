@@ -46,11 +46,11 @@ function _Begin()
 
   //
 
-  function _sourceWithNjsModuleGet( njsModule, filePath )
+  function _sourceForIncludeWithNjsModule( njsModule, filePath )
   {
     let starter = this;
     let sourceFile = njsModule.sourceFile || null;
-    return starter._sourceForIncludeGet( sourceFile, _.path.dir( njsModule.filename ), filePath );
+    return starter._sourceForInclude( sourceFile, _.path.dir( njsModule.filename ), filePath );
   }
 
   //
@@ -113,7 +113,7 @@ function _Begin()
 
   //
 
-  function _njsResolve( parentSource, basePath, filePath )
+  function _sourceResolveAct( parentSource, basePath, filePath )
   {
     let _natResolve;
 
@@ -141,7 +141,7 @@ function _Begin()
 
   //
 
-  function _njsInclude( parentSource, basePath, filePath )
+  function _includeAct( parentSource, basePath, filePath )
   {
     let starter = this;
     let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
@@ -170,7 +170,7 @@ function _Begin()
     {
       if( !parent.sourceFile )
       starter._sourceFromNjsModule( parent );
-      let childSource = starter._sourceWithNjsModuleGet( parent, request );
+      let childSource = starter._sourceForIncludeWithNjsModule( parent, request );
       if( childSource === null )
       {
         let result = NjsLoad.apply( this, arguments );
@@ -203,14 +203,14 @@ function _End()
     _natResolve,
 
     _njsModuleFromSource,
-    _sourceWithNjsModuleGet,
+    _sourceForIncludeWithNjsModule,
     _sourceFromNjsModule,
 
     _njsSourceFile,
     _njsSourceFileUpdateFromNjs,
-    _njsResolve,
+    _sourceResolveAct,
     _njsSourceIncludeFromNjsAct,
-    _njsInclude,
+    _includeAct,
     _njsSetup,
 
 

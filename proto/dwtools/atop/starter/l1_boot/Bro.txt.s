@@ -370,7 +370,7 @@ function _Begin()
 
   //
 
-  function _broSourcePathResolve( parentSource, basePath, filePath )
+  function _sourceResolveAct( parentSource, basePath, filePath )
   {
 
     let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
@@ -392,7 +392,7 @@ function _Begin()
 
   //
 
-  function _broInclude( parentSource, basePath, filePath )
+  function _includeAct( parentSource, basePath, filePath )
   {
     let starter = this;
     let joinedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
@@ -427,7 +427,7 @@ function _Begin()
     {
       if( typeof window === 'undefined' )
       {
-        return this._broIncludeInWorkerResolved( parentSource, resolvedFilePath );
+        return this._broIncludeActInWorkerResolved( parentSource, resolvedFilePath );
       }
       else
       {
@@ -452,7 +452,7 @@ function _Begin()
 
   //
 
-  function _broIncludeInWorkerResolved( parentSource, resolvedFilePath )
+  function _broIncludeActInWorkerResolved( parentSource, resolvedFilePath )
   {
     let starter = this;
     let result;
@@ -473,19 +473,11 @@ function _Begin()
   {
     let starter = this;
 
-    // let read = starter.fileRead
-    // ({
-    //   filePath : resolvedFilePath + '?running:0',
-    //   sync : 1,
-    // });
-
     let read = starter.fileRead
     ({
       filePath : resolvedFilePath,
       sync : 1,
     });
-
-    // starter._includingSource = resolvedFilePath;
 
     let ext = _.path.ext( resolvedFilePath );
     if( ext === 'css' || ext === 'less' )
@@ -495,7 +487,6 @@ function _Begin()
       link.rel = 'stylesheet'
       link.type = 'text/' + ext
       document.head.appendChild( link );
-      // end();
     }
     else
     {
@@ -512,7 +503,6 @@ function _Begin()
       let childSource = starter._sourceForPathGet( resolvedFilePath );
       let result = starter._sourceIncludeCall( parentSource, childSource, resolvedFilePath );
 
-      // end();
       return result;
     }
 
@@ -663,9 +653,10 @@ function _End()
     _broSourceFile,
     _broLog,
     _broPathResolveRemote,
-    _broSourcePathResolve,
-    _broInclude,
-    _broIncludeInWorkerResolved,
+    _sourceResolveAct,
+
+    _includeAct,
+    _broIncludeActInWorkerResolved,
     _broIncludeResolved,
 
     _broConsoleRedirect,

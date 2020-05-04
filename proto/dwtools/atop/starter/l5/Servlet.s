@@ -771,6 +771,8 @@ function scriptWrap_functor( fop )
     let o2 = _.mapOnly( servlet, system.maker.sourcesJoinSplits.defaults );
     o2.interpreter = 'browser';
     o2.libraryName = 'Starter';
+    o2.withServer = 1;
+    debugger;
     let splits = system.maker.sourcesJoinSplits( o2 );
     fop.ware = system.maker.sourcesSplitsJoin( splits );
   }

@@ -242,7 +242,7 @@ function sourcesJoinSplits( o )
   _.assert( _.boolLike( o.globing ) );
   _.assert( _.boolLike( o.catchingUncaughtErrors ) );
   // _.assert( _.boolLike( o.catchingUncaughtErrors ) );
-  // _.assert( _.longHas( [ 'single', 'include' ], o.withScripts ) ); xxx
+  _.assert( _.boolLike( o.withServer ) );
   _.assert( _.boolLike( o.loggingApplication ) );
   _.assert( _.boolLike( o.loggingSourceFiles ) );
 
@@ -279,6 +279,7 @@ function sourcesJoinSplits( o )
 /* */  _global_._starter_.catchingUncaughtErrors = ${o.catchingUncaughtErrors};
 /* */  _global_._starter_.loggingApplication = ${o.loggingApplication};
 /* */  _global_._starter_.loggingSourceFiles = ${o.loggingSourceFiles};
+/* */  _global_._starter_.withServer = ${o.withServer};
 
 /* */  _global_.Config.debug = ${o.debug};
 
@@ -334,7 +335,9 @@ function sourcesJoinSplits( o )
 
   /* globing */
 
-  if( 0 )
+  /* ttt */
+  // if( 1 )
+  if( !o.withServer )
   if( o.globing )
   r.globing =
 `
@@ -871,7 +874,7 @@ sourcesJoinSplits.defaults =
   catchingUncaughtErrors : 1,
   loggingApplication : 0,
   loggingSourceFiles : 0,
-  // withScripts : null,
+  withServer : null,
 }
 
 //
