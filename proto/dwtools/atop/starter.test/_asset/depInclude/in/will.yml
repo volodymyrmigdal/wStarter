@@ -1,0 +1,26 @@
+
+submodule :
+
+  Tools : git:///git@github.com:Wandalen/wTools.git
+  Blueprint : git:///git@github.com:Wandalen/wBlueprint.git
+
+path :
+
+  build : build
+
+reflector :
+
+  reflect.submodules :
+    inherit : submodule::*/exported::*=1/reflector::exported.files*=1
+    dst :
+      prefixPath : path::build
+    criterion :
+      debug : 1
+
+build :
+
+  build :
+    steps :
+      step::reflect.submodules
+    criterion :
+      default : 1

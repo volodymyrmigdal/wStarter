@@ -625,14 +625,13 @@ function sourcesJoinSplits( o )
   ${rou( 'mapSupplement' )}
   ${rou( 'vectorize' )}
   ${rou( 'strsAreAll' )}
+  ${rou( 'strReplaceAll' )}
 
   ${rou( 'path', 'globFilterKeys' )}
   ${rou( 'path', 'globSplitsToRegexps' )}
   ${rou( 'path', 'globFilterKeys' )}
-  ${rou( 'path', 'globFilterKeys' )}
-  ${rou( 'path', 'globFilterKeys' )}
-  ${rou( 'path', 'globFilterKeys' )}
-  ${rou( 'path', 'globFilterKeys' )}
+  ${rou( 'path', '_globSplitToRegexpSource' )}
+
 `
 
   }
