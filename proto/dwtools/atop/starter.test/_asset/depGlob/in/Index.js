@@ -1,7 +1,12 @@
 console.log( 'Index.js:begin' );
 
 debugger;
-require( './dir/**' );
+var dir = require( './dir/**' );
+
+console.log( `` );
+console.log( `dir.length : ${dir.length}` );
+console.log( `dir[ 0 ] : ${dir[ 0 ]}` );
+console.log( `dir[ 1 ] : ${dir[ 1 ]}` );
 debugger;
 
 console.log( `` );

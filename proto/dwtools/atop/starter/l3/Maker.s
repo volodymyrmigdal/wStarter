@@ -332,7 +332,7 @@ function sourcesJoinSplits( o )
 
   /* globing */
 
-  if( 0 )
+  if( 1 )
   if( o.globing )
   r.globing =
 `
@@ -467,7 +467,45 @@ function sourcesJoinSplits( o )
   {
 
     return `
+  ${rou( 'strQuote' )}
+  ${rou( 'errInStr' )}
+  ${rou( 'errFromStr' )}
+  ${rou( 'errOriginalMessage' )}
+  ${rou( 'errOriginalStack' )}
+  ${rou( 'err' )}
+  ${rou( '_err' )}
+  ${rou( '_errMake' )}
+  ${rou( 'errLogEnd' )}
+  ${rou( 'errAttend' )}
+  ${rou( '_errFields' )}
+  ${rou( 'errIsStandard' )}
+  ${rou( 'errIsAttended' )}
+  ${rou( 'errProcess' )}
   ${rou( 'assert' )}
+  ${field( '_errorCounter' )}
+  ${field( '_errorMaking' )}
+
+  ${rou( 'introspector', 'code' )}
+  ${rou( 'introspector', 'stack' )}
+  ${rou( 'introspector', 'stackCondense' )}
+  ${rou( 'introspector', 'location' )}
+  ${rou( 'introspector', 'locationFromStackFrame' )}
+  ${rou( 'introspector', 'locationToStack' )}
+  ${rou( 'introspector', 'locationNormalize' )}
+
+  ${rou( 'path', 'refine' )}
+  ${rou( 'path', '_normalize' )}
+  ${rou( 'path', 'canonize' )}
+  ${rou( 'path', 'canonizeTolerant' )}
+  ${rou( 'path', '_nativizeWindows' )}
+  ${rou( 'path', '_nativizePosix' )}
+  ${rou( 'path', 'isGlob' )}
+  ${rou( 'path', 'isRelative' )}
+  ${rou( 'path', 'isAbsolute' )}
+  ${rou( 'path', 'ext' )}
+  ${rou( 'path', 'isGlobal' )}
+  ${fields( 'path' )}
+
   ${rou( 'strIs' )}
   ${rou( 'strDefined' )}
   ${rou( '_strBeginOf' )}
@@ -552,53 +590,14 @@ function sourcesJoinSplits( o )
   ${rou( 'strIsolateRightOrNone' )}
   ${rou( 'strIsolateLeftOrAll' )}
   ${rou( 'strIsolateRightOrAll' )}
-  ${rou( 'strQuote' )}
   ${rou( 'strLinesIndentation' )}
   ${rou( 'numberFromStrMaybe' )}
-
-  ${rou( 'errInStr' )}
-  ${rou( 'errFromStr' )}
-  ${rou( 'errOriginalMessage' )}
-  ${rou( 'errOriginalStack' )}
-  ${rou( 'err' )}
-  ${rou( '_err' )}
-  ${rou( '_errMake' )}
-  ${rou( 'errLogEnd' )}
-  ${rou( 'errAttend' )}
-  ${rou( '_errFields' )}
-  ${rou( 'errIsStandard' )}
-  ${rou( 'errIsAttended' )}
-  ${rou( 'errProcess' )}
-  ${field( '_errorCounter' )}
-  ${field( '_errorMaking' )}
 
   ${rou( 'setup', '_setupUncaughtErrorHandler2' )}
   ${rou( 'setup', '_setupUncaughtErrorHandler9' )}
   ${rou( 'setup', '_errUncaughtPre' )}
   ${rou( 'setup', '_errUncaughtHandler1' )}
   ${rou( 'setup', '_errUncaughtHandler2' )}
-
-  ${rou( 'introspector', 'code' )}
-  ${rou( 'introspector', 'stack' )}
-  ${rou( 'introspector', 'stackCondense' )}
-  ${rou( 'introspector', 'location' )}
-  ${rou( 'introspector', 'locationFromStackFrame' )}
-  ${rou( 'introspector', 'locationToStack' )}
-  ${rou( 'introspector', 'locationNormalize' )}
-
-  ${rou( 'path', 'refine' )}
-  ${rou( 'path', '_normalize' )}
-  ${rou( 'path', 'canonize' )}
-  ${rou( 'path', 'canonizeTolerant' )}
-  ${rou( 'path', '_nativizeWindows' )}
-  ${rou( 'path', '_nativizePosix' )}
-  ${rou( 'path', 'isGlob' )}
-  ${rou( 'path', 'isRelative' )}
-  ${rou( 'path', 'isAbsolute' )}
-  ${rou( 'path', 'ext' )}
-  ${rou( 'path', 'isGlobal' )}
-
-  ${fields( 'path' )}
 
   /*
   Uri namespace( parseConsecutive ) is required to make _.include working in a browser
@@ -627,10 +626,21 @@ function sourcesJoinSplits( o )
   ${rou( 'vectorize' )}
   ${rou( 'strsAreAll' )}
   ${rou( 'strReplaceAll' )}
+  ${rou( 'strFindAll' )}
+  ${rou( 'tokensSyntaxFrom' )}
+  ${rou( '_strReplaceMapPrepare' )}
+  ${rou( 'assertMapHasAll' )}
+  ${rou( 'sureMapHasAll' )}
+  ${rou( 'longSlice' )}
+  ${rou( 'arrayLikeResizable' )}
+  ${rou( 'regexpEscape' )}
+  ${rou( 'filter' )}
+  ${rou( '_filter_functor' )}
+  ${rou( 'entityMakeUndefined' )}
+  ${rou( 'mapKeys' )}
 
   ${rou( 'path', 'globFilterKeys' )}
   ${rou( 'path', 'globSplitsToRegexps' )}
-  ${rou( 'path', 'globFilterKeys' )}
   ${rou( 'path', '_globSplitToRegexpSource' )}
 
 `

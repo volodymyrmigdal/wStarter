@@ -180,13 +180,14 @@ function _Begin()
         return result;
       }
 
-      if( 0 && _.path.isGlob( filePath ) ) /* xxx : workaround */
+      if( 1 && _.path.isGlob( filePath ) ) /* xxx : workaround */
       {
-        debugger;
+        // debugger;
         let resolvedFilePath = starter._pathResolveLocal( parentSource, basePath, filePath );
         let filtered = _.mapKeys( _.path.globFilterKeys( starter.sourcesMap, resolvedFilePath ) );
-        if( filteted.length )
-        return starter._sourceInclude( filteted );
+        // debugger;
+        if( filtered.length )
+        return starter._sourceInclude( parentSource, basePath, filtered );
       }
       else
       {

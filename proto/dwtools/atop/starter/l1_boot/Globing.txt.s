@@ -19,16 +19,33 @@ let _ = _starter_;
 
 /* xxx : workaround. remove later */
 
-let bypassingEmpty = 0;
-let select = 1;
-let vectorizingArray = 1;
-let vectorizingMapVals = 0;
-let vectorizingMapKeys = 1;
+// let bypassingEmpty = 0;
+// let select = 1;
+// let vectorizingArray = 1;
+// let vectorizingMapVals = 0;
+// let vectorizingMapKeys = 1;
+//
+// function multiply( args )
+// {
+//   return args;
+// }
 
-function multiply( args )
+//
+
+let TokensSyntax = function TokensSyntax()
 {
-  return args;
+  let result =
+  {
+    idToValue : null,
+    idToName : [],
+    nameToId : {},
+    alternatives : {},
+  }
+  Object.setPrototypeOf( result, TokensSyntax );
+  return result;
 }
+
+//
 
 }
 
@@ -39,9 +56,15 @@ function multiply( args )
 function _End()
 {
 
+let ToolsExtension =
+{
+  TokensSyntax,
+}
+
+Object.assign( _starter_, ToolsExtension );
+
 let PathExtension =
 {
-
 }
 
 Object.assign( _starter_.path, PathExtension );

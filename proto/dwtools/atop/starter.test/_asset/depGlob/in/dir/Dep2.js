@@ -18,4 +18,6 @@ if( typeof _starter_ !== 'undefined' )
 console.log( `_starter_.interpreter : ${_starter_.interpreter}` );
 console.log( `` );
 
+module.exports = 'Dep2';
+
 console.log( 'Dep2.js:end' );
