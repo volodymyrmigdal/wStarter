@@ -357,6 +357,7 @@ commandHttpOpen.commandProperties =
   naking : 'Disable wrapping of scripts. Default : false.',
   withScripts : 'How to ship scripts. Alternatives : [ include, inline, single, 0 ]. Default : include.',
   withStarter : 'Run-time environment. Alternatives : [ include, inline, 0 ]. Default : include.',
+  interpreter : 'Interpreter to use. Alternatives [ browser, njs ]. Default : browser'
 }
 
 commandHttpOpen.hint = 'Run HTTP server to serve files in a specified directory.';

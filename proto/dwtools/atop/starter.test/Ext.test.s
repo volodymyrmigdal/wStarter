@@ -11,7 +11,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
 
-  require( '../starter/Include.s' );
+  require( '../starter/entry/Include.s' );
 
 }
 
@@ -911,7 +911,52 @@ function sourcesJoinOptionInterpreter( test )
 
   a.ready.then( () =>
   {
-    test.case = 'interpreter:njs';
+    test.case = 'without starter';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  a.anotherStart( `in/Index.js` )
+  .then( ( op ) =>
+  {
+    test.description = 'in/Index.js';
+    var output =
+`
+Index.js:begin
+Dep1.js:begin
+
+Dep1.js
+__filename : ${a.routinePath}/in/Dep1.js
+__dirname : ${a.routinePath}/in
+module : object
+module.parent : object
+exports : object
+require : function
+
+Dep1.js:end
+
+Index.js
+__filename : ${a.routinePath}/in/Index.js
+__dirname : ${a.routinePath}/in
+module : object
+module.parent : object
+exports : object
+require : function
+
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:njs, run without starter';
     _.fileProvider.filesDelete( a.routinePath );
     a.reflect();
     _.fileProvider.filesDelete( a.routinePath + '/out' );
@@ -973,45 +1018,13 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
-  .then( ( op ) =>
-  {
-    test.description = 'in/Index.js';
-    var output =
-`
-Index.js:begin
-Dep1.js:begin
-
-Dep1.js
-__filename : ${a.routinePath}/in/Dep1.js
-__dirname : ${a.routinePath}/in
-module : object
-module.parent : object
-exports : object
-require : function
-
-Dep1.js:end
-
-Index.js
-__filename : ${a.routinePath}/in/Index.js
-__dirname : ${a.routinePath}/in
-module : object
-module.parent : object
-exports : object
-require : function
-
-Index.js:end
-`
-    test.identical( op.exitCode, 0 );
-    test.equivalent( op.output, output );
-    return op;
-  })
+// xxx : add case of running built version with starter interpreter:njs
 
   /* */
 
   a.ready.then( () =>
   {
-    test.case = 'interpreter:browser';
+    test.case = 'interpreter:browser naking:0 withStarter:1';
     _.fileProvider.filesDelete( a.routinePath );
     a.reflect();
     _.fileProvider.filesDelete( a.routinePath + '/out' );
@@ -1031,7 +1044,7 @@ Index.js:end
     return op;
   })
 
-  a.appStart( `.start out/Out.js timeOut:15000 headless:1` )
+  a.appStart( `.start out/Out.js timeOut:15000 headless:1 naking:0 withStarter:1` )
   .then( ( op ) =>
   {
     test.description = '.start default';
@@ -1070,6 +1083,30 @@ Index.js:end
 `
     test.identical( op.exitCode, 0 );
     test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser naking:1 withStarter:0';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  a.appStart( `.sources.join in/** outPath:out/Out.js entryPath:in/Index.js interpreter:browser` )
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+
+    var expected = [ '.', './in', './in/Dep1.js', './in/Index.js', './out', './out/Out.js' ];
+    var files = a.find( a.abs( '.' ) );
+    test.identical( files, expected );
+
     return op;
   })
 
@@ -2014,92 +2051,18 @@ function sourcesJoinRequireGlob( test )
   let a = context.assetFor( test, 'depGlob' );
   let starter = new _.starter.System().form();
 
-  /* */
-
-  a.ready.then( () =>
-  {
-    test.case = 'interpreter:njs';
-    a.fileProvider.filesDelete( a.abs( '.' ) );
-    a.reflect();
-    a.fileProvider.filesDelete( a.abs( 'out' ) );
-    return null;
-  })
-
-  a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
-
-  .then( ( op ) =>
-  {
-    test.identical( op.exitCode, 0 );
-    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
-    var expected = [ '.', './Out.js' ];
-    var files = a.find( a.abs( 'out' ) );
-    test.identical( files, expected );
-    return op;
-  })
-
-  a.anotherStart( `out/Out.js` )
-  .then( ( op ) =>
-  {
-    test.description = 'out/Out.js';
-    var output =
-`
-Index.js:begin
-Dep1.js:begin
-
-Dep1.js
-_filePath_ : ${a.routinePath}/out/Out.js/dir/Dep1.js
-_dirPath_ : ${a.routinePath}/out/Out.js/dir
-__filename : ${a.routinePath}/out/Out.js/dir/Dep1.js
-__dirname : ${a.routinePath}/out/Out.js/dir
-module : object
-module.parent : object
-exports : object
-require : function
-include : function
-_starter_.interpreter : njs
-
-Dep1.js:end
-Dep2.js:begin
-
-Dep2.js
-_filePath_ : ${a.routinePath}/out/Out.js/dir/Dep2.js
-_dirPath_ : ${a.routinePath}/out/Out.js/dir
-__filename : ${a.routinePath}/out/Out.js/dir/Dep2.js
-__dirname : ${a.routinePath}/out/Out.js/dir
-module : object
-module.parent : object
-exports : object
-require : function
-include : function
-_starter_.interpreter : njs
-
-Dep2.js:end
-
-dir.length : 2
-dir[ 0 ] : Dep1
-dir[ 1 ] : Dep2
-
-Index.js
-_filePath_ : ${a.routinePath}/out/Out.js/Index.js
-_dirPath_ : ${a.routinePath}/out/Out.js
-__filename : ${a.routinePath}/out/Out.js/Index.js
-__dirname : ${a.routinePath}/out/Out.js
-module : object
-module.parent : object
-exports : object
-require : function
-include : function
-_starter_.interpreter : njs
-
-Index.js:end
-`
-    test.identical( op.exitCode, 0 );
-    test.equivalent( op.output, output );
-    return op;
-  })
-
-// xxx
-//   a.anotherStart( `.start entryPath:in/Index.js interpreter:njs` )
+  // /* */
+  //
+  // a.ready.then( () =>
+  // {
+  //   test.case = 'interpreter:njs';
+  //   a.fileProvider.filesDelete( a.abs( '.' ) );
+  //   a.reflect();
+  //   a.fileProvider.filesDelete( a.abs( 'out' ) );
+  //   return null;
+  // })
+  //
+//   a.appStart( `.start entryPath:in/Index.js interpreter:njs` )
 //   .then( ( op ) =>
 //   {
 //     test.description = '.start entryPath:in/Index.js interpreter:njs';
@@ -2127,6 +2090,90 @@ Index.js:end
 // wTools.blueprint.is : function
 //
 // Dep1.js:end
+// Index.js:end
+// `
+//     test.identical( op.exitCode, 0 );
+//     test.equivalent( op.output, output );
+//     return op;
+//   })
+//
+//   /* */
+//
+//   a.ready.then( () =>
+//   {
+//     test.case = 'interpreter:njs';
+//     a.fileProvider.filesDelete( a.abs( '.' ) );
+//     a.reflect();
+//     a.fileProvider.filesDelete( a.abs( 'out' ) );
+//     return null;
+//   })
+//
+//   a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
+//
+//   .then( ( op ) =>
+//   {
+//     test.identical( op.exitCode, 0 );
+//     test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+//     var expected = [ '.', './Out.js' ];
+//     var files = a.find( a.abs( 'out' ) );
+//     test.identical( files, expected );
+//     return op;
+//   })
+//
+//   a.anotherStart( `out/Out.js` )
+//   .then( ( op ) =>
+//   {
+//     test.description = 'out/Out.js';
+//     var output =
+// `
+// Index.js:begin
+// Dep1.js:begin
+//
+// Dep1.js
+// _filePath_ : ${a.routinePath}/out/Out.js/dir/Dep1.js
+// _dirPath_ : ${a.routinePath}/out/Out.js/dir
+// __filename : ${a.routinePath}/out/Out.js/dir/Dep1.js
+// __dirname : ${a.routinePath}/out/Out.js/dir
+// module : object
+// module.parent : object
+// exports : object
+// require : function
+// include : function
+// _starter_.interpreter : njs
+//
+// Dep1.js:end
+// Dep2.js:begin
+//
+// Dep2.js
+// _filePath_ : ${a.routinePath}/out/Out.js/dir/Dep2.js
+// _dirPath_ : ${a.routinePath}/out/Out.js/dir
+// __filename : ${a.routinePath}/out/Out.js/dir/Dep2.js
+// __dirname : ${a.routinePath}/out/Out.js/dir
+// module : object
+// module.parent : object
+// exports : object
+// require : function
+// include : function
+// _starter_.interpreter : njs
+//
+// Dep2.js:end
+//
+// dir.length : 2
+// dir[ 0 ] : Dep1
+// dir[ 1 ] : Dep2
+//
+// Index.js
+// _filePath_ : ${a.routinePath}/out/Out.js/Index.js
+// _dirPath_ : ${a.routinePath}/out/Out.js
+// __filename : ${a.routinePath}/out/Out.js/Index.js
+// __dirname : ${a.routinePath}/out/Out.js
+// module : object
+// module.parent : object
+// exports : object
+// require : function
+// include : function
+// _starter_.interpreter : njs
+//
 // Index.js:end
 // `
 //     test.identical( op.exitCode, 0 );

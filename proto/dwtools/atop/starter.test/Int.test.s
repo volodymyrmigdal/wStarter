@@ -11,7 +11,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
 
-  require( '../starter/Include.s' );
+  require( '../starter/entry/Include.s' );
 
 }
 
@@ -601,7 +601,7 @@ async function curatedRunWindowOpenCloseAutomatic( test )
   try
   {
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
 
     // await _.time.out( context.deltaTime3 ); /* xxx : remove later and find fix working for linux */
@@ -617,7 +617,7 @@ async function curatedRunWindowOpenCloseAutomatic( test )
 
     await _.time.out( context.deltaTime2 ); /* xxx : remove later and find fix working for linux */
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, true );
     debugger;
 
@@ -628,7 +628,7 @@ async function curatedRunWindowOpenCloseAutomatic( test )
     await session.unform(); /* qqq xxx : stuck here sometimes */
 
     test.identical( session.curratedRunState, 'terminated' );
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
     test.identical( session.curratedRunState, 'terminated' );
 
@@ -655,7 +655,7 @@ async function curatedRunWindowOpenCloseWindowManually( test )
   try
   {
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
 
     session = await starter.start
@@ -670,7 +670,7 @@ async function curatedRunWindowOpenCloseWindowManually( test )
 
     test.identical( session.curratedRunState, 'launched' );
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, true );
 
     await session._curratedRunWindowClose();
@@ -678,7 +678,7 @@ async function curatedRunWindowOpenCloseWindowManually( test )
     await _.time.out( context.deltaTime3 );
 
     test.identical( session.curratedRunState, 'terminated' );
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
     test.identical( session.curratedRunState, 'terminated' );
 
@@ -705,7 +705,7 @@ async function curatedRunWindowOpenClosePageManually( test )
   try
   {
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
 
     session = await starter.start
@@ -718,7 +718,7 @@ async function curatedRunWindowOpenClosePageManually( test )
 
     await _.time.out( context.deltaTime2 ); /* xxx : remove later and find fix working for linux */
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, true );
 
     await _.time.out( context.deltaTime2 );
@@ -734,7 +734,7 @@ async function curatedRunWindowOpenClosePageManually( test )
     await _.time.out( context.deltaTime3 );
 
     test.identical( session.curratedRunState, 'terminated' );
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
     test.identical( session.curratedRunState, 'terminated' );
 
@@ -762,7 +762,7 @@ async function curatedRunEventsCloseAutomatic( test )
   try
   {
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
 
     let opts =
@@ -771,7 +771,7 @@ async function curatedRunEventsCloseAutomatic( test )
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
     }
-    session = new _.starter.Session( opts );
+    session = new _.starter.session.BrowserCdp( opts );
 
     session.on( [ 'curatedRunLaunchBegin', 'curatedRunLaunchEnd', 'curatedRunTerminateEnd' ], ( e ) =>
     {
@@ -787,14 +787,14 @@ async function curatedRunEventsCloseAutomatic( test )
     await session.eventWaitFor( 'curatedRunLaunchEnd' );
     test.identical( session.curratedRunState, 'launched' );
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, true );
     test.identical( session.curratedRunState, 'launched' );
 
     await session.unform(); /* qqq xxx : stuck here sometimes */
 
     test.identical( session.curratedRunState, 'terminated' );
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
     test.identical( session.curratedRunState, 'terminated' );
 
@@ -830,7 +830,7 @@ async function curatedRunEventsCloseWindowManually( test )
   try
   {
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
 
     let opts =
@@ -839,7 +839,7 @@ async function curatedRunEventsCloseWindowManually( test )
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
     }
-    session = new _.starter.Session( opts );
+    session = new _.starter.session.BrowserCdp( opts );
 
     session.on( [ 'curatedRunLaunchBegin', 'curatedRunLaunchEnd', 'curatedRunTerminateEnd' ], ( e ) =>
     {
@@ -855,7 +855,7 @@ async function curatedRunEventsCloseWindowManually( test )
     await session.eventWaitFor( 'curatedRunLaunchEnd' );
     test.identical( session.curratedRunState, 'launched' );
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, true );
     test.identical( session.curratedRunState, 'launched' );
 
@@ -864,7 +864,7 @@ async function curatedRunEventsCloseWindowManually( test )
     await session.eventWaitFor( 'curatedRunTerminateEnd' );
 
     test.identical( session.curratedRunState, 'terminated' );
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
     test.identical( session.curratedRunState, 'terminated' );
 
@@ -900,7 +900,7 @@ async function curatedRunEventsClosePageManually( test )
   try
   {
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
 
     let opts =
@@ -909,7 +909,7 @@ async function curatedRunEventsClosePageManually( test )
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
     }
-    session = new _.starter.Session( opts );
+    session = new _.starter.session.BrowserCdp( opts );
 
     session.on( [ 'curatedRunLaunchBegin', 'curatedRunLaunchEnd', 'curatedRunTerminateEnd' ], ( e ) =>
     {
@@ -925,7 +925,7 @@ async function curatedRunEventsClosePageManually( test )
     await session.eventWaitFor( 'curatedRunLaunchEnd' );
     test.identical( session.curratedRunState, 'launched' );
 
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, true );
     test.identical( session.curratedRunState, 'launched' );
 
@@ -940,7 +940,7 @@ async function curatedRunEventsClosePageManually( test )
     // console.log( 'd' );
 
     test.identical( session.curratedRunState, 'terminated' );
-    var cdp = await _.starter.Session._CurratedRunWindowIsOpened();
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
     test.identical( session.curratedRunState, 'terminated' );
 

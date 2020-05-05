@@ -320,10 +320,13 @@ function _Begin()
     // if( _starter_.proceduring )
     // _starter_.Procedure.NativeWatchingEnable();
 
-    if( Config.interpreter === 'njs' )
-    this._njsSetup();
-    else
-    this._broSetup();
+    this._SetupAct();
+
+    // if( Config.interpreter === 'njs' )
+    // this._njsSetup();
+    // else
+    // this._broSetup();
+
     this._inited = 1;
   }
 

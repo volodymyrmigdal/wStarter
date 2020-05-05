@@ -16,8 +16,8 @@ function _Begin()
   let _global = _global_;
   let _starter_ = _global_._starter_;
   let _ = _starter_;
-  let path = _starter_.path; // xxx
-  let sourcesMap = _starter_.sourcesMap; // xxx
+  // let path = _starter_.path; // xxx
+  // let sourcesMap = _starter_.sourcesMap; // xxx
 
   // if( _global._starter_ && _global._starter_._inited ) // xxx
   // return;
@@ -153,7 +153,7 @@ function _Begin()
 
   //
 
-  function _njsSetup()
+  function _SetupAct()
   {
     let starter = this;
     let Module = _natInclude( 'module' );
@@ -211,7 +211,7 @@ function _End()
     _sourceResolveAct,
     _njsSourceIncludeFromNjsAct,
     _includeAct,
-    _njsSetup,
+    _SetupAct,
 
 
   }

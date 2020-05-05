@@ -187,7 +187,7 @@ function httpOpen( o )
     fallbackPath : path.current(),
     ... o,
   }
-  let session = new _.starter.Session( opts );
+  let session = new _.starter.session.BrowserCdp( opts );
 
   return session.form();
 }
@@ -232,7 +232,7 @@ function start( o )
     fallbackPath : path.current(),
     ... o,
   }
-  let session = new _.starter.Session( opts );
+  let session = new _.starter.session.BrowserCdp( opts );
 
   return session.form();
 }
@@ -244,6 +244,7 @@ defaults.loggingRequestsAll = 0;
 defaults.entryPath = null;
 defaults.curating = 1;
 defaults.headless = 0;
+defaults.interpreter = 'browser';
 
 // --
 // relations

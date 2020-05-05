@@ -14,7 +14,7 @@
 // _.starter.Launcher.Exec();
 // module[ 'exports' ] = _.starter.Launcher;
 
-let _ = require( './include/Center.s' );
+let _ = require( '../include/Center.s' );
 if( !module.parent )
 _.starter.Center.Exec();
-module[ 'exports' ] = _.starter.Center;
+module[ 'exports' ] = _;

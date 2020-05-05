@@ -25,21 +25,21 @@ function _Begin()
   //
 
   let FilesCache = Object.create( null );
-  function fileReadAct( o )
+  function _broFileReadAct( o )
   {
     let self = this;
     let Reqeust, request, total, result, error;
 
-    _.assertRoutineOptions( fileReadAct, arguments );
+    _.assertRoutineOptions( _broFileReadAct, arguments );
     _.assert( arguments.length === 1, 'Expects single argument' );
-    _.assert( _.strIs( o.filePath ), 'fileReadAct :', 'Expects {-o.filePath-}' );
+    _.assert( _.strIs( o.filePath ), '_broFileReadAct :', 'Expects {-o.filePath-}' );
 
     if( FilesCache[ o.filePath ] )
     return FilesCache[ o.filePath ];
 
     /* advanced */
 
-    o.advanced = _.routineOptions( fileReadAct, o.advanced, fileReadAct.advanced );
+    o.advanced = _.routineOptions( _broFileReadAct, o.advanced, _broFileReadAct.advanced );
     o.advanced.method = o.advanced.method.toUpperCase();
 
     /* http request */
@@ -222,12 +222,12 @@ function _Begin()
 
   }
 
-  var defaults = fileReadAct.defaults = Object.create( null );
+  var defaults = _broFileReadAct.defaults = Object.create( null );
   defaults.sync = 1;
   defaults.filePath = null;
   defaults.encoding = 'utf8';
 
-  var advanced = fileReadAct.advanced = Object.create( null );
+  var advanced = _broFileReadAct.advanced = Object.create( null );
   advanced.send = null;
   advanced.method = 'GET';
   advanced.user = null;
@@ -235,19 +235,19 @@ function _Begin()
 
   //
 
-  function fileRead( o )
+  function _broFileRead( o )
   {
     if( _.strIs( o ) )
     o = { filePath : o };
-    _.routineOptions( fileRead, o );
-    return _.fileReadAct( o );
+    _.routineOptions( _broFileRead, o );
+    return _._broFileReadAct( o );
   }
 
-  fileRead.defaults = Object.create( fileReadAct.defaults );
+  _broFileRead.defaults = Object.create( _broFileReadAct.defaults );
 
   //
 
-  function socketWrite( o )
+  function _broSocketWrite( o )
   {
     let socket = _._sockets[ o.filePath ];
 
@@ -274,14 +274,10 @@ function _Begin()
     {
       if( socket.que.length )
       {
-        // debugger;
-        // console._original.log.call( console, `not closing socker ${o.filePath}` );
         send();
         setTimeout( () => handleTime(), 1000 );
         return;
       }
-      // debugger;
-      // console._original.log.call( console, `closing socker ${o.filePath}` );
       socket.close();
       delete _._sockets[ o.filePath ];
       Object.freeze( socket.que );
@@ -289,7 +285,6 @@ function _Begin()
 
     function send()
     {
-      // console._original.log.call( console, `sending ${socket.que.length} messages` );
       while( socket.que.length )
       {
         let data = socket.que[ 0 ];
@@ -299,7 +294,7 @@ function _Begin()
     }
 
   }
-  socketWrite.defaults =
+  _broSocketWrite.defaults =
   {
     filePath : null,
     data : null,
@@ -324,7 +319,7 @@ function _Begin()
     o.subject = _._socketSubject;
     o.clientTime = Date.now();
 
-    let response = starter.socketWrite
+    let response = starter._broSocketWrite
     ({
       filePath : 'ws://127.0.0.1:15000/.log/',
       data : o,
@@ -347,7 +342,7 @@ function _Begin()
 
     if( _.path.isGlob( filePath ) || _.path.isRelative( filePath ) )
     {
-      filePath = starter.fileRead
+      filePath = starter._broFileRead
       ({
         filePath : '/.resolve/' + filePath,
         encoding : 'json',
@@ -473,7 +468,7 @@ function _Begin()
   {
     let starter = this;
 
-    let read = starter.fileRead
+    let read = starter._broFileRead
     ({
       filePath : resolvedFilePath,
       sync : 1,
@@ -622,7 +617,7 @@ function _Begin()
 
   //
 
-  function _broSetup()
+  function _SetupAct()
   {
     let starter = this;
     starter._sourceMake( 'module', '/', _sourceCodeModule );
@@ -646,9 +641,9 @@ function _End()
 
     //
 
-    fileReadAct,
-    fileRead,
-    socketWrite,
+    _broFileReadAct,
+    _broFileRead,
+    _broSocketWrite,
 
     _broSourceFile,
     _broLog,
@@ -662,7 +657,7 @@ function _End()
     _broConsoleRedirect,
     _broConsoleMethodRedirect,
 
-    _broSetup,
+    _SetupAct,
     _sourceCodeModule,
 
     // fields
