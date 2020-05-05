@@ -2051,17 +2051,17 @@ function sourcesJoinRequireGlob( test )
   let a = context.assetFor( test, 'depGlob' );
   let starter = new _.starter.System().form();
 
-  // /* */
-  //
-  // a.ready.then( () =>
-  // {
-  //   test.case = 'interpreter:njs';
-  //   a.fileProvider.filesDelete( a.abs( '.' ) );
-  //   a.reflect();
-  //   a.fileProvider.filesDelete( a.abs( 'out' ) );
-  //   return null;
-  // })
-  //
+  /* */
+
+//   a.ready.then( () =>
+//   {
+//     test.case = 'interpreter:njs entryPath:in/Index.js';
+//     a.fileProvider.filesDelete( a.abs( '.' ) );
+//     a.reflect();
+//     a.fileProvider.filesDelete( a.abs( 'out' ) );
+//     return null;
+//   })
+//
 //   a.appStart( `.start entryPath:in/Index.js interpreter:njs` )
 //   .then( ( op ) =>
 //   {
@@ -2101,7 +2101,7 @@ function sourcesJoinRequireGlob( test )
 //
 //   a.ready.then( () =>
 //   {
-//     test.case = 'interpreter:njs';
+//     test.case = 'interpreter:njs entryPath:out/Out.js';
 //     a.fileProvider.filesDelete( a.abs( '.' ) );
 //     a.reflect();
 //     a.fileProvider.filesDelete( a.abs( 'out' ) );
@@ -2180,12 +2180,85 @@ function sourcesJoinRequireGlob( test )
 //     test.equivalent( op.output, output );
 //     return op;
 //   })
+// xxx : implement
 
   /* */
 
   a.ready.then( () =>
   {
-    test.case = 'interpreter:njs';
+    test.case = 'interpreter:browser entryPath:in/Index.js';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    a.fileProvider.filesDelete( a.abs( 'out' ) );
+    return null;
+  })
+
+  a.appStart( `.start basePath:in entryPath:Index.js timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
+Index.js:begin
+Dep1.js:begin
+
+Dep1.js
+_filePath_ : /dir/Dep1.js
+_dirPath_ : /dir
+__filename : /dir/Dep1.js
+__dirname : /dir
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep1.js:end
+Dep2.js:begin
+
+Dep2.js
+_filePath_ : /dir/Dep2.js
+_dirPath_ : /dir
+__filename : /dir/Dep2.js
+__dirname : /dir
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep2.js:end
+
+dir.length : 2
+dir[ 0 ] : Dep1
+dir[ 1 ] : Dep2
+
+Index.js
+_filePath_ : /Index.js
+_dirPath_ : /
+__filename : /Index.js
+__dirname : /
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser entryPath:out/Out.js';
     a.fileProvider.filesDelete( a.abs( '.' ) );
     a.reflect();
     a.fileProvider.filesDelete( a.abs( 'out' ) );
@@ -2204,7 +2277,7 @@ function sourcesJoinRequireGlob( test )
     return op;
   })
 
-  a.appStart( `.start out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1` ) /* xxx : replace hardcoding */
+  a.appStart( `.start entryPath:out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1` ) /* xxx : replace hardcoding */
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
@@ -2273,6 +2346,359 @@ Index.js:end
 sourcesJoinRequireGlob.description =
 `
 - routine require with glob path finds many files
+`
+
+//
+
+function sourcesJoinRequireGlobAnyAny( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'depGlobAnyAny' );
+  let starter = new _.starter.System().form();
+
+  /* xxx : add interpreter:njs cases */
+
+  /* */
+
+//   a.ready.then( () =>
+//   {
+//     test.case = 'interpreter:browser entryPath:in/Index.js';
+//     a.fileProvider.filesDelete( a.abs( '.' ) );
+//     a.reflect();
+//     a.fileProvider.filesDelete( a.abs( 'out' ) );
+//     return null;
+//   })
+//
+//   a.appStart( `.start basePath:in entryPath:Index.js timeOut:15000 headless:1` )
+//   .then( ( op ) =>
+//   {
+//     test.description = 'out/Out.js';
+//     var output =
+// `
+// Index.js:begin
+// Dep1.js:begin
+//
+// Dep1.js
+// _filePath_ : /dir/Dep1.js
+// _dirPath_ : /dir
+// __filename : /dir/Dep1.js
+// __dirname : /dir
+// module : object
+// module.parent : object
+// exports : object
+// require : function
+// include : function
+// _starter_.interpreter : browser
+//
+// Dep1.js:end
+// Dep2.s:begin
+//
+// Dep2.s
+// _filePath_ : /dir/Dep2.s
+// _dirPath_ : /dir
+// __filename : /dir/Dep2.s
+// __dirname : /dir
+// module : object
+// module.parent : object
+// exports : object
+// require : function
+// include : function
+// _starter_.interpreter : browser
+//
+// Dep2.s:end
+//
+// dir.length : 2
+// dir[ 0 ] : Dep1
+// dir[ 1 ] : Dep2
+//
+// Index.js
+// _filePath_ : /Index.js
+// _dirPath_ : /
+// __filename : /Index.js
+// __dirname : /
+// module : object
+// module.parent : object
+// exports : object
+// require : function
+// include : function
+// _starter_.interpreter : browser
+//
+// Index.js:end
+// `
+//     test.identical( op.exitCode, 0 );
+//     test.equivalent( op.output, output );
+//     return op;
+//   })
+// xxx
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser entryPath:out/Out.js';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    a.fileProvider.filesDelete( a.abs( 'out' ) );
+    return null;
+  })
+
+  a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:browser` )
+
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+    var expected = [ '.', './Out.js' ];
+    var files = a.find( a.abs( 'out' ) );
+    test.identical( files, expected );
+    return op;
+  })
+
+  a.appStart( `.start entryPath:out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1` ) /* xxx : replace hardcoding */
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
+Index.js:begin
+Dep1.js:begin
+
+Dep1.js
+_filePath_ : /dir/Dep1.js
+_dirPath_ : /dir
+__filename : /dir/Dep1.js
+__dirname : /dir
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep1.js:end
+Dep2.s:begin
+
+Dep2.s
+_filePath_ : /dir/Dep2.s
+_dirPath_ : /dir
+__filename : /dir/Dep2.s
+__dirname : /dir
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep2.s:end
+
+dir.length : 2
+dir[ 0 ] : Dep1
+dir[ 1 ] : Dep2
+
+Index.js
+_filePath_ : /Index.js
+_dirPath_ : /
+__filename : /Index.js
+__dirname : /
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+sourcesJoinRequireGlobAnyAny.description =
+`
+- routine require with glob **/**.js finds many files
+`
+
+//
+
+function sourcesJoinRequireGlobAnyExt( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'depGlobAnyExt' );
+  let starter = new _.starter.System().form();
+
+  /* xxx : add interpreter:njs cases */
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser entryPath:in/Index.js';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    a.fileProvider.filesDelete( a.abs( 'out' ) );
+    return null;
+  })
+
+  a.appStart( `.start basePath:in entryPath:Index.js timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
+Index.js:begin
+Dep1.js:begin
+
+Dep1.js
+_filePath_ : /dir/Dep1.js
+_dirPath_ : /dir
+__filename : /dir/Dep1.js
+__dirname : /dir
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep1.js:end
+Dep2.s:begin
+
+Dep2.s
+_filePath_ : /dir/Dep2.s
+_dirPath_ : /dir
+__filename : /dir/Dep2.s
+__dirname : /dir
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep2.s:end
+
+dir.length : 2
+dir[ 0 ] : Dep1
+dir[ 1 ] : Dep2
+
+Index.js
+_filePath_ : /Index.js
+_dirPath_ : /
+__filename : /Index.js
+__dirname : /
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser entryPath:out/Out.js';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    a.fileProvider.filesDelete( a.abs( 'out' ) );
+    return null;
+  })
+
+  a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:browser` )
+
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+    var expected = [ '.', './Out.js' ];
+    var files = a.find( a.abs( 'out' ) );
+    test.identical( files, expected );
+    return op;
+  })
+
+  a.appStart( `.start entryPath:out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output =
+`
+Index.js:begin
+Dep1.js:begin
+
+Dep1.js
+_filePath_ : /dir/Dep1.js
+_dirPath_ : /dir
+__filename : /dir/Dep1.js
+__dirname : /dir
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep1.js:end
+Dep2.s:begin
+
+Dep2.s
+_filePath_ : /dir/Dep2.s
+_dirPath_ : /dir
+__filename : /dir/Dep2.s
+__dirname : /dir
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Dep2.s:end
+
+dir.length : 2
+dir[ 0 ] : Dep1
+dir[ 1 ] : Dep2
+
+Index.js
+_filePath_ : /Index.js
+_dirPath_ : /
+__filename : /Index.js
+__dirname : /
+module : object
+module.parent : object
+exports : object
+require : function
+include : function
+_starter_.interpreter : browser
+
+Index.js:end
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+sourcesJoinRequireGlobAnyExt.description =
+`
+- routine require with glob **/**.js finds many files
 `
 
 //
@@ -3437,6 +3863,8 @@ var Self =
     sourcesJoinOptionInterpreterOptionBasePath,
     sourcesJoinRoutineInclude,
     sourcesJoinRequireGlob,
+    sourcesJoinRequireGlobAnyAny,
+    sourcesJoinRequireGlobAnyExt,
     sourcesJoinExpressServer,
 
     // html for
