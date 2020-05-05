@@ -169,247 +169,13 @@ module:
           - ../proto/dwtools/abase
           - ../proto/dwtools/amid
           - ../proto/dwtools/atop
-          - ../proto/dwtools/atop/-starter
-          - ../proto/dwtools/atop/-starter/Exec
-          - ../proto/dwtools/atop/-starter/ExecDebug
-          - ../proto/dwtools/atop/-starter/ExecUnrestricted
-          - ../proto/dwtools/atop/-starter/Include.s
-          - ../proto/dwtools/atop/-starter/Main.s
-          - ../proto/dwtools/atop/-starter/include
-          - ../proto/dwtools/atop/-starter/include/Base.s
-          - ../proto/dwtools/atop/-starter/include/Center.s
-          - ../proto/dwtools/atop/-starter/include/Launcher.s
-          - ../proto/dwtools/atop/-starter/include/Mid.s
-          - ../proto/dwtools/atop/-starter/include/MidLegacy.s
-          - ../proto/dwtools/atop/-starter/include/Top.s
-          - ../proto/dwtools/atop/-starter/l1
-          - ../proto/dwtools/atop/-starter/l1/Namespace.s
-          - ../proto/dwtools/atop/-starter/l1_boot
-          - ../proto/dwtools/atop/-starter/l1_boot/Bro.txt.s
-          - ../proto/dwtools/atop/-starter/l1_boot/Early.txt.s
-          - ../proto/dwtools/atop/-starter/l1_boot/Extract.txt.s
-          - ../proto/dwtools/atop/-starter/l1_boot/Njs.txt.s
-          - ../proto/dwtools/atop/-starter/l1_boot/Predefined.txt.s
-          - ../proto/dwtools/atop/-starter/l1_boot/Proceduring.txt.s
-          - ../proto/dwtools/atop/-starter/l1_boot/Starter.txt.s
-          - ../proto/dwtools/atop/-starter/l3
-          - ../proto/dwtools/atop/-starter/l3/Maker.s
-          - ../proto/dwtools/atop/-starter/l5
-          - ../proto/dwtools/atop/-starter/l5/Center.s
-          - ../proto/dwtools/atop/-starter/l5/Maker2.s
-          - ../proto/dwtools/atop/-starter/l5/Servlet.s
-          - ../proto/dwtools/atop/-starter/l5/Session.s
-          - ../proto/dwtools/atop/-starter/l7
-          - ../proto/dwtools/atop/-starter/l7/System.s
-          - ../proto/dwtools/atop/-starter/l8
-          - ../proto/dwtools/atop/-starter/l8/Cui.s
-          - ../proto/dwtools/atop/-starter/l8/Launcher.s
-          - ../proto/dwtools/atop/-starter/legacy
-          - ../proto/dwtools/atop/-starter/legacy/StarterConfigBegin.raw.s
-          - ../proto/dwtools/atop/-starter/legacy/StarterInitBegin.raw.s
-          - ../proto/dwtools/atop/-starter/legacy/StarterInitEnd.raw.s
-          - ../proto/dwtools/atop/-starter/legacy/StarterMaker.s
-          - ../proto/dwtools/atop/-starter/legacy/StarterPreloadEnd.raw.s
-          - ../proto/dwtools/atop/-starter/legacy/StarterServer.ss
-          - ../proto/dwtools/atop/-starter/legacy/StarterStart.raw.s
-          - ../proto/dwtools/atop/-starter.test
-          - ../proto/dwtools/atop/-starter.test/Ext.test.s
-          - ../proto/dwtools/atop/-starter.test/Int.test.s
-          - ../proto/dwtools/atop/-starter.test/StarterLegacy.test.s
-          - ../proto/dwtools/atop/-starter.test/_asset
-          - ../proto/dwtools/atop/-starter.test/_asset/asyncError
-          - ../proto/dwtools/atop/-starter.test/_asset/asyncError/F1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/complex
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/package.json
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/app0
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/app0/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/app0/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/app1
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/app1/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/app1/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/app2
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/app2/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/complex/app2/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/cycle
-          - ../proto/dwtools/atop/-starter.test/_asset/cycle/in
-          - ../proto/dwtools/atop/-starter.test/_asset/cycle/in/app1
-          - ../proto/dwtools/atop/-starter.test/_asset/cycle/in/app1/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/cycle/in/app1/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/cycle/in/app2
-          - ../proto/dwtools/atop/-starter.test/_asset/cycle/in/app2/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/cycle/in/app2/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep
-          - ../proto/dwtools/atop/-starter.test/_asset/dep/package.json
-          - ../proto/dwtools/atop/-starter.test/_asset/dep/app0
-          - ../proto/dwtools/atop/-starter.test/_asset/dep/app0/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep/app0/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep/app2
-          - ../proto/dwtools/atop/-starter.test/_asset/dep/app2/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep/app2/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep/ext
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/dep/ext/RequireApp2File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2/Index.html
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2/package.json
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2/app0
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2/app0/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2/app0/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2/app2
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2/app2/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2/app2/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/dep2/ext
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/dep2/ext/RequireApp2File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/depLocal
-          - ../proto/dwtools/atop/-starter.test/_asset/depLocal/in
-          - ../proto/dwtools/atop/-starter.test/_asset/depLocal/in/Dep1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/depLocal/in/Index.js
-          - ../proto/dwtools/atop/-starter.test/_asset/errorInWorker
-          - ../proto/dwtools/atop/-starter.test/_asset/errorInWorker/Index.js
-          - ../proto/dwtools/atop/-starter.test/_asset/errorInWorker/W1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/errorInWorker/Worker.js
-          - ../proto/dwtools/atop/-starter.test/_asset/errorInWorkerNoFile
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/errorInWorkerNoFile/Index.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/errorInWorkerNoFile/Worker.js
-          - ../proto/dwtools/atop/-starter.test/_asset/exclude
-          - ../proto/dwtools/atop/-starter.test/_asset/exclude/Index.js
-          - ../proto/dwtools/atop/-starter.test/_asset/exclude/src
-          - ../proto/dwtools/atop/-starter.test/_asset/exclude/src/File.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/exclude/src/File.manual.js
-          - ../proto/dwtools/atop/-starter.test/_asset/express
-          - ../proto/dwtools/atop/-starter.test/_asset/express/package.json
-          - ../proto/dwtools/atop/-starter.test/_asset/express/server.js
-          - ../proto/dwtools/atop/-starter.test/_asset/express/webpack
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/express/webpack/package.json
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/express/webpack/server-packed.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/express/webpack/webpack.config.js
-          - ../proto/dwtools/atop/-starter.test/_asset/html
-          - ../proto/dwtools/atop/-starter.test/_asset/html/F1.html
-          - ../proto/dwtools/atop/-starter.test/_asset/html/F1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/includeCss
-          - ../proto/dwtools/atop/-starter.test/_asset/includeCss/Index.js
-          - ../proto/dwtools/atop/-starter.test/_asset/includeCss/Style.css
-          - ../proto/dwtools/atop/-starter.test/_asset/includeModule
-          - ../proto/dwtools/atop/-starter.test/_asset/includeModule/.will.yml
-          - ../proto/dwtools/atop/-starter.test/_asset/includeModule/proto
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModule/proto/Index.js
-          - ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorker
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorker/.will.yml
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorker/proto
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorker/proto/Index.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorker/proto/Module.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorker/proto/Worker.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorkerThrowing
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorkerThrowing/.will.yml
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorkerThrowing/proto
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorkerThrowing/proto/Index.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorkerThrowing/proto/Module.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/includeModuleInWorkerThrowing/proto/Worker.js
-          - ../proto/dwtools/atop/-starter.test/_asset/legacy-trivial
-          - ../proto/dwtools/atop/-starter.test/_asset/legacy-trivial/.will.yml
-          - ../proto/dwtools/atop/-starter.test/_asset/minute
-          - ../proto/dwtools/atop/-starter.test/_asset/minute/F1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/processes
-          - ../proto/dwtools/atop/-starter.test/_asset/processes/Experiment.js
-          - ../proto/dwtools/atop/-starter.test/_asset/processes/Experiment2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/recursion
-          - ../proto/dwtools/atop/-starter.test/_asset/recursion/F1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/recursion/F2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/several
-          - ../proto/dwtools/atop/-starter.test/_asset/several/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/several/File2.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/startBaseDeducingFromAllowed
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/startBaseDeducingFromAllowed/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/startOptionWithModule
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/startOptionWithModule/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/startTestSuite
-          - ../proto/dwtools/atop/-starter.test/_asset/startTestSuite/Suite1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/startWithNpmPackage
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/startWithNpmPackage/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/tree
-          - ../proto/dwtools/atop/-starter.test/_asset/tree/External1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/tree/External2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/tree/in
-          - ../proto/dwtools/atop/-starter.test/_asset/tree/in/app1
-          - ../proto/dwtools/atop/-starter.test/_asset/tree/in/app1/dir1
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/tree/in/app1/dir1/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/tree/in/app1/dir1/dir2
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/tree/in/app1/dir1/dir2/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/tree/in/app2
-          - ../proto/dwtools/atop/-starter.test/_asset/tree/in/app2/File1.js
-          - ../proto/dwtools/atop/-starter.test/_asset/tree/in/app2/File2.js
-          - ../proto/dwtools/atop/-starter.test/_asset/workerEnvironment
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerEnvironment/Index.js
-          - ../proto/dwtools/atop/-starter.test/_asset/workerEnvironment/W1.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerEnvironment/Worker.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingDifferentInclude
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingDifferentInclude/Index.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingDifferentInclude/Script.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingDifferentInclude/Worker.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingDifferentIncludeSubDir
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingDifferentIncludeSubDir/proto
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Index.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Script.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Worker.js
-          - ../proto/dwtools/atop/-starter.test/_asset/workerUsingTheSameInclude
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingTheSameInclude/Index.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingTheSameInclude/Script.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingTheSameInclude/Worker.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingTheSameIncludeSubDir
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingTheSameIncludeSubDir/proto
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Index.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Script.js
-          - >-
-            ../proto/dwtools/atop/-starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Worker.js
           - ../proto/dwtools/atop/starter
-          - ../proto/dwtools/atop/starter/Exec
-          - ../proto/dwtools/atop/starter/ExecDebug
-          - ../proto/dwtools/atop/starter/ExecUnrestricted
-          - ../proto/dwtools/atop/starter/Include.s
-          - ../proto/dwtools/atop/starter/Main.s
+          - ../proto/dwtools/atop/starter/entry
+          - ../proto/dwtools/atop/starter/entry/Exec
+          - ../proto/dwtools/atop/starter/entry/ExecDebug
+          - ../proto/dwtools/atop/starter/entry/ExecUnrestricted
+          - ../proto/dwtools/atop/starter/entry/Include.s
+          - ../proto/dwtools/atop/starter/entry/Main.s
           - ../proto/dwtools/atop/starter/include
           - ../proto/dwtools/atop/starter/include/Base.s
           - ../proto/dwtools/atop/starter/include/Center.s
@@ -427,6 +193,7 @@ module:
           - ../proto/dwtools/atop/starter/l1_boot/Njs.txt.s
           - ../proto/dwtools/atop/starter/l1_boot/Predefined.txt.s
           - ../proto/dwtools/atop/starter/l1_boot/Proceduring.txt.s
+          - ../proto/dwtools/atop/starter/l1_boot/Require.txt.s
           - ../proto/dwtools/atop/starter/l1_boot/Starter.txt.s
           - ../proto/dwtools/atop/starter/l3
           - ../proto/dwtools/atop/starter/l3/Maker.s
@@ -437,6 +204,8 @@ module:
           - ../proto/dwtools/atop/starter/l5/Session.s
           - ../proto/dwtools/atop/starter/l7
           - ../proto/dwtools/atop/starter/l7/System.s
+          - ../proto/dwtools/atop/starter/l7_session
+          - ../proto/dwtools/atop/starter/l7_session/BrowserCdp.s
           - ../proto/dwtools/atop/starter/l8
           - ../proto/dwtools/atop/starter/l8/Cui.s
           - ../proto/dwtools/atop/starter/l8/Launcher.s
@@ -757,8 +526,6 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/dir
           - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/dir/Dep1.js
           - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/dir/Dep2.js
-          - ../proto/dwtools/atop/starter.test/_asset/depGlob/out
-          - ../proto/dwtools/atop/starter.test/_asset/depGlob/out/Out.js
           - ../proto/dwtools/atop/starter.test/_asset/depInclude
           - ../proto/dwtools/atop/starter.test/_asset/depInclude/in
           - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/Index.js
@@ -772,6 +539,8 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/depLocal/in
           - ../proto/dwtools/atop/starter.test/_asset/depLocal/in/Dep1.js
           - ../proto/dwtools/atop/starter.test/_asset/depLocal/in/Index.js
+          - ../proto/dwtools/atop/starter.test/_asset/depLocal/out
+          - ../proto/dwtools/atop/starter.test/_asset/depLocal/out/Out.js
           - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir
           - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir/in
           - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir/in/Index.js
@@ -1008,6 +777,7 @@ module:
         dst:
           prefixPath: ''
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           debug: debug
@@ -1023,6 +793,7 @@ module:
         dst:
           prefixPath: ''
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           debug: release
@@ -1038,6 +809,7 @@ module:
         dst:
           prefixPath: ''
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           debug: debug
@@ -1053,6 +825,7 @@ module:
         dst:
           prefixPath: ''
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           debug: release
@@ -1068,6 +841,7 @@ module:
         dst:
           prefixPath: ''
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           raw: raw
           debug: release
@@ -1084,6 +858,7 @@ module:
         dst:
           prefixPath: ''
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           raw: compiled
@@ -1101,6 +876,7 @@ module:
         dst:
           prefixPath: ''
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           raw: compiled
@@ -1117,6 +893,7 @@ module:
         dst:
           prefixPath: ''
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: only.tests
           raw: compiled
@@ -1133,6 +910,7 @@ module:
         dst:
           prefixPath: ''
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: only.tests
           raw: compiled
@@ -1146,6 +924,7 @@ module:
             '**': ''
           prefixPath: ../proto
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           generated: 1
           content: proto
@@ -1159,6 +938,7 @@ module:
           recursive: 0
         recursive: 0
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           generated: 1
           content: proto
@@ -1847,6 +1627,7 @@ module:
           filePath:
             'path::proto': '{path::out.*=1}/source'
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           debug: debug
@@ -1859,6 +1640,7 @@ module:
           filePath:
             'path::proto': '{path::out.*=1}/source'
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           debug: release
@@ -1871,6 +1653,7 @@ module:
           filePath:
             'path::proto': '{path::out.*=1}/source'
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           debug: debug
@@ -1883,6 +1666,7 @@ module:
           filePath:
             'path::proto': '{path::out.*=1}/source'
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           debug: release
@@ -1895,6 +1679,7 @@ module:
           filePath:
             'path::proto': '{path::out.raw.release}'
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           raw: raw
           debug: release
@@ -1908,6 +1693,7 @@ module:
             '**.test/**': 0
             'path::proto': '{path::out.*=1}/Main.s'
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           raw: compiled
@@ -1922,6 +1708,7 @@ module:
             '**.test/**': 0
             'path::proto': '{path::out.*=1}/Main.s'
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: no.tests
           raw: compiled
@@ -1935,6 +1722,7 @@ module:
             '**.test*': 1
             'path::proto': '{path::out.*=1}/Tests.test.s'
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: only.tests
           raw: compiled
@@ -1948,6 +1736,7 @@ module:
             '**.test*': 1
             'path::proto': '{path::out.*=1}/Tests.test.s'
         mandatory: 1
+        dstRewritingOnlyPreserving: 1
         criterion:
           tests: only.tests
           raw: compiled
