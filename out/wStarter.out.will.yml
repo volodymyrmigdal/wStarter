@@ -222,260 +222,6 @@ module:
           - ../proto/dwtools/atop/starter.test/Int.test.s
           - ../proto/dwtools/atop/starter.test/StarterLegacy.test.s
           - ../proto/dwtools/atop/starter.test/_asset
-          - ../proto/dwtools/atop/starter.test/_asset/-depInclude
-          - ../proto/dwtools/atop/starter.test/_asset/-depInclude/will.yml
-          - ../proto/dwtools/atop/starter.test/_asset/-depInclude/in
-          - ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/Index.js
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/package-lock.json
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/package.json
-          - ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/dep
-          - ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/dep/Dep1.js
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/LICENSE
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/package.json
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/README.md
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/Tools.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase/l2_blueprint
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase/l2_blueprint/Include.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase/l2_blueprint/l1
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase/l2_blueprint/l1/Definition.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase/l2_blueprint/l1/Proto.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase/l2_blueprint/l3
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase/l2_blueprint/l3/Blueprint.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase/l2_blueprint/l3/Construction.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wblueprint/proto/dwtools/abase/l2_blueprint/l3/Trait.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/LICENSE
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/package.json
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/README.md
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/out
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/out/wTools.out.will.yml
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/Tools.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/Layer0.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/Layer1.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/Layer2.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l1
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l1/Predefined.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l2
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l2/Setup.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iArray.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iBool.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iBuffer.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iContainer.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iCt.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iEntity.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iErr.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iFunctional.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iIntrospector.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iLong.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iMap.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iModule.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iNumber.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iProcess.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iRange.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iRegexp.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iRoutine.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iSet.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iStr.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iTime.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iType.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l3/iUnroll.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fArray.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fBool.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fBuffer.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fContainer.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fCt.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fEntity.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fErr.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fEvent.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fFunctional.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fIntrospector.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fLong.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fMap.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fModule.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fNumber.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fPath.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fProcess.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fRange.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fRangeOld.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fRegexp.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fRoutine.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fSet.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fSorted.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fStr.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fTime.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l5/fUnroll.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l6
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l6/ContainerAdapter.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l6/LongDescriptor.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l7
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l7/Compose.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l7/ContainerAdapterArray.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l7/ContainerAdapterSet.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l7/Field.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l7/LongContext.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gArray.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gBool.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gBuffer.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gContainer.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gCt.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gEntity.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gErr.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gFunctional.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gIntrospector.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gLong.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gMap.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gModule.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gNumber.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gPair.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gProcess.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gRange.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gRegexp.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gRoutine.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gSet.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gStr.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l8/gTime.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l9
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l0/l9/Setup.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l1
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l1/ModulesRegistry.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l1/NameTools.s
-          - >-
-            ../proto/dwtools/atop/starter.test/_asset/-depInclude/in/node_modules/wTools/proto/dwtools/abase/l1/StrBasic.s
           - ../proto/dwtools/atop/starter.test/_asset/asyncError
           - ../proto/dwtools/atop/starter.test/_asset/asyncError/F1.js
           - ../proto/dwtools/atop/starter.test/_asset/complex
@@ -526,6 +272,34 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/dir
           - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/dir/Dep1.js
           - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/dir/Dep2.js
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/Index.js
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep1.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep2.s
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep3.x
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep4.ss
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/out
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/out/Out.js
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/Index.js
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep1.js
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep2.s
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep3.x
+          - >-
+            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep4.ss
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/out
+          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/out/Out.js
           - ../proto/dwtools/atop/starter.test/_asset/depInclude
           - ../proto/dwtools/atop/starter.test/_asset/depInclude/in
           - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/Index.js
@@ -533,14 +307,10 @@ module:
           - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/will.yml
           - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/dep
           - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/dep/Dep1.js
-          - ../proto/dwtools/atop/starter.test/_asset/depInclude/out
-          - ../proto/dwtools/atop/starter.test/_asset/depInclude/out/Out.js
           - ../proto/dwtools/atop/starter.test/_asset/depLocal
           - ../proto/dwtools/atop/starter.test/_asset/depLocal/in
           - ../proto/dwtools/atop/starter.test/_asset/depLocal/in/Dep1.js
           - ../proto/dwtools/atop/starter.test/_asset/depLocal/in/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/depLocal/out
-          - ../proto/dwtools/atop/starter.test/_asset/depLocal/out/Out.js
           - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir
           - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir/in
           - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir/in/Index.js
@@ -2176,6 +1946,4 @@ module:
       ../.im.will.yml:
         hash: d9f5f45e58996338ed09bf3f17266373
         size: 6123
-      wStarter.out.will.yml:
-        hash: b223d69a1ef0f39b35afc0965ad05e4f
-        size: 76212
+      wStarter.out.will.yml: *ref_0
