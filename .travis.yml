@@ -6,7 +6,6 @@ os:
 node_js:
   - 'node'
 script:
-  - npm i
-  - node proto/dwtools/atop/starter.test/Int.test.s
+    - node proto/dwtools/atop/starter.test/Int.test.s
 cache:
   npm: false
