@@ -922,31 +922,31 @@ function sourcesJoinOptionInterpreter( test )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
+    var routinePathResolved = _.fileProvider.pathResolveLinkFull( a.routinePath ).filePath;
     var output =
 `
 Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-__filename : ${a.routinePath}/in/Dep1.js
-__dirname : ${a.routinePath}/in
+__filename : ${routinePathResolved}/in/Dep1.js
+__dirname : ${routinePathResolved}/in
 module : object
 module.parent : object
 exports : object
 require : function
-
 Dep1.js:end
 
 Index.js
-__filename : ${a.routinePath}/in/Index.js
-__dirname : ${a.routinePath}/in
+__filename : ${routinePathResolved}/in/Index.js
+__dirname : ${routinePathResolved}/in
 module : object
 module.parent : object
 exports : object
 require : function
 
 Index.js:end
-`
+`   
     test.identical( op.exitCode, 0 );
     test.equivalent( op.output, output );
     return op;
@@ -980,16 +980,17 @@ Index.js:end
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
+    var routinePathResolved = _.fileProvider.pathResolveLinkFull( a.routinePath ).filePath;
     var output =
 `
 Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-_filePath_ : ${a.routinePath}/out/Out.js/in/Dep1.js
-_dirPath_ : ${a.routinePath}/out/Out.js/in
-__filename : ${a.routinePath}/out/Out.js/in/Dep1.js
-__dirname : ${a.routinePath}/out/Out.js/in
+_filePath_ : ${routinePathResolved}/out/Out.js/in/Dep1.js
+_dirPath_ : ${routinePathResolved}/out/Out.js/in
+__filename : ${routinePathResolved}/out/Out.js/in/Dep1.js
+__dirname : ${routinePathResolved}/out/Out.js/in
 module : object
 module.parent : object
 exports : object
@@ -1000,10 +1001,10 @@ _starter_.interpreter : njs
 Dep1.js:end
 
 Index.js
-_filePath_ : ${a.routinePath}/out/Out.js/in/Index.js
-_dirPath_ : ${a.routinePath}/out/Out.js/in
-__filename : ${a.routinePath}/out/Out.js/in/Index.js
-__dirname : ${a.routinePath}/out/Out.js/in
+_filePath_ : ${routinePathResolved}/out/Out.js/in/Index.js
+_dirPath_ : ${routinePathResolved}/out/Out.js/in
+__filename : ${routinePathResolved}/out/Out.js/in/Index.js
+__dirname : ${routinePathResolved}/out/Out.js/in
 module : object
 module.parent : object
 exports : object
