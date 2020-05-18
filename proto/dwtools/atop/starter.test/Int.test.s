@@ -625,7 +625,7 @@ async function curatedRunWindowOpenCloseAutomatic( test )
 
     test.identical( session.curratedRunState, 'launched' );
 
-    await session.unform(); /* qqq xxx : stuck here sometimes */
+    await session.unform();
 
     test.identical( session.curratedRunState, 'terminated' );
     var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
@@ -725,11 +725,8 @@ async function curatedRunWindowOpenClosePageManually( test )
 
     test.identical( session.curratedRunState, 'launched' );
 
-    // console.log( 'a' );
     await session._curratedRunPageEmptyOpen();
-    // console.log( 'b' );
-    await session._curratedRunPageClose(); /* qqq xxx : stuck here sometimes, event::curatedRunTerminateEnd comes */
-    // console.log( 'c' );
+    await session._curratedRunPageClose();
 
     await _.time.out( context.deltaTime3 );
 
@@ -791,7 +788,7 @@ async function curatedRunEventsCloseAutomatic( test )
     test.identical( !!cdp, true );
     test.identical( session.curratedRunState, 'launched' );
 
-    await session.unform(); /* qqq xxx : stuck here sometimes */
+    await session.unform();
 
     test.identical( session.curratedRunState, 'terminated' );
     var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
@@ -929,15 +926,11 @@ async function curatedRunEventsClosePageManually( test )
     test.identical( !!cdp, true );
     test.identical( session.curratedRunState, 'launched' );
 
-    // console.log( 'a' );
     await session._curratedRunPageEmptyOpen();
-    // console.log( 'b' );
-    await session._curratedRunPageClose(); /* qqq xxx : stuck here sometimes, event::curatedRunTerminateEnd comes */
+    await session._curratedRunPageClose();
 
-    // console.log( 'c' );
     /* event curatedRunTerminateEnd can come before return of _curratedRunPageClose! */
     await session.eventWaitFor( 'curatedRunTerminateEnd' );
-    // console.log( 'd' );
 
     test.identical( session.curratedRunState, 'terminated' );
     var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
