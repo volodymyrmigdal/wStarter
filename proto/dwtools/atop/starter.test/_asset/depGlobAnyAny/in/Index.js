@@ -1,6 +1,7 @@
 console.log( 'Index.js:begin' );
 
 debugger;
+//Vova: works with -> var dir = require( './dir/**.(js|s)' );
 var dir = require( './dir/**/**.js' );
 
 console.log( `` );
