@@ -597,6 +597,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strIsolateRightOrAll' )}
   ${rou( 'strLinesIndentation' )}
   ${rou( 'numberFromStrMaybe' )}
+  ${field( 'TranslatedType' )}
 
   ${rou( 'setup', '_setupUncaughtErrorHandler2' )}
   ${rou( 'setup', '_setupUncaughtErrorHandler9' )}
