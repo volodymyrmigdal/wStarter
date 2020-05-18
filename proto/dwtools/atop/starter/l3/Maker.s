@@ -539,7 +539,7 @@ function sourcesJoinSplits( o )
   ${rou( 'hashMapLike' )}
   ${rou( 'argumentsArrayIs' )}
   ${rou( 'routineIs' )}
-  ${rou( 'routineIsPure' )}
+  ${rou( 'routineIsTrivial' )}
   ${rou( 'lengthOf' )}
   ${rou( 'mapIs' )}
   ${rou( 'sure' )}
