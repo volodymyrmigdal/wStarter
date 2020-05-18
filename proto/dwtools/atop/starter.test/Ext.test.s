@@ -73,6 +73,9 @@ function assetFor( test, name )
     ready : a.ready,
     mode : 'fork',
   })
+  
+  //qqq Vova: probably we should add path resolving into starter
+  a.routinePath = _.fileProvider.pathResolveLinkFull( a.routinePath ).filePath;
 
   return a;
 }
@@ -88,7 +91,7 @@ function sourcesJoin( test )
   let outputPath = a.abs( 'Index.js' );
 
   a.reflect();
-
+  
   a.appStart( `.sources.join ${a.routinePath}/** entryPath:File2.js` )
   .then( ( op ) =>
   {
@@ -922,15 +925,14 @@ function sourcesJoinOptionInterpreter( test )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
-    var routinePathResolved = _.fileProvider.pathResolveLinkFull( a.routinePath ).filePath;
     var output =
 `
 Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-__filename : ${routinePathResolved}/in/Dep1.js
-__dirname : ${routinePathResolved}/in
+__filename : ${a.routinePath}/in/Dep1.js
+__dirname : ${a.routinePath}/in
 module : object
 module.parent : object
 exports : object
@@ -938,8 +940,8 @@ require : function
 Dep1.js:end
 
 Index.js
-__filename : ${routinePathResolved}/in/Index.js
-__dirname : ${routinePathResolved}/in
+__filename : ${a.routinePath}/in/Index.js
+__dirname : ${a.routinePath}/in
 module : object
 module.parent : object
 exports : object
@@ -980,17 +982,16 @@ Index.js:end
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
-    var routinePathResolved = _.fileProvider.pathResolveLinkFull( a.routinePath ).filePath;
     var output =
 `
 Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-_filePath_ : ${routinePathResolved}/out/Out.js/in/Dep1.js
-_dirPath_ : ${routinePathResolved}/out/Out.js/in
-__filename : ${routinePathResolved}/out/Out.js/in/Dep1.js
-__dirname : ${routinePathResolved}/out/Out.js/in
+_filePath_ : ${a.routinePath}/out/Out.js/in/Dep1.js
+_dirPath_ : ${a.routinePath}/out/Out.js/in
+__filename : ${a.routinePath}/out/Out.js/in/Dep1.js
+__dirname : ${a.routinePath}/out/Out.js/in
 module : object
 module.parent : object
 exports : object
@@ -1001,10 +1002,10 @@ _starter_.interpreter : njs
 Dep1.js:end
 
 Index.js
-_filePath_ : ${routinePathResolved}/out/Out.js/in/Index.js
-_dirPath_ : ${routinePathResolved}/out/Out.js/in
-__filename : ${routinePathResolved}/out/Out.js/in/Index.js
-__dirname : ${routinePathResolved}/out/Out.js/in
+_filePath_ : ${a.routinePath}/out/Out.js/in/Index.js
+_dirPath_ : ${a.routinePath}/out/Out.js/in
+__filename : ${a.routinePath}/out/Out.js/in/Index.js
+__dirname : ${a.routinePath}/out/Out.js/in
 module : object
 module.parent : object
 exports : object
