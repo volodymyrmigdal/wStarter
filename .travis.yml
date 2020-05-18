@@ -8,6 +8,6 @@ os:
 node_js:
   - 'node'
 script:
-    - node proto/dwtools/atop/starter.test/Int.test.s
+    - node proto/dwtools/atop/starter.test/Ext.test.s v:3 n:1
 cache:
   npm: false
