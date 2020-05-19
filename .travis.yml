@@ -2,7 +2,7 @@
 sudo: false
 language: node_js
 addons:
-  chrome: stable
+  chrome: beta
 os:
   # - linux
   - osx
