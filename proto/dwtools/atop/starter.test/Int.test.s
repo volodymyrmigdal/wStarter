@@ -33,12 +33,9 @@ function onSuiteBegin()
   
   let isTravis = _.longHas( _.mapKeys( process.env ), [ 'TRAVIS', 'CI' ] );
   
-  if( isTravis )
-  {
     context.deltaTime1 *= 2;
-    context.deltaTime2 *= 2;
+    context.deltaTime2 *= 3;
     // context.deltaTime3 *= 2;
-  }
 }
 
 //
