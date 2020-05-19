@@ -73,6 +73,9 @@ function assetFor( test, name )
     ready : a.ready,
     mode : 'fork',
   })
+  
+  //qqq Vova: probably we should add path resolving into starter
+  a.routinePath = _.fileProvider.pathResolveLinkFull( a.routinePath ).filePath;
 
   return a;
 }
@@ -88,7 +91,7 @@ function sourcesJoin( test )
   let outputPath = a.abs( 'Index.js' );
 
   a.reflect();
-
+  
   a.appStart( `.sources.join ${a.routinePath}/** entryPath:File2.js` )
   .then( ( op ) =>
   {
@@ -934,7 +937,6 @@ module : object
 module.parent : object
 exports : object
 require : function
-
 Dep1.js:end
 
 Index.js
@@ -946,7 +948,7 @@ exports : object
 require : function
 
 Index.js:end
-`
+`   
     test.identical( op.exitCode, 0 );
     test.equivalent( op.output, output );
     return op;

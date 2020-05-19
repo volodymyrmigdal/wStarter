@@ -201,7 +201,7 @@ function curratedRunOpen()
   chromeAppName = 'chrome';
   else if( process.platform === 'darwin' )
   chromeAppName = 'google chrome'
-
+  
   if( !Open )
   Open = require( 'open' );
   let opts = Object.create( null );
@@ -216,10 +216,37 @@ function curratedRunOpen()
 
   if( opts.app )
   opts.app.push( `--user-data-dir=${_.path.nativize( tempDir )}` )
-
-  _.Consequence.Try( () => Open( session.entryWithQueryUri, opts ) )
-  .finally( ( err, process ) =>
+  
+  let con = null;
+  
+  //Vova: workaround for `open` package problem on darwin, open uses existing chrome instance instead of creating new one
+  if( process.platform === 'darwin' )
+  { 
+    opts.app.splice( 1, 0, '--args' );
+    //Vova: On darwin uri should be the last argument, otherwise chrome will open blank page in headless mode
+    //qqq Vova: check if headless mode works correctly on other platforms
+    opts.app.push( session.entryWithQueryUri )
+    
+    let o = 
+    {
+      execPath : 'open -n -a',
+      mode : 'spawn',
+      inputMirroring : 0,
+      args : opts.app
+    }
+    _.process.start( o );
+    con = o.onStart;
+  }
+  else
   {
+    con = _.Consequence.Try( () => Open( session.entryWithQueryUri, opts ) )
+  }
+  
+  con.finally( ( err, process ) =>
+  {
+    if( _global_.process.platform === 'darwin' )
+    process = process.process;
+    
     session.process = process;
     if( err )
     return session.errorEncounterEnd( err );
@@ -370,6 +397,7 @@ function _curratedRunPageClose( o )
       // logger.log( 'await cdp.Target.getTargets()' );
       let targets = await cdp.Target.getTargets();
       // logger.log( 'targets', targets.targetInfos.length, targets.targetInfos );
+      debugger
       let filtered = _.filter( targets.targetInfos, { url : session.entryWithQueryUri } );
       _.sure( filtered.length >= 1, `Found no tab with URI::${session.entryWithQueryUri}` );
       _.sure( filtered.length <= 1, `Found ${filtered.length} tabs with URI::${session.entryWithQueryUri}` );
