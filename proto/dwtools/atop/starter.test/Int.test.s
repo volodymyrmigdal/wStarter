@@ -30,7 +30,15 @@ function onSuiteBegin()
   context.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
   context.willbeExecPath = _.module.resolve( 'willbe' );
   context.appJsPath = _.module.resolve( 'wStarter' );
-
+  
+  let isTravis = _.longHas( _.mapKeys( process.env ), [ 'TRAVIS', 'CI' ] );
+  
+  if( isTravis )
+  {
+    context.deltaTime1 *= 2;
+    context.deltaTime2 *= 2;
+    // context.deltaTime3 *= 2;
+  }
 }
 
 //
