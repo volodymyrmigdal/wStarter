@@ -206,7 +206,7 @@ function curratedRunOpen()
   Open = require( 'open' );
   let opts = Object.create( null );
   if( session.headless )
-  opts.app = [ chromeAppName, `--headless`, `--disable-gpu`, `--remote-debugging-port=${session._cdpPort}` ];
+  opts.app = [ chromeAppName, `--no-sandbox`, `--no-first-run`, `--disable-extensions`, `--headless`, `--disable-gpu`, `--remote-debugging-port=${session._cdpPort}` ];
   else
   opts.app = [ chromeAppName, `--remote-debugging-port=${session._cdpPort}` ];
 
