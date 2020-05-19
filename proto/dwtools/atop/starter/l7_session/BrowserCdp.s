@@ -231,7 +231,9 @@ function curratedRunOpen()
     {
       execPath : 'open -n -a',
       mode : 'spawn',
-      inputMirroring : 0,
+      inputMirroring : 1,
+      outputPiping : 1,
+      stdio : 'pipe',
       args : opts.app
     }
     _.process.start( o );
