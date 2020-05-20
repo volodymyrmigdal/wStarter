@@ -241,13 +241,16 @@ function curratedRunOpen()
   // }
   // else
   // {
-    con = _.Consequence.Try( () => Open( session.entryWithQueryUri, opts ) )
+  //   con = _.Consequence.Try( () => Open( session.entryWithQueryUri, opts ) )
   // }
+  
+  con = _.Consequence.Try( () => Open( session.entryWithQueryUri, opts ) )
+  
   
   con.finally( ( err, process ) =>
   {
-    if( _global_.process.platform === 'darwin' )
-    process = process.process;
+    // if( _global_.process.platform === 'darwin' )
+    // process = process.process;
     
     session.process = process;
     if( err )
