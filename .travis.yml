@@ -4,9 +4,9 @@ language: node_js
 addons:
   chrome: stable
 os:
-  - linux
+  # - linux
   - osx
-  - windows
+  # - windows
 node_js:
   # - '10'
   # - '12'
