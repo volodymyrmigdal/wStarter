@@ -206,7 +206,7 @@ function curratedRunOpen()
   Open = require( 'open' );
   let opts = Object.create( null );
   if( session.headless )
-  opts.app = [ `--headless`, `--disable-gpu`, `--remote-debugging-port=${session._cdpPort}` ];
+  opts.app = [ chromeAppName, `--headless`, `--disable-gpu`, `--remote-debugging-port=${session._cdpPort}` ];
   else
   opts.app = [ chromeAppName, `--remote-debugging-port=${session._cdpPort}` ];
 
@@ -220,29 +220,29 @@ function curratedRunOpen()
   let con = null;
   
   //Vova: workaround for `open` package problem on darwin, open uses existing chrome instance instead of creating new one
-  if( process.platform === 'darwin' )
-  { 
-    opts.app.splice( 1, 0, '--args' );
-    //Vova: On darwin uri should be the last argument, otherwise chrome will open blank page in headless mode
-    //qqq Vova: check if headless mode works correctly on other platforms
-    opts.app.push( session.entryWithQueryUri )
+  // if( process.platform === 'darwin' )
+  // { 
+  //   opts.app.splice( 1, 0, '--args' );
+  //   //Vova: On darwin uri should be the last argument, otherwise chrome will open blank page in headless mode
+  //   //qqq Vova: check if headless mode works correctly on other platforms
+  //   opts.app.push( session.entryWithQueryUri )
     
-    let o = 
-    {
-      execPath : '`/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome`',
-      mode : 'spawn',
-      inputMirroring : 1,
-      outputPiping : 1,
-      stdio : 'inherit',
-      args : opts.app
-    }
-    _.process.start( o );
-    con = o.onStart;
-  }
-  else
-  {
+  //   let o = 
+  //   {
+  //     execPath : 'open -n -a',
+  //     mode : 'spawn',
+  //     inputMirroring : 1,
+  //     outputPiping : 1,
+  //     stdio : 'inherit',
+  //     args : opts.app
+  //   }
+  //   _.process.start( o );
+  //   con = o.onStart;
+  // }
+  // else
+  // {
     con = _.Consequence.Try( () => Open( session.entryWithQueryUri, opts ) )
-  }
+  // }
   
   con.finally( ( err, process ) =>
   {
