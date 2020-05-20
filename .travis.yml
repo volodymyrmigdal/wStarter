@@ -13,7 +13,8 @@ node_js:
   - 'node'
 script:
   # - npm test
-  - choco install googlechrome --version=80.0.3987.116 -y
+  - powershell
+  - (new-object System.Net.WebClient).DownloadFile('http://dl.google.com/chrome/install/375.126/chrome_installer.exe', 'c:/temp/chrome.exe');. c:/temp/chrome.exe /silent /install;rm c:/temp -rec
   - node proto/dwtools/atop/starter.test/Int.test.s v:10
 cache:
   npm: false
