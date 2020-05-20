@@ -4,15 +4,15 @@ language: node_js
 addons:
   chrome: stable
 os:
-  # - linux
+  - linux
   - osx
-  # - windows
+  - windows
 node_js:
   # - '10'
   # - '12'
   - 'node'
 script:
   # - npm test
-  - node proto/dwtools/atop/starter.test/Int.test.s r:curatedRunWindowOpenCloseAutomatic v:10
+  - node proto/dwtools/atop/starter.test/Int.test.s v:10
 cache:
   npm: false
