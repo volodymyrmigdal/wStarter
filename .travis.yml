@@ -13,7 +13,7 @@ node_js:
   - 'node'
 script:
   # - npm test
-  - choco install googlechrome -y
+  - choco install googlechrome --version=80.0.3987.116 -y
   - node proto/dwtools/atop/starter.test/Int.test.s v:10
 cache:
   npm: false
