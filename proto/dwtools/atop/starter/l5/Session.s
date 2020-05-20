@@ -105,10 +105,10 @@ function form()
   let session = this;
   let system = session.system;
   let logger = system.logger;
-
+  
   try
   {
-    session._form();
+    return session._form();
   }
   catch( err )
   {
