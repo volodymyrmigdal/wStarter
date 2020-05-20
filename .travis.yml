@@ -1,12 +1,12 @@
 
-sudo: false
+sudo: required
 language: node_js
 addons:
   chrome: beta
 os:
-  # - linux
+  - linux
   - osx
-  # - windows
+  - windows
 node_js:
   # - '10'
   # - '12'
