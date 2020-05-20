@@ -1,11 +1,11 @@
 
-sudo: false
+sudo: required
 language: node_js
 addons:
   chrome: stable
 os:
-  - osx
-  - linux
+  # - osx
+  # - linux
   - windows
 node_js:
   # - '10'
@@ -13,6 +13,7 @@ node_js:
   - 'node'
 script:
   # - npm test
+  - choco install googlechrome -y
   - node proto/dwtools/atop/starter.test/Int.test.s v:10
 cache:
   npm: false
