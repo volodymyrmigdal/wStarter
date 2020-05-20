@@ -297,7 +297,7 @@ async function includeCss( test )
 
   a.reflect();
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : a.routinePath,
     entryPath : 'Index.js',
@@ -345,7 +345,7 @@ async function includeExcludingManual( test )
 
   a.reflect();
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : a.routinePath,
     entryPath : 'Index.js',
@@ -391,7 +391,7 @@ async function includeModule( test )
 
   await a.will({ args : '.build' })
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
     entryPath : 'Index.js',
@@ -445,7 +445,7 @@ async function workerWithInclude( test )
   // var files = a.fileProvider.dirRead( a.routinePath );
   // logger.log( `files : ${files}` );
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : a.routinePath,
     entryPath : 'Index.js',
@@ -496,7 +496,7 @@ async function includeModuleInWorker( test )
 
   await a.will({ args : '.build' })
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
     entryPath : 'Index.js',
@@ -552,7 +552,7 @@ async function includeModuleInWorkerThrowing( test )
 
   await a.will({ args : '.build' })
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ), /* xxx : replace */
     entryPath : 'Index.js',
