@@ -206,7 +206,7 @@ function curratedRunOpen()
   Open = require( 'open' );
   let opts = Object.create( null );
   if( session.headless )
-  opts.app = [ chromeAppName, `--no-sandbox`, `--no-first-run`, `--disable-extensions`, `--headless`, `--disable-gpu`, `--remote-debugging-port=${session._cdpPort}` ];
+  opts.app = [ chromeAppName, `--headless`, `--disable-gpu`, `--remote-debugging-port=${session._cdpPort}` ];
   else
   opts.app = [ chromeAppName, `--remote-debugging-port=${session._cdpPort}` ];
 
@@ -225,7 +225,7 @@ function curratedRunOpen()
     opts.app.splice( 1, 0, '--args' );
     //Vova: On darwin uri should be the last argument, otherwise chrome will open blank page in headless mode
     //qqq Vova: check if headless mode works correctly on other platforms
-    opts.app.push( session.entryWithQueryUri )
+    opts.app.push( session.entryWithQueryUri, '&' )
     
     let o = 
     {
@@ -233,7 +233,7 @@ function curratedRunOpen()
       mode : 'spawn',
       inputMirroring : 1,
       outputPiping : 1,
-      stdio : 'pipe',
+      stdio : 'inherit',
       args : opts.app
     }
     _.process.start( o );
