@@ -23,8 +23,8 @@ submodule :
     path : npm:///wloggersocket
     enabled : 0 # submodule
 
-  open:
-    path : npm:///open#7.0.3
+  'chrome-launcher':
+    path : npm:///chrome-launcher#0.13.2
     enabled : 0 # submodule
   'chrome-remote-interface' :
     path : npm:///chrome-remote-interface#0.28.1
