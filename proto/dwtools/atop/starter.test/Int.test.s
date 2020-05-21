@@ -30,7 +30,12 @@ function onSuiteBegin()
   context.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
   context.willbeExecPath = _.module.resolve( 'willbe' );
   context.appJsPath = _.module.resolve( 'wStarter' );
-
+  
+  let isTravis = _.longHas( _.mapKeys( process.env ), [ 'TRAVIS', 'CI' ] );
+  
+    context.deltaTime1 *= 2;
+    context.deltaTime2 *= 4;
+    context.deltaTime3 *= 2;
 }
 
 //
@@ -292,7 +297,7 @@ async function includeCss( test )
 
   a.reflect();
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : a.routinePath,
     entryPath : 'Index.js',
@@ -340,7 +345,7 @@ async function includeExcludingManual( test )
 
   a.reflect();
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : a.routinePath,
     entryPath : 'Index.js',
@@ -386,7 +391,7 @@ async function includeModule( test )
 
   await a.will({ args : '.build' })
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
     entryPath : 'Index.js',
@@ -440,7 +445,7 @@ async function workerWithInclude( test )
   // var files = a.fileProvider.dirRead( a.routinePath );
   // logger.log( `files : ${files}` );
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : a.routinePath,
     entryPath : 'Index.js',
@@ -491,7 +496,7 @@ async function includeModuleInWorker( test )
 
   await a.will({ args : '.build' })
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ),
     entryPath : 'Index.js',
@@ -547,7 +552,7 @@ async function includeModuleInWorkerThrowing( test )
 
   await a.will({ args : '.build' })
 
-  let session = starter.start
+  let session = await starter.start
   ({
     basePath : _.path.join( a.routinePath, 'out/debug' ), /* xxx : replace */
     entryPath : 'Index.js',
