@@ -19,10 +19,11 @@ jobs:
         node-version: [ 12.x ]
 
     steps:
+    - run: git config --global core.autocrlf input
     - uses: actions/checkout@v2
     - name: ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm i
-    - run: node proto/dwtools/atop/starter.test/Int.test.s r:includeModule v:10
+    - run: npm test
