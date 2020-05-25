@@ -1,4 +1,4 @@
 *.s linguist-language=JavaScript
 *.ss linguist-language=JavaScript
 *.js linguist-language=JavaScript
-*.yml eol=lf
+*.yml text eol=lf
