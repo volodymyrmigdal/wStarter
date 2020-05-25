@@ -19,6 +19,8 @@ jobs:
         node-version: [ 12.x ]
 
     steps:
+    - name: configurate-git
+    - run: git config --global core.autocrlf false
     - uses: actions/checkout@v2
     - name: ${{ matrix.node-version }}
       uses: actions/setup-node@v1
