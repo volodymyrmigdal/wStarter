@@ -337,18 +337,6 @@ function entryFind()
 
   session.entryPath = found[ 0 ].absolute;
 
-  // if( session.format === null )
-  // {
-  //   let exts = path.exts( session.entryPath );
-  //   if( _.longHas( exts, 'html' ) || _.longHas( exts, 'htm' ) )
-  //   session.format = 'html';
-  //   if( session.format === null )
-  //   session.format = 'js';
-  // }
-  //
-  // if( session.servlet && path.isAbsolute( session.entryPath ) && session.format )
-  // session.entryUriForm();
-
 }
 
 // --
@@ -506,7 +494,6 @@ let Composes =
   entryPath : null,
   allowedPath : null,
   fallbackPath : null,
-  // templatePath : null, xxx
 
   withModule : null, /* qqq : cover */
   withScripts : null, /* [ single, include, inline, 0, false ] */ /* qqq : cover */
@@ -528,8 +515,6 @@ let Associates =
 {
 
   system : null,
-  // servlet : null, // xxx
-  // process : null, // xxx
 
 }
 
@@ -538,25 +523,14 @@ let Restricts =
 
   id : null,
   error : null,
-  // curratedRunState : null, // xxx
   unforming : 0,
 
-  // entryUri : null, // xxx
-  // entryWithQueryUri : null, xxx
-
   _timeOutTimer : null,
-
-  // cdp : null, // xxx
-  // _cdpPollingPeriod : 250,
-  // _cdpPort : null,
-  // _cdpClosing : 0,
 
 }
 
 let Statics =
 {
-  // _CurratedRunWindowIsOpened, // xxx
-  // _CdpPortDefault : 19222, // xxx
 }
 
 let Events =

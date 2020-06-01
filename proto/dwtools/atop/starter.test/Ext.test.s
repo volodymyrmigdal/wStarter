@@ -3874,9 +3874,9 @@ var Self =
     sourcesJoinOptionInterpreterOptionBasePath,
     sourcesJoinRoutineInclude,
     sourcesJoinRequireGlob,
-    sourcesJoinRequireGlobAnyAny,
-    // sourcesJoinRequireGlobAnyExt,
-    // sourcesJoinExpressServer,
+    sourcesJoinRequireGlobAnyAny, /* xxx : implement */
+    sourcesJoinRequireGlobAnyExt,
+    // sourcesJoinExpressServer, /* xxx : implement */
 
     // html for
 
@@ -3889,9 +3889,9 @@ var Self =
     startRecursion,
     startRecursionSingle,
     startBaseDeducingFromAllowed,
-    // startOptionWithModule,
+    // startOptionWithModule, /* xxx : implement */
     startWithNpmPackage,
-    // startTestSuite,
+    // startTestSuite, /* xxx : implement */
     startHtml,
 
     // worker
