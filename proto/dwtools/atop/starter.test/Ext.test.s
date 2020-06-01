@@ -3875,8 +3875,8 @@ var Self =
     sourcesJoinRoutineInclude,
     sourcesJoinRequireGlob,
     sourcesJoinRequireGlobAnyAny,
-    sourcesJoinRequireGlobAnyExt,
-    sourcesJoinExpressServer,
+    // sourcesJoinRequireGlobAnyExt,
+    // sourcesJoinExpressServer,
 
     // html for
 
