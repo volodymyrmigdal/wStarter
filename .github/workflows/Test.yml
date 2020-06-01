@@ -18,7 +18,6 @@ jobs :
         os : [ windows-latest, ubuntu-latest, macos-latest ]
         node-version : [ 10.x, 11.x, 12.x, 13.x, 14.x ]
     steps :
-    - run: git config --global core.autocrlf input
     - uses : actions/checkout@v2
     - name : ${{ matrix.node-version }}
       uses : actions/setup-node@v1
