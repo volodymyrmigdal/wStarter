@@ -277,9 +277,6 @@ let Restricts =
 
 let Statics =
 {
-
-  // PathExcludeNotAllowed,
-
 }
 
 // --
