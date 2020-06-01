@@ -648,7 +648,7 @@ _.EventHandler.mixin( Self );
 
 //
 
-if( typeof module !== 'undefined' && module !== null )
+if( typeof module !== 'undefined' )
 module[ 'exports' ] = Self;
 _.starter.session[ Self.shortName ] = Self;
 
