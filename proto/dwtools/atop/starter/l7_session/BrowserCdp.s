@@ -67,10 +67,10 @@ function _form()
   let session = this;
   let system = session.system;
   let logger = system.logger;
-  
+
   let ready = new _.Consequence().take( null );
-  
-  ready.then( () => 
+
+  ready.then( () =>
   {
     session.fieldsForm();
 
@@ -89,20 +89,20 @@ function _form()
 
     if( session.entryPath )
     session.entryFind();
-    
+
     return session;
   })
 
   if( session.curating )
   ready.then( () => session.curratedRunOpen() )
 
-  ready.then( () => 
-  { 
-    session.timerForm() 
-    
+  ready.then( () =>
+  {
+    session.timerForm()
+
     if( session.loggingOptions )
     logger.log( session.exportString() );
-    
+
     return session;
   })
 
@@ -202,118 +202,35 @@ function entryUriForm()
 // currated
 // --
 
-// function curratedRunOpen()
-// {
-//   let session = this;
-//   let system = session.system;
-//   let fileProvider = system.fileProvider;
-//   let path = system.fileProvider.path;
-
-//   let chromeAppName = 'google-chrome';//linux
-//   if( process.platform === 'win32' )
-//   chromeAppName = 'chrome';
-//   else if( process.platform === 'darwin' )
-//   chromeAppName = 'google chrome'
-  
-//   if( !Open )
-//   Open = require( 'open' );
-//   let opts = Object.create( null );
-//   if( session.headless )
-//   opts.app = [ chromeAppName, `--headless`, `--disable-gpu`, `--remote-debugging-port=${session._cdpPort}` ];
-//   else
-//   opts.app = [ chromeAppName, `--remote-debugging-port=${session._cdpPort}` ];
-
-//   let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome` );
-//   fileProvider.dirMake( tempDir );
-//   _.assert( fileProvider.isDir( tempDir ) );
-
-//   if( opts.app )
-//   opts.app.push( `--user-data-dir=${_.path.nativize( tempDir )}` )
-  
-//   let con = null;
-  
-//   //Vova: workaround for `open` package problem on darwin, open uses existing chrome instance instead of creating new one
-//   if( process.platform === 'darwin' )
-//   { 
-//     opts.app.splice( 1, 0, '--args' );
-//     //Vova: On darwin uri should be the last argument, otherwise chrome will open blank page in headless mode
-//     //qqq Vova: check if headless mode works correctly on other platforms
-//     opts.app.push( session.entryWithQueryUri )
-    
-//     let o = 
-//     {
-//       execPath : 'open -n -a',
-//       mode : 'spawn',
-//       inputMirroring : 1,
-//       outputPiping : 1,
-//       stdio : 'inherit',
-//       args : opts.app
-//     }
-//     _.process.start( o );
-//     con = o.onStart;
-//   }
-//   else
-//   {
-//     con = _.Consequence.Try( () => Open( session.entryWithQueryUri, opts ) )
-//   }
-  
-//   con.finally( ( err, process ) =>
-//   {
-//     if( _global_.process.platform === 'darwin' )
-//     process = process.process;
-    
-//     session.process = process;
-//     if( err )
-//     return session.errorEncounterEnd( err );
-//     session.process.on( 'exit', () =>
-//     {
-//     });
-//     if( system.verbosity >= 3 )
-//     {
-//       if( system.verbosity >= 7 )
-//       logger.log( session.process );
-//       if( system.verbosity >= 5 )
-//       logger.log( `Started ${_.ct.format( session.entryPath, 'path' )}` );
-//     }
-//     session._curatedRunLaunchBegin();
-//     return _.time.out( 500, () => /* xxx */
-//     {
-//       session.cdpConnect();
-//       return process;
-//     });
-//   });
-
-// }
-
 function curratedRunOpen()
 {
   let session = this;
   let system = session.system;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
-  
+
   if( !ChromeLauncher )
   ChromeLauncher = require( 'chrome-launcher' );
-  
+
   let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome` );
   fileProvider.dirMake( tempDir );
   _.assert( fileProvider.isDir( tempDir ) );
-  
+
   let opts = Object.create( null );
-  
+
   opts.startingUrl = session.entryWithQueryUri;
   opts.userDataDir = _.path.nativize( tempDir );
   opts.port = session._cdpPort
   opts.chromeFlags = [];
-  
+
   if( session.headless )
   opts.chromeFlags.push( '--headless', '--disable-gpu' );
-  
+
   return _.Consequence.Try( () => ChromeLauncher.launch( opts ) )
-  .finally( ( err, chrome ) => 
+  .finally( ( err, chrome ) =>
   {
     session.process = chrome.process;
-    
+
     if( err )
     return session.errorEncounterEnd( err );
     session.process.on( 'exit', () =>
@@ -380,8 +297,6 @@ function _curatedRunTerminateEnd()
   if( session.curratedRunState === 'terminated' )
   return;
 
-  // console.log( _.introspector.stack() );
-
   session.curratedRunState = 'terminated';
   session.eventGive({ kind : 'curatedRunTerminateEnd' });
 
@@ -397,7 +312,6 @@ function _curratedRunWindowClose()
   let system = session.system;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
-  // let cdp = session.cdp;
   let cdp = session._cdpConnect({});
 
   _.assert( _.longHas( [ 'launching', 'launched' ], session.curratedRunState ) );
@@ -419,7 +333,6 @@ function _curratedRunPageEmptyOpen( o )
   let system = session.system;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
-  // let cdp = session.cdp;
   let cdp = session._cdpConnect({});
 
   o = o || Object.create( null );
@@ -445,7 +358,6 @@ function _curratedRunPageClose( o )
   let system = session.system;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
-  // let cdp = session.cdp;
   let cdp = session._cdpConnect({});
 
   o = o || Object.create( null );
@@ -459,16 +371,12 @@ function _curratedRunPageClose( o )
     _.assert( !!cdp );
     if( o.targetId === undefined || o.targetId === null )
     {
-      // logger.log( 'await cdp.Target.getTargets()' );
       let targets = await cdp.Target.getTargets();
-      // logger.log( 'targets', targets.targetInfos.length, targets.targetInfos );
-      debugger
       let filtered = _.filter( targets.targetInfos, { url : session.entryWithQueryUri } );
       _.sure( filtered.length >= 1, `Found no tab with URI::${session.entryWithQueryUri}` );
       _.sure( filtered.length <= 1, `Found ${filtered.length} tabs with URI::${session.entryWithQueryUri}` );
       o.targetId = filtered[ 0 ].targetId;
     }
-    // logger.log( `await cdp.Target.closeTarget({ targetId : ${o.targetId} })` );
     return await cdp.Target.closeTarget( o );
   });
 }
@@ -539,8 +447,6 @@ async function cdpConnect()
 
   _.assert( session.cdp === null );
 
-  // session._curatedRunLaunchBegin();
-
   session.cdp = await session._cdpConnect({ throwing : 1 });
 
   session._curatedRunLaunchEnd();
@@ -571,12 +477,8 @@ async function _cdpReconnectAndClose()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
-  // console.log( '_cdpReconnectAndClose.a' );
-
   if( session._cdpClosing )
   return;
-
-  // console.log( '_cdpReconnectAndClose.b' );
 
   if( session.curratedRunState !== 'terminated' )
   session.curratedRunState = 'terminating';
@@ -584,7 +486,6 @@ async function _cdpReconnectAndClose()
   if( session.cdp )
   try
   {
-    // console.log( 'session.cdp.close():_cdpReconnectAndClose:1' );
     await session.cdp.close();
     session.cdp = null;
   }
@@ -597,8 +498,6 @@ async function _cdpReconnectAndClose()
   {
     session.cdp = await session._cdpConnect({ throwing : 0 });
     await session.cdp.Browser.close();
-    debugger;
-    // console.log( 'session.cdp.close():_cdpReconnectAndClose:2' );
     await session.cdp.close();
     session.cdp = null;
     session._curatedRunTerminateEnd();
@@ -624,8 +523,6 @@ function cdpClose()
 
   _.assert( !!session.cdp );
 
-  // console.log( 'cdpClose.a' );
-
   if( session._cdpClosing )
   return ready;
   if( session.curratedRunState === 'terminated' || session.curratedRunState === 'terminating' )
@@ -637,16 +534,12 @@ function cdpClose()
   if( session.cdp )
   ready.then( () =>
   {
-    // console.log( 'cdpClose.b' );
     return new _.Consequence().take( null ).or([ browserCloseAttempt( 0 ), browserCloseAttempt( 10 ) ]);
-    // return session.cdp.Browser.close(); /* qqq xxx : stuck here sometimes! */
   });
 
   ready.then( () =>
   {
     closed = true;
-    // console.log( 'cdpClose.c' );
-    // console.log( 'session.cdp.close():cdpClose' );
     return session.cdp.close();
   });
 
@@ -659,7 +552,6 @@ function cdpClose()
 
   ready.then( ( arg ) =>
   {
-    // console.log( 'cdpClose.d' );
     session._cdpClosing = 0;
     session.cdp = null;
     session._curatedRunTerminateEnd();
@@ -695,43 +587,10 @@ function cdpClose()
 // relations
 // --
 
-// let Bools =
-// {
-//
-//   curating : 1, /* qqq : cover */
-//   headless : 0, /* qqq : cover? */
-//   loggingApplication : 1, /* qqq : cover */
-//   loggingRequestsAll : 0, /* qqq : cover */
-//   loggingRequests  : 0, /* qqq : cover */
-//   loggingSessionEvents : 0, /* qqq : cover */
-//   loggingOptions : 0, /* qqq : cover */
-//   loggingSourceFiles : 0, /* qqq : cover */
-//   loggingPathTranslations : 0, /* qqq : cover */
-//   proceduring : 1, /* qqq : cover */
-//   resolvingNpm : null, /* qqq : cover */
-//   withNpm : 1, /* qqq : cover */
-//   catchingUncaughtErrors : 1, /* qqq : cover */
-//   naking : 0, /* qqq : cover */
-//
-// }
-
 let Composes =
 {
 
-  // basePath : null,
-  // entryPath : null,
-  // allowedPath : null,
-  // fallbackPath : null,
   templatePath : null,
-  //
-  // withModule : null, /* qqq : cover */
-  // withScripts : null, /* [ single, include, inline, 0, false ] */ /* qqq : cover */
-  // withStarter : null, /* [ include, inline, 0, false ] */ /* qqq : cover */
-  // format : null, /* qqq : cover */
-  // timeOut : null, /* qqq : cover */
-  // interpreter : 'browser',
-
-  // ... Bools,
 
 }
 
@@ -744,7 +603,6 @@ let InstanceDefaults =
 let Associates =
 {
 
-  // system : null,
   servlet : null,
   process : null,
 
@@ -753,15 +611,10 @@ let Associates =
 let Restricts =
 {
 
-  // id : null,
-  // error : null,
   curratedRunState : null,
-  // unforming : 0,
 
   entryUri : null,
   entryWithQueryUri : null,
-
-  // _timeOutTimer : null,
 
   cdp : null,
   _cdpPollingPeriod : 250,
@@ -778,10 +631,6 @@ let Statics =
 
 let Events =
 {
-  // 'curatedRunLaunchBegin' : {},
-  // 'curatedRunLaunchEnd' : {},
-  // 'curatedRunTerminateEnd' : {},
-  // 'timeOut' : {},
 }
 
 let Accessor =
@@ -826,7 +675,6 @@ let Proto =
 
   // relations
 
-  // Bools,
   Composes,
   InstanceDefaults,
   Associates,

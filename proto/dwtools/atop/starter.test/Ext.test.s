@@ -73,7 +73,7 @@ function assetFor( test, name )
     ready : a.ready,
     mode : 'fork',
   })
-  
+
   //qqq Vova: probably we should add path resolving into starter
   a.routinePath = _.fileProvider.pathResolveLinkFull( a.routinePath ).filePath;
 
@@ -91,7 +91,7 @@ function sourcesJoin( test )
   let outputPath = a.abs( 'Index.js' );
 
   a.reflect();
-  
+
   a.appStart( `.sources.join ${a.routinePath}/** entryPath:File2.js` )
   .then( ( op ) =>
   {
@@ -948,7 +948,7 @@ exports : object
 require : function
 
 Index.js:end
-`   
+`
     test.identical( op.exitCode, 0 );
     test.equivalent( op.output, output );
     return op;
@@ -3758,6 +3758,7 @@ async function loggingErrorInWorkerNoFile( test )
     test.identical( _.strCount( op.output, 'Worker:begin' ), 1 );
     test.identical( _.strCount( op.output, 'err:begin' ), 1 );
     test.identical( _.strCount( op.output, 'err:end' ), 1 );
+    test.identical( _.strCount( op.output, 'Worker:end' ), 1 );
 
     test.identical( _.strCount( op.output, 'nhandled' ), 0 );
     test.identical( _.strCount( op.output, 'ncaught' ), 0 );
@@ -3774,9 +3775,17 @@ async function loggingErrorInWorkerNoFile( test )
 //     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
 // xxx : investigate difference on different OS's
 
+//     var exp =
+// `
+// Worker:end
+//  . event::timeOut
+//  . event::curatedRunTerminateEnd
+// `
+//     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+
     var exp =
 `
-Worker:end
+ . event::curatedRunLaunchEnd
  . event::timeOut
  . event::curatedRunTerminateEnd
 `
@@ -3865,9 +3874,9 @@ var Self =
     sourcesJoinOptionInterpreterOptionBasePath,
     sourcesJoinRoutineInclude,
     sourcesJoinRequireGlob,
-    sourcesJoinRequireGlobAnyAny,
+    sourcesJoinRequireGlobAnyAny, /* xxx : implement */
     sourcesJoinRequireGlobAnyExt,
-    sourcesJoinExpressServer,
+    // sourcesJoinExpressServer, /* xxx : implement */
 
     // html for
 
@@ -3880,9 +3889,9 @@ var Self =
     startRecursion,
     startRecursionSingle,
     startBaseDeducingFromAllowed,
-    // startOptionWithModule,
+    // startOptionWithModule, /* xxx : implement */
     startWithNpmPackage,
-    // startTestSuite,
+    // startTestSuite, /* xxx : implement */
     startHtml,
 
     // worker

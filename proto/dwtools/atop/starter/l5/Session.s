@@ -105,7 +105,7 @@ function form()
   let session = this;
   let system = session.system;
   let logger = system.logger;
-  
+
   try
   {
     return session._form();
@@ -134,18 +134,8 @@ function _form()
     logger.log( ` . event::${e.kind}` );
   });
 
-  // if( session._cdpPort === null )
-  // session._cdpPort = session._CdpPortDefault;
-  //
-  // session.pathsForm();
-  // if( !session.servlet )
-  // session.servletOpen();
-
   if( session.entryPath )
   session.entryFind();
-
-  // if( session.curating )
-  // session.curratedRunOpen();
 
   session.timerForm();
 
@@ -247,9 +237,6 @@ function pathsForm()
 
   session.basePath = path.resolve( session.basePath || '.' );
 
-  // if( session.templatePath )
-  // session.templatePath = path.resolve( session.basePath, session.templatePath );
-
   allowedPathDeduce2();
 
   /* */
@@ -349,18 +336,6 @@ function entryFind()
   throw _.errBrief( `Found ${found.length} of ${session.entryPath}, but expects single file.` );
 
   session.entryPath = found[ 0 ].absolute;
-
-  // if( session.format === null )
-  // {
-  //   let exts = path.exts( session.entryPath );
-  //   if( _.longHas( exts, 'html' ) || _.longHas( exts, 'htm' ) )
-  //   session.format = 'html';
-  //   if( session.format === null )
-  //   session.format = 'js';
-  // }
-  //
-  // if( session.servlet && path.isAbsolute( session.entryPath ) && session.format )
-  // session.entryUriForm();
 
 }
 
@@ -519,7 +494,6 @@ let Composes =
   entryPath : null,
   allowedPath : null,
   fallbackPath : null,
-  // templatePath : null, xxx
 
   withModule : null, /* qqq : cover */
   withScripts : null, /* [ single, include, inline, 0, false ] */ /* qqq : cover */
@@ -541,8 +515,6 @@ let Associates =
 {
 
   system : null,
-  // servlet : null, // xxx
-  // process : null, // xxx
 
 }
 
@@ -551,25 +523,14 @@ let Restricts =
 
   id : null,
   error : null,
-  // curratedRunState : null, // xxx
   unforming : 0,
 
-  // entryUri : null, // xxx
-  // entryWithQueryUri : null, xxx
-
   _timeOutTimer : null,
-
-  // cdp : null, // xxx
-  // _cdpPollingPeriod : 250,
-  // _cdpPort : null,
-  // _cdpClosing : 0,
 
 }
 
 let Statics =
 {
-  // _CurratedRunWindowIsOpened, // xxx
-  // _CdpPortDefault : 19222, // xxx
 }
 
 let Events =
