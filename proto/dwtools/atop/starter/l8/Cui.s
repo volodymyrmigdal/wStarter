@@ -2,11 +2,6 @@
 
 'use strict';
 
-/*
-cls && local-starter .html.for builder/include/dwtools/amid/starter/processes.experiment/**
-cls && local-starter .serve .
-*/
-
 //
 
 let _ = _global_.wTools;
@@ -100,7 +95,7 @@ function commandsMake()
   {
     'help' :              { e : _.routineJoin( cui, cui.commandHelp ),          },
     'version' :           { e : _.routineJoin( cui, cui.commandVersion ),       },
-    'imply' :             { e : _.routineJoin( cui, cui.commandImply ),         },
+    'imply' :             { e : _.routineJoin( cui, cui.commandImply ),         }, /* qqq : remove. ask how */
     'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor ),       },
     'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin ),   },
     'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen ),      },
@@ -340,7 +335,6 @@ commandHttpOpen.commandProperties =
   basePath : 'Path to make available over HTTP.',
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : same as basePath.',
   templatePath : 'Path to HTML file to use as a template.',
-  // includePath : 'Path to make available. Could be specidied several such paths. If basePath is not specified then includePath is used to deduce basePath.',
   format : 'Explicitly specified format of entry file. Could be: js / html.',
   withModule : 'Specify one or several modules to include extending basePath. If basePath is specified explicitly then option::withModule has no effect.',
   withNpm : 'Include npm paths into the list of allowed paths and enable npm packages to be available. Default : true',
@@ -351,7 +345,6 @@ commandHttpOpen.commandProperties =
   loggingOptions : 'Enable logging of options of session. Default : false.',
   loggingSourceFiles : 'Enable logging of constructing source files. Default : false',
   loggingPathTranslations : 'Enable logging of path translations. Default : false',
-  // resolvingNpm : 'Make npm modules available. Default : true',
   proceduring : 'Watching asynchronous procedures to terminate the application when all will run out. Default : true.',
   catchingUncaughtErrors : 'Catching uncaught errors and handling them properly. Default : true.',
   naking : 'Disable wrapping of scripts. Default : false.',

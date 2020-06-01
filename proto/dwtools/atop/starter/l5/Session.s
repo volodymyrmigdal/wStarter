@@ -105,7 +105,7 @@ function form()
   let session = this;
   let system = session.system;
   let logger = system.logger;
-  
+
   try
   {
     return session._form();
@@ -134,18 +134,8 @@ function _form()
     logger.log( ` . event::${e.kind}` );
   });
 
-  // if( session._cdpPort === null )
-  // session._cdpPort = session._CdpPortDefault;
-  //
-  // session.pathsForm();
-  // if( !session.servlet )
-  // session.servletOpen();
-
   if( session.entryPath )
   session.entryFind();
-
-  // if( session.curating )
-  // session.curratedRunOpen();
 
   session.timerForm();
 
@@ -246,9 +236,6 @@ function pathsForm()
   basePathDeduce();
 
   session.basePath = path.resolve( session.basePath || '.' );
-
-  // if( session.templatePath )
-  // session.templatePath = path.resolve( session.basePath, session.templatePath );
 
   allowedPathDeduce2();
 
