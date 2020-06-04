@@ -23,7 +23,7 @@
 //   let self = this;
 
 //   self.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
-//   self.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
+//   self.assetsOriginalPath = _.path.join( __dirname, '_asset' );
 //   self.find = _.fileProvider.filesFinder
 //   ({
 //     withTerminals : 1,
@@ -50,7 +50,7 @@
 
 //   a.test = test;
 //   a.name = name;
-//   a.originalAssetPath = _.path.join( self.assetsOriginalSuitePath, name );
+//   a.originalAssetPath = _.path.join( self.assetsOriginalPath, name );
 //   a.routinePath = _.path.join( self.suiteTempPath, test.name );
 //   a.fileProvider = _.fileProvider;
 //   a.path = _.fileProvider.path;
@@ -193,7 +193,7 @@
 //   context :
 //   {
 //     suiteTempPath : null,
-//     assetsOriginalSuitePath : null,
+//     assetsOriginalPath : null,
 //     find : null,
 //     assetFor
 //   },
