@@ -6,7 +6,8 @@
 
 let _ = _global_.wTools;
 let Parent = null;
-let Self = function wStarterCui( o )
+let Self = wStarterCui;
+function wStarterCui( o )
 {
   return _.workpiece.construct( Self, this, arguments );
 }

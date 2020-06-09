@@ -11,7 +11,8 @@
 let Jsdom, Pretty;
 let _ = _global_.wTools;
 let Parent = null
-let Self = function wStarterMakerLight( o )
+let Self = wStarterMakerLight;
+function wStarterMakerLight( o )
 {
   return _.workpiece.construct( Self, this, arguments );
 }

@@ -4,7 +4,8 @@
 
 let _ = _global_.wTools;
 let Parent = _.starter.Maker;
-let Self = function wStarterMaker2( o )
+let Self = wStarterMaker2;
+function wStarterMaker2( o )
 {
   return _.workpiece.construct( Self, this, arguments );
 }

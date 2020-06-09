@@ -7,7 +7,8 @@ let ChromeLauncher;
 
 let _ = _global_.wTools;
 let Parent = _.starter.session.Abstract;
-let Self = function wStarterSessioBrowserCdp( o )
+let Self = wStarterSessioBrowserCdp;
+function wStarterSessioBrowserCdp( o )
 {
   return _.workpiece.construct( Self, this, arguments );
 }
