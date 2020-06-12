@@ -8,7 +8,7 @@
   "files" : [ "proto/dwtools/atop/starter", "proto/dwtools/Tools.s" ],
   "scripts" :
   {
-    "test" : "wtest .run 'proto/**'",
+    "test" : "wtest .run 'proto/**' rapidity:-3",
     "docgen" : "wdocgen proto",
     "single-process-starter" : "node proto/dwtools/atop/starter/entry/Exec",
     "debug-starter" : "node proto/dwtools/atop/starter/entry/ExecDebug",
