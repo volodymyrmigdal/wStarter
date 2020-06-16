@@ -1,5 +1,5 @@
 {
-  "engine": "node >= 8.0.0",
+  "engine": "node >= 10.0.0",
   "scripts": {
     "pack": "webpack --config ./webpack/webpack.config.js"
   },
