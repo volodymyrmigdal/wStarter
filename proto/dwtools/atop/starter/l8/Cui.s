@@ -59,7 +59,7 @@ function exec()
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
   let appArgs = _.process.args();
-  let ca = cui.commandsMake();
+  let ca = cui._commandsMake();
 
   return _.Consequence
   .Try( () =>
@@ -80,7 +80,7 @@ function exec()
 // commands
 // --
 
-function commandsMake()
+function _commandsMake()
 {
   let cui = this;
   let starter = cui.starter;
@@ -134,7 +134,7 @@ commandHelp.hint = 'Get help.';
 
 //
 
-function commandVersion( e )
+function commandVersion( e ) /* xxx qqq : move to NpmTools */
 {
   let cui = this;
   let starter = cui.starter;
@@ -446,7 +446,7 @@ let Extend =
 
   // commands
 
-  commandsMake,
+  _commandsMake,
   commandHelp,
   commandVersion,
 

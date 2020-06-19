@@ -28,7 +28,7 @@
 //   ({
 //     withTerminals : 1,
 //     withDirs : 1,
-//     withTransient/*maybe withStem*/ : 1,
+//     withTransient : 1,
 //     allowingMissed : 1,
 //     maskPreset : 0,
 //     outputFormat : 'relative',
