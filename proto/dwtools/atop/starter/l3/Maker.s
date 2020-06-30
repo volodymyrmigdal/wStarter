@@ -11,7 +11,8 @@
 let Jsdom, Pretty;
 let _ = _global_.wTools;
 let Parent = null
-let Self = function wStarterMakerLight( o )
+let Self = wStarterMakerLight;
+function wStarterMakerLight( o )
 {
   return _.workpiece.construct( Self, this, arguments );
 }
@@ -77,8 +78,6 @@ function sourceWrapSplits( o )
   _.routineOptions( sourceWrapSplits, arguments );
   _.assert( arguments.length === 1 );
   _.assert( _.longHas( [ 'njs', 'browser' ], o.interpreter ) );
-
-  // logger.log( ` . sourceWrapSplits ${o.filePath}` );
 
   let relativeFilePath = _.starter.pathRealToVirtual
   ({
@@ -241,7 +240,6 @@ function sourcesJoinSplits( o )
   _.assert( _.boolLike( o.proceduring ) );
   _.assert( _.boolLike( o.globing ) );
   _.assert( _.boolLike( o.catchingUncaughtErrors ) );
-  // _.assert( _.boolLike( o.catchingUncaughtErrors ) );
   _.assert( _.boolLike( o.withServer ) );
   _.assert( _.boolLike( o.loggingApplication ) );
   _.assert( _.boolLike( o.loggingSourceFiles ) );
@@ -335,8 +333,6 @@ function sourcesJoinSplits( o )
 
   /* globing */
 
-  /* ttt */
-  // if( 1 )
   if( !o.withServer )
   if( o.globing )
   r.globing =
@@ -626,7 +622,6 @@ function sourcesJoinSplits( o )
   function globingExtract()
   {
 
-    // return '';
     return `
 
   ${rou( 'mapExtend' )}
@@ -650,9 +645,9 @@ function sourcesJoinSplits( o )
   ${rou( 'entityMakeUndefined' )}
   ${rou( 'mapKeys' )}
 
-  ${rou( 'path', 'globFilterKeys' )}
-  ${rou( 'path', 'globSplitsToRegexps' )}
-  ${rou( 'path', '_globSplitToRegexpSource' )}
+  ${rou( 'path', 'globShortFilterKeys' )}
+  ${rou( 'path', 'globShortSplitsToRegexps' )}
+  ${rou( 'path', '_globShortSplitToRegexpSource' )}
 
 `
 
@@ -678,186 +673,6 @@ function sourcesJoinSplits( o )
   {
     return _.introspector.field( ... arguments );
   }
-
-//   function elementExport( srcContainer, dstContainerName, name )
-//   {
-//     let e = srcContainer[ name ];
-//
-//     _.assert
-//     (
-//       _.strDefined( name ),
-//       () => `Cant export, expects defined name, but got ${_.strType( name )}`
-//     );
-//     _.assert
-//     (
-//          _.routineIs( e ) || _.primitiveIs( e ) || _.regexpIs( e )
-//       || ( _.mapIs( e ) && _.lengthOf( e ) === 0 )
-//       || ( _.arrayIs( e ) && _.lengthOf( e ) === 0 )
-//       , () => `Cant export ${name} is ${_.strType( e )}`
-//     );
-//
-//     let str = '';
-//     if( _.routineIs( e ) )
-//     {
-//
-//       if( e.pre || e.body )
-//       {
-//         _.assert( _.routineIs( e.pre ) && _.routineIs( e.body ) );
-//         str = routineFromPreAndBodyToString( e )
-//         return str;
-//       }
-//
-//       if( e.functor )
-//       str = '(' + e.functor.toString() + ')();';
-//       else
-//       str = e.toString();
-//
-//       if( e.defaults )
-//       {
-//         str += `\n${dstContainerName}.${name}.defaults =\n` + _.toJs( e.defaults )
-//       }
-//     }
-//     else
-//     {
-//       str = _.toJs( e );
-//     }
-//
-//     /* */
-//
-//     if( _.routineIs( e ) )
-//     str += `;\nvar ${name} = ${dstContainerName + '.' + name}`
-//
-//     let r = dstContainerName + '.' + name + ' = ' + _.strLinesIndentation( str, '  ' ) + ';\n\n//\n';
-//
-//     /* */
-//
-//     return r;
-//
-//     /* */
-//
-//     function routineProperties( dstContainerName, routine )
-//     {
-//       let r = ''
-//       for( var k in routine )
-//       r += `${dstContainerName}.${k} = ` + _.toJs( routine[ k ] ) + '\n'
-//       if( r )
-//       r = _.strLinesIndentation( r, '  ' );
-//       return r;
-//     }
-//
-//     function routineToString( routine )
-//     {
-//       return _.strLinesIndentation( routine.toString(), '  ' ) + '\n\n  //\n'
-//     }
-//
-//     function routineFromPreAndBodyToString( e )
-//     {
-//       let str =
-//       `\
-//         \n  var __${e.name}_pre = ${routineToString( e.pre )}\
-//         \n  var ${e.pre.name} = __${e.name}_pre\
-//         \n  ${routineProperties( `__${e.name}_pre`, e.pre )}\
-//         \n  var __${e.name}_body = ${routineToString( e.body )}\
-//         \n  var ${e.body.name} = __${e.name}_body\
-//         \n  ${routineProperties( `__${e.name}_body`, e.body )}\
-//       `
-//       if( name === 'routineFromPreAndBody' )
-//       {
-//         str += `\n${dstContainerName}.${name} = ` + _.strLinesIndentation( e.toString(), '  ' );
-//         str += `\n${dstContainerName}.${name}.pre = ` + `__${e.name}_pre;`
-//         str += `\n${dstContainerName}.${name}.body = ` + `__${e.name}_body;`
-//         str += `\n${dstContainerName}.${name}.defaults = ` + 'Object.create( ' + `__${e.name}_body.defaults` + ' );'
-//       }
-//       else
-//       {
-//         str += `\n  ${dstContainerName}.${name} = _.routineFromPreAndBody( __${e.name}_pre, __${e.name}_body );`
-//       }
-//       return str;
-//     }
-//   }
-//
-//   /* */
-//
-//   function field( namesapce, name )
-//   {
-//     if( arguments.length === 2 )
-//     {
-//       return elementExport( _[ namesapce ], `_.${namesapce}`, name );
-//     }
-//     else
-//     {
-//       name = arguments[ 0 ];
-//       return elementExport( _, '_', name );
-//     }
-//   }
-//
-//   /* */
-//
-//   function rou( namesapce, name )
-//   {
-//     if( arguments.length === 2 )
-//     {
-//       return elementExport( _[ namesapce ], `_.${namesapce}`, name );
-//     }
-//     else
-//     {
-//       name = arguments[ 0 ];
-//       return elementExport( _, '_', name );
-//     }
-//   }
-//
-//   /* */
-//
-//   function fields( namespace )
-//   {
-//     let result = [];
-//     _.assert( _.objectIs( _[ namespace ] ) );
-//     for( let f in _[ namespace ] )
-//     {
-//       let e = _[ namespace ][ f ];
-//       if( _.strIs( e ) || _.regexpIs( e ) )
-//       result.push( rou( namespace, f ) );
-//     }
-//     return result.join( '  ' );
-//   }
-//
-//   /* */
-//
-//   function cls( namesapce, name )
-//   {
-//     let r;
-//     if( arguments.length === 2 )
-//     {
-//       r = elementExport( _[ namesapce ], `_.${namesapce}`, name );
-//     }
-//     else
-//     {
-//       name = arguments[ 0 ];
-//       r = elementExport( _, '_', name );
-//     }
-//     r =
-// `
-// (function()
-// {
-//
-//   let Self = ${r}
-//
-// })();
-// `
-//     return r;
-//   }
-//
-//   /* */
-//
-//   function clr( cls, method )
-//   {
-//     let result = '';
-//     if( _[ cls ][ method ] )
-//     result = elementExport( _[ cls ], `_.${cls}`, method );
-//     if( _[ cls ][ 'prototype' ][ method ] )
-//     result += '\n' + elementExport( _[ cls ][ 'prototype' ], `_.${cls}.prototype`, method );
-//     return result;
-//   }
 
   /* */
 
@@ -1084,8 +899,6 @@ htmlSplitsFor.defaults =
 {
   srcScriptsMap : null,
   template : null,
-  // withStarter : 'include',
-  // withScripts : 'include',
   withStarter : null,
   withScripts : null,
   title : null,
@@ -1096,19 +909,8 @@ htmlSplitsFor.defaults =
 function htmlFor( o )
 {
   let maker = this;
-
   _.routineOptions( htmlFor, arguments );
-
   let result = maker.htmlSplitsFor( o );
-
-  // let splits = maker.htmlSplitsFor( o );
-  //
-  // // if( splits.all )
-  // // return splits.all;
-  //
-  // // let result = splits.prefix + splits.starter + splits.scripts.join( '\n' ) + splits.postfix;
-  // let result = maker.htmlSplitsJoin( splits );
-
   return result;
 }
 
@@ -1133,38 +935,6 @@ htmlFor.defaults = Object.create( htmlSplitsFor.defaults );
 </html>
 
 */
-
-// //
-//
-// function htmlSplitsJoin( o )
-// {
-//   let maker = this;
-//
-//   _.routineOptions( htmlSplitsJoin, arguments );
-//
-//   o.scripts = o.scripts || [];
-//
-//   if( Config.debug )
-//   for( let s in o )
-//   {
-//     if( s !== 'scripts' )
-//     _.assert( _.strIs( o[ s ] ), () => `Split::${s} should be string, but ${_.strType( o.scripts[ s ] )}` );
-//   }
-//
-//   _.assert( _.arrayIs( o.scripts ) );
-//
-//   let result = o.prefix + o.starter + o.scripts.join( '\n' ) + o.postfix;
-//
-//   return result;
-// }
-//
-// htmlSplitsJoin.defaults =
-// {
-//   prefix : '',
-//   starter : '',
-//   scripts : null,
-//   postfix : '',
-// }
 
 // --
 // relations
@@ -1224,7 +994,6 @@ let Proto =
 
   htmlSplitsFor,
   htmlFor,
-  // htmlSplitsJoin,
 
   /* */
 

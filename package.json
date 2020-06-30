@@ -1,6 +1,6 @@
 {
   "name" : "wstarter",
-  "version" : "0.4.121",
+  "version" : "0.4.129",
   "description" : "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.",
   "author" : "Kostiantyn Wandalen <wanalen@01.school>",
   "license" : "MIT",
@@ -8,7 +8,7 @@
   "files" : [ "proto/dwtools/atop/starter", "proto/dwtools/Tools.s" ],
   "scripts" :
   {
-    "test" : "wtest .run 'proto/**'",
+    "test" : "wtest .run 'proto/**' rapidity:-3",
     "docgen" : "wdocgen proto",
     "single-process-starter" : "node proto/dwtools/atop/starter/entry/Exec",
     "debug-starter" : "node proto/dwtools/atop/starter/entry/ExecDebug",

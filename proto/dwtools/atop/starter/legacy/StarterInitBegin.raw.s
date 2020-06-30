@@ -264,7 +264,7 @@
 //   let parentScriptFile = o.parentScriptFile;
 //   let scriptFile = null;
 
-//   // if( o.filePath === '/dwtools/amid/files/l5_provider/RemoteClient.s' )
+//   // if( o.filePath === '/dwtools/amid/l3/files/l7_provider/RemoteClient.s' )
 //   // debugger;
 
 //   if( _ )
@@ -400,7 +400,7 @@
 //   ({
 //     filePath : '/',
 //     onUp : onUp,
-//     withTransient/*maybe withStem*//*maybe withStem*/ : 0,
+//     withTransient : 0,
 //     withDirs : 0,
 //     resolvingSoftLink : 0,
 //     resolvingTextLink : 0,
@@ -735,7 +735,7 @@
 
 //     let o = Object.create( null );
 //     o.filter = fileProvider.RecordFilter.And( { system : fileProvider }, _starter_.includeDefaults.filter, scriptFile.include.filter );
-//     o.withTransient/*maybe withStem*//*maybe withStem*/ = 0;
+//     o.withTransient = 0;
 //     o.withDirs = 0;
 //     o.resolvingSoftLink = 0;
 //     o.resolvingTextLink = 0;

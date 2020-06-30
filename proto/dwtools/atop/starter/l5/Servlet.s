@@ -8,7 +8,8 @@ let ExpressDir = null;
 let Querystring = null;
 let _ = _global_.wTools;
 let Parent = null;
-let Self = function wStarterServlet( o )
+let Self = wStarterServlet;
+function wStarterServlet( o )
 {
   return _.workpiece.construct( Self, this, arguments );
 }

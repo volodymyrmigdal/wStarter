@@ -184,7 +184,8 @@ function _Begin()
       if( !_starter_.withServer && _.path.isGlob( filePath ) ) /* xxx : workaround */
       {
         let resolvedFilePath = starter._pathResolveLocal( parentSource, basePath, filePath );
-        let filtered = _.mapKeys( _.path.globFilterKeys( starter.sourcesMap, resolvedFilePath ) );
+        debugger;
+        let filtered = _.mapKeys( _.path.globShortFilterKeys( starter.sourcesMap, resolvedFilePath ) );
         if( filtered.length )
         return starter._sourceInclude( parentSource, basePath, filtered );
       }
@@ -196,11 +197,6 @@ function _Begin()
       }
 
       return starter._includeAct( parentSource, basePath, filePath );
-      // if( starter.interpreter === 'browser' )
-      // return starter._includeAct( parentSource, basePath, filePath );
-      // else
-      // return starter._includeAct( parentSource, basePath, filePath );
-
     }
     catch( err )
     {
@@ -221,17 +217,6 @@ function _Begin()
     return result;
 
     return starter._sourceResolveAct( parentSource, basePath, filePath );
-
-    // xxx
-    // if( starter.interpreter === 'browser' )
-    // {
-    //   return starter._sourceResolveAct( parentSource, basePath, filePath );
-    // }
-    // else
-    // {
-    //   return starter._sourceResolveAct( parentSource, basePath, filePath );
-    // }
-
   }
 
   //
@@ -317,15 +302,7 @@ function _Begin()
       _starter_.setup._setupUncaughtErrorHandler9();
     }
 
-    // if( _starter_.proceduring )
-    // _starter_.Procedure.NativeWatchingEnable();
-
     this._SetupAct();
-
-    // if( Config.interpreter === 'njs' )
-    // this._njsSetup();
-    // else
-    // this._broSetup();
 
     this._inited = 1;
   }

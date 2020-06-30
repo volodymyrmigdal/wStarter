@@ -27,7 +27,7 @@ function onSuiteBegin()
   let context = this;
 
   context.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
-  context.assetsOriginalSuitePath = _.path.join( __dirname, '_asset' );
+  context.assetsOriginalPath = _.path.join( __dirname, '_asset' );
   context.willbeExecPath = _.module.resolve( 'willbe' );
   context.appJsPath = _.module.resolve( 'wStarter' );
 
@@ -3845,7 +3845,7 @@ var Self =
     assetFor,
 
     suiteTempPath : null,
-    assetsOriginalSuitePath : null,
+    assetsOriginalPath : null,
     appJsPath : null,
 
     willbeExecPath : null,
