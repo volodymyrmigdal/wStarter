@@ -371,7 +371,7 @@
 // function _scriptRewrite( filePath,routine )
 // {
 //   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
-//   let d = _starter_.fileProvider._descriptorScriptMake( filePath, routine );
+//   let d = _starter_.fileProvider._DescriptorScriptMake( filePath, routine );
 //   _starter_.fileProvider._descriptorWrite( filePath, d );
 // }
 
@@ -437,7 +437,7 @@
 //     {
 
 //       let d = _starter_.fileProvider._descriptorRead( filePath );
-//       if( _starter_.fileProvider._descriptorIsScript( d ) )
+//       if( _starter_.fileProvider._DescriptorIsScript( d ) )
 //       {
 //         d[ 0 ].code();
 //       }
