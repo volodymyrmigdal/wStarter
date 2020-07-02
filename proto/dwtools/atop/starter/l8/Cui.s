@@ -134,45 +134,57 @@ commandHelp.hint = 'Get help.';
 
 //
 
-function commandVersion( e ) /* xxx qqq : move to NpmTools */
+function commandVersion( e )
 {
   let cui = this;
-  let starter = cui.starter;
-
-  starter.form();
-
-  let fileProvider = starter.fileProvider;
-  let path = starter.fileProvider.path;
-  let logger = starter.logger;
-
-  let packageJsonPath = path.join( __dirname, '../../../../../package.json' );
-  let packageJson =  fileProvider.fileRead({ filePath : packageJsonPath, encoding : 'json', throwing : 0 });
-
-  return _.process.start
+  return _.npm.versionLog
   ({
-    execPath : 'npm view wstarter@latest version',
-    outputCollecting : 1,
-    outputPiping : 0,
-    inputMirroring : 0,
-    throwingExitCode : 0,
-  })
-  .then( ( got ) =>
-  {
-    let current = packageJson ? packageJson.version : 'unknown';
-    let latest = _.strStrip( got.output );
-
-    if( got.exitCode || !latest )
-    latest = 'unknown'
-
-    logger.log( 'Current version:', current );
-    logger.log( 'Available version:', latest );
-
-    return null;
-  })
-
+    localPath : _.path.join( __dirname, '../../../../..' ),
+    remotePath : 'wstarter!alpha',
+  });
 }
 
 commandVersion.hint = 'Get information about version.';
+
+// function commandVersion( e ) /* xxx qqq : move to NpmTools */
+// {
+//   let cui = this;
+//   let starter = cui.starter;
+//
+//   starter.form();
+//
+//   let fileProvider = starter.fileProvider;
+//   let path = starter.fileProvider.path;
+//   let logger = starter.logger;
+//
+//   let packageJsonPath = path.join( __dirname, '../../../../../package.json' );
+//   let packageJson =  fileProvider.fileRead({ filePath : packageJsonPath, encoding : 'json', throwing : 0 });
+//
+//   return _.process.start
+//   ({
+//     execPath : 'npm view wstarter@latest version',
+//     outputCollecting : 1,
+//     outputPiping : 0,
+//     inputMirroring : 0,
+//     throwingExitCode : 0,
+//   })
+//   .then( ( got ) =>
+//   {
+//     let current = packageJson ? packageJson.version : 'unknown';
+//     let latest = _.strStrip( got.output );
+//
+//     if( got.exitCode || !latest )
+//     latest = 'unknown'
+//
+//     logger.log( 'Current version:', current );
+//     logger.log( 'Available version:', latest );
+//
+//     return null;
+//   })
+//
+// }
+//
+// commandVersion.hint = 'Get information about version.';
 
 //
 
