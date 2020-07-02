@@ -200,11 +200,11 @@ function serverLoggingForm()
   _.assert( !!servlet.httpServer );
 
   _.assert( servlet.loggerSocket === null );
-  let loggerServerPath = _.uri.join( servlet.serverPath, '.log/' );
-  loggerServerPath = _.uri.parseAtomic( loggerServerPath );
+  let loggerServerPath = _.uriOld.join( servlet.serverPath, '.log/' );
+  loggerServerPath = _.uriOld.parseAtomic( loggerServerPath );
   loggerServerPath.protocol = 'ws';
   delete loggerServerPath.protocols;
-  loggerServerPath = _.uri.str( loggerServerPath );
+  loggerServerPath = _.uriOld.str( loggerServerPath );
   servlet.loggerSocket = _.LoggerSocketReceiver
   ({
     httpServer : servlet.httpServer,
@@ -293,12 +293,12 @@ function openUriGet()
 {
   let servlet = this;
 
-  let parsedServerPath = _.uri.parseAtomic({ full : servlet.serverPath });
+  let parsedServerPath = _.uriOld.parseAtomic({ full : servlet.serverPath });
 
   if( parsedServerPath.host === '0.0.0.0' )
   parsedServerPath.host = '127.0.0.1';
 
-  return _.uri.str( parsedServerPath );
+  return _.uriOld.str( parsedServerPath );
 }
 
 //
@@ -793,8 +793,13 @@ function scriptWrap_functor( fop )
 
     o.fop = fop;
     o.request.url = Querystring.unescape( o.request.url );
-    o.uri = _.uri.parseFull( o.request.url );
-    o.exts = _.uri.exts( o.uri.resourcePath );
+    o.uri = _.uriOld.parseFull( o.request.url );
+    if( !o.uri.resourcePath )
+    {
+      _.assert( _.strIs( o.uri.longPath ) );
+      o.uri.resourcePath = o.uri.longPath;
+    }
+    o.exts = _.uriOld.exts( o.uri.resourcePath );
     o.query = o.uri.query ? _.strWebQueryParse( o.uri.query ) : Object.create( null );
 
     o.query.entry = !!o.query.entry;
@@ -803,7 +808,7 @@ function scriptWrap_functor( fop )
     o.query.running = !!o.query.running;
 
     if( servlet.loggingRequests )
-    logger.log( ` . request ${_.ct.format( _.uri.str( o.uri ), 'path' )} ` );
+    logger.log( ` . request ${_.ct.format( _.uriOld.str( o.uri ), 'path' )} ` );
 
     if( o.uri.resourcePath === '/.starter' )
     {
