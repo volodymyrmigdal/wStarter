@@ -1,8 +1,8 @@
 
 submodule :
 
-  Tools : git:///git@github.com:Wandalen/wTools.git
-  Blueprint : git:///git@github.com:Wandalen/wBlueprint.git
+  Tools : git+https:///github.com/Wandalen/wTools.git/
+  Blueprint: git+https:///github.com/Wandalen/wBlueprint.git/
 
 path :
 

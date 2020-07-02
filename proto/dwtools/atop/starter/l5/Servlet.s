@@ -790,11 +790,10 @@ function scriptWrap_functor( fop )
   {
 
     _.assertRoutineOptions( scriptWrap, arguments );
-
     o.fop = fop;
     o.request.url = Querystring.unescape( o.request.url );
     o.uri = _.uri.parseFull( o.request.url );
-    o.exts = _.uri.exts( o.uri.resourcePath );
+    o.exts = _.uri.exts( o.uri.longPath );
     o.query = o.uri.query ? _.strWebQueryParse( o.uri.query ) : Object.create( null );
 
     o.query.entry = !!o.query.entry;
@@ -805,15 +804,15 @@ function scriptWrap_functor( fop )
     if( servlet.loggingRequests )
     logger.log( ` . request ${_.ct.format( _.uri.str( o.uri ), 'path' )} ` );
 
-    if( o.uri.resourcePath === '/.starter' )
+    if( o.uri.longPath === '/.starter' )
     {
       return servlet.starterWareReturn( o );
     }
-    else if( _.strBegins( o.uri.resourcePath, '/.resolve/' ) )
+    else if( _.strBegins( o.uri.longPath, '/.resolve/' ) )
     {
       return servlet.remoteResolve
       ({
-        resourcePath : o.uri.resourcePath,
+        resourcePath : o.uri.longPath,
         realPath : o.realPath,
         response : o.response,
         request : o.request,
@@ -838,7 +837,7 @@ function scriptWrap_functor( fop )
       if( o.query.format === 'html' )
       return servlet.htmlForHtml
       ({
-        resourcePath : o.uri.resourcePath,
+        resourcePath : o.uri.longPath,
         realPath : o.realPath,
         response : o.response,
         next : o.next,
@@ -846,7 +845,7 @@ function scriptWrap_functor( fop )
       else
       return servlet.htmlForJs
       ({
-        resourcePath : o.uri.resourcePath,
+        resourcePath : o.uri.longPath,
         realPath : o.realPath,
         response : o.response,
         request : o.request,
@@ -863,7 +862,7 @@ function scriptWrap_functor( fop )
     if( _.longHasAny( o.exts, [ 'html', 'htm' ] ) )
     return servlet.htmlForHtml
     ({
-      resourcePath : o.uri.resourcePath,
+      resourcePath : o.uri.longPath,
       realPath : o.realPath,
       response : o.response,
       next : o.next,
@@ -879,7 +878,7 @@ function scriptWrap_functor( fop )
 
     return servlet.jsForJs
     ({
-      resourcePath : o.uri.resourcePath,
+      resourcePath : o.uri.longPath,
       realPath : o.realPath,
       query : o.query,
       response : o.response,

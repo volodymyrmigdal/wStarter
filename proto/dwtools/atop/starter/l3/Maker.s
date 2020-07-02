@@ -498,6 +498,8 @@ function sourcesJoinSplits( o )
   ${rou( 'path', '_normalize' )}
   ${rou( 'path', 'canonize' )}
   ${rou( 'path', 'canonizeTolerant' )}
+  ${rou( 'path', '_unescape' )}
+  ${rou( 'path', 'unescape' )}
   ${rou( 'path', '_nativizeWindows' )}
   ${rou( 'path', '_nativizePosix' )}
   ${rou( 'path', 'isGlob' )}
@@ -549,6 +551,8 @@ function sourcesJoinSplits( o )
   ${rou( 'assertMapHasOnly' )}
   ${rou( 'assertMapHasNoUndefine' )}
   ${rou( 'routineOptions' )}
+  ${rou( 'mapExtend' )}
+  ${rou( 'routineExtend_' )}
   ${rou( 'routineExtend' )}
   ${rou( 'arrayAppendArray' )}
   ${rou( 'arrayAppendArrays' )}

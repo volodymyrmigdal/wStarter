@@ -46,7 +46,8 @@
     "wTesting" : "",
     "willbe" : "",
     "wpuppet" : "",
-    "wmodulefortesting1a" : ""
+    "wmodulefortesting1a" : "",
+    "wstarter" : "file:."
   },
   "keywords" : [ "wTools" ]
 }
