@@ -200,11 +200,11 @@ function serverLoggingForm()
   _.assert( !!servlet.httpServer );
 
   _.assert( servlet.loggerSocket === null );
-  let loggerServerPath = _.uriOld.join( servlet.serverPath, '.log/' );
-  loggerServerPath = _.uriOld.parseAtomic( loggerServerPath );
+  let loggerServerPath = _.uri.join( servlet.serverPath, '.log/' );
+  loggerServerPath = _.uri.parseAtomic( loggerServerPath );
   loggerServerPath.protocol = 'ws';
   delete loggerServerPath.protocols;
-  loggerServerPath = _.uriOld.str( loggerServerPath );
+  loggerServerPath = _.uri.str( loggerServerPath );
   servlet.loggerSocket = _.LoggerSocketReceiver
   ({
     httpServer : servlet.httpServer,
@@ -293,12 +293,12 @@ function openUriGet()
 {
   let servlet = this;
 
-  let parsedServerPath = _.uriOld.parseAtomic({ full : servlet.serverPath });
+  let parsedServerPath = _.uri.parseAtomic({ full : servlet.serverPath });
 
   if( parsedServerPath.host === '0.0.0.0' )
   parsedServerPath.host = '127.0.0.1';
 
-  return _.uriOld.str( parsedServerPath );
+  return _.uri.str( parsedServerPath );
 }
 
 //
@@ -790,16 +790,10 @@ function scriptWrap_functor( fop )
   {
 
     _.assertRoutineOptions( scriptWrap, arguments );
-    //xxx Vova: replace old uri with new one and fix problems
     o.fop = fop;
     o.request.url = Querystring.unescape( o.request.url );
-    o.uri = _.uriOld.parseFull( o.request.url );
-    if( !o.uri.resourcePath )
-    {
-      _.assert( _.strIs( o.uri.longPath ) );
-      o.uri.resourcePath = o.uri.longPath;
-    }
-    o.exts = _.uriOld.exts( o.uri.resourcePath );
+    o.uri = _.uri.parseFull( o.request.url );
+    o.exts = _.uri.exts( o.uri.longPath );
     o.query = o.uri.query ? _.strWebQueryParse( o.uri.query ) : Object.create( null );
 
     o.query.entry = !!o.query.entry;
@@ -808,17 +802,17 @@ function scriptWrap_functor( fop )
     o.query.running = !!o.query.running;
 
     if( servlet.loggingRequests )
-    logger.log( ` . request ${_.ct.format( _.uriOld.str( o.uri ), 'path' )} ` );
+    logger.log( ` . request ${_.ct.format( _.uri.str( o.uri ), 'path' )} ` );
 
-    if( o.uri.resourcePath === '/.starter' )
+    if( o.uri.longPath === '/.starter' )
     {
       return servlet.starterWareReturn( o );
     }
-    else if( _.strBegins( o.uri.resourcePath, '/.resolve/' ) )
+    else if( _.strBegins( o.uri.longPath, '/.resolve/' ) )
     {
       return servlet.remoteResolve
       ({
-        resourcePath : o.uri.resourcePath,
+        resourcePath : o.uri.longPath,
         realPath : o.realPath,
         response : o.response,
         request : o.request,
@@ -843,7 +837,7 @@ function scriptWrap_functor( fop )
       if( o.query.format === 'html' )
       return servlet.htmlForHtml
       ({
-        resourcePath : o.uri.resourcePath,
+        resourcePath : o.uri.longPath,
         realPath : o.realPath,
         response : o.response,
         next : o.next,
@@ -851,7 +845,7 @@ function scriptWrap_functor( fop )
       else
       return servlet.htmlForJs
       ({
-        resourcePath : o.uri.resourcePath,
+        resourcePath : o.uri.longPath,
         realPath : o.realPath,
         response : o.response,
         request : o.request,
@@ -868,7 +862,7 @@ function scriptWrap_functor( fop )
     if( _.longHasAny( o.exts, [ 'html', 'htm' ] ) )
     return servlet.htmlForHtml
     ({
-      resourcePath : o.uri.resourcePath,
+      resourcePath : o.uri.longPath,
       realPath : o.realPath,
       response : o.response,
       next : o.next,
@@ -884,7 +878,7 @@ function scriptWrap_functor( fop )
 
     return servlet.jsForJs
     ({
-      resourcePath : o.uri.resourcePath,
+      resourcePath : o.uri.longPath,
       realPath : o.realPath,
       query : o.query,
       response : o.response,
