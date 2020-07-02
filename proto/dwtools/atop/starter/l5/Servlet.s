@@ -790,7 +790,7 @@ function scriptWrap_functor( fop )
   {
 
     _.assertRoutineOptions( scriptWrap, arguments );
-
+    //xxx Vova: replace old uri with new one and fix problems
     o.fop = fop;
     o.request.url = Querystring.unescape( o.request.url );
     o.uri = _.uriOld.parseFull( o.request.url );
