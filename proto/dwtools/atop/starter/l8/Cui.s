@@ -202,7 +202,7 @@ function commandImply( e )
     verbosity : 'verbosity',
   }
 
-  let request = _.strRequestParse( e.argument );
+  let request = _.strRequestParse( e.commandArgument );
 
   _.process.argsReadTo
   ({
@@ -228,7 +228,7 @@ function commandHtmlFor( e )
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
-  let request = _.strRequestParse( e.argument );
+  let request = _.strRequestParse( e.commandArgument );
 
   logger.log( e.propertiesMap )
 
@@ -274,7 +274,7 @@ function commandSourcesJoin( e )
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
-  let request = _.strRequestParse( e.argument );
+  let request = _.strRequestParse( e.commandArgument );
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.inPath = o2.inPath || request.subject;
@@ -315,7 +315,7 @@ function commandHttpOpen( e )
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
-  let request = _.strRequestParse({ src : e.argument, severalValues : 1 });
+  let request = _.strRequestParse({ src : e.commandArgument, severalValues : 1 });
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.basePath = o2.basePath || request.subject;
@@ -379,7 +379,7 @@ function commandStart( e )
 
   let ca = e.ca;
   let logger = starter.logger;
-  let request = _.strRequestParse({ src : e.argument, severalValues : 1 });
+  let request = _.strRequestParse({ src : e.commandArgument, severalValues : 1 });
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.entryPath = o2.entryPath || request.subject;
