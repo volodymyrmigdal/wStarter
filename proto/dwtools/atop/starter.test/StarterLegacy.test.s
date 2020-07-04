@@ -22,7 +22,7 @@
 // {
 //   let self = this;
 
-//   self.suiteTempPath = _.path.pathDirTempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
+//   self.suiteTempPath = _.path.tempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
 //   self.assetsOriginalPath = _.path.join( __dirname, '_asset' );
 //   self.find = _.fileProvider.filesFinder
 //   ({
