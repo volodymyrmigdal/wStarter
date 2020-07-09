@@ -2,15 +2,12 @@ format: outwillfile-2.0
 root:
   - wStarter.out
 consistency:
-  wStarter.out.will.yml: &ref_0
-    hash: 9f797437cedd06357f3ec9c63b091658
-    size: 59277
-  ../.ex.will.yml: &ref_1
-    hash: cd8ac49e9cb55e3876d6d57ef20572d2
-    size: 2272
-  ../.im.will.yml: &ref_2
-    hash: d77f8c98a698fbc3e407604baf6452c3
-    size: 6148
+  ../.ex.will.yml: &ref_0
+    hash: bdd67fb796af94560b6f886a8e46c27a
+    size: 2266
+  ../.im.will.yml: &ref_1
+    hash: 7d9100d33abf389ee446a73a0596de3f
+    size: 6145
 module:
   wStarter.out:
     about:
@@ -22,24 +19,24 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters:
+      interpreters: &ref_2
         - njs >= 10.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords:
+      keywords: &ref_3
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
+      contributors: &ref_4
         - Kostiantyn Wandalen <wanalen@01.school>
       npm.name: wstarter
-      npm.scripts:
+      npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
         single-process-starter: node proto/wtools/atop/starter/entry/Exec
         debug-starter: node proto/wtools/atop/starter/entry/ExecDebug
         starter: node proto/wtools/atop/starter/entry/ExecUnrestricted
-      npm.bin:
+      npm.bin: &ref_6
         starter: proto/wtools/atop/starter/entry/ExecUnrestricted
         single-process-starter: proto/wtools/atop/starter/entry/Exec
         debug-starter: proto/wtools/atop/starter/entry/ExecDebug
@@ -253,8 +250,7 @@ module:
           - ../proto/wtools/atop/starter.test/_asset/dep/app2/File1.js
           - ../proto/wtools/atop/starter.test/_asset/dep/app2/File2.js
           - ../proto/wtools/atop/starter.test/_asset/dep/ext
-          - >-
-            ../proto/wtools/atop/starter.test/_asset/dep/ext/RequireApp2File2.js
+          - ../proto/wtools/atop/starter.test/_asset/dep/ext/RequireApp2File2.js
           - ../proto/wtools/atop/starter.test/_asset/dep2
           - ../proto/wtools/atop/starter.test/_asset/dep2/Index.html
           - ../proto/wtools/atop/starter.test/_asset/dep2/package.json
@@ -279,10 +275,8 @@ module:
           - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir
           - >-
             ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep1.js
-          - >-
-            ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep2.s
-          - >-
-            ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep3.x
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep2.s
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep3.x
           - >-
             ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep4.ss
           - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/out
@@ -293,10 +287,8 @@ module:
           - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir
           - >-
             ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep1.js
-          - >-
-            ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep2.s
-          - >-
-            ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep3.x
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep2.s
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep3.x
           - >-
             ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep4.ss
           - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/out
@@ -362,8 +354,7 @@ module:
           - ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker
           - >-
             ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker/.will.yml
-          - >-
-            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker/proto
+          - ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker/proto
           - >-
             ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker/proto/Index.js
           - >-
@@ -423,10 +414,8 @@ module:
           - ../proto/wtools/atop/starter.test/_asset/workerEnvironment
           - ../proto/wtools/atop/starter.test/_asset/workerEnvironment/Index.js
           - ../proto/wtools/atop/starter.test/_asset/workerEnvironment/W1.js
-          - >-
-            ../proto/wtools/atop/starter.test/_asset/workerEnvironment/Worker.js
-          - >-
-            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentInclude
+          - ../proto/wtools/atop/starter.test/_asset/workerEnvironment/Worker.js
+          - ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentInclude
           - >-
             ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentInclude/Index.js
           - >-
@@ -952,7 +941,7 @@ module:
           debug: release
       reflect.proto.debug.raw:
         opts:
-          filePath: 'reflector::reflect.proto*'
+          filePath: 'reflector::reflect.proto.debug.raw'
         criterion:
           tests: no.tests
           debug: debug
@@ -962,7 +951,7 @@ module:
           - files.reflect
       reflect.proto.release.raw:
         opts:
-          filePath: 'reflector::reflect.proto*'
+          filePath: 'reflector::reflect.proto.release.raw'
         criterion:
           tests: no.tests
           debug: release
@@ -972,7 +961,7 @@ module:
           - files.reflect
       reflect.proto.debug.compiled:
         opts:
-          filePath: 'reflector::reflect.proto*'
+          filePath: 'reflector::reflect.proto.debug.compiled'
         criterion:
           tests: no.tests
           debug: debug
@@ -982,7 +971,7 @@ module:
           - files.reflect
       reflect.proto.release.compiled:
         opts:
-          filePath: 'reflector::reflect.proto*'
+          filePath: 'reflector::reflect.proto.release.compiled'
         criterion:
           tests: no.tests
           debug: release
@@ -993,7 +982,7 @@ module:
       transpile.proto.raw:
         opts:
           entry: 'path::entry.proto.no.tests'
-          filePath: 'reflector::transpile.proto.raw*'
+          filePath: 'reflector::transpile.proto.raw'
         criterion:
           raw: raw
           debug: release
@@ -1003,7 +992,7 @@ module:
       transpile.proto.no.tests.compiled.debug:
         opts:
           entry: 'path::entry.proto.*=1'
-          filePath: 'reflector::transpile.proto.no.tests.compiled*'
+          filePath: 'reflector::transpile.proto.no.tests.compiled.debug'
         criterion:
           tests: no.tests
           raw: compiled
@@ -1014,7 +1003,7 @@ module:
       transpile.proto.no.tests.compiled.release:
         opts:
           entry: 'path::entry.proto.*=1'
-          filePath: 'reflector::transpile.proto.no.tests.compiled*'
+          filePath: 'reflector::transpile.proto.no.tests.compiled.release'
         criterion:
           tests: no.tests
           raw: compiled
@@ -1026,7 +1015,7 @@ module:
         opts:
           entry: 'path::entry.proto.*=1'
           external.before: '{path::out.*=1}/Main.s'
-          filePath: 'reflector::transpile.proto.only.tests.compiled*'
+          filePath: 'reflector::transpile.proto.only.tests.compiled.debug'
         criterion:
           tests: only.tests
           raw: compiled
@@ -1038,7 +1027,7 @@ module:
         opts:
           entry: 'path::entry.proto.*=1'
           external.before: '{path::out.*=1}/Main.s'
-          filePath: 'reflector::transpile.proto.only.tests.compiled*'
+          filePath: 'reflector::transpile.proto.only.tests.compiled.release'
         criterion:
           tests: only.tests
           raw: compiled
@@ -1046,24 +1035,6 @@ module:
           content: prime
         inherit:
           - files.transpile
-      exported.proto.export:
-        opts:
-          filePath: 'reflector::exported.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
-      exported.files.proto.export:
-        opts:
-          filePath: 'reflector::exported.files.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
     build:
       proto.export:
         steps:
@@ -1152,9 +1123,8 @@ module:
           content: proto
           export: 1
     consistency:
-      wStarter.out.will.yml: *ref_0
-      ../.ex.will.yml: *ref_1
-      ../.im.will.yml: *ref_2
+      ../.ex.will.yml: *ref_0
+      ../.im.will.yml: *ref_1
   ../:
     about:
       name: wStarter
@@ -1165,27 +1135,14 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters:
-        - njs >= 10.0.0
-        - chrome >= 60.0.0
-        - firefox >= 60.0.0
-      keywords:
-        - wTools
+      interpreters: *ref_2
+      keywords: *ref_3
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
-        - Kostiantyn Wandalen <wanalen@01.school>
+      contributors: *ref_4
       npm.name: wstarter
-      npm.scripts:
-        test: wtest .run proto/**
-        docgen: wdocgen .build proto
-        single-process-starter: node proto/wtools/atop/starter/entry/Exec
-        debug-starter: node proto/wtools/atop/starter/entry/ExecDebug
-        starter: node proto/wtools/atop/starter/entry/ExecUnrestricted
-      npm.bin:
-        starter: proto/wtools/atop/starter/entry/ExecUnrestricted
-        single-process-starter: proto/wtools/atop/starter/entry/Exec
-        debug-starter: proto/wtools/atop/starter/entry/ExecDebug
+      npm.scripts: *ref_5
+      npm.bin: *ref_6
     path:
       module.willfiles:
         criterion:
@@ -1905,9 +1862,8 @@ module:
           - 'build::npm'
     consistency:
       ../.ex.will.yml:
-        hash: cd8ac49e9cb55e3876d6d57ef20572d2
-        size: 2272
+        hash: bdd67fb796af94560b6f886a8e46c27a
+        size: 2266
       ../.im.will.yml:
-        hash: d77f8c98a698fbc3e407604baf6452c3
-        size: 6148
-      wStarter.out.will.yml: *ref_0
+        hash: 7d9100d33abf389ee446a73a0596de3f
+        size: 6145
