@@ -36,13 +36,13 @@ module:
       npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
-        single-process-starter: node proto/dwtools/atop/starter/entry/Exec
-        debug-starter: node proto/dwtools/atop/starter/entry/ExecDebug
-        starter: node proto/dwtools/atop/starter/entry/ExecUnrestricted
+        single-process-starter: node proto/wtools/atop/starter/entry/Exec
+        debug-starter: node proto/wtools/atop/starter/entry/ExecDebug
+        starter: node proto/wtools/atop/starter/entry/ExecUnrestricted
       npm.bin:
-        starter: proto/dwtools/atop/starter/entry/ExecUnrestricted
-        single-process-starter: proto/dwtools/atop/starter/entry/Exec
-        debug-starter: proto/dwtools/atop/starter/entry/ExecDebug
+        starter: proto/wtools/atop/starter/entry/ExecUnrestricted
+        single-process-starter: proto/wtools/atop/starter/entry/Exec
+        debug-starter: proto/wtools/atop/starter/entry/ExecDebug
     path:
       module.willfiles:
         criterion:
@@ -122,7 +122,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: ../proto/dwtools/atop/starter/entry/Main.s
+        path: ../proto/wtools/atop/starter/entry/Main.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -132,13 +132,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/atop/starter/entry/Main.s'
+        path: '{path::out.*=1}/source/wtools/atop/starter/entry/Main.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/atop/starter/entry/Main.s'
+        path: '{path::out.*=1}/source/wtools/atop/starter/entry/Main.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -165,301 +165,301 @@ module:
         path:
           - ../proto
           - ../proto/Integration.test.s
-          - ../proto/dwtools
-          - ../proto/dwtools/Tools.s
-          - ../proto/dwtools/abase
-          - ../proto/dwtools/amid
-          - ../proto/dwtools/atop
-          - ../proto/dwtools/atop/starter
-          - ../proto/dwtools/atop/starter/entry
-          - ../proto/dwtools/atop/starter/entry/Exec
-          - ../proto/dwtools/atop/starter/entry/ExecDebug
-          - ../proto/dwtools/atop/starter/entry/ExecUnrestricted
-          - ../proto/dwtools/atop/starter/entry/Include.s
-          - ../proto/dwtools/atop/starter/entry/Main.s
-          - ../proto/dwtools/atop/starter/include
-          - ../proto/dwtools/atop/starter/include/Base.s
-          - ../proto/dwtools/atop/starter/include/Center.s
-          - ../proto/dwtools/atop/starter/include/Launcher.s
-          - ../proto/dwtools/atop/starter/include/Mid.s
-          - ../proto/dwtools/atop/starter/include/MidLegacy.s
-          - ../proto/dwtools/atop/starter/include/Top.s
-          - ../proto/dwtools/atop/starter/l1
-          - ../proto/dwtools/atop/starter/l1/Namespace.s
-          - ../proto/dwtools/atop/starter/l1_boot
-          - ../proto/dwtools/atop/starter/l1_boot/Bro.txt.s
-          - ../proto/dwtools/atop/starter/l1_boot/Early.txt.s
-          - ../proto/dwtools/atop/starter/l1_boot/Extract.txt.s
-          - ../proto/dwtools/atop/starter/l1_boot/Globing.txt.s
-          - ../proto/dwtools/atop/starter/l1_boot/Njs.txt.s
-          - ../proto/dwtools/atop/starter/l1_boot/Predefined.txt.s
-          - ../proto/dwtools/atop/starter/l1_boot/Proceduring.txt.s
-          - ../proto/dwtools/atop/starter/l1_boot/Require.txt.s
-          - ../proto/dwtools/atop/starter/l1_boot/Starter.txt.s
-          - ../proto/dwtools/atop/starter/l3
-          - ../proto/dwtools/atop/starter/l3/Maker.s
-          - ../proto/dwtools/atop/starter/l5
-          - ../proto/dwtools/atop/starter/l5/Center.s
-          - ../proto/dwtools/atop/starter/l5/Maker2.s
-          - ../proto/dwtools/atop/starter/l5/Servlet.s
-          - ../proto/dwtools/atop/starter/l5/Session.s
-          - ../proto/dwtools/atop/starter/l7
-          - ../proto/dwtools/atop/starter/l7/System.s
-          - ../proto/dwtools/atop/starter/l7_session
-          - ../proto/dwtools/atop/starter/l7_session/BrowserCdp.s
-          - ../proto/dwtools/atop/starter/l8
-          - ../proto/dwtools/atop/starter/l8/Cui.s
-          - ../proto/dwtools/atop/starter/l8/Launcher.s
-          - ../proto/dwtools/atop/starter/legacy
-          - ../proto/dwtools/atop/starter/legacy/StarterConfigBegin.raw.s
-          - ../proto/dwtools/atop/starter/legacy/StarterInitBegin.raw.s
-          - ../proto/dwtools/atop/starter/legacy/StarterInitEnd.raw.s
-          - ../proto/dwtools/atop/starter/legacy/StarterMaker.s
-          - ../proto/dwtools/atop/starter/legacy/StarterPreloadEnd.raw.s
-          - ../proto/dwtools/atop/starter/legacy/StarterServer.ss
-          - ../proto/dwtools/atop/starter/legacy/StarterStart.raw.s
-          - ../proto/dwtools/atop/starter.test
-          - ../proto/dwtools/atop/starter.test/Ext.test.s
-          - ../proto/dwtools/atop/starter.test/Int.test.s
-          - ../proto/dwtools/atop/starter.test/StarterLegacy.test.s
-          - ../proto/dwtools/atop/starter.test/_asset
-          - ../proto/dwtools/atop/starter.test/_asset/asyncError
-          - ../proto/dwtools/atop/starter.test/_asset/asyncError/F1.js
-          - ../proto/dwtools/atop/starter.test/_asset/complex
-          - ../proto/dwtools/atop/starter.test/_asset/complex/package.json
-          - ../proto/dwtools/atop/starter.test/_asset/complex/app0
-          - ../proto/dwtools/atop/starter.test/_asset/complex/app0/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/complex/app0/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/complex/app1
-          - ../proto/dwtools/atop/starter.test/_asset/complex/app1/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/complex/app1/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/complex/app2
-          - ../proto/dwtools/atop/starter.test/_asset/complex/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/complex/app2/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/cycle
-          - ../proto/dwtools/atop/starter.test/_asset/cycle/in
-          - ../proto/dwtools/atop/starter.test/_asset/cycle/in/app1
-          - ../proto/dwtools/atop/starter.test/_asset/cycle/in/app1/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/cycle/in/app1/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/cycle/in/app2
-          - ../proto/dwtools/atop/starter.test/_asset/cycle/in/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/cycle/in/app2/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep
-          - ../proto/dwtools/atop/starter.test/_asset/dep/package.json
-          - ../proto/dwtools/atop/starter.test/_asset/dep/app0
-          - ../proto/dwtools/atop/starter.test/_asset/dep/app0/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep/app0/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep/app2
-          - ../proto/dwtools/atop/starter.test/_asset/dep/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep/app2/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep/ext
+          - ../proto/wtools
+          - ../proto/wtools/Tools.s
+          - ../proto/wtools/abase
+          - ../proto/wtools/amid
+          - ../proto/wtools/atop
+          - ../proto/wtools/atop/starter
+          - ../proto/wtools/atop/starter/entry
+          - ../proto/wtools/atop/starter/entry/Exec
+          - ../proto/wtools/atop/starter/entry/ExecDebug
+          - ../proto/wtools/atop/starter/entry/ExecUnrestricted
+          - ../proto/wtools/atop/starter/entry/Include.s
+          - ../proto/wtools/atop/starter/entry/Main.s
+          - ../proto/wtools/atop/starter/include
+          - ../proto/wtools/atop/starter/include/Base.s
+          - ../proto/wtools/atop/starter/include/Center.s
+          - ../proto/wtools/atop/starter/include/Launcher.s
+          - ../proto/wtools/atop/starter/include/Mid.s
+          - ../proto/wtools/atop/starter/include/MidLegacy.s
+          - ../proto/wtools/atop/starter/include/Top.s
+          - ../proto/wtools/atop/starter/l1
+          - ../proto/wtools/atop/starter/l1/Namespace.s
+          - ../proto/wtools/atop/starter/l1_boot
+          - ../proto/wtools/atop/starter/l1_boot/Bro.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/Early.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/Extract.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/Globing.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/Njs.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/Predefined.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/Proceduring.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/Require.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/Starter.txt.s
+          - ../proto/wtools/atop/starter/l3
+          - ../proto/wtools/atop/starter/l3/Maker.s
+          - ../proto/wtools/atop/starter/l5
+          - ../proto/wtools/atop/starter/l5/Center.s
+          - ../proto/wtools/atop/starter/l5/Maker2.s
+          - ../proto/wtools/atop/starter/l5/Servlet.s
+          - ../proto/wtools/atop/starter/l5/Session.s
+          - ../proto/wtools/atop/starter/l7
+          - ../proto/wtools/atop/starter/l7/System.s
+          - ../proto/wtools/atop/starter/l7_session
+          - ../proto/wtools/atop/starter/l7_session/BrowserCdp.s
+          - ../proto/wtools/atop/starter/l8
+          - ../proto/wtools/atop/starter/l8/Cui.s
+          - ../proto/wtools/atop/starter/l8/Launcher.s
+          - ../proto/wtools/atop/starter/legacy
+          - ../proto/wtools/atop/starter/legacy/StarterConfigBegin.raw.s
+          - ../proto/wtools/atop/starter/legacy/StarterInitBegin.raw.s
+          - ../proto/wtools/atop/starter/legacy/StarterInitEnd.raw.s
+          - ../proto/wtools/atop/starter/legacy/StarterMaker.s
+          - ../proto/wtools/atop/starter/legacy/StarterPreloadEnd.raw.s
+          - ../proto/wtools/atop/starter/legacy/StarterServer.ss
+          - ../proto/wtools/atop/starter/legacy/StarterStart.raw.s
+          - ../proto/wtools/atop/starter.test
+          - ../proto/wtools/atop/starter.test/Ext.test.s
+          - ../proto/wtools/atop/starter.test/Int.test.s
+          - ../proto/wtools/atop/starter.test/StarterLegacy.test.s
+          - ../proto/wtools/atop/starter.test/_asset
+          - ../proto/wtools/atop/starter.test/_asset/asyncError
+          - ../proto/wtools/atop/starter.test/_asset/asyncError/F1.js
+          - ../proto/wtools/atop/starter.test/_asset/complex
+          - ../proto/wtools/atop/starter.test/_asset/complex/package.json
+          - ../proto/wtools/atop/starter.test/_asset/complex/app0
+          - ../proto/wtools/atop/starter.test/_asset/complex/app0/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/complex/app0/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/complex/app1
+          - ../proto/wtools/atop/starter.test/_asset/complex/app1/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/complex/app1/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/complex/app2
+          - ../proto/wtools/atop/starter.test/_asset/complex/app2/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/complex/app2/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/cycle
+          - ../proto/wtools/atop/starter.test/_asset/cycle/in
+          - ../proto/wtools/atop/starter.test/_asset/cycle/in/app1
+          - ../proto/wtools/atop/starter.test/_asset/cycle/in/app1/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/cycle/in/app1/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/cycle/in/app2
+          - ../proto/wtools/atop/starter.test/_asset/cycle/in/app2/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/cycle/in/app2/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/dep
+          - ../proto/wtools/atop/starter.test/_asset/dep/package.json
+          - ../proto/wtools/atop/starter.test/_asset/dep/app0
+          - ../proto/wtools/atop/starter.test/_asset/dep/app0/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/dep/app0/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/dep/app2
+          - ../proto/wtools/atop/starter.test/_asset/dep/app2/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/dep/app2/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/dep/ext
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/dep/ext/RequireApp2File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep2
-          - ../proto/dwtools/atop/starter.test/_asset/dep2/Index.html
-          - ../proto/dwtools/atop/starter.test/_asset/dep2/package.json
-          - ../proto/dwtools/atop/starter.test/_asset/dep2/app0
-          - ../proto/dwtools/atop/starter.test/_asset/dep2/app0/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep2/app0/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep2/app2
-          - ../proto/dwtools/atop/starter.test/_asset/dep2/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep2/app2/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/dep2/ext
+            ../proto/wtools/atop/starter.test/_asset/dep/ext/RequireApp2File2.js
+          - ../proto/wtools/atop/starter.test/_asset/dep2
+          - ../proto/wtools/atop/starter.test/_asset/dep2/Index.html
+          - ../proto/wtools/atop/starter.test/_asset/dep2/package.json
+          - ../proto/wtools/atop/starter.test/_asset/dep2/app0
+          - ../proto/wtools/atop/starter.test/_asset/dep2/app0/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/dep2/app0/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/dep2/app2
+          - ../proto/wtools/atop/starter.test/_asset/dep2/app2/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/dep2/app2/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/dep2/ext
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/dep2/ext/RequireApp2File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/depGlob
-          - ../proto/dwtools/atop/starter.test/_asset/depGlob/in
-          - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/dir
-          - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/dir/Dep1.js
-          - ../proto/dwtools/atop/starter.test/_asset/depGlob/in/dir/Dep2.js
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir
+            ../proto/wtools/atop/starter.test/_asset/dep2/ext/RequireApp2File2.js
+          - ../proto/wtools/atop/starter.test/_asset/depGlob
+          - ../proto/wtools/atop/starter.test/_asset/depGlob/in
+          - ../proto/wtools/atop/starter.test/_asset/depGlob/in/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/depGlob/in/dir
+          - ../proto/wtools/atop/starter.test/_asset/depGlob/in/dir/Dep1.js
+          - ../proto/wtools/atop/starter.test/_asset/depGlob/in/dir/Dep2.js
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep1.js
+            ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep1.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep2.s
+            ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep2.s
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep3.x
+            ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep3.x
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep4.ss
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/out
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyAny/out/Out.js
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir
+            ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/in/dir/Dep4.ss
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/out
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyAny/out/Out.js
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep1.js
+            ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep1.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep2.s
+            ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep2.s
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep3.x
+            ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep3.x
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep4.ss
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/out
-          - ../proto/dwtools/atop/starter.test/_asset/depGlobAnyExt/out/Out.js
-          - ../proto/dwtools/atop/starter.test/_asset/depInclude
-          - ../proto/dwtools/atop/starter.test/_asset/depInclude/in
-          - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/package.json
-          - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/will.yml
-          - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/dep
-          - ../proto/dwtools/atop/starter.test/_asset/depInclude/in/dep/Dep1.js
-          - ../proto/dwtools/atop/starter.test/_asset/depLocal
-          - ../proto/dwtools/atop/starter.test/_asset/depLocal/in
-          - ../proto/dwtools/atop/starter.test/_asset/depLocal/in/Dep1.js
-          - ../proto/dwtools/atop/starter.test/_asset/depLocal/in/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir
-          - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir/in
-          - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir/in/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir/in/dir
+            ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/in/dir/Dep4.ss
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/out
+          - ../proto/wtools/atop/starter.test/_asset/depGlobAnyExt/out/Out.js
+          - ../proto/wtools/atop/starter.test/_asset/depInclude
+          - ../proto/wtools/atop/starter.test/_asset/depInclude/in
+          - ../proto/wtools/atop/starter.test/_asset/depInclude/in/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/depInclude/in/package.json
+          - ../proto/wtools/atop/starter.test/_asset/depInclude/in/will.yml
+          - ../proto/wtools/atop/starter.test/_asset/depInclude/in/dep
+          - ../proto/wtools/atop/starter.test/_asset/depInclude/in/dep/Dep1.js
+          - ../proto/wtools/atop/starter.test/_asset/depLocal
+          - ../proto/wtools/atop/starter.test/_asset/depLocal/in
+          - ../proto/wtools/atop/starter.test/_asset/depLocal/in/Dep1.js
+          - ../proto/wtools/atop/starter.test/_asset/depLocal/in/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/depLocalSubdir
+          - ../proto/wtools/atop/starter.test/_asset/depLocalSubdir/in
+          - ../proto/wtools/atop/starter.test/_asset/depLocalSubdir/in/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/depLocalSubdir/in/dir
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/depLocalSubdir/in/dir/Dep1.js
-          - ../proto/dwtools/atop/starter.test/_asset/depNpm
-          - ../proto/dwtools/atop/starter.test/_asset/depNpm/in
-          - ../proto/dwtools/atop/starter.test/_asset/depNpm/in/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/depNpm/in/package.json
-          - ../proto/dwtools/atop/starter.test/_asset/depNpm/in/dep
-          - ../proto/dwtools/atop/starter.test/_asset/depNpm/in/dep/Dep1.js
-          - ../proto/dwtools/atop/starter.test/_asset/errorInWorker
-          - ../proto/dwtools/atop/starter.test/_asset/errorInWorker/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/errorInWorker/W1.js
-          - ../proto/dwtools/atop/starter.test/_asset/errorInWorker/Worker.js
-          - ../proto/dwtools/atop/starter.test/_asset/errorInWorkerNoFile
+            ../proto/wtools/atop/starter.test/_asset/depLocalSubdir/in/dir/Dep1.js
+          - ../proto/wtools/atop/starter.test/_asset/depNpm
+          - ../proto/wtools/atop/starter.test/_asset/depNpm/in
+          - ../proto/wtools/atop/starter.test/_asset/depNpm/in/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/depNpm/in/package.json
+          - ../proto/wtools/atop/starter.test/_asset/depNpm/in/dep
+          - ../proto/wtools/atop/starter.test/_asset/depNpm/in/dep/Dep1.js
+          - ../proto/wtools/atop/starter.test/_asset/errorInWorker
+          - ../proto/wtools/atop/starter.test/_asset/errorInWorker/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/errorInWorker/W1.js
+          - ../proto/wtools/atop/starter.test/_asset/errorInWorker/Worker.js
+          - ../proto/wtools/atop/starter.test/_asset/errorInWorkerNoFile
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/errorInWorkerNoFile/Index.js
+            ../proto/wtools/atop/starter.test/_asset/errorInWorkerNoFile/Index.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/errorInWorkerNoFile/Worker.js
-          - ../proto/dwtools/atop/starter.test/_asset/exclude
-          - ../proto/dwtools/atop/starter.test/_asset/exclude/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/exclude/src
-          - ../proto/dwtools/atop/starter.test/_asset/exclude/src/File.js
-          - ../proto/dwtools/atop/starter.test/_asset/exclude/src/File.manual.js
-          - ../proto/dwtools/atop/starter.test/_asset/express
-          - ../proto/dwtools/atop/starter.test/_asset/express/package.json
-          - ../proto/dwtools/atop/starter.test/_asset/express/server.js
-          - ../proto/dwtools/atop/starter.test/_asset/express/webpack
+            ../proto/wtools/atop/starter.test/_asset/errorInWorkerNoFile/Worker.js
+          - ../proto/wtools/atop/starter.test/_asset/exclude
+          - ../proto/wtools/atop/starter.test/_asset/exclude/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/exclude/src
+          - ../proto/wtools/atop/starter.test/_asset/exclude/src/File.js
+          - ../proto/wtools/atop/starter.test/_asset/exclude/src/File.manual.js
+          - ../proto/wtools/atop/starter.test/_asset/express
+          - ../proto/wtools/atop/starter.test/_asset/express/package.json
+          - ../proto/wtools/atop/starter.test/_asset/express/server.js
+          - ../proto/wtools/atop/starter.test/_asset/express/webpack
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/express/webpack/package.json
+            ../proto/wtools/atop/starter.test/_asset/express/webpack/package.json
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/express/webpack/server-packed.js
+            ../proto/wtools/atop/starter.test/_asset/express/webpack/server-packed.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/express/webpack/webpack.config.js
-          - ../proto/dwtools/atop/starter.test/_asset/html
-          - ../proto/dwtools/atop/starter.test/_asset/html/F1.html
-          - ../proto/dwtools/atop/starter.test/_asset/html/F1.js
-          - ../proto/dwtools/atop/starter.test/_asset/includeCss
-          - ../proto/dwtools/atop/starter.test/_asset/includeCss/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/includeCss/Style.css
-          - ../proto/dwtools/atop/starter.test/_asset/includeModule
-          - ../proto/dwtools/atop/starter.test/_asset/includeModule/.will.yml
-          - ../proto/dwtools/atop/starter.test/_asset/includeModule/proto
+            ../proto/wtools/atop/starter.test/_asset/express/webpack/webpack.config.js
+          - ../proto/wtools/atop/starter.test/_asset/html
+          - ../proto/wtools/atop/starter.test/_asset/html/F1.html
+          - ../proto/wtools/atop/starter.test/_asset/html/F1.js
+          - ../proto/wtools/atop/starter.test/_asset/includeCss
+          - ../proto/wtools/atop/starter.test/_asset/includeCss/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/includeCss/Style.css
+          - ../proto/wtools/atop/starter.test/_asset/includeModule
+          - ../proto/wtools/atop/starter.test/_asset/includeModule/.will.yml
+          - ../proto/wtools/atop/starter.test/_asset/includeModule/proto
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModule/proto/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker
+            ../proto/wtools/atop/starter.test/_asset/includeModule/proto/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/.will.yml
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker/.will.yml
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker/proto
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/Index.js
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker/proto/Index.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/Module.js
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker/proto/Module.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorker/proto/Worker.js
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorker/proto/Worker.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorkerThrowing
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/.will.yml
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/.will.yml
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/Index.js
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/Index.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/Module.js
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/Module.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/Worker.js
-          - ../proto/dwtools/atop/starter.test/_asset/legacy-trivial
-          - ../proto/dwtools/atop/starter.test/_asset/legacy-trivial/.will.yml
-          - ../proto/dwtools/atop/starter.test/_asset/minute
-          - ../proto/dwtools/atop/starter.test/_asset/minute/F1.js
-          - ../proto/dwtools/atop/starter.test/_asset/processes
-          - ../proto/dwtools/atop/starter.test/_asset/processes/Experiment.js
-          - ../proto/dwtools/atop/starter.test/_asset/processes/Experiment2.js
-          - ../proto/dwtools/atop/starter.test/_asset/recursion
-          - ../proto/dwtools/atop/starter.test/_asset/recursion/F1.js
-          - ../proto/dwtools/atop/starter.test/_asset/recursion/F2.js
-          - ../proto/dwtools/atop/starter.test/_asset/several
-          - ../proto/dwtools/atop/starter.test/_asset/several/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/several/File2.js
+            ../proto/wtools/atop/starter.test/_asset/includeModuleInWorkerThrowing/proto/Worker.js
+          - ../proto/wtools/atop/starter.test/_asset/legacy-trivial
+          - ../proto/wtools/atop/starter.test/_asset/legacy-trivial/.will.yml
+          - ../proto/wtools/atop/starter.test/_asset/minute
+          - ../proto/wtools/atop/starter.test/_asset/minute/F1.js
+          - ../proto/wtools/atop/starter.test/_asset/processes
+          - ../proto/wtools/atop/starter.test/_asset/processes/Experiment.js
+          - ../proto/wtools/atop/starter.test/_asset/processes/Experiment2.js
+          - ../proto/wtools/atop/starter.test/_asset/recursion
+          - ../proto/wtools/atop/starter.test/_asset/recursion/F1.js
+          - ../proto/wtools/atop/starter.test/_asset/recursion/F2.js
+          - ../proto/wtools/atop/starter.test/_asset/several
+          - ../proto/wtools/atop/starter.test/_asset/several/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/several/File2.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/startBaseDeducingFromAllowed
+            ../proto/wtools/atop/starter.test/_asset/startBaseDeducingFromAllowed
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/startBaseDeducingFromAllowed/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/startOptionWithModule
+            ../proto/wtools/atop/starter.test/_asset/startBaseDeducingFromAllowed/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/startOptionWithModule
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/startOptionWithModule/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/startTestSuite
-          - ../proto/dwtools/atop/starter.test/_asset/startTestSuite/Suite1.js
-          - ../proto/dwtools/atop/starter.test/_asset/startWithNpmPackage
+            ../proto/wtools/atop/starter.test/_asset/startOptionWithModule/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/startTestSuite
+          - ../proto/wtools/atop/starter.test/_asset/startTestSuite/Suite1.js
+          - ../proto/wtools/atop/starter.test/_asset/startWithNpmPackage
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/startWithNpmPackage/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/tree
-          - ../proto/dwtools/atop/starter.test/_asset/tree/External1.js
-          - ../proto/dwtools/atop/starter.test/_asset/tree/External2.js
-          - ../proto/dwtools/atop/starter.test/_asset/tree/in
-          - ../proto/dwtools/atop/starter.test/_asset/tree/in/app1
-          - ../proto/dwtools/atop/starter.test/_asset/tree/in/app1/dir1
-          - ../proto/dwtools/atop/starter.test/_asset/tree/in/app1/dir1/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/tree/in/app1/dir1/dir2
+            ../proto/wtools/atop/starter.test/_asset/startWithNpmPackage/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/tree
+          - ../proto/wtools/atop/starter.test/_asset/tree/External1.js
+          - ../proto/wtools/atop/starter.test/_asset/tree/External2.js
+          - ../proto/wtools/atop/starter.test/_asset/tree/in
+          - ../proto/wtools/atop/starter.test/_asset/tree/in/app1
+          - ../proto/wtools/atop/starter.test/_asset/tree/in/app1/dir1
+          - ../proto/wtools/atop/starter.test/_asset/tree/in/app1/dir1/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/tree/in/app1/dir1/dir2
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/tree/in/app1/dir1/dir2/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/tree/in/app2
-          - ../proto/dwtools/atop/starter.test/_asset/tree/in/app2/File1.js
-          - ../proto/dwtools/atop/starter.test/_asset/tree/in/app2/File2.js
-          - ../proto/dwtools/atop/starter.test/_asset/workerEnvironment
-          - ../proto/dwtools/atop/starter.test/_asset/workerEnvironment/Index.js
-          - ../proto/dwtools/atop/starter.test/_asset/workerEnvironment/W1.js
+            ../proto/wtools/atop/starter.test/_asset/tree/in/app1/dir1/dir2/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/tree/in/app2
+          - ../proto/wtools/atop/starter.test/_asset/tree/in/app2/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/tree/in/app2/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/workerEnvironment
+          - ../proto/wtools/atop/starter.test/_asset/workerEnvironment/Index.js
+          - ../proto/wtools/atop/starter.test/_asset/workerEnvironment/W1.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerEnvironment/Worker.js
+            ../proto/wtools/atop/starter.test/_asset/workerEnvironment/Worker.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentInclude
+            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentInclude
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentInclude/Index.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentInclude/Index.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentInclude/Script.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentInclude/Script.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentInclude/Worker.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentInclude/Worker.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir
+            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto
+            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Index.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Index.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Script.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Script.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Worker.js
-          - ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameInclude
+            ../proto/wtools/atop/starter.test/_asset/workerUsingDifferentIncludeSubDir/proto/Worker.js
+          - ../proto/wtools/atop/starter.test/_asset/workerUsingTheSameInclude
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameInclude/Index.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingTheSameInclude/Index.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameInclude/Script.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingTheSameInclude/Script.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameInclude/Worker.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingTheSameInclude/Worker.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir
+            ../proto/wtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto
+            ../proto/wtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Index.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Index.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Script.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Script.js
           - >-
-            ../proto/dwtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Worker.js
+            ../proto/wtools/atop/starter.test/_asset/workerUsingTheSameIncludeSubDir/proto/Worker.js
     submodule:
       wTools:
         path: 'npm:///wTools'
@@ -1179,13 +1179,13 @@ module:
       npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
-        single-process-starter: node proto/dwtools/atop/starter/entry/Exec
-        debug-starter: node proto/dwtools/atop/starter/entry/ExecDebug
-        starter: node proto/dwtools/atop/starter/entry/ExecUnrestricted
+        single-process-starter: node proto/wtools/atop/starter/entry/Exec
+        debug-starter: node proto/wtools/atop/starter/entry/ExecDebug
+        starter: node proto/wtools/atop/starter/entry/ExecUnrestricted
       npm.bin:
-        starter: proto/dwtools/atop/starter/entry/ExecUnrestricted
-        single-process-starter: proto/dwtools/atop/starter/entry/Exec
-        debug-starter: proto/dwtools/atop/starter/entry/ExecDebug
+        starter: proto/wtools/atop/starter/entry/ExecUnrestricted
+        single-process-starter: proto/wtools/atop/starter/entry/Exec
+        debug-starter: proto/wtools/atop/starter/entry/ExecDebug
     path:
       module.willfiles:
         criterion:
@@ -1265,7 +1265,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: proto/dwtools/atop/starter/entry/Main.s
+        path: proto/wtools/atop/starter/entry/Main.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -1275,13 +1275,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/atop/starter/entry/Main.s'
+        path: '{path::out.*=1}/source/wtools/atop/starter/entry/Main.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/atop/starter/entry/Main.s'
+        path: '{path::out.*=1}/source/wtools/atop/starter/entry/Main.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug

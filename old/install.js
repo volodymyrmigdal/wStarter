@@ -6,7 +6,7 @@ if( typeof module !== 'undefined' )
 let _ = _global_.wTools;
 
 let srcPath = _.path.join( __dirname, 'node_modules' );
-let dstPath = _.path.join( __dirname, 'proto/tmp/dwtools' );
+let dstPath = _.path.join( __dirname, 'proto/tmp/wtools' );
 
 let includeList =
 [
@@ -47,7 +47,7 @@ function onDstName( relative, dstRecordContext, op, o, srcRecord )
 {
   if( srcRecord.isActual )
   {
-    let path = _.strIsolateBeginOrNone( srcRecord.absolute, 'dwtools/' )[ 2 ];
+    let path = _.strIsolateBeginOrNone( srcRecord.absolute, 'wtools/' )[ 2 ];
     return _.path.dot( path );
   }
   return relative;

@@ -19,13 +19,13 @@ about :
   npm.scripts :
     test : 'wtest .run proto/**'
     docgen : 'wdocgen .build proto'
-    single-process-starter : 'node proto/dwtools/atop/starter/entry/Exec'
-    debug-starter : 'node proto/dwtools/atop/starter/entry/ExecDebug'
-    starter : 'node proto/dwtools/atop/starter/entry/ExecUnrestricted'
+    single-process-starter : 'node proto/wtools/atop/starter/entry/Exec'
+    debug-starter : 'node proto/wtools/atop/starter/entry/ExecDebug'
+    starter : 'node proto/wtools/atop/starter/entry/ExecUnrestricted'
   npm.bin :
-    starter : 'proto/dwtools/atop/starter/entry/ExecUnrestricted'
-    single-process-starter : 'proto/dwtools/atop/starter/entry/Exec'
-    debug-starter : 'proto/dwtools/atop/starter/entry/ExecDebug'
+    starter : 'proto/wtools/atop/starter/entry/ExecUnrestricted'
+    single-process-starter : 'proto/wtools/atop/starter/entry/Exec'
+    debug-starter : 'proto/wtools/atop/starter/entry/ExecDebug'
 
 path :
 

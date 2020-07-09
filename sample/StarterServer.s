@@ -1,7 +1,7 @@
 
 if( typeof module !== 'undefined' )
 {
-  require( '../proto/dwtools/amid/starter/StarterServer.ss' );
+  require( '../proto/wtools/amid/starter/StarterServer.ss' );
   var Express = require( 'express' );
 }
 
@@ -15,7 +15,7 @@ var starterMaker = new _.StarterMaker
    appName : 'Sample',
    inPath : '/',
    outPath : '/',
-   toolsPath : '/staging/tmp/dwtools',
+   toolsPath : '/staging/tmp/wtools',
    initScriptPath : '/sample/index.js',
    offline : 0,
    verbosity : 5,

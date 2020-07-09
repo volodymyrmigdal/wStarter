@@ -14,7 +14,7 @@ var starterMaker = new _.StarterMaker
    appName : 'Sample',
    inPath : '/',
    outPath : '/',
-   toolsPath : '/staging/tmp/dwtools',
+   toolsPath : '/staging/tmp/wtools',
    initScriptPath : '/sample/index.js',
    offline : 1,
    verbosity : 5,
