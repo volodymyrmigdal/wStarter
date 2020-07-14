@@ -526,6 +526,7 @@ function sourcesJoinSplits( o )
   ${rou( 'objectIs' )}
   ${rou( 'objectLike' )}
   ${rou( 'arrayLike' )}
+  ${rou( 'hasMethodIterator' )}
   ${rou( 'mapLike' )}
   ${rou( 'strsLikeAll' )}
   ${rou( 'boolLike' )}
