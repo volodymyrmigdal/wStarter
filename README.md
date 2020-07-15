@@ -6,7 +6,7 @@ Collection of tools to generate background service to start and pack application
 ## Try out
 ```
 npm install
-node sample/Sample.js
+node sample/Sample.s
 ```
 
 
