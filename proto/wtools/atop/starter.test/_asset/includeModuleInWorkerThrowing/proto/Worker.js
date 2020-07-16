@@ -2,7 +2,7 @@
 
   include( '/wtools/abase/Layer2.s' );
 
-  var _ = _global_.wTools;
+  let _ = _global_.wTools;
 
   try
   {

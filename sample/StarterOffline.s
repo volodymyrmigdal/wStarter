@@ -4,7 +4,7 @@ if( typeof module !== 'undefined' )
   require( 'wstarter' );
 }
 
-var _ = _global_.wTools;
+let _ = _global_.wTools;
 
 var srcPath = _.path.resolve( __dirname, '..' );
 var outPath = _.path.join( __dirname, 'out' );

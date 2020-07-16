@@ -14,8 +14,8 @@
 
 // //
 
-// var _ = _global_.wTools;
-// var Self = _.starter = _.starter || Object.create( null );
+// let _ = _global_.wTools;
+// let Self = _.starter = _.starter || Object.create( null );
 
 // // --
 // // routine

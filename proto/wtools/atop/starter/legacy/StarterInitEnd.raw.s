@@ -1,5 +1,5 @@
 
-// var _ = _starterGlobal_.wTools;
+// let _ = _starterGlobal_.wTools;
 
 // if( !_ )
 // throw 'Something wrong with wTools';

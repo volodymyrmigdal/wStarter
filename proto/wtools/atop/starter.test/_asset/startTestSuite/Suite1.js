@@ -2,8 +2,8 @@
 
 'use strict';
 
-var _ = require( '../../../../../wtools/Tools.s' );
-var _global = _global_;
+let _ = require( '../../../../../wtools/Tools.s' );
+let _global = _global_;
 
 _.include( 'wTesting' );
 
@@ -21,7 +21,7 @@ function routine1( test )
 // declare
 // --
 
-var Self =
+let Self =
 {
 
   name : 'Tools.Starter.Suite1',

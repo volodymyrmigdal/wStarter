@@ -6,7 +6,7 @@ if( typeof module !== 'undefined' )
 {
 
   var Jsdom = require( 'jsdom' );
-  var _ = require( '../../../wtools/Tools.s' );
+  let _ = require( '../../../wtools/Tools.s' );
 
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
@@ -15,8 +15,8 @@ if( typeof module !== 'undefined' )
 
 }
 
-var _global = _global_;
-var _ = _global_.wTools;
+let _global = _global_;
+let _ = _global_.wTools;
 
 // --
 // context
@@ -403,7 +403,7 @@ async function includeModule( test )
 
     var result = await page.eval( () =>
     {
-      var _ = _global_.wTools;
+      let _ = _global_.wTools;
       _.include( 'wPathBasic' );
       return _.path.join( '/a', 'b' );
     })
@@ -959,7 +959,7 @@ curatedRunEventsClosePageManually.timeOut = 300000;
 // declare
 // --
 
-var Self =
+let Self =
 {
 
   name : 'Tools.Starter.Int',

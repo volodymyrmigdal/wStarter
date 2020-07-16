@@ -4,13 +4,13 @@
 
 if( typeof module !== 'undefined' )
 {
-  var _ = require( '../include/Mid.s' );
+  let _ = require( '../include/Mid.s' );
   module.exports = _;
 }
 
 //
 
-var _ = _global_.wTools;
+let _ = _global_.wTools;
 let Parent = null;
 let Self = wStarterCenter;
 function wStarterCenter( o )

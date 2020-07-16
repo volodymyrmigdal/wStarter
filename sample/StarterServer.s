@@ -5,7 +5,7 @@ if( typeof module !== 'undefined' )
   var Express = require( 'express' );
 }
 
-var _ = _global_.wTools;
+let _ = _global_.wTools;
 
 var srcPath = _.path.resolve( __dirname, '..' );
 var outPath = _.path.join( __dirname, 'out' );

@@ -1,7 +1,7 @@
 
 console.log( 'app0/File1.js:begin' ); debugger;
 
-var _ = require( 'wTools' );
+let _ = require( 'wTools' );
 
 console.log( 'numberIs' + ' ' + _.numberIs( 9 ) );
 
