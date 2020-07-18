@@ -110,7 +110,7 @@ function wStarterLauncher( o )
 // // declare
 // // --
 //
-// let Extend =
+// let Extension =
 // {
 //
 //   // inter
@@ -136,7 +136,7 @@ function wStarterLauncher( o )
 // ({
 //   cls : Self,
 //   parent : Parent,
-//   extend : Extend,
+//   extend : Extension,
 // });
 //
 // _.Copyable.mixin( Self );

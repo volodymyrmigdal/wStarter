@@ -582,7 +582,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strHas' )}
   ${rou( 'strLike' )}
   ${rou( 'rangeIs' )}
-  ${rou( 'numbersAre' )}
+  ${rou( 'numbersAreAll' )}
   ${rou( 'bufferTypedIs' )}
   ${rou( 'bufferNodeIs' )}
   ${rou( 'strLinesStrip' )}
