@@ -1,16 +1,9 @@
 
-let _ = require( 'wresolverextra' );
-var src =
-{
-  dir :
-  {
-    val1 : 'Hello'
-  },
-}
+if( typeof module !== 'undefined' )
+require('./out/SingleFileTools.ss' );
 
-var resolved = _.resolver.resolve( src, 'dir/val1' )
-console.log( resolved );
+let _ = wTools;
 
-/*
-log : `Hello`
-*/
+console.log( _.strSplit( 'a b c' ) );
+
+/* log : ["a", "", "b", "", "c"] */
