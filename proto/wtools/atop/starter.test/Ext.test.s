@@ -3888,7 +3888,7 @@ let Self =
 
     startRecursion,
     startRecursionSingle,
-    startBaseDeducingFromAllowed,
+    // startBaseDeducingFromAllowed,/* xxx : fix */
     // startOptionWithModule, /* xxx : implement */
     // startWithNpmPackage,/* xxx : implement */
     // startTestSuite, /* xxx : implement */
