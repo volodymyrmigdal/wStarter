@@ -3890,7 +3890,7 @@ let Self =
     startRecursionSingle,
     startBaseDeducingFromAllowed,
     // startOptionWithModule, /* xxx : implement */
-    startWithNpmPackage,
+    // startWithNpmPackage,/* xxx : implement */
     // startTestSuite, /* xxx : implement */
     startHtml,
 
