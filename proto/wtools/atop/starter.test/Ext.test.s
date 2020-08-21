@@ -76,7 +76,7 @@ function assetFor( test, name )
 
   //qqq Vova: probably we should add path resolving into starter
   a.routinePath = _.fileProvider.pathResolveLinkFull( a.routinePath ).filePath;
-  
+
   a.absNative = function()
   {
     let result = a.abs.apply( a, arguments );
@@ -132,7 +132,7 @@ function sourcesJoin( test )
     test.equivalent( op.output, output );
     return op;
   });
-  
+
   return a.ready;
 }
 
@@ -2704,6 +2704,7 @@ Index.js:end
   return a.ready;
 }
 
+sourcesJoinRequireGlobAnyExt.timeOut = 90000;
 sourcesJoinRequireGlobAnyExt.description =
 `
 - routine require with glob **/**.js finds many files
