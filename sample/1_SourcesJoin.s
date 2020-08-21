@@ -35,7 +35,7 @@ var o =
 {
   basePath : _.path.join( __dirname, '..' ),
   interpreter: 'browser',
-  outPath : _.path.join( __dirname, 'out/SingleFileTools.s' ),
+  outPath : _.path.join( __dirname, 'out/SingleFileTools.js' ),
   entryPath : _.path.join( __dirname, '../node_modules/wTools/proto/wtools/Tools.s' ),
   withServer: 0
 }
