@@ -496,11 +496,13 @@ function sourcesJoinSplits( o )
 
   ${rou( 'path', 'refine' )}
   ${rou( 'path', '_normalize' )}
+  ${rou( 'path', 'normalize' )}
   ${rou( 'path', 'canonize' )}
   ${rou( 'path', 'canonizeTolerant' )}
   ${rou( 'path', '_unescape' )}
   ${rou( 'path', 'unescape' )}
   ${rou( 'path', '_nativizeWindows' )}
+  ${rou( 'path', '__nativizeWindows' )}
   ${rou( 'path', '_nativizePosix' )}
   ${rou( 'path', 'isGlob' )}
   ${rou( 'path', 'isRelative' )}
