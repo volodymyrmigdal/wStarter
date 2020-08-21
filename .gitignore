@@ -6,6 +6,7 @@
 *.tmp
 *.special
 *.out
+sample/out
 build
 builder
 node_modules
