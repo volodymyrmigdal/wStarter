@@ -187,7 +187,7 @@ let Self =
   tests :
   {
     samples,
-    eslint,
+    // eslint,
   },
 
 }
