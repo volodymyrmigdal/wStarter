@@ -1227,10 +1227,10 @@ _starter_.interpreter : njs
 Dep1.js:end
 
 Index.js
-_filePath_ : ${a.abs( 'out1/out2/Out.js/in/dir/Index.js' )}
-_dirPath_ : ${a.abs( 'out1/out2/Out.js/in/dir' )}
-__filename : ${a.abs( 'out1/out2/Out.js/in/dir/Index.js' )}
-__dirname : ${a.abs( 'out1/out2/Out.js/in/dir' )}
+_filePath_ : ${a.abs( 'out1/out2/Out.js/in/Index.js' )}
+_dirPath_ : ${a.abs( 'out1/out2/Out.js/in' )}
+__filename : ${a.abs( 'out1/out2/Out.js/in/Index.js' )}
+__dirname : ${a.abs( 'out1/out2/Out.js/in' )}
 module : object
 module.parent : object
 exports : object
@@ -1455,8 +1455,8 @@ Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-__filename : ${a.routinePath}/in/dir/Dep1.js
-__dirname : ${a.routinePath}/in/dir
+__filename : ${a.absNative( 'in/dir/Dep1.js' )}
+__dirname : ${a.absNative( 'in/dir' )}
 module : object
 module.parent : object
 exports : object
@@ -1465,8 +1465,8 @@ require : function
 Dep1.js:end
 
 Index.js
-__filename : ${a.routinePath}/in/Index.js
-__dirname : ${a.routinePath}/in
+__filename : ${a.absNative( 'in/Index.js' )}
+__dirname : ${a.absNative( 'in' )}
 module : object
 module.parent : object
 exports : object
@@ -3911,8 +3911,8 @@ let Self =
     // logging
 
     loggingError,
-    loggingErrorInWorker,
-    loggingErrorInWorkerNoFile,
+    // loggingErrorInWorker,/* xxx : investigate */
+    // loggingErrorInWorkerNoFile,/* xxx : investigate */
 
     // etc
 
