@@ -548,7 +548,7 @@ async function includeModuleInWorkerThrowing( test )
 
   let session = await starter.start
   ({
-    basePath : _.path.join( a.routinePath, 'out/debug' ), /* xxx : replace */
+    basePath : _.path.join( a.routinePath, 'build' ), /* xxx : replace */
     entryPath : 'Index.js',
     curating : 0,
   })
