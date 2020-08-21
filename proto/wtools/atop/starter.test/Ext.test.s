@@ -3705,7 +3705,6 @@ async function loggingErrorInWorker( test )
     var exp =
 `
  . event::curatedRunLaunchBegin
- . event::curatedRunLaunchEnd
 Index:begin
 Index:end
 Worker:begin
@@ -3721,6 +3720,7 @@ err:begin
 `
 err:end
 Worker:end
+ . event::curatedRunLaunchEnd
  . event::timeOut
  . event::curatedRunTerminateEnd
 `
