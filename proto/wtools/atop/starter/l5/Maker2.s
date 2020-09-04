@@ -199,12 +199,13 @@ function htmlForFiles( o )
 
   /* */
 
+  o.basePath = path.resolve( o.basePath || '.' );
+
   if( o.outPath )
   {
     o.outPath = o.outPath || sourcesJoin.defaults.outPath;
     o.outPath = path.resolve( o.basePath, o.outPath );
   }
-  o.basePath = path.resolve( o.basePath || '.' );
 
   /* */
 

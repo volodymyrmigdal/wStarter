@@ -47,7 +47,8 @@
     "willbe" : "",
     "wpuppet" : "",
     "wmodulefortesting1a" : "",
-    "wstarter" : "file:."
+    "wstarter" : "file:.",
+    "eslint" : "7.1.0"
   },
   "keywords" : [ "wTools" ]
 }
