@@ -570,6 +570,7 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayRemoveElementOnceStrictly' )}
   ${rou( 'arrayRemovedElement' )}
   ${rou( 'arrayRemovedElementOnce' )}
+  ${rou( 'arrayIsEmpty' )}
   ${rou( 'longLike' )}
   ${rou( 'longLeft' )}
   ${rou( 'longLeftIndex' )}
