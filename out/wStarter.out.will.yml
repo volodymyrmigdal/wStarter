@@ -1914,6 +1914,4 @@ module:
       ../.im.will.yml:
         hash: c806b3ab14f481d78057273474ef8645
         size: 6254
-      wStarter.out.will.yml:
-        hash: da4d94ba825d53b07649ad7a9ec79253
-        size: 59364
+      wStarter.out.will.yml: *ref_0
