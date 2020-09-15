@@ -278,6 +278,7 @@ function sourcesJoinSplits( o )
 /* */  _global_._starter_.loggingApplication = ${o.loggingApplication};
 /* */  _global_._starter_.loggingSourceFiles = ${o.loggingSourceFiles};
 /* */  _global_._starter_.withServer = ${o.withServer};
+/* */  _global_._starter_.redirectingConsole = ${o.redirectingConsole};
 
 /* */  _global_.Config.debug = ${o.debug};
 
@@ -362,6 +363,20 @@ function sourcesJoinSplits( o )
 /* */  /* end of bro */ })();
 
 `
+
+  if( o.interpreter === 'browser' )
+  if( o.redirectingConsole )
+  r.interpreter +=
+`
+/* */  /* begin of broConsole */ ( function _broConsole_() {
+
+  ${_.routineParse( maker.BroConsoleCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.BroConsoleCode.end ).bodyUnwrapped};
+
+/* */  /* end of broConsole */ })();
+
+`
+
 
   /* njs */
 
@@ -702,6 +717,7 @@ sourcesJoinSplits.defaults =
   loggingApplication : 0,
   loggingSourceFiles : 0,
   withServer : null,
+  redirectingConsole : 1
 }
 
 //
@@ -976,6 +992,7 @@ let Statics =
   ProceduringCode : require( '../l1_boot/Proceduring.txt.s' ),
   GlobingCode : require( '../l1_boot/Globing.txt.s' ),
   BroCode : require( '../l1_boot/Bro.txt.s' ),
+  BroConsoleCode : require( '../l1_boot/BroConsole.txt.s' ),
   NjsCode : require( '../l1_boot/Njs.txt.s' ),
   StarterCode : require( '../l1_boot/Starter.txt.s' ),
   InstanceDefaults,
