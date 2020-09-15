@@ -8491,16 +8491,16 @@ Object.assign( _starter_.path, PathExtension );
   {
     let result = Object.create( null );
 
-    accesor( '_cache', chacheGet, chacheSet );
+    accesor( '_cache', cacheGet, cacheSet );
 
     this.exports = result;
 
-    function chacheGet()
+    function cacheGet()
     {
       return _starter_.sourcesMap;
     }
 
-    function chacheSet( src )
+    function cacheSet( src )
     {
       return _starter_.sourcesMap = src;
     }

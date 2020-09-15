@@ -698,6 +698,7 @@ function pathRealToVirtual( realPath )
     realToVirtualMap : servlet.realToVirtualMap,
     verbosity : servlet.loggingPathTranslations,
   });
+  debugger;
   return _.path.s.join( '/', result );
 }
 
@@ -791,6 +792,7 @@ function scriptWrap_functor( fop )
 
     _.assertRoutineOptions( scriptWrap, arguments );
     o.fop = fop;
+    // console.log( 'o.request.url', o.request.url );
     o.request.url = Querystring.unescape( o.request.url );
     o.uri = _.uri.parseFull( o.request.url );
     o.exts = _.uri.exts( o.uri.longPath );

@@ -474,7 +474,7 @@ let Bools =
   curating : 1, /* qqq : cover */
   headless : 0, /* qqq : cover? */
   loggingApplication : 1, /* qqq : cover */
-  loggingRequestsAll : 0, /* qqq : cover */
+  loggingRequestsAll : 0, /* qqq : cover */ /* xxx : use option loggingApplication instead */
   loggingRequests  : 0, /* qqq : cover */
   loggingSessionEvents : 0, /* qqq : cover */
   loggingOptions : 0, /* qqq : cover */

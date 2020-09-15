@@ -154,6 +154,8 @@ function pathVirtualToReal( o )
   _.assert( arguments.length === 1 );
   _.assert( _.strIs( virtualPath ) );
 
+  // debugger;
+
   if( parsed )
   {
     virtualPath = _.strRemoveBegin( virtualPath, parsed[ 1 ] );

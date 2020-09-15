@@ -231,12 +231,14 @@ function curratedRunOpen()
   .finally( ( err, chrome ) =>
   {
     session.process = chrome.process;
+    /* xxx : chrome.process sometimes undefined if headless:1 */
 
     if( err )
     return session.errorEncounterEnd( err );
-    session.process.on( 'exit', () =>
-    {
-    });
+    // debugger;
+    // session.process.on( 'exit', () =>
+    // {
+    // });
     if( system.verbosity >= 3 )
     {
       if( system.verbosity >= 7 )

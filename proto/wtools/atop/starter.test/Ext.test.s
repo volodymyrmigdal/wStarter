@@ -1861,7 +1861,7 @@ function sourcesJoinRoutineInclude( test )
 {
   let context = this;
   let a = context.assetFor( test, 'depInclude' );
-  let outPath = a.abs( 'out' ); /* xxx : remove */
+  let outPath = a.abs( 'out' ); /* qqq xxx : remove */
   let starter = new _.starter.System().form();
 
   /* */
@@ -2367,6 +2367,7 @@ function sourcesJoinRequireGlobAnyAny( test )
   /* xxx : add interpreter:njs cases */
 
   /* */
+
 
 //   a.ready.then( () =>
 //   {
@@ -3290,6 +3291,50 @@ startWithNpmPackage.description =
 
 //
 
+function startChangeModuleCache( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+F1.js
+F1.js
+F2.js
+F2.js
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startChangeModuleCache.description =
+`
+  - Require of 'module' works.
+  - Replacing Module._cache works.
+`
+
+//
+
 function startTestSuite( test )
 {
   let context = this;
@@ -3336,6 +3381,7 @@ xxx
   return a.ready;
 }
 
+startTestSuite.experimental = 1;
 startTestSuite.description =
 `
   - Running test suite in browser works.
@@ -3898,7 +3944,8 @@ let Self =
     // startBaseDeducingFromAllowed,/* xxx : fix */
     // startOptionWithModule, /* xxx : implement */
     // startWithNpmPackage,/* xxx : implement */
-    // startTestSuite, /* xxx : implement */
+    startChangeModuleCache,
+    startTestSuite, /* xxx : implement */
     startHtml,
 
     // worker
