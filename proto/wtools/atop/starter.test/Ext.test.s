@@ -1857,6 +1857,62 @@ sourcesJoinOptionInterpreterOptionBasePath.timeOut = 300000;
 
 //
 
+function sourcesJoinBrowserOptionRedirectingConsole( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'consoleRedirecting' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.sources.join inPath:**/*.(js|s) outPath:Out.js entryPath:Index.js interpreter:browser redirectingConsole:1` )
+  a.appStart( `.start Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output = 'Message to redirect'
+
+    test.identical( op.exitCode, 0 );
+    test.is( _.strHas( op.output, output ) );
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.sources.join inPath:**/*.(js|s) outPath:Out.js entryPath:Index.js interpreter:browser redirectingConsole:0` )
+  a.appStart( `.start Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output = 'Message to redirect'
+
+    test.identical( op.exitCode, 0 );
+    test.is( !_.strHas( op.output, output ) );
+    return op;
+  })
+
+  return a.ready;
+
+}/* end of sourcesJoinBrowserOptionRedirectingConsole */
+
+//
+
 function sourcesJoinRoutineInclude( test )
 {
   let context = this;
@@ -3925,6 +3981,7 @@ let Self =
     sourcesJoinRecursion,
     sourcesJoinOptionInterpreter,
     sourcesJoinOptionInterpreterOptionBasePath,
+    sourcesJoinBrowserOptionRedirectingConsole,
     sourcesJoinRoutineInclude,
     sourcesJoinRequireGlob,
     sourcesJoinRequireGlobAnyAny, /* xxx : implement */
