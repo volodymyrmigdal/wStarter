@@ -2,8 +2,6 @@
 
 'use strict';
 
-//
-
 let _ = _global_.wTools;
 let Parent = null;
 let Self = wStarterSystem;
@@ -233,8 +231,9 @@ function start( o )
     fallbackPath : path.current(),
     ... o,
   }
-  let session = new _.starter.session.BrowserCdp( opts );
 
+  let cls = o.interpreter === 'browser' ? _.starter.session.BrowserCdp : _.starter.session.Njs;
+  let session = new cls( opts );
   return session.form();
 }
 

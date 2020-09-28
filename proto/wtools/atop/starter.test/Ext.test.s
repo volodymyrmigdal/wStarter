@@ -3391,6 +3391,98 @@ startChangeModuleCache.description =
 
 //
 
+function startModuleParent( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+// xxx
+//   a.ready.then( () =>
+//   {
+//     test.case = 'native njs';
+//     _.fileProvider.filesDelete( a.routinePath );
+//     a.reflect();
+//     return null;
+//   })
+//
+//   a.shell( `node Main.js` )
+//   .then( ( op ) =>
+//   {
+//     var output =
+// `
+// Main.js: false
+// F1.js: ${ a.abs( 'F1.js' ) }
+// F2.js: ${ a.abs( 'F2.js' ) }
+// F3.js: ${ a.abs( 'F3.js' ) }
+// `
+//     test.identical( op.exitCode, 0 );
+//     test.equivalent( op.output, output );
+//     return op;
+//   })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:njs';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.start Main.js timeOut:${context.deltaTime2} loggingSessionEvents:0 headless:1 interpreter:njs` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+Main.js: false
+F1.js: ${ a.abs( 'F1.js' ) }
+F2.js: ${ a.abs( 'F2.js' ) }
+F3.js: ${ a.abs( 'F3.js' ) }
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+//   a.ready.then( () =>
+//   {
+//     test.case = 'browser';
+//     _.fileProvider.filesDelete( a.routinePath );
+//     a.reflect();
+//     return null;
+//   })
+//
+//   a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1` )
+//   .then( ( op ) =>
+//   {
+//     var output =
+// `
+// xxx
+// `
+//     test.identical( op.exitCode, 0 );
+//     test.equivalent( op.output, output );
+//     return op;
+//   })
+
+  /* */
+
+  return a.ready;
+}
+
+startModuleParent.description =
+`
+  - Require of 'module' works.
+  - Replacing Module._cache works.
+`
+
+//
+
 function startTestSuite( test )
 {
   let context = this;
@@ -4002,6 +4094,7 @@ let Self =
     // startOptionWithModule, /* xxx : implement */
     // startWithNpmPackage,/* xxx : implement */
     startChangeModuleCache,
+    startModuleParent,
     startTestSuite, /* xxx : implement */
     startHtml,
 

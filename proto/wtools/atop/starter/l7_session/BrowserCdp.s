@@ -68,44 +68,47 @@ function _form()
   let session = this;
   let system = session.system;
   let logger = system.logger;
-
   let ready = new _.Consequence().take( null );
+
+  // console.log( '_form 1' );
 
   ready.then( () =>
   {
-    session.fieldsForm();
 
-    if( session.loggingSessionEvents )
-    session.on( _.anything, ( e ) =>
-    {
-      logger.log( ` . event::${e.kind}` );
-    });
+    // console.log( '_form 2' );
+
+    session.fieldsForm();
+    session.pathsForm();
+    session.loggingSessionEventsForm();
+    session.timerForm();
 
     if( session._cdpPort === null )
     session._cdpPort = session._CdpPortDefault;
 
-    session.pathsForm();
     if( !session.servlet )
     session.servletOpen();
 
     if( session.entryPath )
     session.entryFind();
 
-    return session;
-  })
-
-  if( session.curating )
-  ready.then( () => session.curratedRunOpen() )
-
-  ready.then( () =>
-  {
-    session.timerForm()
-
-    if( session.loggingOptions )
+    if( session.loggingOptions ) /* qqq xxx : cover and move out to session.Abstract */
     logger.log( session.exportString() );
 
+    if( session.curating )
+    return session.curratedRunOpen();
     return session;
   })
+
+  // if( session.curating )
+  // ready.then( () => session.curratedRunOpen() )
+  //
+  // ready.then( () =>
+  // {
+  //   session.timerForm();
+  //   if( session.loggingOptions ) /* qqq xxx : cover and move out to session.Abstract */
+  //   logger.log( session.exportString() );
+  //   return session;
+  // })
 
   return ready;
 }
@@ -114,20 +117,20 @@ function _form()
 // forming
 // --
 
-function pathsForm()
-{
-  let session = this;
-  let system = session.system;
-  let fileProvider = system.fileProvider;
-  let path = system.fileProvider.path;
-  let logger = system.logger;
-
-  Parent.prototype.pathsForm.call( session );
-
-  if( session.templatePath )
-  session.templatePath = path.resolve( session.basePath, session.templatePath );
-
-}
+// function pathsForm()
+// {
+//   let session = this;
+//   let system = session.system;
+//   let fileProvider = system.fileProvider;
+//   let path = system.fileProvider.path;
+//   let logger = system.logger;
+//
+//   Parent.prototype.pathsForm.call( session );
+//
+//   if( session.templatePath )
+//   session.templatePath = path.resolve( session.basePath, session.templatePath );
+//
+// }
 
 //
 
@@ -210,6 +213,8 @@ function curratedRunOpen()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
+  session._curatedRunLaunchBegin();
+
   if( !ChromeLauncher )
   ChromeLauncher = require( 'chrome-launcher' );
 
@@ -218,7 +223,6 @@ function curratedRunOpen()
   _.assert( fileProvider.isDir( tempDir ) );
 
   let opts = Object.create( null );
-
   opts.startingUrl = session.entryWithQueryUri;
   opts.userDataDir = _.path.nativize( tempDir );
   opts.port = session._cdpPort
@@ -246,7 +250,7 @@ function curratedRunOpen()
       if( system.verbosity >= 5 )
       logger.log( `Started ${_.ct.format( session.entryPath, 'path' )}` );
     }
-    session._curatedRunLaunchBegin();
+    // session._curatedRunLaunchBegin();
     return _.time.out( 500, () => /* xxx */
     {
       session.cdpConnect();
@@ -266,12 +270,13 @@ function _curatedRunLaunchBegin()
 
   _.assert( session.curratedRunState === null || session.curratedRunState === 'terminated' || session.curratedRunState === 'launching' );
 
+  // console.log( '_curatedRunLaunchBegin' );
+
   if( session.curratedRunState === 'launching' )
   return;
 
   session.curratedRunState = 'launching';
   session.eventGive({ kind : 'curatedRunLaunchBegin' });
-
 }
 
 //
@@ -304,7 +309,6 @@ function _curatedRunTerminateEnd()
   session.eventGive({ kind : 'curatedRunTerminateEnd' });
 
   session.unform();
-
 }
 
 //
@@ -593,13 +597,13 @@ function cdpClose()
 let Composes =
 {
 
-  templatePath : null,
+  // templatePath : null,
 
 }
 
 let InstanceDefaults =
 {
-  ... Parent.prototype.Composes,
+  ... Parent.prototype.InstanceDefaults,
   ... Composes,
 }
 
@@ -652,7 +656,7 @@ let Proto =
   _unform,
   _form,
 
-  pathsForm,
+  // pathsForm,
   entryFind,
   servletOpen,
   entryUriForm,
@@ -701,7 +705,6 @@ _.classDeclare
 
 if( typeof module !== 'undefined' )
 module[ 'exports' ] = Self;
-
 _.starter.session[ Self.shortName ] = Self;
 
 })();

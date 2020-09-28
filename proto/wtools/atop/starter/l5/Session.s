@@ -55,15 +55,19 @@ function unform()
   let session = this;
   let system = session.system;
 
+  if( session.state === null )
+  return;
   if( session.unforming )
   return;
   session.unforming = 1;
+  session.state = 'unforming';
 
   let ready = _.Consequence.Try( () => session._unform() );
 
   ready.finally( ( err, arg ) =>
   {
     session.unforming = 0;
+    session.state = 'unformed';
     if( err )
     {
       err = _.err( err, '\nError unforming Session' );
@@ -107,9 +111,26 @@ function form()
   let system = session.system;
   let logger = system.logger;
 
+  _.assert( session.state === null );
+  session.state = 'forming';
+
   try
   {
-    return session._form();
+    let r = session._form();
+    if( _.consequenceIs( r ) )
+    r.finally( ( err, arg ) =>
+    {
+      _.assert( session.state === 'forming' );
+      session.state = 'formed';
+      if( err )
+      throw err;
+      return arg;
+    });
+    else
+    {
+      _.assert( session.state === 'forming' );
+      session.state = 'formed';
+    }
   }
   catch( err )
   {
@@ -129,11 +150,7 @@ function _form()
 
   session.fieldsForm();
 
-  if( session.loggingSessionEvents )
-  session.on( _.anything, ( e ) =>
-  {
-    logger.log( ` . event::${e.kind}` );
-  });
+  session.loggingSessionEventsForm();
 
   if( session.entryPath )
   session.entryFind();
@@ -240,6 +257,9 @@ function pathsForm()
 
   allowedPathDeduce2();
 
+  if( session.templatePath )
+  session.templatePath = path.resolve( session.basePath, session.templatePath );
+
   /* */
 
   function basePathDeduce() /* qqq : cover basePath deducing strategy. ask */
@@ -340,6 +360,24 @@ function entryFind()
 
 }
 
+//
+
+function loggingSessionEventsForm()
+{
+  let session = this;
+  let system = session.system;
+  let fileProvider = system.fileProvider;
+  let path = system.fileProvider.path;
+  let logger = system.logger;
+
+  if( session.loggingSessionEvents )
+  session.on( _.anything, ( e ) =>
+  {
+    logger.log( ` . event::${e.kind}` );
+  });
+
+}
+
 // --
 // error
 // --
@@ -423,11 +461,7 @@ function timerForm()
     return;
     if( _.workpiece.isFinited( session ) )
     return;
-
-    session._timeOutTimer = null;
-
     session._timerTimeOutEnd();
-
   });
 
 }
@@ -445,7 +479,7 @@ function timerCancel()
   {
     debugger;
     _.time.cancel( session._timeOutTimer );
-    session._timeOutTimer = null
+    session._timeOutTimer = null;
   }
 
 }
@@ -459,6 +493,7 @@ function _timerTimeOutEnd()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
+  session._timeOutTimer = null;
   session.eventGive({ kind : 'timeOut' });
   session.unform();
 
@@ -495,6 +530,7 @@ let Composes =
   entryPath : null,
   allowedPath : null,
   fallbackPath : null,
+  templatePath : null,
 
   withModule : null, /* qqq : cover */
   withScripts : null, /* [ single, include, inline, 0, false ] */ /* qqq : cover */
@@ -525,6 +561,7 @@ let Restricts =
   id : null,
   error : null,
   unforming : 0,
+  state : null,
 
   _timeOutTimer : null,
 
@@ -567,6 +604,7 @@ let Proto =
 
   pathsForm,
   entryFind,
+  loggingSessionEventsForm,
 
   // etc
 

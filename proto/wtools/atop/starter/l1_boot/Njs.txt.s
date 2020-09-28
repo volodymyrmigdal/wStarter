@@ -136,7 +136,7 @@ function _Begin()
   function _njsSourceIncludeFromNjsAct( njsModule, childSource, sourcePath )
   {
     let parentSource = njsModule.sourceFile || null;
-    return this._sourceIncludeCall( parentSource, childSource, sourcePath );
+    return this._sourceIncludeResolvedCalling( parentSource, childSource, sourcePath );
   }
 
   //

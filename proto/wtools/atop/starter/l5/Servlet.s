@@ -800,6 +800,7 @@ function scriptWrap_functor( fop )
 
     o.query.entry = !!o.query.entry;
     if( o.query.running === undefined )
+    // o.query.running = 0; /* yyy */
     o.query.running = 1;
     o.query.running = !!o.query.running;
 

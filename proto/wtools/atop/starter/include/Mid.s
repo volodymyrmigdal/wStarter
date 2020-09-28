@@ -19,6 +19,7 @@ if( typeof module !== 'undefined' )
   require( '../l7/System.s' );
 
   require( '../l7_session/BrowserCdp.s' );
+  require( '../l7_session/Njs.s' );
 
   // require( './legacy/StarterMaker.s' );
 

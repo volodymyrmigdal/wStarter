@@ -376,7 +376,7 @@ function _Begin()
     importScripts( resolvedFilePath );
 
     let childSource = starter._sourceForPathGet( resolvedFilePath );
-    result = starter._sourceIncludeCall( parentSource, childSource, resolvedFilePath );
+    result = starter._sourceIncludeResolvedCalling( parentSource, childSource, resolvedFilePath );
 
     return result;
   }
@@ -412,10 +412,20 @@ function _Begin()
       script.type = 'text/javascript';
       let scriptCode = document.createTextNode( read );
       script.appendChild( scriptCode );
+
+      if( resolvedFilePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      debugger;
+
       document.head.appendChild( script );
 
+      if( resolvedFilePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      debugger;
+
       let childSource = starter._sourceForPathGet( resolvedFilePath );
-      let result = starter._sourceIncludeCall( parentSource, childSource, resolvedFilePath );
+      let result = starter._sourceIncludeResolvedCalling( parentSource, childSource, resolvedFilePath );
+
+      if( resolvedFilePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      debugger;
 
       return result;
     }
