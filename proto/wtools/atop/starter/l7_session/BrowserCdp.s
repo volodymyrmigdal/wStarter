@@ -49,7 +49,6 @@ function _unform()
 
   ready.finally( ( err, arg ) =>
   {
-    session.unforming = 0;
     if( err )
     {
       err = _.err( err, '\nError unforming Session' );
@@ -70,12 +69,8 @@ function _form()
   let logger = system.logger;
   let ready = new _.Consequence().take( null );
 
-  // console.log( '_form 1' );
-
   ready.then( () =>
   {
-
-    // console.log( '_form 2' );
 
     session.fieldsForm();
     session.pathsForm();
@@ -213,6 +208,8 @@ function curratedRunOpen()
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
+  // console.log( 'curratedRunOpen:a' );
+
   session._curatedRunLaunchBegin();
 
   if( !ChromeLauncher )
@@ -231,11 +228,15 @@ function curratedRunOpen()
   if( session.headless )
   opts.chromeFlags.push( '--headless', '--disable-gpu' );
 
+  // console.log( 'curratedRunOpen:b' );
+
   return _.Consequence.Try( () => ChromeLauncher.launch( opts ) )
   .finally( ( err, chrome ) =>
   {
     session.process = chrome.process;
     /* xxx : chrome.process sometimes undefined if headless:1 */
+
+    // console.log( 'curratedRunOpen:c' );
 
     if( err )
     return session.errorEncounterEnd( err );
@@ -254,6 +255,7 @@ function curratedRunOpen()
     return _.time.out( 500, () => /* xxx */
     {
       session.cdpConnect();
+      // console.log( 'curratedRunOpen:d' );
       return chrome.process;
     });
   })

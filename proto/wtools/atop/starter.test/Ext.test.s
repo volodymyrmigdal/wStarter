@@ -3433,7 +3433,7 @@ function startModuleParent( test )
     return null;
   })
 
-  a.appStart( `.start Main.js timeOut:${context.deltaTime2} loggingSessionEvents:0 headless:1 interpreter:njs` )
+  a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 interpreter:njs` )
   .then( ( op ) =>
   {
     var output =
@@ -3477,8 +3477,50 @@ F3.js: ${ a.abs( 'F3.js' ) }
 
 startModuleParent.description =
 `
-  - Require of 'module' works.
-  - Replacing Module._cache works.
+  - Field module.parent has proper value
+`
+
+//
+
+function startOptionTimeOutImmediateChild( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:njs';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 interpreter:njs` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+Main.js: false
+F1.js: ${ a.abs( 'F1.js' ) }
+F2.js: ${ a.abs( 'F2.js' ) }
+F3.js: ${ a.abs( 'F3.js' ) }
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startOptionTimeOutImmediateChild.description =
+`
+  - Time out in immdeiate child works.
 `
 
 //
@@ -4054,7 +4096,7 @@ let Self =
 
     deltaTime1 : 250,
     deltaTime2 : 3000,
-    deltaTime3 : _.process.isDebugged() ? 150000 : 15000,
+    deltaTime3 : ( _.process.isDebugged() && 0 ) ? 150000 : 15000,
 
   },
 
@@ -4095,6 +4137,7 @@ let Self =
     // startWithNpmPackage,/* xxx : implement */
     startChangeModuleCache,
     startModuleParent,
+    startOptionTimeOutImmediateChild,
     startTestSuite, /* xxx : implement */
     startHtml,
 

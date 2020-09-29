@@ -22,11 +22,22 @@ function finit()
 {
   let session = this;
   let system = session.system;
-  session.unform();
-  if( system )
-  _.arrayRemoveOnceStrictly( system.sessionArray, session );
-  session.off();
-  return _.Copyable.prototype.finit.call( session );
+  let ready = _.Consequence().take( null );
+
+  ready.then( () => session.unform() );
+
+  ready.finally( ( err, arg ) =>
+  {
+    if( system )
+    _.arrayRemoveOnceStrictly( system.sessionArray, session );
+    session.off();
+    arg = _.Copyable.prototype.finit.call( session );
+    if( err )
+    throw err;
+    return arg || null;
+  });
+
+  return ready;
 }
 
 //
@@ -54,24 +65,39 @@ function unform()
 {
   let session = this;
   let system = session.system;
+  let ready = _.Consequence().take( null );
 
-  if( session.state === null )
-  return;
-  if( session.unforming )
-  return;
-  session.unforming = 1;
-  session.state = 'unforming';
+  if( session.state === null || session.state === 'unforming' || session.state === 'unformed' )
+  return ready;
 
-  let ready = _.Consequence.Try( () => session._unform() );
+  ready.then( ( arg ) =>
+  {
+    session.unformingEvent();
+    return arg;
+  });
+
+  ready.then( () => session._unform() || null );
 
   ready.finally( ( err, arg ) =>
   {
-    session.unforming = 0;
-    session.state = 'unformed';
+    session.unformedEvent({ err });
+    if( err )
+    throw err;
+    return arg;
+  });
+
+  ready.finally( ( err, arg ) =>
+  {
     if( err )
     {
       err = _.err( err, '\nError unforming Session' );
-      throw session.errorEncounterEnd( err );
+      err = session.errorEncounterEnd( err );
+      session.conUnformed.error( err );
+      throw err;
+    }
+    else
+    {
+      session.conUnformed.take( arg );
     }
     return arg;
   });
@@ -91,7 +117,6 @@ function _unform()
 
   ready.finally( ( err, arg ) =>
   {
-    session.unforming = 0;
     if( err )
     {
       err = _.err( err, '\nError unforming Session' );
@@ -110,34 +135,25 @@ function form()
   let session = this;
   let system = session.system;
   let logger = system.logger;
+  let ready = _.Consequence().take( null );
 
-  _.assert( session.state === null );
-  session.state = 'forming';
-
-  try
+  ready.then( ( arg ) =>
   {
-    let r = session._form();
-    if( _.consequenceIs( r ) )
-    r.finally( ( err, arg ) =>
-    {
-      _.assert( session.state === 'forming' );
-      session.state = 'formed';
-      if( err )
-      throw err;
-      return arg;
-    });
-    else
-    {
-      _.assert( session.state === 'forming' );
-      session.state = 'formed';
-    }
-  }
-  catch( err )
-  {
-    throw session.errorEncounterEnd( err );
-  }
+    session.formingEvent();
+    return arg;
+  });
 
-  return session;
+  ready.then( () => session._form() || null );
+
+  ready.finally( ( err, arg ) =>
+  {
+    session.formedEvent({ err });
+    if( err )
+    throw err;
+    return session;
+  });
+
+  return ready;
 }
 
 //
@@ -379,6 +395,64 @@ function loggingSessionEventsForm()
 }
 
 // --
+// event
+// --
+
+function unformingEvent()
+{
+  let session = this;
+  let system = session.system;
+  let logger = system.logger;
+
+  // _.assert( session.state === null );
+  session.state = 'unforming';
+  session.eventGive({ kind : 'unforming' });
+
+}
+
+//
+
+function unformedEvent( o )
+{
+  let session = this;
+  let system = session.system;
+  let logger = system.logger;
+
+  _.assert( session.state === 'unforming' );
+  session.state = 'unformed';
+  session.eventGive({ kind : 'unformed', err : o.err });
+
+}
+
+//
+
+function formingEvent()
+{
+  let session = this;
+  let system = session.system;
+  let logger = system.logger;
+
+  _.assert( session.state === null );
+  session.state = 'forming';
+  session.eventGive({ kind : 'forming' });
+
+}
+
+//
+
+function formedEvent( o )
+{
+  let session = this;
+  let system = session.system;
+  let logger = system.logger;
+
+  _.assert( session.state === 'forming' );
+  session.state = 'formed';
+  session.eventGive({ kind : 'formed', err : o.err });
+
+}
+
+// --
 // error
 // --
 
@@ -457,7 +531,9 @@ function timerForm()
   if( session.timeOut )
   session._timeOutTimer = _.time.begin( session.timeOut, () =>
   {
-    if( session.unforming )
+    // if( session.unforming )
+    // return;
+    if( session.state === 'unforming' || session.state === 'unformed' ) /* xxx : comment out? */
     return;
     if( _.workpiece.isFinited( session ) )
     return;
@@ -543,6 +619,14 @@ let Composes =
 
 }
 
+let Aggregates =
+{
+
+  conFormed : _.define.own( _.Consequence() ),
+  conUnformed : _.define.own( _.Consequence() ),
+
+}
+
 let InstanceDefaults =
 {
   ... Composes,
@@ -560,7 +644,7 @@ let Restricts =
 
   id : null,
   error : null,
-  unforming : 0,
+  // unforming : 0,
   state : null,
 
   _timeOutTimer : null,
@@ -577,10 +661,19 @@ let Events =
   'curatedRunLaunchEnd' : {},
   'curatedRunTerminateEnd' : {},
   'timeOut' : {},
+  'forming' : {},
+  'formed' : {},
+  'unforming' : {},
+  'unformed' : {},
 }
 
 let Accessor =
 {
+}
+
+let Forbids =
+{
+  unforming : 'unforming',
 }
 
 // --
@@ -606,6 +699,13 @@ let Proto =
   entryFind,
   loggingSessionEventsForm,
 
+  // events
+
+  unformingEvent,
+  unformedEvent,
+  formingEvent,
+  formedEvent,
+
   // etc
 
   errorEncounterEnd,
@@ -625,12 +725,14 @@ let Proto =
 
   Bools,
   Composes,
+  Aggregates,
   InstanceDefaults,
   Associates,
   Restricts,
   Statics,
   Events,
   Accessor,
+  Forbids,
 
 }
 

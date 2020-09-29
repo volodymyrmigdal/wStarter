@@ -22,6 +22,7 @@ function _unform()
   let system = session.system;
   let ready = new _.Consequence().take( null );
 
+  debugger;
   if( session._process )
   {
 
@@ -38,7 +39,8 @@ function _unform()
 
     ready.then( () =>
     {
-      Object.freeze( session._process );
+      // console.log( 'Freezing' );
+      // Object.freeze( session._process );
       session._process = null;
       return null;
     });
@@ -80,12 +82,28 @@ function _form()
       throwingExitCode : 1,
       inputMirroring : 0,
       mode : 'fork',
-      ready : ready,
+      // onStart : ready,
     }
     _.process.startNjs( session._process );
     // debugger;
 
-    return session;
+    session._process.onTerminate( ( err, arg ) =>
+    {
+      debugger;
+      console.log( 'session._process.onTerminate' );
+      session.unform();
+      if( err )
+      {
+        // if( err.reason === 'signal' )
+        // return null;
+        throw err;
+      }
+      return arg;
+    });
+
+    // return session;
+    // debugger;
+    return session._process.onStart;
   })
 
   // if( session.curating )
