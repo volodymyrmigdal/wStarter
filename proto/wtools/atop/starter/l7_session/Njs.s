@@ -71,10 +71,6 @@ function _form()
     if( session.loggingOptions ) /* qqq xxx : cover and move out to session.Abstract */
     logger.log( session.exportString() );
 
-    // if( session.curating )
-    // return session.curratedRunOpen();
-
-    // debugger;
     session._process =
     {
       execPath : session.entryPath,
@@ -82,10 +78,8 @@ function _form()
       throwingExitCode : 1,
       inputMirroring : 0,
       mode : 'fork',
-      // onStart : ready,
     }
     _.process.startNjs( session._process );
-    // debugger;
 
     session._process.onTerminate( ( err, arg ) =>
     {
@@ -101,47 +95,11 @@ function _form()
       return arg;
     });
 
-    // return session;
-    // debugger;
     return session._process.onStart;
   })
 
-  // if( session.curating )
-  // ready.then( () => session.curratedRunOpen() )
-  //
-  // ready.then( () =>
-  // {
-  //   session.timerForm()
-  //   if( session.loggingOptions ) /* qqq xxx : cover and move out to session.Abstract */
-  //   logger.log( session.exportString() );
-  //   return session;
-  // })
-
   return ready;
 }
-
-
-// {
-//   let session = this;
-//   let system = session.system;
-//   let logger = system.logger;
-//   let ready = new _.Consequence().take( null );
-//
-//   debugger;
-//
-//   _.process.startNjs
-//   ({
-//     execPath : session.entryPath,
-//     currentPath : session.basePath,
-//     throwingExitCode : 1,
-//     ready : ready,
-//     mode : 'fork',
-//   });
-//
-//   debugger;
-//
-//   return ready;
-// }
 
 // --
 // relations
