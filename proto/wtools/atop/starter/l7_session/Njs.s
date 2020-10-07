@@ -81,10 +81,10 @@ function _form()
     }
     _.process.startNjs( session._process );
 
-    session._process.onTerminate( ( err, arg ) =>
+    session._process.conTerminate( ( err, arg ) =>
     {
       debugger;
-      console.log( 'session._process.onTerminate' );
+      console.log( 'session._process.conTerminate' );
       session.unform();
       if( err )
       {
@@ -95,7 +95,7 @@ function _form()
       return arg;
     });
 
-    return session._process.onStart;
+    return session._process.conStart;
   })
 
   return ready;
