@@ -517,7 +517,7 @@ function sourcesJoinSplits( o )
   ${rou( 'path', '_unescape' )}
   ${rou( 'path', 'unescape' )}
   ${rou( 'path', '_nativizeWindows' )}
-  ${rou( 'path', '__nativizeWindows' )}
+  ${rou( 'path', '_nativizeMinimalWindows' )}
   ${rou( 'path', '_nativizePosix' )}
   ${rou( 'path', 'isGlob' )}
   ${rou( 'path', 'isRelative' )}
