@@ -3840,7 +3840,7 @@
   
       if( dstMap.pre && dstMap.body )
       {
-        dst = _.routineFromPreAndBody( dstMap.pre, dstMap.body );
+        dst = _.routineUnite( dstMap.pre, dstMap.body );
       }
       else
       {
@@ -4298,7 +4298,7 @@
 //
 
   
-    var _routineFromPreAndBody_pre = function routineFromPreAndBody_pre( routine, args )
+    var _routineUnite_head = function routineUnite_head( routine, args )
     {
       let o = args[ 0 ];
     
@@ -4320,25 +4320,25 @@
     //
   
   
-    var _routineFromPreAndBody_body = function routineFromPreAndBody_body( o )
+    var _routineUnite_body = function routineUnite_body( o )
     {
     
       _.assert( arguments.length === 1 ); // args, r, o, k
     
       if( !_.routineIs( o.pre ) )
       {
-        let _pre = _.routinesCompose( o.pre, function( args, result, op, k )
+        let _head = _.routinesCompose( o.pre, function( args, result, op, k )
         {
           _.assert( arguments.length === 4 );
           _.assert( !_.unrollIs( result ) );
           _.assert( _.objectIs( result ) );
           return _.unrollAppend([ callPreAndBody, [ result ] ]);
         });
-        _.assert( _.routineIs( _pre ) );
+        _.assert( _.routineIs( _head ) );
         o.pre = function pre()
         {
     
-          let result = _pre.apply( this, arguments );
+          let result = _head.apply( this, arguments );
           return result[ result.length-1 ];
         }
       }
@@ -4383,20 +4383,20 @@
   
     //
   
-  _routineFromPreAndBody_body.defaults = { "pre" : null, "body" : null, "name" : null }
+  _routineUnite_body.defaults = { "pre" : null, "body" : null, "name" : null }
     ;
-  _.routineFromPreAndBody = function routineFromPreAndBody()
+  _.routineUnite = function routineUnite()
     {
-      let o = routineFromPreAndBody.pre.call( this, routineFromPreAndBody, arguments );
-      let result = routineFromPreAndBody.body.call( this, o );
+      let o = routineUnite.pre.call( this, routineUnite, arguments );
+      let result = routineUnite.body.call( this, o );
       return result;
     }
-  _.routineFromPreAndBody.pre = _routineFromPreAndBody_pre;
-  _.routineFromPreAndBody.body = _routineFromPreAndBody_body;
-  _.routineFromPreAndBody.defaults = Object.create( _routineFromPreAndBody_body.defaults );
-  _.routineFromPreAndBody.defaults =
+  _.routineUnite.pre = _routineUnite_head;
+  _.routineUnite.body = _routineUnite_body;
+  _.routineUnite.defaults = Object.create( _routineUnite_body.defaults );
+  _.routineUnite.defaults =
   { "pre" : null, "body" : null, "name" : null };
-  var routineFromPreAndBody = _.routineFromPreAndBody;
+  var routineUnite = _.routineUnite;
 
 //
 
@@ -4613,7 +4613,7 @@
 //
 
   
-    var _strSplitFast_pre = function strSplitFast_pre( routine, args )
+    var _strSplitFast_head = function strSplitFast_head( routine, args )
     {
       let o = args[ 0 ];
     
@@ -4817,7 +4817,7 @@
       "preservingDelimeters" : 1
     }
     ;
-  _.strSplitFast = _.routineFromPreAndBody( _strSplitFast_pre, _strSplitFast_body );
+  _.strSplitFast = _.routineUnite( _strSplitFast_head, _strSplitFast_body );
   _.strSplitFast.defaults =
   {
     "src" : null, 
@@ -5001,7 +5001,7 @@
 //
 
   
-    var _strIsolate_pre = function strIsolate_pre( routine, args )
+    var _strIsolate_head = function strIsolate_head( routine, args )
     {
       let o;
     
@@ -5215,7 +5215,7 @@
       "none" : 1
     }
     ;
-  _.strIsolate = _.routineFromPreAndBody( _strIsolate_pre, _strIsolate_body );
+  _.strIsolate = _.routineUnite( _strIsolate_head, _strIsolate_body );
   _.strIsolate.defaults =
   {
     "src" : null, 
@@ -5230,7 +5230,7 @@
 //
 
   
-    var _strIsolateLeftOrNone_pre = function strIsolate_pre( routine, args )
+    var _strIsolateLeftOrNone_head = function strIsolate_head( routine, args )
     {
       let o;
     
@@ -5274,7 +5274,7 @@
       "quote" : null
     }
     ;
-  _.strIsolateLeftOrNone = _.routineFromPreAndBody( _strIsolateLeftOrNone_pre, _strIsolateLeftOrNone_body );
+  _.strIsolateLeftOrNone = _.routineUnite( _strIsolateLeftOrNone_head, _strIsolateLeftOrNone_body );
   _.strIsolateLeftOrNone.defaults =
   {
     "src" : null, 
@@ -5287,7 +5287,7 @@
 //
 
   
-    var _strIsolateRightOrNone_pre = function strIsolate_pre( routine, args )
+    var _strIsolateRightOrNone_head = function strIsolate_head( routine, args )
     {
       let o;
     
@@ -5331,7 +5331,7 @@
       "quote" : null
     }
     ;
-  _.strIsolateRightOrNone = _.routineFromPreAndBody( _strIsolateRightOrNone_pre, _strIsolateRightOrNone_body );
+  _.strIsolateRightOrNone = _.routineUnite( _strIsolateRightOrNone_head, _strIsolateRightOrNone_body );
   _.strIsolateRightOrNone.defaults =
   {
     "src" : null, 
@@ -5344,7 +5344,7 @@
 //
 
   
-    var _strIsolateLeftOrAll_pre = function strIsolate_pre( routine, args )
+    var _strIsolateLeftOrAll_head = function strIsolate_head( routine, args )
     {
       let o;
     
@@ -5388,7 +5388,7 @@
       "quote" : null
     }
     ;
-  _.strIsolateLeftOrAll = _.routineFromPreAndBody( _strIsolateLeftOrAll_pre, _strIsolateLeftOrAll_body );
+  _.strIsolateLeftOrAll = _.routineUnite( _strIsolateLeftOrAll_head, _strIsolateLeftOrAll_body );
   _.strIsolateLeftOrAll.defaults =
   {
     "src" : null, 
@@ -5401,7 +5401,7 @@
 //
 
   
-    var _strIsolateRightOrAll_pre = function strIsolate_pre( routine, args )
+    var _strIsolateRightOrAll_head = function strIsolate_head( routine, args )
     {
       let o;
     
@@ -5445,7 +5445,7 @@
       "quote" : null
     }
     ;
-  _.strIsolateRightOrAll = _.routineFromPreAndBody( _strIsolateRightOrAll_pre, _strIsolateRightOrAll_body );
+  _.strIsolateRightOrAll = _.routineUnite( _strIsolateRightOrAll_head, _strIsolateRightOrAll_body );
   _.strIsolateRightOrAll.defaults =
   {
     "src" : null, 
@@ -5783,7 +5783,7 @@
   // parseFull maybe?
 
   
-    var _parse_pre = function parse_pre( routine, args )
+    var _parse_head = function parse_head( routine, args )
     {
       _.assert( args.length === 1, 'Expects single argument' );
     
@@ -5937,7 +5937,7 @@
     }
     _parse_body.Kind = [ `full`, `atomic`, `consecutive` ]
     ;
-  _.uri.parseConsecutive = _.routineFromPreAndBody( _parse_pre, _parse_body );
+  _.uri.parseConsecutive = _.routineUnite( _parse_head, _parse_body );
   _.uri.parseConsecutive.defaults =
   { "kind" : `consecutive`, "srcPath" : null };
   var parseConsecutive = _.uri.parseConsecutive;
@@ -6287,7 +6287,7 @@ let TokensSyntax = function TokensSyntax()
 //
 
   
-    var _vectorize_pre = function vectorize_pre( routine, args )
+    var _vectorize_head = function vectorize_head( routine, args )
     {
       let o = args[ 0 ];
     
@@ -6910,7 +6910,7 @@ let TokensSyntax = function TokensSyntax()
       "select" : 1
     }
     ;
-  _.vectorize = _.routineFromPreAndBody( _vectorize_pre, _vectorize_body );
+  _.vectorize = _.routineUnite( _vectorize_head, _vectorize_body );
   _.vectorize.defaults =
   {
     "routine" : null, 
@@ -7677,7 +7677,7 @@ let TokensSyntax = function TokensSyntax()
 
 
   
-    var _globFilter_pre = function globFilter_pre( routine, args )
+    var _globFilter_head = function globFilter_head( routine, args )
     {
       let result;
     
@@ -7731,7 +7731,7 @@ let TokensSyntax = function TokensSyntax()
   
   _globFilter_body.defaults = { "src" : null, "selector" : null, "onEvaluate" : null }
     ;
-  _.path.globFilterKeys = _.routineFromPreAndBody( _globFilter_pre, _globFilter_body );
+  _.path.globFilterKeys = _.routineUnite( _globFilter_head, _globFilter_body );
   _.path.globFilterKeys.defaults =
   {
     "onEvaluate" : function byKey( e, k, src )

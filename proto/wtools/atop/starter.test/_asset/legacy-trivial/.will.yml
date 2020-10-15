@@ -11,7 +11,7 @@ submodule :
   wpathbasic : 'git+https:///github.com/Wandalen/wPathBasic.git/'
   wpathtools : 'git+https:///github.com/Wandalen/wPathTools.git/'
   wProto : 'git+https:///github.com/Wandalen/wProto.git/'
-  wroutinebasic : 'git+https:///github.com/Wandalen/wRoutineBasic.git/'
+  wintrospectorbasic : 'git+https:///github.com/Wandalen/wIntrospectorBasic.git/'
   wselector : 'git+https:///github.com/Wandalen/wSelector.git/'
   wstringer : 'git+https:///github.com/Wandalen/wStringer.git/'
   wstringsextra : 'git+https:///github.com/Wandalen/wStringsExtra.git/'

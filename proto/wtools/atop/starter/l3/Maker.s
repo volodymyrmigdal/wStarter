@@ -591,7 +591,7 @@ function sourcesJoinSplits( o )
   ${rou( 'longLeftIndex' )}
   ${rou( 'longLeftDefined' )}
   ${rou( 'longHas' )}
-  ${rou( 'routineFromPreAndBody' )}
+  ${rou( 'routineUnite' )}
   ${rou( 'arrayAs' )}
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
