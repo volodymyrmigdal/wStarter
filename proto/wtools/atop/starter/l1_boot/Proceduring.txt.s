@@ -151,7 +151,7 @@ function _Begin()
     function clearTimeout( timer )
     {
       let result = original.clearTimeout.call(  _global_, ... arguments );
-      let procedures = _.Procedure.Filter({ _object : timer })
+      let procedures = _.Procedure.Find({ _object : timer })
       if( procedures.length )
       procedureRemove( procedures[ 0 ] );
       return result;
@@ -171,7 +171,7 @@ function _Begin()
     function clearInterval( timer )
     {
       let result = original.clearInterval.call( _global_, ... arguments );
-      let procedures = _.Procedure.Filter({ _object : timer })
+      let procedures = _.Procedure.Find({ _object : timer })
       if( procedures.length )
       procedureRemove( procedures[ 0 ] );
       return result;
@@ -191,7 +191,7 @@ function _Begin()
     function cancelAnimationFrame( timer )
     {
       let result = original.cancelAnimationFrame.call( _global_, ... arguments );
-      let procedures = _.Procedure.Filter({ _object : timer })
+      let procedures = _.Procedure.Find({ _object : timer })
       if( procedures.length )
       procedureRemove( procedures[ 0 ] );
       return result;

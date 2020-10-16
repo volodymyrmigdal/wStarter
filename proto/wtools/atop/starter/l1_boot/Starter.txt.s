@@ -45,6 +45,10 @@ function _Begin()
     o.dirPath = starter.path.dir( o.filePath );
     o.dirPath = starter.path.canonizeTolerant( o.dirPath );
 
+    // debugger;
+    if( o.filePath === '/wtools/atop/tester/l7/TesterTop.s' )
+    debugger;
+
     sourceFile.filePath = o.filePath;
     sourceFile.dirPath = o.dirPath;
     sourceFile.nakedCall = o.nakedCall;
@@ -109,6 +113,8 @@ function _Begin()
 
   }
 
+  SourceFile.prototype = Object.create( null );
+
   //
 
   function _sourceMake( filePath, dirPath, nakedCall )
@@ -119,7 +125,7 @@ function _Begin()
 
   //
 
-  function _sourceIncludeCall( parentSource, childSource, sourcePath )
+  function _sourceIncludeResolvedCalling( parentSource, childSource, sourcePath )
   {
     let starter = this;
 
@@ -132,9 +138,14 @@ function _Begin()
       if( childSource.state === 'errored' || childSource.state === 'opening' || childSource.state === 'opened' )
       return childSource.exports;
 
-      childSource.state = 'opening';
+      if( childSource.filePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      debugger;
+      if( parentSource && parentSource.filePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      debugger;
+
       childSource.parent = parentSource || null;
 
+      childSource.state = 'opening';
       childSource.nakedCall();
       childSource.state = 'opened';
 
@@ -192,7 +203,7 @@ function _Begin()
       {
         let childSource = starter._sourceForInclude.apply( starter, arguments );
         if( childSource )
-        return starter._sourceIncludeCall( parentSource, childSource, filePath );
+        return starter._sourceIncludeResolvedCalling( parentSource, childSource, filePath );
       }
 
       return starter._includeAct( parentSource, basePath, filePath );
@@ -321,7 +332,7 @@ function _End()
     SourceFile,
 
     _sourceMake,
-    _sourceIncludeCall,
+    _sourceIncludeResolvedCalling,
     _includeAct : null,
     _sourceInclude,
     _sourceResolveAct : null,

@@ -33,7 +33,7 @@ submodule :
     path : npm:///express#4.17.1
     enabled : 0 # submodule
   jsdom :
-    path : npm:///jsdom#16.2.2
+    path : npm:///jsdom#16.4.0
     enabled : 0 # submodule
   pretty :
     path : npm:///pretty#2.0.0
@@ -64,6 +64,12 @@ submodule :
     enabled : 0 # submodule
     criterion :
       development : 1
+  eslint :
+    path : npm:///eslint#7.1.0
+    enabled : 0 # submodule
+    criterion :
+      development : 1
+
 
 path :
 

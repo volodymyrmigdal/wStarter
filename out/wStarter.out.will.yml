@@ -3,14 +3,14 @@ root:
   - wStarter.out
 consistency:
   wStarter.out.will.yml: &ref_0
-    hash: 29bfc7728729f9e3117dc19ea06ed8d6
-    size: 59087
+    hash: 2a92f440b31adb538c0c042fa36d3807
+    size: 59583
   ../.ex.will.yml: &ref_1
     hash: bdd67fb796af94560b6f886a8e46c27a
     size: 2266
   ../.im.will.yml: &ref_2
-    hash: 7d9100d33abf389ee446a73a0596de3f
-    size: 6145
+    hash: 1f13ff90bf7889f6dce93fb204baaf9e
+    size: 6254
 module:
   wStarter.out:
     about:
@@ -188,6 +188,7 @@ module:
           - ../proto/wtools/atop/starter/l1/Namespace.s
           - ../proto/wtools/atop/starter/l1_boot
           - ../proto/wtools/atop/starter/l1_boot/Bro.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/BroConsole.txt.s
           - ../proto/wtools/atop/starter/l1_boot/Early.txt.s
           - ../proto/wtools/atop/starter/l1_boot/Extract.txt.s
           - ../proto/wtools/atop/starter/l1_boot/Globing.txt.s
@@ -207,6 +208,7 @@ module:
           - ../proto/wtools/atop/starter/l7/System.s
           - ../proto/wtools/atop/starter/l7_session
           - ../proto/wtools/atop/starter/l7_session/BrowserCdp.s
+          - ../proto/wtools/atop/starter/l7_session/Njs.s
           - ../proto/wtools/atop/starter/l8
           - ../proto/wtools/atop/starter/l8/Cui.s
           - ../proto/wtools/atop/starter/l8/Launcher.s
@@ -236,6 +238,8 @@ module:
           - ../proto/wtools/atop/starter.test/_asset/complex/app2
           - ../proto/wtools/atop/starter.test/_asset/complex/app2/File1.js
           - ../proto/wtools/atop/starter.test/_asset/complex/app2/File2.js
+          - ../proto/wtools/atop/starter.test/_asset/consoleRedirecting
+          - ../proto/wtools/atop/starter.test/_asset/consoleRedirecting/Index.js
           - ../proto/wtools/atop/starter.test/_asset/cycle
           - ../proto/wtools/atop/starter.test/_asset/cycle/in
           - ../proto/wtools/atop/starter.test/_asset/cycle/in/app1
@@ -393,6 +397,18 @@ module:
             ../proto/wtools/atop/starter.test/_asset/startBaseDeducingFromAllowed
           - >-
             ../proto/wtools/atop/starter.test/_asset/startBaseDeducingFromAllowed/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/startChangeModuleCache
+          - >-
+            ../proto/wtools/atop/starter.test/_asset/startChangeModuleCache/F1.js
+          - >-
+            ../proto/wtools/atop/starter.test/_asset/startChangeModuleCache/F2.js
+          - >-
+            ../proto/wtools/atop/starter.test/_asset/startChangeModuleCache/Main.js
+          - ../proto/wtools/atop/starter.test/_asset/startModuleParent
+          - ../proto/wtools/atop/starter.test/_asset/startModuleParent/F1.js
+          - ../proto/wtools/atop/starter.test/_asset/startModuleParent/F2.js
+          - ../proto/wtools/atop/starter.test/_asset/startModuleParent/F3.js
+          - ../proto/wtools/atop/starter.test/_asset/startModuleParent/Main.js
           - ../proto/wtools/atop/starter.test/_asset/startOptionWithModule
           - >-
             ../proto/wtools/atop/starter.test/_asset/startOptionWithModule/File1.js
@@ -494,7 +510,7 @@ module:
         autoExporting: 0
         enabled: 0
       jsdom:
-        path: 'npm:///jsdom#16.2.2'
+        path: 'npm:///jsdom#16.4.0'
         autoExporting: 0
         enabled: 0
       pretty:
@@ -527,6 +543,12 @@ module:
           development: 1
       wModuleForTesting1a:
         path: 'npm:///wmodulefortesting1a'
+        autoExporting: 0
+        enabled: 0
+        criterion:
+          development: 1
+      eslint:
+        path: 'npm:///eslint#7.1.0'
         autoExporting: 0
         enabled: 0
         criterion:
@@ -1328,7 +1350,7 @@ module:
         autoExporting: 0
         enabled: 0
       jsdom:
-        path: 'npm:///jsdom#16.2.2'
+        path: 'npm:///jsdom#16.4.0'
         autoExporting: 0
         enabled: 0
       pretty:
@@ -1361,6 +1383,12 @@ module:
           development: 1
       wModuleForTesting1a:
         path: 'npm:///wmodulefortesting1a'
+        autoExporting: 0
+        enabled: 0
+        criterion:
+          development: 1
+      eslint:
+        path: 'npm:///eslint#7.1.0'
         autoExporting: 0
         enabled: 0
         criterion:
@@ -1900,6 +1928,6 @@ module:
         hash: bdd67fb796af94560b6f886a8e46c27a
         size: 2266
       ../.im.will.yml:
-        hash: 7d9100d33abf389ee446a73a0596de3f
-        size: 6145
+        hash: 1f13ff90bf7889f6dce93fb204baaf9e
+        size: 6254
       wStarter.out.will.yml: *ref_0

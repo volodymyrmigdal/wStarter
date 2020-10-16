@@ -10,4 +10,4 @@ let o =
   // mode : 'shell',
 }
 // _.process._exitHandlerRepair();
-let shell = _.process.startNodePassingThrough( o );
+let shell = _.process.startNjsPassingThrough( o );

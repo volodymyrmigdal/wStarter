@@ -77,6 +77,12 @@ function assetFor( test, name )
   //qqq Vova: probably we should add path resolving into starter
   a.routinePath = _.fileProvider.pathResolveLinkFull( a.routinePath ).filePath;
 
+  a.absNative = function()
+  {
+    let result = a.abs.apply( a, arguments );
+    return _.path.nativize( result )
+  }
+
   return a;
 }
 
@@ -931,8 +937,8 @@ Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-__filename : ${a.routinePath}/in/Dep1.js
-__dirname : ${a.routinePath}/in
+__filename : ${a.absNative( 'in/Dep1.js' )}
+__dirname : ${a.absNative( 'in' )}
 module : object
 module.parent : object
 exports : object
@@ -940,8 +946,8 @@ require : function
 Dep1.js:end
 
 Index.js
-__filename : ${a.routinePath}/in/Index.js
-__dirname : ${a.routinePath}/in
+__filename : ${a.absNative( 'in/Index.js' )}
+__dirname : ${a.absNative( 'in' )}
 module : object
 module.parent : object
 exports : object
@@ -988,10 +994,10 @@ Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-_filePath_ : ${a.routinePath}/out/Out.js/in/Dep1.js
-_dirPath_ : ${a.routinePath}/out/Out.js/in
-__filename : ${a.routinePath}/out/Out.js/in/Dep1.js
-__dirname : ${a.routinePath}/out/Out.js/in
+_filePath_ : ${a.abs( 'out/Out.js/in/Dep1.js' )}
+_dirPath_ : ${a.abs( 'out/Out.js/in' )}
+__filename : ${a.abs( 'out/Out.js/in/Dep1.js' )}
+__dirname : ${a.abs( 'out/Out.js/in' )}
 module : object
 module.parent : object
 exports : object
@@ -1002,10 +1008,10 @@ _starter_.interpreter : njs
 Dep1.js:end
 
 Index.js
-_filePath_ : ${a.routinePath}/out/Out.js/in/Index.js
-_dirPath_ : ${a.routinePath}/out/Out.js/in
-__filename : ${a.routinePath}/out/Out.js/in/Index.js
-__dirname : ${a.routinePath}/out/Out.js/in
+_filePath_ : ${a.abs( 'out/Out.js/in/Index.js' )}
+_dirPath_ : ${a.abs( 'out/Out.js/in' )}
+__filename : ${a.abs( 'out/Out.js/in/Index.js' )}
+__dirname : ${a.abs( 'out/Out.js/in' )}
 module : object
 module.parent : object
 exports : object
@@ -1207,10 +1213,10 @@ Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-_filePath_ : ${a.routinePath}/out1/out2/Out.js/in/dir/Dep1.js
-_dirPath_ : ${a.routinePath}/out1/out2/Out.js/in/dir
-__filename : ${a.routinePath}/out1/out2/Out.js/in/dir/Dep1.js
-__dirname : ${a.routinePath}/out1/out2/Out.js/in/dir
+_filePath_ : ${a.abs( 'out1/out2/Out.js/in/dir/Dep1.js' )}
+_dirPath_ : ${a.abs( 'out1/out2/Out.js/in/dir' )}
+__filename : ${a.abs( 'out1/out2/Out.js/in/dir/Dep1.js' )}
+__dirname : ${a.abs( 'out1/out2/Out.js/in/dir' )}
 module : object
 module.parent : object
 exports : object
@@ -1221,10 +1227,10 @@ _starter_.interpreter : njs
 Dep1.js:end
 
 Index.js
-_filePath_ : ${a.routinePath}/out1/out2/Out.js/in/Index.js
-_dirPath_ : ${a.routinePath}/out1/out2/Out.js/in
-__filename : ${a.routinePath}/out1/out2/Out.js/in/Index.js
-__dirname : ${a.routinePath}/out1/out2/Out.js/in
+_filePath_ : ${a.abs( 'out1/out2/Out.js/in/Index.js' )}
+_dirPath_ : ${a.abs( 'out1/out2/Out.js/in' )}
+__filename : ${a.abs( 'out1/out2/Out.js/in/Index.js' )}
+__dirname : ${a.abs( 'out1/out2/Out.js/in' )}
 module : object
 module.parent : object
 exports : object
@@ -1249,8 +1255,8 @@ Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-__filename : ${a.routinePath}/in/dir/Dep1.js
-__dirname : ${a.routinePath}/in/dir
+__filename : ${a.absNative( 'in/dir/Dep1.js' )}
+__dirname : ${a.absNative( 'in/dir' )}
 module : object
 module.parent : object
 exports : object
@@ -1259,8 +1265,8 @@ require : function
 Dep1.js:end
 
 Index.js
-__filename : ${a.routinePath}/in/Index.js
-__dirname : ${a.routinePath}/in
+__filename : ${a.absNative( 'in/Index.js' )}
+__dirname : ${a.absNative( 'in' )}
 module : object
 module.parent : object
 exports : object
@@ -1307,10 +1313,10 @@ Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-_filePath_ : ${a.routinePath}/out1/out2/Out.js/in/dir/Dep1.js
-_dirPath_ : ${a.routinePath}/out1/out2/Out.js/in/dir
-__filename : ${a.routinePath}/out1/out2/Out.js/in/dir/Dep1.js
-__dirname : ${a.routinePath}/out1/out2/Out.js/in/dir
+_filePath_ : ${a.abs( 'out1/out2/Out.js/in/dir/Dep1.js' )}
+_dirPath_ : ${a.abs( 'out1/out2/Out.js/in/dir' )}
+__filename : ${a.abs( 'out1/out2/Out.js/in/dir/Dep1.js' )}
+__dirname : ${a.abs( 'out1/out2/Out.js/in/dir' )}
 module : object
 module.parent : object
 exports : object
@@ -1321,10 +1327,10 @@ _starter_.interpreter : njs
 Dep1.js:end
 
 Index.js
-_filePath_ : ${a.routinePath}/out1/out2/Out.js/in/Index.js
-_dirPath_ : ${a.routinePath}/out1/out2/Out.js/in
-__filename : ${a.routinePath}/out1/out2/Out.js/in/Index.js
-__dirname : ${a.routinePath}/out1/out2/Out.js/in
+_filePath_ : ${a.abs( 'out1/out2/Out.js/in/Index.js' )}
+_dirPath_ : ${a.abs( 'out1/out2/Out.js/in' )}
+__filename : ${a.abs( 'out1/out2/Out.js/in/Index.js' )}
+__dirname : ${a.abs( 'out1/out2/Out.js/in' )}
 module : object
 module.parent : object
 exports : object
@@ -1349,8 +1355,8 @@ Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-__filename : ${a.routinePath}/in/dir/Dep1.js
-__dirname : ${a.routinePath}/in/dir
+__filename : ${a.absNative( 'in/dir/Dep1.js' )}
+__dirname : ${a.absNative( 'in/dir' )}
 module : object
 module.parent : object
 exports : object
@@ -1359,8 +1365,8 @@ require : function
 Dep1.js:end
 
 Index.js
-__filename : ${a.routinePath}/in/Index.js
-__dirname : ${a.routinePath}/in
+__filename : ${a.absNative( 'in/Index.js' )}
+__dirname : ${a.absNative( 'in' )}
 module : object
 module.parent : object
 exports : object
@@ -1449,8 +1455,8 @@ Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-__filename : ${a.routinePath}/in/dir/Dep1.js
-__dirname : ${a.routinePath}/in/dir
+__filename : ${a.absNative( 'in/dir/Dep1.js' )}
+__dirname : ${a.absNative( 'in/dir' )}
 module : object
 module.parent : object
 exports : object
@@ -1459,8 +1465,8 @@ require : function
 Dep1.js:end
 
 Index.js
-__filename : ${a.routinePath}/in/Index.js
-__dirname : ${a.routinePath}/in
+__filename : ${a.absNative( 'in/Index.js' )}
+__dirname : ${a.absNative( 'in' )}
 module : object
 module.parent : object
 exports : object
@@ -1549,8 +1555,8 @@ Index.js:begin
 Dep1.js:begin
 
 Dep1.js
-__filename : ${a.routinePath}/in/dir/Dep1.js
-__dirname : ${a.routinePath}/in/dir
+__filename : ${a.absNative( 'in/dir/Dep1.js' )}
+__dirname : ${a.absNative( 'in/dir' )}
 module : object
 module.parent : object
 exports : object
@@ -1559,8 +1565,8 @@ require : function
 Dep1.js:end
 
 Index.js
-__filename : ${a.routinePath}/in/Index.js
-__dirname : ${a.routinePath}/in
+__filename : ${a.absNative( 'in/Index.js' )}
+__dirname : ${a.absNative( 'in' )}
 module : object
 module.parent : object
 exports : object
@@ -1851,11 +1857,67 @@ sourcesJoinOptionInterpreterOptionBasePath.timeOut = 300000;
 
 //
 
+function sourcesJoinBrowserOptionRedirectingConsole( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'consoleRedirecting' );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.sources.join inPath:**/*.(js|s) outPath:Out.js entryPath:Index.js interpreter:browser redirectingConsole:1` )
+  a.appStart( `.start Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output = 'Message to redirect'
+
+    test.identical( op.exitCode, 0 );
+    test.is( _.strHas( op.output, output ) );
+    return op;
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:browser';
+    a.fileProvider.filesDelete( a.abs( '.' ) );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.sources.join inPath:**/*.(js|s) outPath:Out.js entryPath:Index.js interpreter:browser redirectingConsole:0` )
+  a.appStart( `.start Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
+  .then( ( op ) =>
+  {
+    test.description = 'out/Out.js';
+    var output = 'Message to redirect'
+
+    test.identical( op.exitCode, 0 );
+    test.is( !_.strHas( op.output, output ) );
+    return op;
+  })
+
+  return a.ready;
+
+}/* end of sourcesJoinBrowserOptionRedirectingConsole */
+
+//
+
 function sourcesJoinRoutineInclude( test )
 {
   let context = this;
   let a = context.assetFor( test, 'depInclude' );
-  let outPath = a.abs( 'out' ); /* xxx : remove */
+  let outPath = a.abs( 'out' ); /* qqq xxx : remove */
   let starter = new _.starter.System().form();
 
   /* */
@@ -1937,8 +1999,8 @@ Index.js:end
 Index.js:begin
 
 Index.js
-__filename : ${a.routinePath}/in/Index.js
-__dirname : ${a.routinePath}/in
+__filename : ${a.absNative( 'in/Index.js' )}
+__dirname : ${a.absNative( 'in' )}
 module : object
 module.parent : object
 exports : object
@@ -1947,8 +2009,8 @@ require : function
 Dep1.js:begin
 
 Dep1.js
-__filename : ${a.routinePath}/in/dep/Dep1.js
-__dirname : ${a.routinePath}/in/dep
+__filename : ${a.absNative( 'in/dep/Dep1.js' )}
+__dirname : ${a.absNative( 'in/dep' )}
 module : object
 module.parent : object
 exports : object
@@ -2362,6 +2424,7 @@ function sourcesJoinRequireGlobAnyAny( test )
 
   /* */
 
+
 //   a.ready.then( () =>
 //   {
 //     test.case = 'interpreter:browser entryPath:in/Index.js';
@@ -2698,6 +2761,7 @@ Index.js:end
   return a.ready;
 }
 
+sourcesJoinRequireGlobAnyExt.timeOut = 90000;
 sourcesJoinRequireGlobAnyExt.description =
 `
 - routine require with glob **/**.js finds many files
@@ -3283,6 +3347,184 @@ startWithNpmPackage.description =
 
 //
 
+function startChangeModuleCache( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+F1.js
+F1.js
+F2.js
+F2.js
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startChangeModuleCache.description =
+`
+  - Require of 'module' works.
+  - Replacing Module._cache works.
+`
+
+//
+
+function startModuleParent( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+// xxx
+//   a.ready.then( () =>
+//   {
+//     test.case = 'native njs';
+//     _.fileProvider.filesDelete( a.routinePath );
+//     a.reflect();
+//     return null;
+//   })
+//
+//   a.shell( `node Main.js` )
+//   .then( ( op ) =>
+//   {
+//     var output =
+// `
+// Main.js: false
+// F1.js: ${ a.abs( 'F1.js' ) }
+// F2.js: ${ a.abs( 'F2.js' ) }
+// F3.js: ${ a.abs( 'F3.js' ) }
+// `
+//     test.identical( op.exitCode, 0 );
+//     test.equivalent( op.output, output );
+//     return op;
+//   })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:njs';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 interpreter:njs` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+Main.js: false
+F1.js: ${ a.abs( 'F1.js' ) }
+F2.js: ${ a.abs( 'F2.js' ) }
+F3.js: ${ a.abs( 'F3.js' ) }
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+//   a.ready.then( () =>
+//   {
+//     test.case = 'browser';
+//     _.fileProvider.filesDelete( a.routinePath );
+//     a.reflect();
+//     return null;
+//   })
+//
+//   a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1` )
+//   .then( ( op ) =>
+//   {
+//     var output =
+// `
+// xxx
+// `
+//     test.identical( op.exitCode, 0 );
+//     test.equivalent( op.output, output );
+//     return op;
+//   })
+
+  /* */
+
+  return a.ready;
+}
+
+startModuleParent.description =
+`
+  - Field module.parent has proper value
+`
+
+//
+
+function startOptionTimeOutImmediateChild( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'interpreter:njs';
+    _.fileProvider.filesDelete( a.routinePath );
+    a.reflect();
+    return null;
+  })
+
+  a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 interpreter:njs` )
+  .then( ( op ) =>
+  {
+    var output =
+`
+Main.js: false
+F1.js: ${ a.abs( 'F1.js' ) }
+F2.js: ${ a.abs( 'F2.js' ) }
+F3.js: ${ a.abs( 'F3.js' ) }
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startOptionTimeOutImmediateChild.description =
+`
+  - Time out in immdeiate child works.
+`
+
+//
+
 function startTestSuite( test )
 {
   let context = this;
@@ -3329,6 +3571,7 @@ xxx
   return a.ready;
 }
 
+startTestSuite.experimental = 1;
 startTestSuite.description =
 `
   - Running test suite in browser works.
@@ -3705,7 +3948,6 @@ async function loggingErrorInWorker( test )
     var exp =
 `
  . event::curatedRunLaunchBegin
- . event::curatedRunLaunchEnd
 Index:begin
 Index:end
 Worker:begin
@@ -3721,6 +3963,7 @@ err:begin
 `
 err:end
 Worker:end
+ . event::curatedRunLaunchEnd
  . event::timeOut
  . event::curatedRunTerminateEnd
 `
@@ -3817,8 +4060,8 @@ function version( test )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.is( _.strHas( op.output, /Current version:.*\..*\..*/ ) );
-    test.is( _.strHas( op.output, /Available version:.*\..*\..*/ ) );
+    test.is( _.strHas( op.output, /Current version : .*\..*\..*/ ) );
+    test.is( _.strHas( op.output, /Latest version of wstarter!alpha : .*\..*\..*/ ) );
     return op;
   })
 
@@ -3853,7 +4096,7 @@ let Self =
 
     deltaTime1 : 250,
     deltaTime2 : 3000,
-    deltaTime3 : _.process.isDebugged() ? 150000 : 15000,
+    deltaTime3 : ( _.process.isDebugged() && 0 ) ? 150000 : 15000,
 
   },
 
@@ -3872,6 +4115,7 @@ let Self =
     sourcesJoinRecursion,
     sourcesJoinOptionInterpreter,
     sourcesJoinOptionInterpreterOptionBasePath,
+    sourcesJoinBrowserOptionRedirectingConsole,
     sourcesJoinRoutineInclude,
     sourcesJoinRequireGlob,
     sourcesJoinRequireGlobAnyAny, /* xxx : implement */
@@ -3888,10 +4132,13 @@ let Self =
 
     startRecursion,
     startRecursionSingle,
-    startBaseDeducingFromAllowed,
+    // startBaseDeducingFromAllowed,/* xxx : fix */
     // startOptionWithModule, /* xxx : implement */
-    startWithNpmPackage,
-    // startTestSuite, /* xxx : implement */
+    // startWithNpmPackage,/* xxx : implement */
+    startChangeModuleCache,
+    startModuleParent,
+    startOptionTimeOutImmediateChild,
+    startTestSuite, /* xxx : implement */
     startHtml,
 
     // worker
@@ -3905,8 +4152,8 @@ let Self =
     // logging
 
     loggingError,
-    loggingErrorInWorker,
-    loggingErrorInWorkerNoFile,
+    // loggingErrorInWorker,/* xxx : investigate */
+    // loggingErrorInWorkerNoFile,/* xxx : investigate */
 
     // etc
 

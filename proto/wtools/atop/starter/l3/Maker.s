@@ -125,7 +125,7 @@ function sourceWrapSplits( o )
 `
 
   if( o.running )
-  ware += `/* */  _starter_._sourceIncludeCall( null, module, module.filePath );`;
+  ware += `/* */  _starter_._sourceIncludeResolvedCalling( null, module, module.filePath );`;
 
   let postfix1 =
 `
@@ -278,6 +278,7 @@ function sourcesJoinSplits( o )
 /* */  _global_._starter_.loggingApplication = ${o.loggingApplication};
 /* */  _global_._starter_.loggingSourceFiles = ${o.loggingSourceFiles};
 /* */  _global_._starter_.withServer = ${o.withServer};
+/* */  _global_._starter_.redirectingConsole = ${o.redirectingConsole};
 
 /* */  _global_.Config.debug = ${o.debug};
 
@@ -362,6 +363,20 @@ function sourcesJoinSplits( o )
 /* */  /* end of bro */ })();
 
 `
+
+  if( o.interpreter === 'browser' )
+  if( o.redirectingConsole )
+  r.interpreter +=
+`
+/* */  /* begin of broConsole */ ( function _broConsole_() {
+
+  ${_.routineParse( maker.BroConsoleCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.BroConsoleCode.end ).bodyUnwrapped};
+
+/* */  /* end of broConsole */ })();
+
+`
+
 
   /* njs */
 
@@ -496,11 +511,13 @@ function sourcesJoinSplits( o )
 
   ${rou( 'path', 'refine' )}
   ${rou( 'path', '_normalize' )}
+  ${rou( 'path', 'normalize' )}
   ${rou( 'path', 'canonize' )}
   ${rou( 'path', 'canonizeTolerant' )}
   ${rou( 'path', '_unescape' )}
   ${rou( 'path', 'unescape' )}
   ${rou( 'path', '_nativizeWindows' )}
+  ${rou( 'path', '_nativizeMinimalWindows' )}
   ${rou( 'path', '_nativizePosix' )}
   ${rou( 'path', 'isGlob' )}
   ${rou( 'path', 'isRelative' )}
@@ -568,12 +585,13 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayRemoveElementOnceStrictly' )}
   ${rou( 'arrayRemovedElement' )}
   ${rou( 'arrayRemovedElementOnce' )}
+  ${rou( 'arrayIsEmpty' )}
   ${rou( 'longLike' )}
   ${rou( 'longLeft' )}
   ${rou( 'longLeftIndex' )}
   ${rou( 'longLeftDefined' )}
   ${rou( 'longHas' )}
-  ${rou( 'routineFromPreAndBody' )}
+  ${rou( 'routineUnite' )}
   ${rou( 'arrayAs' )}
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
@@ -699,6 +717,7 @@ sourcesJoinSplits.defaults =
   loggingApplication : 0,
   loggingSourceFiles : 0,
   withServer : null,
+  redirectingConsole : 1
 }
 
 //
@@ -973,6 +992,7 @@ let Statics =
   ProceduringCode : require( '../l1_boot/Proceduring.txt.s' ),
   GlobingCode : require( '../l1_boot/Globing.txt.s' ),
   BroCode : require( '../l1_boot/Bro.txt.s' ),
+  BroConsoleCode : require( '../l1_boot/BroConsole.txt.s' ),
   NjsCode : require( '../l1_boot/Njs.txt.s' ),
   StarterCode : require( '../l1_boot/Starter.txt.s' ),
   InstanceDefaults,

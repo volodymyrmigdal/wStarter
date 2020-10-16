@@ -1,0 +1,80 @@
+
+submodule :
+
+  wTools : 'git+https:///github.com/Wandalen/wTools.git/'
+  wFiles : 'git+https:///github.com/Wandalen/wFiles.git/'
+  wlooker : 'git+https:///github.com/Wandalen/wLooker.git/'
+  wblueprint : 'git+https:///github.com/Wandalen/wBlueprint.git/'
+  wcloner : 'git+https:///github.com/Wandalen/wCloner.git/'
+  wConsequence : 'git+https:///github.com/Wandalen/wConsequence.git/'
+  wCopyable : 'git+https:///github.com/Wandalen/wCopyable.git/'
+  wpathbasic : 'git+https:///github.com/Wandalen/wPathBasic.git/'
+  wpathtools : 'git+https:///github.com/Wandalen/wPathTools.git/'
+  wProto : 'git+https:///github.com/Wandalen/wProto.git/'
+  wintrospectorbasic : 'git+https:///github.com/Wandalen/wIntrospectorBasic.git/'
+  wselector : 'git+https:///github.com/Wandalen/wSelector.git/'
+  wstringer : 'git+https:///github.com/Wandalen/wStringer.git/'
+  wstringsextra : 'git+https:///github.com/Wandalen/wStringsExtra.git/'
+  wtraverser : 'git+https:///github.com/Wandalen/wTraverser.git/'
+  wreplicator : 'git+https:///github.com/Wandalen/wReplicator.git/'
+  wequaler : 'git+https:///github.com/Wandalen/wEqualer.git/'
+  wfieldsstack : 'git+https:///github.com/Wandalen/wFieldsStack.git/'
+  wEventHandler : 'git+https:///github.com/Wandalen/wEventHandler.git/'
+  winstancing : 'git+https:///github.com/Wandalen/wInstancing.git/'
+  wprocedure : 'git+https:///github.com/Wandalen/wProcedure.git/'
+  wLogger : 'git+https:///github.com/Wandalen/wLogger.git/'
+  wtemplatetreeenvironment : 'git+https:///github.com/Wandalen/wTemplateTreeEnvironment.git/'
+  wtemplatetreeresolver : 'git+https:///github.com/Wandalen/wTemplateTreeResolver.git/'
+  wverbal : 'git+https:///github.com/Wandalen/wVerbal.git/'
+  wRegexpObject : 'git+https:///github.com/Wandalen/wRegexpObject.git/'
+ 
+
+path :
+
+  temp : out
+  proto : './proto'
+  in : '.'
+  out : 'out'
+  out.debug :
+    path : './out/debug'
+    criterion :
+      debug : 1
+  out.release :
+    path : './out/release'
+    criterion :
+      debug : 0
+
+reflector :
+
+  reflect.proto :
+    inherit : predefined.*
+    criterion :
+      debug : [ 0,1 ]
+    filePath :
+      path::proto : path::out.*=1
+
+  reflect.submodules :
+    inherit : submodule::*/exported::*=1/reflector::exported.files*=1
+    dst :
+      basePath : .
+      prefixPath : path::out.debug
+    criterion :
+      debug : 1
+
+step :
+
+  delete.out.debug :
+    inherit : files.delete
+    filePath : '{path::out.debug}/**'
+    criterion :
+      debug : 1
+
+build :
+
+  debug :
+    criterion :
+      default : 1
+      debug : 1
+    steps :
+      - delete.out.debug
+      - reflect.submodules*=1
