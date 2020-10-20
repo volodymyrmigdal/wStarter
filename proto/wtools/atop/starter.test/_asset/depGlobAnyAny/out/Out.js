@@ -3838,9 +3838,9 @@
         _.mapExtend( dstMap, src )
       }
   
-      if( dstMap.pre && dstMap.body )
+      if( dstMap.head && dstMap.body )
       {
-        dst = _.routineUnite( dstMap.pre, dstMap.body );
+        dst = _.routineUnite( dstMap.head, dstMap.body );
       }
       else
       {
@@ -4310,7 +4310,7 @@
       _.routineOptions( routine, o );
       _.assert( args.length === 1 || args.length === 2 || args.length === 3 );
       _.assert( arguments.length === 2 );
-      _.assert( _.routineIs( o.pre ) || _.routinesAre( o.pre ), 'Expects routine or routines {-o.pre-}' );
+      _.assert( _.routineIs( o.head ) || _.routinesAre( o.head ), 'Expects routine or routines {-o.head-}' );
       _.assert( _.routineIs( o.body ), 'Expects routine {-o.body-}' );
       _.assert( o.body.defaults !== undefined, 'Body should have defaults' );
     
@@ -4325,9 +4325,9 @@
     
       _.assert( arguments.length === 1 ); // args, r, o, k
     
-      if( !_.routineIs( o.pre ) )
+      if( !_.routineIs( o.head ) )
       {
-        let _head = _.routinesCompose( o.pre, function( args, result, op, k )
+        let _head = _.routinesCompose( o.head, function( args, result, op, k )
         {
           _.assert( arguments.length === 4 );
           _.assert( !_.unrollIs( result ) );
@@ -4335,7 +4335,7 @@
           return _.unrollAppend([ callPreAndBody, [ result ] ]);
         });
         _.assert( _.routineIs( _head ) );
-        o.pre = function pre()
+        o.head = function pre()
         {
     
           let result = _head.apply( this, arguments );
@@ -4343,7 +4343,7 @@
         }
       }
     
-      let pre = o.pre;
+      let pre = o.head;
       let body = o.body;
     
       if( !o.name )
@@ -4375,7 +4375,7 @@
     
       _.routineExtend( callPreAndBody, o.body );
     
-      callPreAndBody.pre = o.pre;
+      callPreAndBody.head = o.head;
       callPreAndBody.body = o.body;
     
       return callPreAndBody;
@@ -4387,11 +4387,11 @@
     ;
   _.routineUnite = function routineUnite()
     {
-      let o = routineUnite.pre.call( this, routineUnite, arguments );
+      let o = routineUnite.head.call( this, routineUnite, arguments );
       let result = routineUnite.body.call( this, o );
       return result;
     }
-  _.routineUnite.pre = _routineUnite_head;
+  _.routineUnite.head = _routineUnite_head;
   _.routineUnite.body = _routineUnite_body;
   _.routineUnite.defaults = Object.create( _routineUnite_body.defaults );
   _.routineUnite.defaults =
@@ -6371,9 +6371,9 @@ let TokensSyntax = function TokensSyntax()
       else
       {
         _.assert( multiply === multiplyNo );
-        if( routine.pre )
+        if( routine.head )
         {
-          pre = routine.pre;
+          pre = routine.head;
           routine = routine.body;
         }
         if( fieldFilter )

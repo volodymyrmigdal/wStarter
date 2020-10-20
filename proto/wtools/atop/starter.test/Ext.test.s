@@ -113,7 +113,7 @@ function sourcesJoin( test )
     return op;
   })
 
-  a.anotherStart( _.path.nativize( outputPath ) )
+  a.fork( _.path.nativize( outputPath ) )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -319,7 +319,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  a.anotherStart( `out/app0` )
+  a.fork( `out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -327,7 +327,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  a.anotherStart( `app0/File2.js` )
+  a.fork( `app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -382,7 +382,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  a.anotherStart( `ext/RequireApp2File2.js` )
+  a.fork( `ext/RequireApp2File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -449,7 +449,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  a.anotherStart( `out/app0` )
+  a.fork( `out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -457,7 +457,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  a.anotherStart( `app0/File2.js` )
+  a.fork( `app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -503,7 +503,7 @@ function sourcesJoinTree( test )
     return op;
   })
 
-  a.anotherStart( `in/app1/dir1/File1.js` )
+  a.fork( `in/app1/dir1/File1.js` )
   .then( ( op ) =>
   {
     var output =
@@ -517,7 +517,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -555,7 +555,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  a.anotherStart( `in/app1/dir1/dir2/File2.js` )
+  a.fork( `in/app1/dir1/dir2/File2.js` )
   .then( ( op ) =>
   {
     var output =
@@ -569,7 +569,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -608,7 +608,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `in/app2/File2.js` )
+  a.fork( `in/app2/File2.js` )
   .then( ( op ) =>
   {
     var output =
@@ -626,7 +626,7 @@ app0/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app2` )
+  a.fork( `out/app2` )
   .then( ( op ) =>
   {
     var output =
@@ -682,7 +682,7 @@ function sourcesJoinCycle( test )
     return op;
   })
 
-  a.anotherStart( `in/app1/File1.js` )
+  a.fork( `in/app1/File1.js` )
   .then( ( op ) =>
   {
     var output =
@@ -697,7 +697,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -736,7 +736,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  a.anotherStart( `in/app1/File2.js` )
+  a.fork( `in/app1/File2.js` )
   .then( ( op ) =>
   {
     var output =
@@ -751,7 +751,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -790,7 +790,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -809,7 +809,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app2` )
+  a.fork( `out/app2` )
   .then( ( op ) =>
   {
     var output =
@@ -866,7 +866,7 @@ function sourcesJoinRecursion( test )
     return op;
   })
 
-  a.anotherStart( `out/Out.js` )
+  a.fork( `out/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
@@ -884,7 +884,7 @@ F1:after
     return op;
   })
 
-  a.anotherStart( `F1.js` )
+  a.fork( `F1.js` )
   .then( ( op ) =>
   {
     test.description = 'F1.js';
@@ -927,7 +927,7 @@ function sourcesJoinOptionInterpreter( test )
     return null;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -984,7 +984,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `out/Out.js` )
+  a.fork( `out/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
@@ -1203,7 +1203,7 @@ function sourcesJoinOptionInterpreterOptionBasePath( test )
     return op;
   })
 
-  a.anotherStart( `out1/out2/Out.js` )
+  a.fork( `out1/out2/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out1/out2/Out.js';
@@ -1245,7 +1245,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -1303,7 +1303,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `out1/out2/Out.js` )
+  a.fork( `out1/out2/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out1/out2/Out.js';
@@ -1345,7 +1345,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -1403,7 +1403,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `out1/out2/Out.js` )
+  a.fork( `out1/out2/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out1/out2/Out.js';
@@ -1445,7 +1445,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -1503,7 +1503,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `out1/out2/Out.js` )
+  a.fork( `out1/out2/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out1/out2/Out.js';
@@ -1545,7 +1545,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -1934,7 +1934,7 @@ function sourcesJoinRoutineInclude( test )
     return null;
   })
 
-  a.anotherStart({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
+  a.fork({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
   a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
 
   .then( ( op ) =>
@@ -1947,7 +1947,7 @@ function sourcesJoinRoutineInclude( test )
     return op;
   })
 
-  a.anotherStart( `out/Out.js` )
+  a.fork( `out/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
@@ -1990,7 +1990,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -2038,7 +2038,7 @@ Index.js:end
     return null;
   })
 
-  a.anotherStart({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
+  a.fork({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
   a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:browser` )
 
   .then( ( op ) =>
@@ -2184,7 +2184,7 @@ function sourcesJoinRequireGlob( test )
 //     return op;
 //   })
 //
-//   a.anotherStart( `out/Out.js` )
+//   a.fork( `out/Out.js` )
 //   .then( ( op ) =>
 //   {
 //     test.description = 'out/Out.js';
@@ -2812,7 +2812,7 @@ function sourcesJoinExpressServer( test )
     return op;
   })
 
-  a.anotherStart( `out/server.js` )
+  a.fork( `out/server.js` )
   .then( ( op ) =>
   {
     test.description = 'out/server.js';

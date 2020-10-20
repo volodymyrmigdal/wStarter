@@ -58,7 +58,7 @@ function exec()
 
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
-  let appArgs = _.process.args();
+  let appArgs = _.process.input();
   let ca = cui._commandsMake();
 
   return _.Consequence
@@ -86,7 +86,7 @@ function _commandsMake()
   let starter = cui.starter;
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
-  let appArgs = _.process.args();
+  let appArgs = _.process.input();
 
   _.assert( _.instanceIs( cui ) );
   _.assert( _.instanceIs( starter ) );
@@ -204,7 +204,7 @@ function commandImply( e )
 
   let request = _.strRequestParse( e.commandArgument );
 
-  _.process.argsReadTo
+  _.process.inputReadTo
   ({
     dst : starter,
     propertiesMap : request.map,
