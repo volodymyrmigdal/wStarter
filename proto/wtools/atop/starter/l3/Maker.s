@@ -491,7 +491,7 @@ function sourcesJoinSplits( o )
   ${rou( 'err' )}
   ${rou( '_err' )}
   ${rou( '_errMake' )}
-  ${rou( 'errLogEnd' )}
+  ${rou( 'errLogged' )}
   ${rou( 'errAttend' )}
   ${rou( '_errFields' )}
   ${rou( 'errIsStandard' )}

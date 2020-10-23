@@ -1312,7 +1312,7 @@
       }
       function get()
       {
-        _.errLogEnd( this );
+        _.errLogged( this );
         _.errAttend( this );
         return this[ symbol ];
       }
@@ -1349,14 +1349,14 @@
 
 //
 
-  _.errLogEnd = function errLogEnd( err, value )
+  _.errLogged = function errLogged( err, value )
   {
     _.assert( arguments.length === 1 || arguments.length === 2 );
     if( value === undefined )
     value = Config.debug ? _.introspector.stack([ 0, Infinity ]) : true;
     return _._errFields( err, { logged : value } );
   };
-  var errLogEnd = _.errLogEnd;
+  var errLogged = _.errLogged;
 
 //
 
