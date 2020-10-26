@@ -308,8 +308,8 @@ function _Begin()
 
     if( _starter_.catchingUncaughtErrors )
     {
-      _starter_.setup._setupUncaughtErrorHandler2();
-      _starter_.setup._setupUncaughtErrorHandler9();
+      _starter_.error._setupUncaughtErrorHandler2();
+      _starter_.error._setupUncaughtErrorHandler9();
     }
 
     this._SetupAct();

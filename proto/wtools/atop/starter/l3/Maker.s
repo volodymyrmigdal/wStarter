@@ -498,8 +498,7 @@ function sourcesJoinSplits( o )
   ${rou( 'errIsAttended' )}
   ${rou( 'errProcess' )}
   ${rou( 'assert' )}
-  ${field( '_errorCounter' )}
-  ${field( '_errorMaking' )}
+  ${fields( 'error' )}
 
   ${rou( 'introspector', 'code' )}
   ${rou( 'introspector', 'stack' )}
@@ -618,11 +617,11 @@ function sourcesJoinSplits( o )
   ${rou( 'numberFromStrMaybe' )}
   ${field( 'TranslatedType' )}
 
-  ${rou( 'setup', '_setupUncaughtErrorHandler2' )}
-  ${rou( 'setup', '_setupUncaughtErrorHandler9' )}
-  ${rou( 'setup', '_errUncaughtPre' )}
-  ${rou( 'setup', '_errUncaughtHandler1' )}
-  ${rou( 'setup', '_errUncaughtHandler2' )}
+  ${rou( 'error', '_setupUncaughtErrorHandler2' )}
+  ${rou( 'error', '_setupUncaughtErrorHandler9' )}
+  ${rou( 'error', '_handleUncaughtHead' )}
+  ${rou( 'error', '_handleUncaught1' )}
+  ${rou( 'error', '_handleUncaught2' )}
 
   /*
   Uri namespace( parseConsecutive ) is required to make _.include working in a browser
