@@ -4018,7 +4018,7 @@
     if( Config.debug )
     {
       result = _.arrayAppendedOnce.apply( this, arguments );
-      _.assert( result >= 0, () => `Array should have only unique elements, but has several ${ _.strShort( ins ) }` );
+      _.assert( result >= 0, () => `Array should have only unique elements, but has several ${ _.strEntityShort( ins ) }` );
     }
     else
     {
