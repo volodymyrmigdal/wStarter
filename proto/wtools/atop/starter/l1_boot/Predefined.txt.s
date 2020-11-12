@@ -14,14 +14,27 @@ function _Begin()
   'use strict';
 
   let _global = undefined;
-  if( !_global && typeof Global !== 'undefined' && Global.Global === Global ) _global = Global;
-  if( !_global && typeof global !== 'undefined' && global.global === global ) _global = global;
-  if( !_global && typeof window !== 'undefined' && window.window === window ) _global = window;
-  if( !_global && typeof self   !== 'undefined' && self.self === self ) _global = self;
-  let _realGlobal = _global._realGlobal_ = _global;
-  let _wasGlobal = _global._global_ || _global;
-  _global = _wasGlobal;
-  _global._global_ = _wasGlobal;
+  if( typeof _global_ !== 'undefined' && _global_._global_ === _global_ )
+  _global = _global_;
+  else if( typeof globalThis !== 'undefined' && globalThis.globalThis === globalThis )
+  _global = globalThis;
+  else if( typeof Global !== 'undefined' && Global.Global === Global )
+  _global = Global;
+  else if( typeof global !== 'undefined' && global.global === global )
+  _global = global;
+  else if( typeof window !== 'undefined' && window.window === window )
+  _global = window;
+  else if( typeof self   !== 'undefined' && self.self === self )
+  _global = self;
+  if( !_global._globals_ )
+  {
+    _global._globals_ = Object.create( null );
+    _global._globals_.real = _global;
+    _global._realGlobal_ = _global;
+    _global._global_ = _global;
+  }
+
+  /* */
 
   if( !_global_.Config )
   _global_.Config = Object.create( null );
@@ -29,6 +42,8 @@ function _Begin()
   _global_.Config.interpreter = ( ( typeof module !== 'undefined' ) && ( typeof process !== 'undefined' ) ) ? 'njs' : 'browser';
   if( _global_.Config.isWorker === undefined )
   _global_.Config.isWorker = !!( typeof self !== 'undefined' && self.self === self && typeof importScripts !== 'undefined' );
+
+  /* */
 
   if( _global._starter_ && _global._starter_._inited )
   return;
