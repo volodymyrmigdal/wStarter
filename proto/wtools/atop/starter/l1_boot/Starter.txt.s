@@ -46,7 +46,7 @@ function _Begin()
     o.dirPath = starter.path.canonizeTolerant( o.dirPath );
 
     // debugger;
-    if( o.filePath === '/wtools/atop/tester/l7/TesterTop.s' )
+    if( o.filePath === '/wtools/atop/testing/l7/TesterTop.s' )
     debugger;
 
     sourceFile.filePath = o.filePath;
@@ -138,9 +138,9 @@ function _Begin()
       if( childSource.state === 'errored' || childSource.state === 'opening' || childSource.state === 'opened' )
       return childSource.exports;
 
-      if( childSource.filePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( childSource.filePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
-      if( parentSource && parentSource.filePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( parentSource && parentSource.filePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
 
       childSource.parent = parentSource || null;

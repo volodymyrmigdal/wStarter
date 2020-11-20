@@ -1881,7 +1881,7 @@ function sourcesJoinBrowserOptionRedirectingConsole( test )
     var output = 'Message to redirect'
 
     test.identical( op.exitCode, 0 );
-    test.is( _.strHas( op.output, output ) );
+    test.true( _.strHas( op.output, output ) );
     return op;
   })
 
@@ -1903,7 +1903,7 @@ function sourcesJoinBrowserOptionRedirectingConsole( test )
     var output = 'Message to redirect'
 
     test.identical( op.exitCode, 0 );
-    test.is( !_.strHas( op.output, output ) );
+    test.true( !_.strHas( op.output, output ) );
     return op;
   })
 
@@ -4060,8 +4060,8 @@ function version( test )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.is( _.strHas( op.output, /Current version : .*\..*\..*/ ) );
-    test.is( _.strHas( op.output, /Latest version of wstarter!alpha : .*\..*\..*/ ) );
+    test.true( _.strHas( op.output, /Current version : .*\..*\..*/ ) );
+    test.true( _.strHas( op.output, /Latest version of wstarter!alpha : .*\..*\..*/ ) );
     return op;
   })
 

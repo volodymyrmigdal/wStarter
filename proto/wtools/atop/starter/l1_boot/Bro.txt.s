@@ -413,18 +413,18 @@ function _Begin()
       let scriptCode = document.createTextNode( read );
       script.appendChild( scriptCode );
 
-      if( resolvedFilePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( resolvedFilePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
 
       document.head.appendChild( script );
 
-      if( resolvedFilePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( resolvedFilePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
 
       let childSource = starter._sourceForPathGet( resolvedFilePath );
       let result = starter._sourceIncludeResolvedCalling( parentSource, childSource, resolvedFilePath );
 
-      if( resolvedFilePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( resolvedFilePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
 
       return result;

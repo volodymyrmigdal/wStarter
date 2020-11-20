@@ -598,7 +598,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strPrimitiveType' )}
   ${rou( 'strHas' )}
   ${rou( 'strLike' )}
-  ${rou( 'rangeIs' )}
+  ${rou( 'intervalIs' )}
   ${rou( 'numbersAreAll' )}
   ${rou( 'bufferTypedIs' )}
   ${rou( 'bufferNodeIs' )}

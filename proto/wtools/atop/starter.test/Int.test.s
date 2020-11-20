@@ -315,7 +315,7 @@ async function includeCss( test )
       var style = window.getComputedStyle( document.querySelector( 'body') );
       return style.getPropertyValue( 'background' )
     });
-    test.is( _.strHas( got, 'rgb(192, 192, 192)' ) );
+    test.true( _.strHas( got, 'rgb(192, 192, 192)' ) );
 
     await window.close();
   }
@@ -359,7 +359,7 @@ async function includeExcludingManual( test )
     test.identical( scripts.length, 3 );
     test.identical( scripts[ 0 ], `${parsed.origin}/.starter` );
     test.identical( scripts[ 1 ], `${parsed.origin}/Index.js` );
-    test.is( _.strHas( scripts[ 2 ], './src/File.js' ) );
+    test.true( _.strHas( scripts[ 2 ], './src/File.js' ) );
 
     await window.close();
   }
@@ -459,8 +459,8 @@ async function workerWithInclude( test )
     await page.goto( session.entryWithQueryUri );
     await _.time.out( context.deltaTime2 );
 
-    test.is( _.strHas( output, 'Global : Window' ) )
-    test.is( _.strHas( output, 'Global : DedicatedWorkerGlobalScope' ) )
+    test.true( _.strHas( output, 'Global : Window' ) )
+    test.true( _.strHas( output, 'Global : DedicatedWorkerGlobalScope' ) )
 
     await window.close();
   }
@@ -514,9 +514,9 @@ async function includeModuleInWorker( test )
     console.log( output )
 
     test.case = 'module was exported and returned object is same as global namespace created in module'
-    test.is( _.strHas( output, `Module was exported: true` ) );
+    test.true( _.strHas( output, `Module was exported: true` ) );
     test.case = 'two includes return same object'
-    test.is( _.strHas( output, `Both includes have same export: true` ) );
+    test.true( _.strHas( output, `Both includes have same export: true` ) );
 
     await window.close();
   }
@@ -569,9 +569,9 @@ async function includeModuleInWorkerThrowing( test )
 
     // console.log( '!' + output + '!' );
 
-    test.is( !_.strHas( output, `Module was included` ) );
-    test.is( _.strHas( output, `Module error` ) );
-    test.is( _.strHas( output, `Error including source file /Module.js` ) );
+    test.true( !_.strHas( output, `Module was included` ) );
+    test.true( _.strHas( output, `Module error` ) );
+    test.true( _.strHas( output, `Error including source file /Module.js` ) );
 
     await window.close();
   }
