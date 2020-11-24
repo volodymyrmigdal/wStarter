@@ -3,7 +3,7 @@
 
 'use strict';
 
-let Open, ßChromeLauncher;
+let Open, ChromeLauncher;
 
 let _ = _global_.wTools;
 let Parent = _.starter.session.Abstract;

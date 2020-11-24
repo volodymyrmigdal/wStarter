@@ -571,6 +571,7 @@ function sourcesJoinSplits( o )
   ${rou( 'assertMapHasNoUndefine' )}
   ${rou( 'routineOptions' )}
   ${rou( 'mapExtend' )}
+  ${rou( 'mapSupplement' )}
   ${rou( 'routineExtend_' )}
   ${rou( 'routineExtend' )}
   ${rou( 'arrayAppendArray' )}
