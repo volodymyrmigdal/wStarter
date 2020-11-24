@@ -1,11 +1,14 @@
-( function _Int_test_s_() {
+( function _Int_test_s_()
+{
 
 'use strict';
+
+let Jsdom;
 
 if( typeof module !== 'undefined' )
 {
 
-  var Jsdom = require( 'jsdom' );
+  Jsdom = require( 'jsdom' );
   let _ = require( '../../../wtools/Tools.s' );
 
   _.include( 'wTesting' );
@@ -95,7 +98,7 @@ function sourcesJoinFiles( test )
     execPath : 'node',
     currentPath : a.routinePath,
     outputCollecting : 1,
-    ready : ready,
+    ready,
   });
 
   starter.sourcesJoinFiles
@@ -325,7 +328,7 @@ async function includeCss( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 //
@@ -369,7 +372,7 @@ async function includeExcludingManual( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 //
@@ -417,7 +420,7 @@ async function includeModule( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 includeModule.timeOut = 300000;
@@ -454,7 +457,7 @@ async function workerWithInclude( test )
     page = await window.pageOpen();
     let output = '';
 
-    page.on( 'console', msg => output += msg.text() + '\n' );
+    page.on( 'console', ( msg ) => output += msg.text() + '\n' );
 
     await page.goto( session.entryWithQueryUri );
     await _.time.out( context.deltaTime2 );
@@ -470,7 +473,7 @@ async function workerWithInclude( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 workerWithInclude.timeOut = 300000;
@@ -505,7 +508,7 @@ async function includeModuleInWorker( test )
     page = await window.pageOpen();
     let output = '';
 
-    page.on( 'console', msg => output += msg.text() + '\n' );
+    page.on( 'console', ( msg ) => output += msg.text() + '\n' );
 
     await page.goto( session.entryWithQueryUri );
 
@@ -526,7 +529,7 @@ async function includeModuleInWorker( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 includeModuleInWorker.timeOut = 300000;
@@ -561,7 +564,7 @@ async function includeModuleInWorkerThrowing( test )
     page = await window.pageOpen();
     let output = '';
 
-    page.on( 'console', msg => output += msg.text() + '\n' );
+    page.on( 'console', ( msg ) => output += msg.text() + '\n' );
 
     await page.goto( session.entryWithQueryUri );
 
@@ -581,7 +584,7 @@ async function includeModuleInWorkerThrowing( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 includeModuleInWorkerThrowing.timeOut = 300000;

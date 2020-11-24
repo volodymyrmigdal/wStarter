@@ -1,4 +1,5 @@
-( function _Suite1_js_() {
+( function _Suite1_js_()
+{
 
 'use strict';
 

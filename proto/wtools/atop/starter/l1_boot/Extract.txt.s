@@ -1,4 +1,5 @@
-( function _Extract_txt_s_() {
+( function _Extract_txt_s_()
+{
 
 'use strict';
 
@@ -20,7 +21,7 @@ function _Begin()
   let stackSymbol = Symbol.for( 'stack' );
   let _diagnosticCodeExecuting = 0;
   let notLongSymbol = Symbol.for( 'notLong' );
-  
+
   // let _errorCounter = 0;
   // let _errorMaking = false;
   let _ArrayIndexOf = Array.prototype.indexOf;

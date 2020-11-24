@@ -1,4 +1,5 @@
-( function _BroCode_s_() {
+( function _BroCode_s_()
+{
 
 'use strict';
 
@@ -191,10 +192,12 @@ function _Begin()
       {
 
         let data = getData( this );
-        if( !data ) return;
+        if( !data )
+        return;
         if( !total ) total = this.getResponseHeader( 'Content-Length' );
         total = Number( total ) || 1;
-        if( isNaN( total ) ) return;
+        if( isNaN( total ) )
+        return;
         handleProgress( data.length / total, o );
 
       }
@@ -291,7 +294,7 @@ function _Begin()
     try
     {
       if( !isAbsolute )
-      throw 'not tested';
+      throw _.err( 'not tested' );
       if( !isAbsolute )
       resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
       return resolvedFilePath;
@@ -351,10 +354,9 @@ function _Begin()
     }
     catch( err )
     {
-      err = _.err( err );
       end();
       debugger;
-      throw err;
+      throw _.err( err );
     }
 
     function end()
@@ -454,13 +456,14 @@ function _Begin()
 
     function accesor( fieldName, onGet, onSet )
     {
-      Object.defineProperty( result, fieldName,
+      let property =
       {
         enumerable : true,
         configurable : true,
         get : onGet,
         set : onSet,
-      });
+      }
+      Object.defineProperty( result, fieldName, property );
     }
 
   }
@@ -501,7 +504,6 @@ function _End()
     _includeAct,
     _broIncludeActInWorkerResolved,
     _broIncludeResolved,
-
 
 
     _SetupAct,

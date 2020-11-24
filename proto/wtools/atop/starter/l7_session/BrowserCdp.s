@@ -1,9 +1,9 @@
-( function _BrowserCdp_s_() {
+( function _BrowserCdp_s_()
+{
 
 'use strict';
 
-let Open;
-let ChromeLauncher;
+let Open, ßChromeLauncher;
 
 let _ = _global_.wTools;
 let Parent = _.starter.session.Abstract;
@@ -386,7 +386,7 @@ function _curratedRunPageClose( o )
       _.sure( filtered.length <= 1, `Found ${filtered.length} tabs with URI::${session.entryWithQueryUri}` );
       o.targetId = filtered[ 0 ].targetId;
     }
-    return await cdp.Target.closeTarget( o );
+    return cdp.Target.closeTarget( o );
   });
 }
 
@@ -423,7 +423,7 @@ async function _cdpConnect( o )
 
   o = _.routineOptions( _cdpConnect, o );
 
-  if( o.port == null )
+  if( o.port === null )
   o.port = session._cdpPort;
 
   try
@@ -543,7 +543,9 @@ function cdpClose()
   if( session.cdp )
   ready.then( () =>
   {
-    return new _.Consequence().take( null ).or([ browserCloseAttempt( 0 ), browserCloseAttempt( 10 ) ]);
+    return new _.Consequence()
+    .take( null )
+    .or([ browserCloseAttempt( 0 ), browserCloseAttempt( 10 ) ]);
   });
 
   ready.then( () =>

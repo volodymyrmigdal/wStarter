@@ -1,4 +1,5 @@
-( function _Namespace_s_( ) {
+( function _Namespace_s_( )
+{
 
 'use strict';
 
@@ -6,10 +7,11 @@ let _ = _global_.wTools;
 let Self = _.starter = _.starter || Object.create( null );
 _.starter.session = _.starter.session || Object.create( null );
 
-let vectorize = _.routineDefaults( null, _.vectorize, { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 } );
-let vectorizeAll = _.routineDefaults( null, _.vectorizeAll, { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 } );
-let vectorizeAny = _.routineDefaults( null, _.vectorizeAny, { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 } );
-let vectorizeNone = _.routineDefaults( null, _.vectorizeNone, { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 } );
+let vectorizeDefaults = { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 };
+let vectorize = _.routineDefaults( null, _.vectorize, vectorizeDefaults );
+let vectorizeAll = _.routineDefaults( null, _.vectorizeAll, vectorizeDefaults );
+let vectorizeAny = _.routineDefaults( null, _.vectorizeAny, vectorizeDefaults );
+let vectorizeNone = _.routineDefaults( null, _.vectorizeNone, vectorizeDefaults );
 
 // --
 // inter
@@ -18,7 +20,7 @@ let vectorizeNone = _.routineDefaults( null, _.vectorizeNone, { vectorizingConta
 async function launch()
 {
   let center = _.starter.System.Center();
-  return await center.form();
+  return center.form();
 }
 
 //

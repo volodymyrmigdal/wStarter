@@ -1,4 +1,5 @@
-( function _Njs_s_() {
+( function _Njs_s_()
+{
 
 'use strict';
 

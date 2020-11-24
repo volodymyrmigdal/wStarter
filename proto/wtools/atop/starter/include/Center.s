@@ -1,4 +1,5 @@
-( function _Center_s_( ) {
+( function _Center_s_( )
+{
 
 'use strict';
 

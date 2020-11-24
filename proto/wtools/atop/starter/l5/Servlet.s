@@ -1,4 +1,5 @@
-( function _Servlet_ss_() {
+( function _Servlet_ss_()
+{
 
 'use strict';
 
@@ -429,7 +430,7 @@ function jsSingleForJs( o )
       ({
         request : o.request,
         response : o.response,
-        err : err,
+        err,
       });
     }
     else
@@ -629,7 +630,7 @@ function remoteResolve( o )
       ({
         request : o.request,
         response : o.response,
-        err : err,
+        err
       });
     }
     else

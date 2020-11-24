@@ -1,4 +1,5 @@
-( function _StarterCode_s_() {
+( function _StarterCode_s_()
+{
 
 'use strict';
 
@@ -103,12 +104,13 @@ function _Begin()
 
     function getter( fieldName, onGet )
     {
-      Object.defineProperty( sourceFile, fieldName,
+      let property =
       {
         enumerable : true,
         configurable : true,
         get : onGet,
-      });
+      }
+      Object.defineProperty( sourceFile, fieldName, property );
     }
 
   }
@@ -276,7 +278,7 @@ function _Begin()
     if( !basePath && !sourceFile )
     {
       debugger;
-      throw 'Base path is not specified, neither script file';
+      throw _.err( 'Base path is not specified, neither script file' );
     }
 
     let isAbsolute = filePath[ 0 ] === '/';
