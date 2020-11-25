@@ -1,4 +1,5 @@
-( function _Proceduring_txt_s_() {
+( function _Proceduring_txt_s_()
+{
 
 'use strict';
 

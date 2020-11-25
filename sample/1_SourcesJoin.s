@@ -13,10 +13,10 @@ starter.form();
 var o =
 {
   basePath : _.path.join( __dirname, '..' ),
-  interpreter: 'njs',
+  interpreter : 'njs',
   outPath : _.path.join( __dirname, 'out/SingleFileTools.ss' ),
   entryPath : _.path.join( __dirname, '../node_modules/wTools/proto/wtools/Tools.s' ),
-  withServer: 0
+  withServer : 0
 }
 
 o.inPath =
@@ -34,10 +34,10 @@ console.log( `Saved out file at:"${o.outPath}"\n` )
 var o =
 {
   basePath : _.path.join( __dirname, '..' ),
-  interpreter: 'browser',
+  interpreter : 'browser',
   outPath : _.path.join( __dirname, 'out/SingleFileTools.js' ),
   entryPath : _.path.join( __dirname, '../node_modules/wTools/proto/wtools/Tools.s' ),
-  withServer: 0
+  withServer : 0
 }
 
 o.inPath =

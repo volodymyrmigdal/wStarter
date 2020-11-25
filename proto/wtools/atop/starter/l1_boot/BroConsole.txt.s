@@ -1,4 +1,5 @@
-( function _BroConsoleCode_s_() {
+( function _BroConsoleCode_s_()
+{
 
 'use strict';
 

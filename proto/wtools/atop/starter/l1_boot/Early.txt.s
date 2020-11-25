@@ -1,4 +1,5 @@
-( function _WareCode_s_() {
+( function _WareCode_s_()
+{
 
 'use strict';
 
@@ -39,7 +40,7 @@ function _Begin()
     if( !good )
     {
       debugger;
-      throw 'Something wrong!';
+      throw new Error( 'Something wrong!' );
       return false;
     }
     return true;

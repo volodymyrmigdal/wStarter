@@ -1,4 +1,5 @@
-( function _Session_s_() {
+( function _Session_s_()
+{
 
 'use strict';
 

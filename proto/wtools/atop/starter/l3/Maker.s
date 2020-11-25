@@ -1,4 +1,5 @@
-( function _StarterMaker_s_() {
+( function _StarterMaker_s_()
+{
 
 'use strict';
 
@@ -538,6 +539,7 @@ function sourcesJoinSplits( o )
   ${rou( 'regexpIs' )}
   ${rou( 'longIs' )}
   ${rou( 'primitiveIs' )}
+  ${rou( 'symbolIs' )}
   ${rou( 'strBegins' )}
   ${rou( 'objectIs' )}
   ${rou( 'objectLike' )}
@@ -569,6 +571,7 @@ function sourcesJoinSplits( o )
   ${rou( 'assertMapHasNoUndefine' )}
   ${rou( 'routineOptions' )}
   ${rou( 'mapExtend' )}
+  ${rou( 'mapSupplement' )}
   ${rou( 'routineExtend_' )}
   ${rou( 'routineExtend' )}
   ${rou( 'arrayAppendArray' )}
@@ -595,10 +598,12 @@ function sourcesJoinSplits( o )
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
   ${rou( 'strType' )}
+  ${rou( 'strConcat' )}
   ${rou( 'strPrimitiveType' )}
   ${rou( 'strHas' )}
   ${rou( 'strLike' )}
   ${rou( 'intervalIs' )}
+  ${rou( 'numberDefined' )}
   ${rou( 'numbersAreAll' )}
   ${rou( 'bufferTypedIs' )}
   ${rou( 'bufferNodeIs' )}
@@ -621,6 +626,7 @@ function sourcesJoinSplits( o )
   ${rou( 'error', '_setupUncaughtErrorHandler9' )}
   ${rou( 'error', '_handleUncaughtHead' )}
   ${rou( 'error', '_handleUncaught1' )}
+  ${rou( 'error', '_handleUncaughtPromise1' )}
   ${rou( 'error', '_handleUncaught2' )}
 
   /*

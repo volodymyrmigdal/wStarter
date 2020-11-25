@@ -1,4 +1,5 @@
-( function _Globing_txt_s_() {
+( function _Globing_txt_s_()
+{
 
 'use strict';
 
@@ -11,28 +12,28 @@ let _ = _global_.wTools;
 function _Begin()
 {
 
-'use strict';
+  'use strict';
 
-let _global = _global_;
-let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
-let _ = _starter_;
+  let _global = _global_;
+  let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
+  let _ = _starter_;
 
-//
+  //
 
-let TokensSyntax = function TokensSyntax()
-{
-  let result =
+  function TokensSyntax()
   {
-    idToValue : null,
-    idToName : [],
-    nameToId : {},
-    alternatives : {},
+    let result =
+    {
+      idToValue : null,
+      idToName : [],
+      nameToId : {},
+      alternatives : {},
+    }
+    Object.setPrototypeOf( result, TokensSyntax );
+    return result;
   }
-  Object.setPrototypeOf( result, TokensSyntax );
-  return result;
-}
 
-//
+  //
 
 }
 
@@ -43,18 +44,18 @@ let TokensSyntax = function TokensSyntax()
 function _End()
 {
 
-let ToolsExtension =
-{
-  TokensSyntax,
-}
+  let ToolsExtension =
+  {
+    TokensSyntax,
+  }
 
-Object.assign( _starter_, ToolsExtension );
+  Object.assign( _starter_, ToolsExtension );
 
-let PathExtension =
-{
-}
+  let PathExtension =
+  {
+  }
 
-Object.assign( _starter_.path, PathExtension );
+  Object.assign( _starter_.path, PathExtension );
 
 }
 

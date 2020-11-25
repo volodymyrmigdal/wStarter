@@ -1,4 +1,5 @@
-// ( function _StarterLegacy_test_s_() {
+// ( function _StarterLegacy_test_s_()
+//{
 
 // 'use strict'; /*bbb*/
 

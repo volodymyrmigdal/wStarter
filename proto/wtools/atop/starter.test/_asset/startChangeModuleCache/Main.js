@@ -1,4 +1,5 @@
-( function _Main_js_() {
+( function _Main_js_()
+{
 
 'use strict';
 
