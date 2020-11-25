@@ -409,6 +409,16 @@ module:
           - ../proto/wtools/atop/starter.test/_asset/startModuleParent/F2.js
           - ../proto/wtools/atop/starter.test/_asset/startModuleParent/F3.js
           - ../proto/wtools/atop/starter.test/_asset/startModuleParent/Main.js
+          - >-
+            ../proto/wtools/atop/starter.test/_asset/startOptionTimeOutImmediateChild
+          - >-
+            ../proto/wtools/atop/starter.test/_asset/startOptionTimeOutImmediateChild/F1.js
+          - >-
+            ../proto/wtools/atop/starter.test/_asset/startOptionTimeOutImmediateChild/F2.js
+          - >-
+            ../proto/wtools/atop/starter.test/_asset/startOptionTimeOutImmediateChild/F3.js
+          - >-
+            ../proto/wtools/atop/starter.test/_asset/startOptionTimeOutImmediateChild/Main.js
           - ../proto/wtools/atop/starter.test/_asset/startOptionWithModule
           - >-
             ../proto/wtools/atop/starter.test/_asset/startOptionWithModule/File1.js
