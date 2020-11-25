@@ -3457,9 +3457,9 @@ function startModuleParent( test )
     var output =
 `
 Main.js: false
-F1.js: ${ a.abs( 'F1.js' ) }
-F2.js: ${ a.abs( 'F2.js' ) }
-F3.js: ${ a.abs( 'F3.js' ) }
+F1.js: ${ a.path.nativize( a.abs( 'F1.js' ) ) }
+F2.js: ${ a.path.nativize( a.abs( 'F2.js' ) ) }
+F3.js: ${ a.path.nativize( a.abs( 'F3.js' ) ) }
 `
     test.identical( op.exitCode, 0 );
     test.equivalent( op.output, output );
@@ -3519,15 +3519,14 @@ function startOptionTimeOutImmediateChild( test )
   a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 interpreter:njs` )
   .then( ( op ) =>
   {
-    var output =
-`
-Main.js: false
-F1.js: ${ a.abs( 'F1.js' ) }
-F2.js: ${ a.abs( 'F2.js' ) }
-F3.js: ${ a.abs( 'F3.js' ) }
-`
     test.identical( op.exitCode, 0 );
-    test.equivalent( op.output, output );
+    test.identical( _.strCount( op.output, 'Main.js:begin' ), 1 );
+    test.identical( _.strCount( op.output, `F1.js: ${ a.path.nativize( a.abs( 'F1.js' ) ) }` ), 1 );
+    test.identical( _.strCount( op.output, `F2.js: ${ a.path.nativize( a.abs( 'F2.js' ) ) }` ), 1 );
+    test.identical( _.strCount( op.output, `F3.js: ${ a.path.nativize( a.abs( 'F3.js' ) ) }` ), 1 );
+    test.identical( _.strCount( op.output, 'Terminating process' ), 1 );
+    test.identical( _.strCount( op.output, 'Main.js:end' ), 0 );
+
     return op;
   })
 

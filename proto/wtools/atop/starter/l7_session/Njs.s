@@ -91,7 +91,8 @@ function _form()
       {
         // if( err.reason === 'signal' )
         // return null;
-        throw err;
+        err = _.errBrief( err );
+        throw session.errorEncounterEnd( err );
       }
       return arg;
     });
