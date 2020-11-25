@@ -159,8 +159,9 @@ function _Begin()
     let starter = this;
     let Module = _natInclude( 'module' );
     let NjsResolveFilename = Module._resolveFilename;
-    Module._resolveFilename = function _resolveFilename( request, parent, isMain, options )
+    Module._resolveFilename = function _resolveFilename( request, parent, isMain )
     {
+      // let options = arguments[ 3 ];
       let result = starter._sourceOwnResolve( parent, null, request );
       if( result === null )
       return NjsResolveFilename.apply( this, arguments );

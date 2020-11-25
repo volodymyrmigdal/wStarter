@@ -442,7 +442,14 @@ app0/File1.js:timeout true
   a.appStart( `.sources.join ** basePath:app1 outPath:../out/app1` )
   a.appStart
   ({
-    execPath : `.sources.join ** basePath:app0 outPath:../out/app0 entryPath:File2.js externalBeforePath:[ ../out/app1 ../out/app2 ]`,
+    execPath : `.sources.join **`,
+    args :
+    [
+      `basePath:app0`,
+      `outPath:../out/app0`,
+      `entryPath:File2.js`,
+      `externalBeforePath:[../out/app1,../out/app2]`
+    ]
   })
   .then( ( op ) =>
   {

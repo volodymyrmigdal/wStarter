@@ -171,7 +171,17 @@ function serverForm()
   }
 
   express.use( ( request, response, next ) => servlet.requestPostHandler({ request, response, next }) );
-  express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
+  // express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
+  express.use( function ()
+  {
+    servlet.requestErrorHandler
+    ({
+      error : arguments[ 0 ],
+      request : arguments[ 1 ],
+      response : arguments[ 2 ],
+      next : arguments[ 3 ]
+    })
+  });
 
   let o3 = _.servlet.controlExpressStart
   ({
