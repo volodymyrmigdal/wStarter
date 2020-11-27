@@ -27,13 +27,13 @@ function _unform()
   if( session._process )
   {
 
-    if( !session._process.ended && session._process.process )
+    if( !session._process.ended && session._process.pnd )
     ready.then( () =>
     {
-      if( !session._process.ended && session._process.process )
+      if( !session._process.ended && session._process.pnd )
       {
         console.log( 'Terminating process' );
-        return _.process.terminate( session._process.process );
+        return _.process.terminate( session._process.pnd );
       }
       return null;
     });
