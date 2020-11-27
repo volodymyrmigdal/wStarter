@@ -3523,10 +3523,10 @@ function startOptionTimeOutImmediateChild( test )
     return null;
   })
 
-  a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 interpreter:njs` )
+  a.appStartNonThrowing( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 interpreter:njs` )
   .then( ( op ) =>
   {
-    test.identical( op.exitCode, 0 );
+    test.notIdentical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, 'Main.js:begin' ), 1 );
     test.identical( _.strCount( op.output, `F1.js: ${ a.path.nativize( a.abs( 'F1.js' ) ) }` ), 1 );
     test.identical( _.strCount( op.output, `F2.js: ${ a.path.nativize( a.abs( 'F2.js' ) ) }` ), 1 );
