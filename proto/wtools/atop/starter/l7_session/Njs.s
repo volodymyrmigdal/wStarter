@@ -91,8 +91,8 @@ function _form()
       {
         // if( err.reason === 'signal' )
         // return null;
-        err = _.errBrief( err );
-        throw session.errorEncounterEnd( err );
+        debugger
+        throw err
       }
       return arg;
     });
