@@ -294,6 +294,7 @@ function curratedRunOpen()
     // session.process.on( 'exit', () =>
     // {
     // });
+
     if( system.verbosity >= 3 )
     {
       if( system.verbosity >= 7 )
