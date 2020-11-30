@@ -1178,6 +1178,7 @@ Index.js:end
   return a.ready;
 } /* end of sourcesJoinOptionInterpreter */
 
+sourcesJoinOptionInterpreter.timeOut = 120000;
 sourcesJoinOptionInterpreter.description =
 `
 - joining sources with option intepreter:browser works like interpreter:njs
