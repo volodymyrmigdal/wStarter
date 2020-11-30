@@ -3,7 +3,7 @@
 
 'use strict';
 
-let Open, ChromeLauncher;
+let Open, ChromeLauncher,ChromeDefaultFlags;
 
 let _ = _global_.wTools;
 let Parent = _.starter.session.Abstract;
@@ -27,6 +27,14 @@ function _unform()
 
   if( session.cdp )
   ready.then( () => session.cdpClose() );
+
+  if( session.process )
+  ready.then( () =>
+  {
+    if( _.process.isAlive( session.process.pid ) )
+    return _.process.kill({ pnd : session.process, withChildren : 1 });
+    return null;
+  })
 
   /*
     do not assign null to field curratedRunState in method unform
@@ -213,33 +221,75 @@ function curratedRunOpen()
   session._curatedRunLaunchBegin();
 
   if( !ChromeLauncher )
-  ChromeLauncher = require( 'chrome-launcher' );
+  {
+    ChromeLauncher = require( 'chrome-launcher' );
+    ChromeDefaultFlags = require( 'chrome-launcher/dist/flags' ).DEFAULT_FLAGS
+  }
 
   let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome` );
   fileProvider.dirMake( tempDir );
   _.assert( fileProvider.isDir( tempDir ) );
 
-  let opts = Object.create( null );
-  opts.startingUrl = session.entryWithQueryUri;
-  opts.userDataDir = _.path.nativize( tempDir );
-  opts.port = session._cdpPort
-  opts.chromeFlags = [];
+  // let opts = Object.create( null );
+  // opts.startingUrl = session.entryWithQueryUri;
+  // opts.userDataDir = _.path.nativize( tempDir );
+  // opts.port = session._cdpPort
+  // opts.chromeFlags = [];
 
-  if( session.headless )
-  opts.chromeFlags.push( '--headless', '--disable-gpu' );
+  // if( session.headless )
+  // opts.chromeFlags.push( '--headless', '--disable-gpu' );
 
   // console.log( 'curratedRunOpen:b' );
 
-  return _.Consequence.Try( () => ChromeLauncher.launch( opts ) )
+  let installationPaths = ChromeLauncher.Launcher.getInstallations();
+  let args = ChromeDefaultFlags.slice();
+
+  args.push( `--remote-debugging-port=${session._cdpPort}` )
+  args.push( `--user-data-dir=${_.path.nativize( tempDir )}`)
+
+  if( session.headless )
+  args.push( '--headless', '--disable-gpu' );
+
+  if( process.platform === 'linux' )
+  args.push( '--disable-setuid-sandbox' );
+
+  args.push( session.entryWithQueryUri );
+
+  let op =
+  {
+    execPath : _.strQuote( installationPaths[ 0 ] ),
+    mode : 'spawn',
+    detaching : 1,
+    stdio : 'ignore',
+    outputPiping : 0,
+    inputMirroring : 0,
+    throwingExitCode : 0,
+    args
+  }
+
+  // return _.Consequence.Try( () => ChromeLauncher.launch( opts ) )
+  _.process.start( op )
+
+  return op.conStart
   .finally( ( err, chrome ) =>
   {
-    session.process = chrome.process;
-    /* xxx : chrome.process sometimes undefined if headless:1 */
+    // session.process = chrome.process;
+    session.process = chrome.pnd;
+
+    op.disconnect();
+
+    /* xxx : chrome.process sometimes undefined if headless:1 aaa:fixed, used process.start to spawn chrome*/
 
     // console.log( 'curratedRunOpen:c' );
 
     if( err )
     return session.errorEncounterEnd( err );
+
+    _.process.on( 'exit', async () =>
+    {
+      await session.unform();
+    })
+
     // debugger;
     // session.process.on( 'exit', () =>
     // {
@@ -256,7 +306,8 @@ function curratedRunOpen()
     {
       session.cdpConnect();
       // console.log( 'curratedRunOpen:d' );
-      return chrome.process;
+      // return chrome.process;
+      return chrome.pnd;
     });
   })
 }
