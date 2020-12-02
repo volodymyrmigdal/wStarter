@@ -1,3 +1,5 @@
+const e = require("express");
+
 ( function _Njs_s_()
 {
 
@@ -77,6 +79,7 @@ function _form()
       execPath : session.entryPath,
       currentPath : session.basePath,
       throwingExitCode : 1,
+      applyingExitCode : 1,
       inputMirroring : 0,
       mode : 'fork',
     }
@@ -85,14 +88,19 @@ function _form()
     session._process.conTerminate.finally( ( err, arg ) =>
     {
       debugger;
+
       // console.log( 'session._process.conTerminate' );
+
       session.unform();
+
       if( err )
       {
         // if( err.reason === 'signal' )
         // return null;
-        debugger
-        throw err
+        if( !_.numberIs( session._process.exitCode ) )
+        _.process.exitCode( -1 )
+
+        throw session.errorEncounterEnd( _.errBrief( err ) );
       }
       return arg;
     });
