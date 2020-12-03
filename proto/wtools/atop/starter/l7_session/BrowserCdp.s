@@ -314,11 +314,8 @@ function curratedRunOpen()
     // });
 
     return session._waitForRemoteDebuggingPort()
-    .then( () =>
-    {
-      session.cdpConnect();
-      return chrome.pnd;
-    })
+    .then( () => session.cdpConnect() )
+    .then( () => chrome.pnd )
   })
 }
 
@@ -536,6 +533,7 @@ async function cdpConnect()
     }
   });
 
+  return true;
 }
 
 //
@@ -663,6 +661,7 @@ function _waitForRemoteDebuggingPort()
 
   if( !Net )
   Net = require( 'net' )
+  let Cdp = require( 'chrome-remote-interface' );
 
   let tries = 0;
 
@@ -696,29 +695,14 @@ function _waitForRemoteDebuggingPort()
   function isReady()
   {
     let ready = new _.Consequence();
-    let socket = Net.createConnection( session._cdpPort );
-    socket.once( 'connect', () =>
+    Cdp.List({ port : session._cdpPort }, ( err, targets ) =>
     {
-      clean( socket );
-      ready.take( true );
-    })
-    socket.once( 'error', ( err ) =>
-    {
-      clean( socket );
+      if( err )
       ready.error( err );
-    })
-
+      else
+      ready.take( !!targets.length );
+    });
     return ready;
-  }
-
-  /* */
-
-  function clean( socket )
-  {
-    socket.removeAllListeners();
-    socket.end();
-    socket.destroy();
-    socket.unref();
   }
 }
 
