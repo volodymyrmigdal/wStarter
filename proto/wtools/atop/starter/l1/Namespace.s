@@ -57,7 +57,7 @@ function pathAllowedFilter( allowedPath, filePath )
   _.assert( _.strIs( filePath ) || _.arrayIs( filePath ) );
   _.assert( arguments.length === 2 );
 
-  let result = _.filter( filePath, ( filePath ) => _pathAllowedIs( filePath ) );
+  let result = _.filter_( null, filePath, ( filePath ) => _pathAllowedIs( filePath ) );
   return result;
 
   function _pathAllowedIs( filePath )
