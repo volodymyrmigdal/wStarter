@@ -736,7 +736,7 @@ function sourcesJoin( o )
 
   /* */
 
-  o.filesMap = _.map( o.filesMap, ( fileData, filePath ) =>
+  o.filesMap = _.map_( null, o.filesMap, ( fileData, filePath ) =>
   {
     return maker.sourceWrap
     ({

@@ -442,7 +442,7 @@ function _curratedRunPageClose( o )
     if( o.targetId === undefined || o.targetId === null )
     {
       let targets = await cdp.Target.getTargets();
-      let filtered = _.filter( targets.targetInfos, { url : session.entryWithQueryUri } );
+      let filtered = _.filter_( null, targets.targetInfos, { url : session.entryWithQueryUri } );
       _.sure( filtered.length >= 1, `Found no tab with URI::${session.entryWithQueryUri}` );
       _.sure( filtered.length <= 1, `Found ${filtered.length} tabs with URI::${session.entryWithQueryUri}` );
       o.targetId = filtered[ 0 ].targetId;
