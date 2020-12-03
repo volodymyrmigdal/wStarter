@@ -171,17 +171,17 @@ function serverForm()
   }
 
   express.use( ( request, response, next ) => servlet.requestPostHandler({ request, response, next }) );
-  express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
-  // express.use( function ()
-  // {
-  //   servlet.requestErrorHandler
-  //   ({
-  //     error : arguments[ 0 ],
-  //     request : arguments[ 1 ],
-  //     response : arguments[ 2 ],
-  //     next : arguments[ 3 ]
-  //   })
-  // });
+  // express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
+  express.use( ( ... args ) =>
+  {
+    return servlet.requestErrorHandler
+    ({
+      error : args[ 0 ],
+      request : args[ 1 ],
+      response : args[ 2 ],
+      next : args[ 3 ]
+    })
+  });
 
   let o3 = _.servlet.controlExpressStart
   ({

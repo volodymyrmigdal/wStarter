@@ -5,7 +5,7 @@ const { connect } = require('http2');
 
 'use strict';
 
-let Open, ChromeLauncher,ChromeDefaultFlags,Net;
+let Open, ChromeLauncher, ChromeDefaultFlags, Net;
 
 let _ = _global_.wTools;
 let Parent = _.starter.session.Abstract;
