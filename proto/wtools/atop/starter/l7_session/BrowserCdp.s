@@ -314,8 +314,11 @@ function curratedRunOpen()
     // });
 
     return session._waitForRemoteDebuggingPort()
-    .then( () => session.cdpConnect() )
-    .then( () => chrome.pnd )
+    .then( () =>
+    {
+      session.cdpConnect();
+      return chrome.pnd;
+    })
   })
 }
 
