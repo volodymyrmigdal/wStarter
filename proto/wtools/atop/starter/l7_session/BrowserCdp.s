@@ -689,7 +689,7 @@ function _waitForRemoteDebuggingPort()
       err = _.err( `Failed to wait for remote debugging port. Reason:\n`, err );
       throw session.errorEncounterEnd( err );
     }
-    await _.time.out( session._cdpPollingPeriod );
+    await _.time.out( session._cdpPollingPeriod * 2 );
     return isReady().finally( check );
   }
 
