@@ -668,7 +668,7 @@ function sourcesJoinSplits( o )
   ${rou( 'longSlice' )}
   ${rou( 'arrayLikeResizable' )}
   ${rou( 'regexpEscape' )}
-  ${rou( 'filter' )}
+  ${rou( 'filter_' )}
   ${rou( '_filter_functor' )}
   ${rou( 'entityMakeUndefined' )}
   ${rou( 'mapKeys' )}
