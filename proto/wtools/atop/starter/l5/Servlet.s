@@ -172,14 +172,14 @@ function serverForm()
 
   express.use( ( request, response, next ) => servlet.requestPostHandler({ request, response, next }) );
   // express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
-  express.use( ( ... args ) =>
+  express.use( function ()
   {
-    return servlet.requestErrorHandler
+    servlet.requestErrorHandler
     ({
-      error : args[ 0 ],
-      request : args[ 1 ],
-      response : args[ 2 ],
-      next : args[ 3 ]
+      request : arguments[ 0 ],
+      response : arguments[ 1 ],
+      next : arguments[ 2 ],
+      // error : arguments[ 0 ],
     })
   });
 
