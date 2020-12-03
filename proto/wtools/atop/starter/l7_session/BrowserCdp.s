@@ -1,9 +1,11 @@
+const { connect } = require('http2');
+
 ( function _BrowserCdp_s_()
 {
 
 'use strict';
 
-let Open, ChromeLauncher,ChromeDefaultFlags;
+let Open, ChromeLauncher,ChromeDefaultFlags,Net;
 
 let _ = _global_.wTools;
 let Parent = _.starter.session.Abstract;
@@ -303,13 +305,21 @@ function curratedRunOpen()
       logger.log( `Started ${_.ct.format( session.entryPath, 'path' )}` );
     }
     // session._curatedRunLaunchBegin();
-    return _.time.out( 500, () => /* xxx */
+    // return _.time.out( 500, () => /* xxx aaa:replaced with _waitForRemoteDebuggingPort */
+    // {
+    //   session.cdpConnect();
+    //   // console.log( 'curratedRunOpen:d' );
+    //   // return chrome.process;
+    //   return chrome.pnd;
+    // });
+
+    return session._waitForRemoteDebuggingPort()
+    .then( () =>
     {
       session.cdpConnect();
       // console.log( 'curratedRunOpen:d' );
-      // return chrome.process;
       return chrome.pnd;
-    });
+    })
   })
 }
 
@@ -646,6 +656,73 @@ function cdpClose()
 
 }
 
+//
+
+function _waitForRemoteDebuggingPort()
+{
+  let session = this;
+
+  if( !Net )
+  Net = require( 'net' )
+
+  let tries = 0;
+
+  let debuggerIsReady = _.Consequence().take( false );
+  debuggerIsReady.finally( check )
+
+  return debuggerIsReady;
+
+  /* */
+
+  async function check( err, connected )
+  {
+    if( connected )
+    return true;
+
+    if( err )
+    _.errAttend( err );
+
+    tries++;
+    if( tries > session._maxCdpConnectionAttempts )
+    {
+      err = _.err( `Failed to wait for remote debugging port. Reason:\n`, err );
+      throw session.errorEncounterEnd( err );
+    }
+    await _.time.out( session._cdpPollingPeriod );
+    return isReady().finally( check );
+  }
+
+  /* */
+
+  function isReady()
+  {
+    let ready = new _.Consequence();
+    let socket = Net.createConnection( session._cdpPort );
+    socket.once( 'connect', () =>
+    {
+      clean( socket );
+      ready.take( true );
+    })
+    socket.once( 'error', ( err ) =>
+    {
+      clean( socket );
+      ready.error( err );
+    })
+
+    return ready;
+  }
+
+  /* */
+
+  function clean( socket )
+  {
+    socket.removeAllListeners();
+    socket.end();
+    socket.destroy();
+    socket.unref();
+  }
+}
+
 // --
 // relations
 // --
@@ -683,6 +760,8 @@ let Restricts =
   _cdpPollingPeriod : 250,
   _cdpPort : null,
   _cdpClosing : 0,
+
+  _maxCdpConnectionAttempts : 20
 
 }
 
@@ -735,6 +814,8 @@ let Proto =
   cdpConnect,
   _cdpReconnectAndClose,
   cdpClose,
+
+  _waitForRemoteDebuggingPort,
 
   // relations
 
