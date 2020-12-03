@@ -226,7 +226,7 @@ function curratedRunOpen()
     ChromeDefaultFlags = require( 'chrome-launcher/dist/flags' ).DEFAULT_FLAGS
   }
 
-  let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome` );
+  let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome`, _.idWithDateAndTime() );
   fileProvider.dirMake( tempDir );
   _.assert( fileProvider.isDir( tempDir ) );
 
@@ -270,8 +270,14 @@ function curratedRunOpen()
   // return _.Consequence.Try( () => ChromeLauncher.launch( opts ) )
   _.process.start( op )
 
-  return op.conStart
-  .finally( ( err, chrome ) =>
+  op.conStart.finally( onStart );
+  op.conTerminate.tap( onTerminate );
+
+  return op.conStart;
+
+  /* */
+
+  function onStart( err, chrome )
   {
     // session.process = chrome.process;
     session.process = chrome.pnd;
@@ -317,7 +323,14 @@ function curratedRunOpen()
       session.cdpConnect();
       return chrome.pnd;
     })
-  })
+  }
+
+  /* */
+
+  function onTerminate()
+  {
+    fileProvider.filesDelete( tempDir );
+  }
 }
 
 //
@@ -668,6 +681,8 @@ function _waitForRemoteDebuggingPort()
   Net = require( 'net' )
   let Cdp = require( 'chrome-remote-interface' );
 
+  session._maxCdpConnectionAttempts = Math.floor( session._maxCdpConnectionWaitTime / session._cdpPollingPeriod );
+
   let tries = 0;
 
   let debuggerIsReady = _.Consequence().take( false );
@@ -691,7 +706,7 @@ function _waitForRemoteDebuggingPort()
       err = _.err( `Failed to wait for remote debugging port. Reason:\n`, err );
       throw session.errorEncounterEnd( err );
     }
-    await _.time.out( session._cdpPollingPeriod * 2 );
+    await _.time.out( session._cdpPollingPeriod );
     return isReady().finally( check );
   }
 
@@ -702,7 +717,6 @@ function _waitForRemoteDebuggingPort()
     let ready = new _.Consequence();
     Cdp.List({ port : session._cdpPort }, ( err, targets ) =>
     {
-      debugger
       if( err )
       ready.error( err );
       else
@@ -750,7 +764,8 @@ let Restricts =
   _cdpPort : null,
   _cdpClosing : 0,
 
-  _maxCdpConnectionAttempts : 20
+  _maxCdpConnectionAttempts : null,
+  _maxCdpConnectionWaitTime : 30000,
 
 }
 
