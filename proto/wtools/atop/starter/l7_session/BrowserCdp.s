@@ -317,7 +317,6 @@ function curratedRunOpen()
     .then( () =>
     {
       session.cdpConnect();
-      // console.log( 'curratedRunOpen:d' );
       return chrome.pnd;
     })
   })
