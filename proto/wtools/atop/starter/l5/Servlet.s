@@ -176,10 +176,10 @@ function serverForm()
   {
     servlet.requestErrorHandler
     ({
-      error : arguments[ 0 ],
-      request : arguments[ 1 ],
-      response : arguments[ 2 ],
-      next : arguments[ 3 ]
+      request : arguments[ 0 ],
+      response : arguments[ 1 ],
+      next : arguments[ 2 ],
+      // error : arguments[ 0 ],
     })
   });
 
