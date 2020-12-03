@@ -255,7 +255,7 @@ function curratedRunOpen()
   if( process.platform === 'linux' )
   args.push( '--disable-setuid-sandbox' );
 
-  args.push( session.entryWithQueryUri );
+  // args.push( session.entryWithQueryUri );
 
   let op =
   {
@@ -519,6 +519,10 @@ async function cdpConnect()
 
   session.cdp = await session._cdpConnect({ throwing : 1 });
 
+  await session.cdp.Page.enable();
+  await session.cdp.Page.navigate({url: session.entryWithQueryUri });
+  await session.cdp.Page.loadEventFired();
+
   session._curatedRunLaunchEnd();
   session.cdp.on( 'close', () => session._curatedRunTerminateEnd() );
   session.cdp.on( 'end', () => session._curatedRunTerminateEnd() );
@@ -700,6 +704,7 @@ function _waitForRemoteDebuggingPort()
     let ready = new _.Consequence();
     Cdp.List({ port : session._cdpPort }, ( err, targets ) =>
     {
+      debugger
       if( err )
       ready.error( err );
       else
