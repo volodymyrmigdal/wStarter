@@ -1,5 +1,3 @@
-const { connect } = require('http2');
-
 ( function _BrowserCdp_s_()
 {
 
@@ -520,7 +518,7 @@ async function cdpConnect()
   session.cdp = await session._cdpConnect({ throwing : 1 });
 
   await session.cdp.Page.enable();
-  await session.cdp.Page.navigate({url: session.entryWithQueryUri });
+  await session.cdp.Page.navigate({ url : session.entryWithQueryUri });
   await session.cdp.Page.loadEventFired();
 
   session._curatedRunLaunchEnd();
