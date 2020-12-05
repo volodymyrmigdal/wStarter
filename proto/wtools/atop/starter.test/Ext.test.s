@@ -1994,7 +1994,7 @@ exports : object
 require : function
 include : function
 _starter_.interpreter : njs
-wTools.blueprint.is : function
+wTools.blueprint.isDefinitive : function
 
 Dep1.js:end
 Index.js:end
@@ -2029,7 +2029,7 @@ module : object
 module.parent : object
 exports : object
 require : function
-wTools.blueprint.is : function
+wTools.blueprint.isDefinitive : function
 
 Dep1.js:end
 Index.js:end
@@ -2100,7 +2100,7 @@ exports : object
 require : function
 include : function
 _starter_.interpreter : browser
-wTools.blueprint.is : function
+wTools.blueprint.isDefinitive : function
 
 Dep1.js:end
 Index.js:end
@@ -2165,7 +2165,7 @@ function sourcesJoinRequireGlob( test )
   // module.parent : object
   // exports : object
   // require : function
-  // wTools.blueprint.is : function
+  // wTools.blueprint.isDefinitive : function
   //
   // Dep1.js:end
   // Index.js:end
