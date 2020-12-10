@@ -1011,7 +1011,7 @@ let Statics =
 
 let Accessors =
 {
-  verbosity : { get : _verbosityGet, readOnly : 1 },
+  verbosity : { get : _verbosityGet, writable : 0 },
 }
 
 let Forbids =
