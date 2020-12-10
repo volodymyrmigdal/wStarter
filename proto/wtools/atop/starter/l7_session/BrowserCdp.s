@@ -226,10 +226,10 @@ function curratedRunOpen()
     ChromeDefaultFlags = require( 'chrome-launcher/dist/flags' ).DEFAULT_FLAGS
   }
 
-  let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome`, _.idWithDateAndTime() );
+  let tempDir = session._tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome`, _.idWithDateAndTime() );
   fileProvider.dirMake( tempDir );
   _.assert( fileProvider.isDir( tempDir ) );
-
+  
   // let opts = Object.create( null );
   // opts.startingUrl = session.entryWithQueryUri;
   // opts.userDataDir = _.path.nativize( tempDir );
@@ -271,7 +271,16 @@ function curratedRunOpen()
   _.process.start( op )
 
   op.conStart.finally( onStart );
-  op.conTerminate.tap( onTerminate );
+  op.conTerminate.tap( () => 
+  {
+    _.process.startSingle
+    ({
+      execPath : 'node',
+      args : [ path.join( __dirname, 'BrowserUserDirClean.s' ), tempDir ],
+      mode : 'spawn',
+      when : 'afterdeath'
+    })
+  })
 
   return op.conStart;
 
@@ -289,8 +298,12 @@ function curratedRunOpen()
     // console.log( 'curratedRunOpen:c' );
 
     if( err )
-    return session.errorEncounterEnd( err );
-
+    {
+      _.errAttend( err );
+      _.fileProvider.filesDelete( tempDir );
+      return session.errorEncounterEnd( err );
+    }
+    
     _.process.on( 'exit', async () =>
     {
       await session.unform();
@@ -323,13 +336,6 @@ function curratedRunOpen()
       session.cdpConnect();
       return chrome.pnd;
     })
-  }
-
-  /* */
-
-  function onTerminate()
-  {
-    fileProvider.filesDelete( tempDir );
   }
 }
 
@@ -766,6 +772,8 @@ let Restricts =
 
   _maxCdpConnectionAttempts : null,
   _maxCdpConnectionWaitTime : 30000,
+  
+  _tempDir : null
 
 }
 

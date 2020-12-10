@@ -75,8 +75,25 @@ function assetFor( test, name )
     ready : a.ready,
     mode : 'fork',
   })
-
+  
+  let oprogram = a.program;
+  program_body.defaults = a.program.defaults;
+  a.program = _.routineUnite( a.program.head, program_body );
   return a;
+
+  /* */
+
+  function program_body( o )
+  {
+    let locals =
+    {
+      toolsPath : _.module.resolve( 'wTools' ),
+    };
+    o.locals = o.locals || locals;
+    _.mapSupplement( o.locals, locals );
+    let programPath = a.path.nativize( oprogram.body.call( a, o ) ); /* zzz : modify a.program()? */
+    return programPath;
+  }
 }
 
 // --
@@ -958,6 +975,91 @@ async function curatedRunEventsClosePageManually( test )
 
 curatedRunEventsClosePageManually.timeOut = 300000;
 
+//
+
+function browserUserTempDirCleanup( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'minute' );
+  
+  a.reflect();
+  
+  let locals = 
+  {
+    toolsPath : _.module.resolve( 'wTools' ),
+    starterPath : a.path.nativize( a.path.join( __dirname, '../starter/entry/Include.s' ) ),
+    context : { deltaTime3 : context.deltaTime3 },
+    opts : 
+    {
+      entryPath : a.abs( './F1.js' ),
+      basePath : a.abs( '.'),
+      headless : 0
+    }
+  }
+  
+  let execPath = a.program({ routine : program, locals });
+  
+  let op = { execPath };
+  let ready = _.Consequence();
+  let tempDirPath;
+  
+  a.fork( op );
+  
+  op.pnd.on( 'message', ( data ) => ready.take( data ) );
+  
+  ready.then( ( got ) => 
+  {
+    tempDirPath = got;
+    test.true( a.fileProvider.fileExists( tempDirPath ) );
+    return null;
+  })
+  
+  op.ready.then( ( op ) => 
+  {
+    test.identical( op.exitCode, 0 );
+    return _.time.out( context.deltaTime2 * 2 ) /* 6000 */
+    .then( () => 
+    {
+      test.true( !a.fileProvider.fileExists( tempDirPath ) );
+      return null;
+    })
+  })
+  
+  return _.Consequence.And( op.ready, ready );
+  
+  /* */
+  
+  function program()
+  {
+    let _ = require( toolsPath );
+    _.include( 'wStarter')
+    
+    let starter = new _.starter.System({ verbosity : 7 }).form();
+    let session;
+    
+    main();
+    
+    async function main()
+    {
+      try
+      {
+        session = await starter.start( opts );
+        process.send( session._tempDir );
+        await _.time.out( context.deltaTime3 );
+        await session.unform();
+      }
+      catch( err )
+      {
+        if( session )
+        await session.unform();
+        throw _.err( err );
+      }
+    }
+  }
+  
+ 
+}
+
 // --
 // declare
 // --
@@ -1023,6 +1125,8 @@ let Self =
     curatedRunEventsCloseAutomatic,
     curatedRunEventsCloseWindowManually,
     curatedRunEventsClosePageManually,
+    
+    browserUserTempDirCleanup
 
   }
 
