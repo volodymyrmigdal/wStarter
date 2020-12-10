@@ -38,6 +38,9 @@ submodule :
   pretty :
     path : npm:///pretty#2.0.0
     enabled : 0 # submodule
+  portscanner :
+    path : npm:///portscanner#2.2.0
+    enabled : 0 # submodule  
 
   wstarter :
     path : hd://.

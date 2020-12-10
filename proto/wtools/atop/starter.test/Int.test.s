@@ -993,7 +993,7 @@ function browserUserTempDirCleanup( test )
     {
       entryPath : a.abs( './F1.js' ),
       basePath : a.abs( '.'),
-      headless : 0
+      headless : 1
     }
   }
   

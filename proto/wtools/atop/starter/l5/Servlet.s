@@ -86,7 +86,7 @@ function unform()
 
 //
 
-function form()
+async function form()
 {
   let servlet = this;
   let system = servlet.system;
@@ -104,7 +104,7 @@ function form()
   servlet._requestScriptWrapHandler = servlet.scriptWrap_functor();
 
   if( servlet.serverPath )
-  servlet.serverForm();
+  await servlet.serverForm();
 
   if( servlet.serverPath && servlet.loggingApplication )
   servlet.serverLoggingForm();
@@ -114,7 +114,7 @@ function form()
 
 //
 
-function serverForm()
+async function serverForm()
 {
   let servlet = this;
   let system = servlet.system;
@@ -129,8 +129,20 @@ function serverForm()
   system.servletsMap[ servlet.serverPath ] = servlet;
 
   let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
-  servlet.serverPath = parsedServerPath.full;
+  
   _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
+  
+  if( parsedServerPath.port === 0 )
+  {
+    parsedServerPath.port = await system._getRandomPort();
+    parsedServerPath.full = _.uri.str( parsedServerPath );
+  }
+  else
+  {
+    await system._checkIfPortIsOpen( parsedServerPath.port );
+  }
+  
+  servlet.serverPath = parsedServerPath.full;
 
   /* - */
 
@@ -737,7 +749,10 @@ function pathsForm()
   _.assert( servlet.virtualToRealMap === null );
   _.assert( servlet.realToVirtualMap === null );
   _.assert( _.mapIs( servlet.allowedPath ) );
-
+  
+  if( servlet.serverPath === null )
+  servlet.serverPath = servlet._defaultServerPath;
+  
   servlet.virtualToRealMap = Object.create( null );
   servlet.realToVirtualMap = Object.create( null );
 
@@ -977,7 +992,7 @@ let Composes =
 
   owningHttpServer : 1,
 
-  serverPath : 'http://127.0.0.1:15000',
+  serverPath : null,
   // serverPath : 'http://0.0.0.0:15000',
   basePath : null,
   virtualToRealMap : null,
@@ -1002,6 +1017,7 @@ let Restricts =
 {
   formed : 0,
   _requestScriptWrapHandler : null,
+  _defaultServerPath : 'http://127.0.0.1:15000'
 }
 
 let Statics =

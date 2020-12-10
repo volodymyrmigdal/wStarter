@@ -5,6 +5,7 @@
 
 let _ = _global_.wTools;
 let Parent = null;
+let Portscanner;
 let Self = wStarterSystem;
 function wStarterSystem( o )
 {
@@ -247,6 +248,45 @@ defaults.curating = 1;
 defaults.headless = 0;
 defaults.interpreter = 'browser';
 
+//
+
+function _checkIfPortIsOpen( port )
+{
+  if( !Portscanner )
+  Portscanner = require( 'portscanner' );
+  
+  let ready = _.Consequence();
+  Portscanner.checkPortStatus( port, '127.0.0.1', ( error, status ) => 
+  {
+    if( error )
+    return ready.error( error )
+    
+    if( status === 'closed' )
+    ready.take( true )
+    else
+    ready.error( `Port ${port} is already in use.` )
+  })
+  return ready;
+}
+
+//
+
+function _getRandomPort()
+{
+  if( !Portscanner )
+  Portscanner = require( 'portscanner' );
+  
+  let ready = _.Consequence();
+  Portscanner.findAPortNotInUse( 0, 65535, '127.0.0.1', ( error, port ) => 
+  {
+    if( error )
+    return ready.error( error )
+    ready.take( port );
+  })
+  return ready;
+  
+}
+
 // --
 // relations
 // --
@@ -309,6 +349,9 @@ let Proto =
   htmlForFiles,
   httpOpen,
   start,
+  
+  _checkIfPortIsOpen,
+  _getRandomPort,
 
   // ident
 

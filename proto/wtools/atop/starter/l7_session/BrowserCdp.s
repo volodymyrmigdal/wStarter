@@ -77,7 +77,7 @@ function _form()
   let logger = system.logger;
   let ready = new _.Consequence().take( null );
 
-  ready.then( () =>
+  ready.then( async () =>
   {
 
     session.fieldsForm();
@@ -87,9 +87,14 @@ function _form()
 
     if( session._cdpPort === null )
     session._cdpPort = session._CdpPortDefault;
+    
+    if( session._cdpPort === 0 )
+    session._cdpPort = await system._getRandomPort();
+    else
+    await system._checkIfPortIsOpen( session._cdpPort );
 
     if( !session.servlet )
-    session.servletOpen();
+    await session.servletOpen();
 
     if( session.entryPath )
     session.entryFind();
@@ -163,7 +168,7 @@ function entryFind()
 
 //
 
-function servletOpen()
+async function servletOpen()
 {
   let session = this;
   let system = session.system;
@@ -174,7 +179,7 @@ function servletOpen()
 
   let o2 = _.mapOnly( session, _.starter.Servlet.FieldsOfCopyableGroups );
   session.servlet = new _.starter.Servlet( o2 );
-  session.servlet.form();
+  await session.servlet.form();
 
   if( session.servlet && path.isAbsolute( session.entryPath ) && session.format )
   session.entryUriForm();
