@@ -99,7 +99,7 @@ async function form()
   _.arrayAppendOnceStrictly( system.servletsArray, servlet );
   servlet.formed = 1;
 
-  servlet.pathsForm();
+  await servlet.pathsForm();
 
   servlet._requestScriptWrapHandler = servlet.scriptWrap_functor();
 
@@ -122,20 +122,6 @@ async function serverForm()
   _.assert( _.routineIs( servlet._requestScriptWrapHandler ) );
 
   let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
-
-  _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
-
-  if( parsedServerPath.port === 0 )
-  {
-    parsedServerPath.port = await system._getRandomPort();
-    parsedServerPath.full = _.uri.str( parsedServerPath );
-  }
-  else
-  {
-    await system._checkIfPortIsOpen( parsedServerPath.port );
-  }
-
-  servlet.serverPath = parsedServerPath.full;
 
   _.assert
   (
@@ -742,16 +728,14 @@ function pathVirtualToReal( virtualPath )
 
 //
 
-function pathsForm()
+async function pathsForm()
 {
   let servlet = this;
+  let system = servlet.system;
 
   _.assert( servlet.virtualToRealMap === null );
   _.assert( servlet.realToVirtualMap === null );
   _.assert( _.mapIs( servlet.allowedPath ) );
-
-  if( servlet.serverPath === null )
-  servlet.serverPath = servlet._defaultServerPath;
 
   servlet.virtualToRealMap = Object.create( null );
   servlet.realToVirtualMap = Object.create( null );
@@ -770,6 +754,26 @@ function pathsForm()
     }
   }
 
+  /* serverPath */
+
+  if( servlet.serverPath === null )
+  servlet.serverPath = servlet._defaultServerPath;
+
+  let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
+
+  _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
+
+  if( parsedServerPath.port === 0 )
+  {
+    parsedServerPath.port = await system._getRandomPort();
+    parsedServerPath.full = _.uri.str( parsedServerPath );
+  }
+  else
+  {
+    await system._checkIfPortIsOpen( parsedServerPath.port );
+  }
+
+  servlet.serverPath = parsedServerPath.full;
 }
 
 // --
@@ -800,6 +804,12 @@ function scriptWrap_functor( fop )
     o2.interpreter = 'browser';
     o2.libraryName = 'Starter';
     o2.withServer = 1;
+
+    o2.loggingPath = _.uri.parseConsecutive( servlet.serverPath );
+    o2.loggingPath.protocol = 'ws';
+    o2.loggingPath.longPath = _.uri.join( o2.loggingPath.longPath, '.log/' );
+    o2.loggingPath = _.uri.str( o2.loggingPath  );
+
     let splits = system.maker.sourcesJoinSplits( o2 );
     fop.ware = system.maker.sourcesSplitsJoin( splits );
   }

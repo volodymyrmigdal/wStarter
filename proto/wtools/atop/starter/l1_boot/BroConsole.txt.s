@@ -93,7 +93,8 @@ function _Begin()
 
     let response = starter._broSocketWrite
     ({
-      filePath : 'ws://127.0.0.1:15000/.log/',
+      // filePath : 'ws://127.0.0.1:15000/.log/',
+      filePath : _global_._starter_.loggingPath,
       data : o,
     });
 

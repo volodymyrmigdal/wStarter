@@ -264,6 +264,7 @@ function sourcesJoinSplits( o )
 `
 
   /* predefined */
+  debugger
 
   r.predefined =
 `
@@ -280,6 +281,7 @@ function sourcesJoinSplits( o )
 /* */  _global_._starter_.loggingSourceFiles = ${o.loggingSourceFiles};
 /* */  _global_._starter_.withServer = ${o.withServer};
 /* */  _global_._starter_.redirectingConsole = ${o.redirectingConsole};
+/* */  _global_._starter_.loggingPath = '${o.loggingPath}';
 
 /* */  _global_.Config.debug = ${o.debug};
 
@@ -722,7 +724,8 @@ sourcesJoinSplits.defaults =
   loggingApplication : 0,
   loggingSourceFiles : 0,
   withServer : null,
-  redirectingConsole : 1
+  redirectingConsole : 1,
+  loggingPath : null
 }
 
 //
