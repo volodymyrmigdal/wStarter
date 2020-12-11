@@ -54,7 +54,19 @@ function _unform()
     session.entryWithQueryUri = null;
     return arg;
   });
-
+  
+  if( !session.cleanupAfterStarterDeath )
+  ready.then( () => 
+  {
+    if( !session._tempDirCleanProcess )
+    return true;
+    let pid = session._tempDirCleanProcess.pnd.pid;
+    let timeOut = session._tempDirCleanProcessWaitTimeOut;
+    if( !_.process.isAlive( pid ) )
+    return true;
+    return _.process.waitForDeath({ pid, timeOut })
+  })
+  
   ready.finally( ( err, arg ) =>
   {
     if( err )
@@ -235,6 +247,8 @@ function curratedRunOpen()
   fileProvider.dirMake( tempDir );
   _.assert( fileProvider.isDir( tempDir ) );
   
+ 
+  
   // let opts = Object.create( null );
   // opts.startingUrl = session.entryWithQueryUri;
   // opts.userDataDir = _.path.nativize( tempDir );
@@ -278,13 +292,14 @@ function curratedRunOpen()
   op.conStart.finally( onStart );
   op.conTerminate.tap( () => 
   {
-    _.process.startSingle
-    ({
+    session._tempDirCleanProcess = 
+    {
       execPath : 'node',
-      args : [ path.join( __dirname, 'BrowserUserDirClean.s' ), tempDir ],
+      args : [ path.join( __dirname, 'BrowserUserDirClean.s' ), tempDir, process.pid, session.cleanupAfterStarterDeath ],
       mode : 'spawn',
-      when : 'afterdeath'
-    })
+      detaching : 2
+    }
+    _.process.startSingle( session._tempDirCleanProcess );
   })
 
   return op.conStart;
@@ -778,7 +793,9 @@ let Restricts =
   _maxCdpConnectionAttempts : null,
   _maxCdpConnectionWaitTime : 30000,
   
-  _tempDir : null
+  _tempDir : null,
+  _tempDirCleanProcess : null,
+  _tempDirCleanProcessWaitTimeOut : 30000
 
 }
 

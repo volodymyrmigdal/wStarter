@@ -597,6 +597,7 @@ let Bools =
   withNpm : 1, /* qqq : cover */
   catchingUncaughtErrors : 1, /* qqq : cover */
   naking : 0, /* qqq : cover */
+  
 
 }
 
@@ -615,6 +616,8 @@ let Composes =
   format : null, /* qqq : cover */
   timeOut : null, /* qqq : cover */
   interpreter : 'browser',
+  
+  cleanupAfterStarterDeath : 1, /* for testing */
 
   ... Bools,
 

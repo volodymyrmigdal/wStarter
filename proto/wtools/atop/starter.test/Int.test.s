@@ -630,6 +630,7 @@ async function curatedRunWindowOpenCloseAutomatic( test )
     ({
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     })
 
     test.identical( session.curratedRunState, 'launching' );
@@ -681,6 +682,7 @@ async function curatedRunWindowOpenCloseWindowManually( test )
     ({
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     })
 
     test.identical( session.curratedRunState, 'launching' );
@@ -731,6 +733,7 @@ async function curatedRunWindowOpenClosePageManually( test )
     ({
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     })
 
     test.identical( session.curratedRunState, 'launching' );
@@ -753,7 +756,7 @@ async function curatedRunWindowOpenClosePageManually( test )
     var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
     test.identical( session.curratedRunState, 'terminated' );
-
+    
   }
   catch( err )
   {
@@ -786,6 +789,7 @@ async function curatedRunEventsCloseAutomatic( test )
       system,
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     }
     session = new _.starter.session.BrowserCdp( opts );
 
@@ -854,6 +858,7 @@ async function curatedRunEventsCloseWindowManually( test )
       system,
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     }
     session = new _.starter.session.BrowserCdp( opts );
 
@@ -891,6 +896,8 @@ async function curatedRunEventsCloseWindowManually( test )
       curatedRunTerminateEnd : 1,
     }
     test.identical( encountered, exp );
+    
+    await session.eventWaitFor( 'unformed' );
 
   }
   catch( err )
@@ -924,6 +931,7 @@ async function curatedRunEventsClosePageManually( test )
       system,
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     }
     session = new _.starter.session.BrowserCdp( opts );
 
@@ -963,7 +971,9 @@ async function curatedRunEventsClosePageManually( test )
       curatedRunTerminateEnd : 1,
     }
     test.identical( encountered, exp );
-
+    
+    await session.eventWaitFor( 'unformed' );
+    
   }
   catch( err )
   {
@@ -1001,16 +1011,31 @@ function browserUserTempDirCleanup( test )
   
   let op = { execPath };
   let ready = _.Consequence();
+  let ready2 = _.Consequence();
   let tempDirPath;
+  let secondaryProcessPid;
   
   a.fork( op );
   
-  op.pnd.on( 'message', ( data ) => ready.take( data ) );
+  op.pnd.on( 'message', ( data ) => 
+  {
+    if( data.field === 'tempDirPath' )
+    ready.take( data.val )
+    if( data.field === 'secondaryProcessPid' )
+    ready2.take( data.val ) 
+  });
   
   ready.then( ( got ) => 
   {
     tempDirPath = got;
     test.true( a.fileProvider.fileExists( tempDirPath ) );
+    return null;
+  })
+  
+  ready2.then( ( got ) => 
+  {
+    secondaryProcessPid = got;
+    test.true( _.process.isAlive( secondaryProcessPid ) );
     return null;
   })
   
@@ -1021,11 +1046,12 @@ function browserUserTempDirCleanup( test )
     .then( () => 
     {
       test.true( !a.fileProvider.fileExists( tempDirPath ) );
+      test.true( !_.process.isAlive( secondaryProcessPid ) );
       return null;
     })
   })
   
-  return _.Consequence.And( op.ready, ready );
+  return _.Consequence.And( op.ready, ready, ready2 );
   
   /* */
   
@@ -1044,9 +1070,10 @@ function browserUserTempDirCleanup( test )
       try
       {
         session = await starter.start( opts );
-        process.send( session._tempDir );
+        process.send({ field : 'tempDirPath', val : session._tempDir });
         await _.time.out( context.deltaTime3 );
         await session.unform();
+        process.send({ field : 'secondaryProcessPid', val : session._tempDirCleanProcess.pnd.pid });
       }
       catch( err )
       {

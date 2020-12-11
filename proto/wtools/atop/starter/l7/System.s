@@ -247,6 +247,7 @@ defaults.entryPath = null;
 defaults.curating = 1;
 defaults.headless = 0;
 defaults.interpreter = 'browser';
+defaults.cleanupAfterStarterDeath = 1;
 
 //
 
