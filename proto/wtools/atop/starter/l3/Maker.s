@@ -724,7 +724,7 @@ sourcesJoinSplits.defaults =
   loggingApplication : 0,
   loggingSourceFiles : 0,
   withServer : null,
-  redirectingConsole : 1,
+  redirectingConsole : 0,//xxx:remove?
   loggingPath : null
 }
 

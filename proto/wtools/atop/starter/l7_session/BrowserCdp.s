@@ -259,6 +259,7 @@ function curratedRunOpen()
   // console.log( 'curratedRunOpen:b' );
 
   let installationPaths = ChromeLauncher.Launcher.getInstallations();
+
   let args = ChromeDefaultFlags.slice();
 
   args.push( `--remote-debugging-port=${session.sessionPort}` )
@@ -268,7 +269,7 @@ function curratedRunOpen()
   args.push( '--headless', '--disable-gpu' );
 
   if( process.platform === 'linux' )
-  args.push( '--disable-setuid-sandbox' );
+  args.push( '--no-sandbox', '--disable-setuid-sandbox' );
 
   // args.push( session.entryWithQueryUri );
 
@@ -551,12 +552,19 @@ async function cdpConnect()
 {
   let session = this;
   let system = session.system;
+  let logger = system.logger;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   _.assert( session.cdp === null );
 
   session.cdp = await session._cdpConnect({ throwing : 1 });
+
+  if( session.loggingApplication )
+  {
+    session.cdp.Runtime.consoleAPICalled( ( entry ) => logger[ entry.type ].apply( logger, entry.args.map( e => e.value ) ) );
+    await session.cdp.Runtime.enable();
+  }
 
   await session.cdp.Page.enable();
   await session.cdp.Page.navigate({ url : session.entryWithQueryUri });

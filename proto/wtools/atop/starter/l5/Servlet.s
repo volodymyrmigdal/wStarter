@@ -106,8 +106,8 @@ async function form()
   if( servlet.serverPath )
   await servlet.serverForm();
 
-  if( servlet.serverPath && servlet.loggingApplication )
-  servlet.serverLoggingForm();
+  // if( servlet.serverPath && servlet.loggingApplication )//xxx:replaced with cdp
+  // servlet.serverLoggingForm();
 
   return servlet;
 }
