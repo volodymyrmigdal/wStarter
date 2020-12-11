@@ -611,8 +611,8 @@ function sourcesJoinSplits( o )
   ${rou( 'strLinesSplit' )}
   ${rou( 'strLinesJoin' )}
   ${rou( 'strSplitFast' )}
-  ${rou( '_strLeftSingle' )}
-  ${rou( '_strRightSingle' )}
+  ${rou( '_strLeftSingle_' )}
+  ${rou( '_strRightSingle_' )}
   ${rou( 'strIsolate' )}
   ${rou( 'strIsolateLeftOrNone' )}
   ${rou( 'strIsolateRightOrNone' )}
@@ -660,7 +660,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strFindAll' )}
   ${rou( 'strReverse' )}
   ${rou( 'strCount' )}
-  ${rou( 'strLeft' )}
+  ${rou( 'strLeft_' )}
   ${rou( 'tokensSyntaxFrom' )}
   ${rou( '_strReplaceMapPrepare' )}
   ${rou( 'assertMapHasAll' )}

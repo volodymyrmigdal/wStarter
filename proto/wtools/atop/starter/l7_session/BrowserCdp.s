@@ -54,7 +54,19 @@ function _unform()
     session.entryWithQueryUri = null;
     return arg;
   });
-
+  
+  if( !session.cleanupAfterStarterDeath )
+  ready.then( () => 
+  {
+    if( !session._tempDirCleanProcess )
+    return true;
+    let pid = session._tempDirCleanProcess.pnd.pid;
+    let timeOut = session._tempDirCleanProcessWaitTimeOut;
+    if( !_.process.isAlive( pid ) )
+    return true;
+    return _.process.waitForDeath({ pid, timeOut })
+  })
+  
   ready.finally( ( err, arg ) =>
   {
     if( err )
@@ -77,7 +89,7 @@ function _form()
   let logger = system.logger;
   let ready = new _.Consequence().take( null );
 
-  ready.then( () =>
+  ready.then( async () =>
   {
 
     session.fieldsForm();
@@ -87,9 +99,14 @@ function _form()
 
     if( session._cdpPort === null )
     session._cdpPort = session._CdpPortDefault;
+    
+    if( session._cdpPort === 0 )
+    session._cdpPort = await system._getRandomPort();
+    else
+    await system._checkIfPortIsOpen( session._cdpPort );
 
     if( !session.servlet )
-    session.servletOpen();
+    await session.servletOpen();
 
     if( session.entryPath )
     session.entryFind();
@@ -163,7 +180,7 @@ function entryFind()
 
 //
 
-function servletOpen()
+async function servletOpen()
 {
   let session = this;
   let system = session.system;
@@ -174,7 +191,7 @@ function servletOpen()
 
   let o2 = _.mapOnly( session, _.starter.Servlet.FieldsOfCopyableGroups );
   session.servlet = new _.starter.Servlet( o2 );
-  session.servlet.form();
+  await session.servlet.form();
 
   if( session.servlet && path.isAbsolute( session.entryPath ) && session.format )
   session.entryUriForm();
@@ -226,10 +243,12 @@ function curratedRunOpen()
     ChromeDefaultFlags = require( 'chrome-launcher/dist/flags' ).DEFAULT_FLAGS
   }
 
-  let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome` );
+  let tempDir = session._tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome`, _.idWithDateAndTime() );
   fileProvider.dirMake( tempDir );
   _.assert( fileProvider.isDir( tempDir ) );
-
+  
+ 
+  
   // let opts = Object.create( null );
   // opts.startingUrl = session.entryWithQueryUri;
   // opts.userDataDir = _.path.nativize( tempDir );
@@ -270,8 +289,25 @@ function curratedRunOpen()
   // return _.Consequence.Try( () => ChromeLauncher.launch( opts ) )
   _.process.start( op )
 
-  return op.conStart
-  .finally( ( err, chrome ) =>
+  op.conStart.finally( onStart );
+  op.conTerminate.tap( () => 
+  {
+    session._tempDirCleanProcess = 
+    {
+      execPath : 'node',
+      args : [ path.join( __dirname, 'BrowserUserDirClean.s' ), tempDir, process.pid, session.cleanupAfterStarterDeath ],
+      mode : 'spawn',
+      detaching : 2,
+      inputMirroring : 0
+    }
+    _.process.startSingle( session._tempDirCleanProcess );
+  })
+
+  return op.conStart;
+
+  /* */
+
+  function onStart( err, chrome )
   {
     // session.process = chrome.process;
     session.process = chrome.pnd;
@@ -283,8 +319,12 @@ function curratedRunOpen()
     // console.log( 'curratedRunOpen:c' );
 
     if( err )
-    return session.errorEncounterEnd( err );
-
+    {
+      _.errAttend( err );
+      _.fileProvider.filesDelete( tempDir );
+      return session.errorEncounterEnd( err );
+    }
+    
     _.process.on( 'exit', async () =>
     {
       await session.unform();
@@ -317,7 +357,7 @@ function curratedRunOpen()
       session.cdpConnect();
       return chrome.pnd;
     })
-  })
+  }
 }
 
 //
@@ -668,6 +708,8 @@ function _waitForRemoteDebuggingPort()
   Net = require( 'net' )
   let Cdp = require( 'chrome-remote-interface' );
 
+  session._maxCdpConnectionAttempts = Math.floor( session._maxCdpConnectionWaitTime / session._cdpPollingPeriod );
+
   let tries = 0;
 
   let debuggerIsReady = _.Consequence().take( false );
@@ -691,7 +733,7 @@ function _waitForRemoteDebuggingPort()
       err = _.err( `Failed to wait for remote debugging port. Reason:\n`, err );
       throw session.errorEncounterEnd( err );
     }
-    await _.time.out( session._cdpPollingPeriod * 2 );
+    await _.time.out( session._cdpPollingPeriod );
     return isReady().finally( check );
   }
 
@@ -702,7 +744,6 @@ function _waitForRemoteDebuggingPort()
     let ready = new _.Consequence();
     Cdp.List({ port : session._cdpPort }, ( err, targets ) =>
     {
-      debugger
       if( err )
       ready.error( err );
       else
@@ -750,7 +791,12 @@ let Restricts =
   _cdpPort : null,
   _cdpClosing : 0,
 
-  _maxCdpConnectionAttempts : 20
+  _maxCdpConnectionAttempts : null,
+  _maxCdpConnectionWaitTime : 30000,
+  
+  _tempDir : null,
+  _tempDirCleanProcess : null,
+  _tempDirCleanProcessWaitTimeOut : 30000
 
 }
 
