@@ -660,7 +660,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strFindAll' )}
   ${rou( 'strReverse' )}
   ${rou( 'strCount' )}
-  ${rou( 'strLeft' )}
+  ${rou( 'strLeft_' )}
   ${rou( 'tokensSyntaxFrom' )}
   ${rou( '_strReplaceMapPrepare' )}
   ${rou( 'assertMapHasAll' )}
