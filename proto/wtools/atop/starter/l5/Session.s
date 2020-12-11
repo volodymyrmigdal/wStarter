@@ -618,6 +618,7 @@ let Composes =
   interpreter : 'browser',
   
   sessionPort : null,
+  serverPath : null,
   
   cleanupAfterStarterDeath : 1, /* for testing */
 

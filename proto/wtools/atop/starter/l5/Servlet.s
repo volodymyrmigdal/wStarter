@@ -121,13 +121,6 @@ async function serverForm()
 
   _.assert( _.routineIs( servlet._requestScriptWrapHandler ) );
 
-  _.assert
-  (
-    !system.servletsMap[ servlet.serverPath ] || system.servletsMap[ servlet.serverPath ] === servlet,
-    `Servlet at ${servlet.serverPath} is already launched`
-  );
-  system.servletsMap[ servlet.serverPath ] = servlet;
-
   let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
   
   _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
@@ -143,6 +136,13 @@ async function serverForm()
   }
   
   servlet.serverPath = parsedServerPath.full;
+  
+  _.assert
+  (
+    !system.servletsMap[ servlet.serverPath ] || system.servletsMap[ servlet.serverPath ] === servlet,
+    `Servlet at ${servlet.serverPath} is already launched`
+  );
+  system.servletsMap[ servlet.serverPath ] = servlet;
 
   /* - */
 

@@ -1008,7 +1008,8 @@ async function curatedRunRandomPort( test )
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
       cleanupAfterStarterDeath : 0,
-      sessionPort : 0
+      sessionPort : 0,
+      serverPath : 'http://127.0.0.1:0'
     })
     
     test.identical( session.curratedRunState, 'launching' );
@@ -1022,8 +1023,10 @@ async function curatedRunRandomPort( test )
 
     test.identical( session.curratedRunState, 'launched' );
     
-    console.log( session.sessionPort )
     test.notIdentical( session.sessionPort, 0 );
+    let servletPathParsed = _.servlet.serverPathParse({ full : session.servlet.serverPath });
+    test.notIdentical( servletPathParsed.port, 0 );
+    test.identical( session.servlet.httpServer.address().port, servletPathParsed.port );
 
     await session.unform();
 

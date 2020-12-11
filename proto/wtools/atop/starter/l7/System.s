@@ -248,6 +248,7 @@ defaults.curating = 1;
 defaults.headless = 0;
 defaults.interpreter = 'browser';
 defaults.sessionPort = null;
+defaults.serverPath = null;
 defaults.cleanupAfterStarterDeath = 1;
 
 //
