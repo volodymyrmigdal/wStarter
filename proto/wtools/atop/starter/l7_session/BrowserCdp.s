@@ -297,7 +297,8 @@ function curratedRunOpen()
       execPath : 'node',
       args : [ path.join( __dirname, 'BrowserUserDirClean.s' ), tempDir, process.pid, session.cleanupAfterStarterDeath ],
       mode : 'spawn',
-      detaching : 2
+      detaching : 2,
+      inputMirroring : 0
     }
     _.process.startSingle( session._tempDirCleanProcess );
   })
