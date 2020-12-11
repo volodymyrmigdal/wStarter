@@ -987,6 +987,64 @@ curatedRunEventsClosePageManually.timeOut = 300000;
 
 //
 
+async function curatedRunRandomPort( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'minute' );
+  let starter = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
+  let session;
+
+  try
+  {
+
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+
+    // await _.time.out( context.deltaTime3 ); /* xxx : remove later and find fix working for linux */
+    // debugger;
+
+    session = await starter.start
+    ({
+      entryPath : a.originalAbs( './F1.js' ),
+      headless : 1,
+      cleanupAfterStarterDeath : 0,
+      sessionPort : 0
+    })
+    
+    test.identical( session.curratedRunState, 'launching' );
+
+    await _.time.out( context.deltaTime2 ); /* xxx : remove later and find fix working for linux */
+
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened( session );
+    test.identical( !!cdp, true );
+
+    await _.time.out( context.deltaTime2 );
+
+    test.identical( session.curratedRunState, 'launched' );
+    
+    console.log( session.sessionPort )
+    test.notIdentical( session.sessionPort, 0 );
+
+    await session.unform();
+
+    test.identical( session.curratedRunState, 'terminated' );
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened( session );
+    test.identical( !!cdp, false );
+    test.identical( session.curratedRunState, 'terminated' );
+
+  }
+  catch( err )
+  {
+    if( session )
+    await session.unform();
+  }
+
+}
+
+curatedRunRandomPort.timeOut = 300000;
+
+//
+
 function browserUserTempDirCleanup( test )
 {
   let context = this;
@@ -1152,6 +1210,14 @@ let Self =
     curatedRunEventsCloseAutomatic,
     curatedRunEventsCloseWindowManually,
     curatedRunEventsClosePageManually,
+    
+    // port
+    
+    curatedRunRandomPort,
+    
+    
+    
+    // etc
     
     browserUserTempDirCleanup
 

@@ -617,6 +617,8 @@ let Composes =
   timeOut : null, /* qqq : cover */
   interpreter : 'browser',
   
+  sessionPort : null,
+  
   cleanupAfterStarterDeath : 1, /* for testing */
 
   ... Bools,

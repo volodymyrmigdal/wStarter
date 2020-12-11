@@ -247,6 +247,7 @@ defaults.entryPath = null;
 defaults.curating = 1;
 defaults.headless = 0;
 defaults.interpreter = 'browser';
+defaults.sessionPort = null;
 defaults.cleanupAfterStarterDeath = 1;
 
 //
@@ -278,7 +279,7 @@ function _getRandomPort()
   Portscanner = require( 'portscanner' );
   
   let ready = _.Consequence();
-  Portscanner.findAPortNotInUse( 0, 65535, '127.0.0.1', ( error, port ) => 
+  Portscanner.findAPortNotInUse( 1024, 65535, '127.0.0.1', ( error, port ) => 
   {
     if( error )
     return ready.error( error )
