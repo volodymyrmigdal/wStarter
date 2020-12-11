@@ -75,7 +75,7 @@ function assetFor( test, name )
     ready : a.ready,
     mode : 'fork',
   })
-  
+
   let oprogram = a.program;
   program_body.defaults = a.program.defaults;
   a.program = _.routineUnite( a.program.head, program_body );
@@ -756,7 +756,7 @@ async function curatedRunWindowOpenClosePageManually( test )
     var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, false );
     test.identical( session.curratedRunState, 'terminated' );
-    
+
   }
   catch( err )
   {
@@ -896,7 +896,7 @@ async function curatedRunEventsCloseWindowManually( test )
       curatedRunTerminateEnd : 1,
     }
     test.identical( encountered, exp );
-    
+
     await session.eventWaitFor( 'unformed' );
 
   }
@@ -971,9 +971,9 @@ async function curatedRunEventsClosePageManually( test )
       curatedRunTerminateEnd : 1,
     }
     test.identical( encountered, exp );
-    
+
     await session.eventWaitFor( 'unformed' );
-    
+
   }
   catch( err )
   {
@@ -987,84 +987,144 @@ curatedRunEventsClosePageManually.timeOut = 300000;
 
 //
 
+async function curatedRunRandomPort( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'minute' );
+  let starter = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
+  let session;
+
+  try
+  {
+
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+
+    // await _.time.out( context.deltaTime3 ); /* xxx : remove later and find fix working for linux */
+    // debugger;
+
+    session = await starter.start
+    ({
+      entryPath : a.originalAbs( './F1.js' ),
+      headless : 1,
+      cleanupAfterStarterDeath : 0,
+      sessionPort : 0,
+      serverPath : 'http://127.0.0.1:0'
+    })
+
+    test.identical( session.curratedRunState, 'launching' );
+
+    await _.time.out( context.deltaTime2 ); /* xxx : remove later and find fix working for linux */
+
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened( session );
+    test.identical( !!cdp, true );
+
+    await _.time.out( context.deltaTime2 );
+
+    test.identical( session.curratedRunState, 'launched' );
+
+    test.notIdentical( session.sessionPort, 0 );
+    let servletPathParsed = _.servlet.serverPathParse({ full : session.servlet.serverPath });
+    test.notIdentical( servletPathParsed.port, 0 );
+    test.identical( session.servlet.httpServer.address().port, servletPathParsed.port );
+
+    await session.unform();
+
+    test.identical( session.curratedRunState, 'terminated' );
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened( session );
+    test.identical( !!cdp, false );
+    test.identical( session.curratedRunState, 'terminated' );
+
+  }
+  catch( err )
+  {
+    if( session )
+    await session.unform();
+  }
+
+}
+
+curatedRunRandomPort.timeOut = 300000;
+
+//
+
 function browserUserTempDirCleanup( test )
 {
   let context = this;
   let a = context.assetFor( test, 'minute' );
-  
+
   a.reflect();
-  
-  let locals = 
+
+  let locals =
   {
     toolsPath : _.module.resolve( 'wTools' ),
     starterPath : a.path.nativize( a.path.join( __dirname, '../starter/entry/Include.s' ) ),
     context : { deltaTime3 : context.deltaTime3 },
-    opts : 
+    opts :
     {
       entryPath : a.abs( './F1.js' ),
       basePath : a.abs( '.'),
       headless : 1
     }
   }
-  
+
   let execPath = a.program({ routine : program, locals });
-  
+
   let op = { execPath };
   let ready = _.Consequence();
   let ready2 = _.Consequence();
-  let tempDirPath;
-  let secondaryProcessPid;
-  
+  let tempDirPath, secondaryProcessPid;
+
   a.fork( op );
-  
-  op.pnd.on( 'message', ( data ) => 
+
+  op.pnd.on( 'message', ( data ) =>
   {
     if( data.field === 'tempDirPath' )
     ready.take( data.val )
     if( data.field === 'secondaryProcessPid' )
-    ready2.take( data.val ) 
+    ready2.take( data.val )
   });
-  
-  ready.then( ( got ) => 
+
+  ready.then( ( got ) =>
   {
     tempDirPath = got;
     test.true( a.fileProvider.fileExists( tempDirPath ) );
     return null;
   })
-  
-  ready2.then( ( got ) => 
+
+  ready2.then( ( got ) =>
   {
     secondaryProcessPid = got;
     test.true( _.process.isAlive( secondaryProcessPid ) );
     return null;
   })
-  
-  op.ready.then( ( op ) => 
+
+  op.ready.then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
     return _.time.out( context.deltaTime2 * 2 ) /* 6000 */
-    .then( () => 
+    .then( () =>
     {
       test.true( !a.fileProvider.fileExists( tempDirPath ) );
       test.true( !_.process.isAlive( secondaryProcessPid ) );
       return null;
     })
   })
-  
+
   return _.Consequence.And( op.ready, ready, ready2 );
-  
+
   /* */
-  
+
   function program()
   {
     let _ = require( toolsPath );
     _.include( 'wStarter')
-    
+
     let starter = new _.starter.System({ verbosity : 7 }).form();
     let session;
-    
+
     main();
-    
+
     async function main()
     {
       try
@@ -1083,8 +1143,8 @@ function browserUserTempDirCleanup( test )
       }
     }
   }
-  
- 
+
+
 }
 
 // --
@@ -1152,7 +1212,13 @@ let Self =
     curatedRunEventsCloseAutomatic,
     curatedRunEventsCloseWindowManually,
     curatedRunEventsClosePageManually,
-    
+
+    // port
+
+    curatedRunRandomPort,
+
+    // etc
+
     browserUserTempDirCleanup
 
   }

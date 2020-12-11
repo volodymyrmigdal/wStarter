@@ -121,17 +121,10 @@ async function serverForm()
 
   _.assert( _.routineIs( servlet._requestScriptWrapHandler ) );
 
-  _.assert
-  (
-    !system.servletsMap[ servlet.serverPath ] || system.servletsMap[ servlet.serverPath ] === servlet,
-    `Servlet at ${servlet.serverPath} is already launched`
-  );
-  system.servletsMap[ servlet.serverPath ] = servlet;
-
   let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
-  
+
   _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
-  
+
   if( parsedServerPath.port === 0 )
   {
     parsedServerPath.port = await system._getRandomPort();
@@ -141,8 +134,15 @@ async function serverForm()
   {
     await system._checkIfPortIsOpen( parsedServerPath.port );
   }
-  
+
   servlet.serverPath = parsedServerPath.full;
+
+  _.assert
+  (
+    !system.servletsMap[ servlet.serverPath ] || system.servletsMap[ servlet.serverPath ] === servlet,
+    `Servlet at ${servlet.serverPath} is already launched`
+  );
+  system.servletsMap[ servlet.serverPath ] = servlet;
 
   /* - */
 
@@ -749,10 +749,10 @@ function pathsForm()
   _.assert( servlet.virtualToRealMap === null );
   _.assert( servlet.realToVirtualMap === null );
   _.assert( _.mapIs( servlet.allowedPath ) );
-  
+
   if( servlet.serverPath === null )
   servlet.serverPath = servlet._defaultServerPath;
-  
+
   servlet.virtualToRealMap = Object.create( null );
   servlet.realToVirtualMap = Object.create( null );
 

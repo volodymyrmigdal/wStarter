@@ -54,9 +54,9 @@ function _unform()
     session.entryWithQueryUri = null;
     return arg;
   });
-  
+
   if( !session.cleanupAfterStarterDeath )
-  ready.then( () => 
+  ready.then( () =>
   {
     if( !session._tempDirCleanProcess )
     return true;
@@ -66,7 +66,7 @@ function _unform()
     return true;
     return _.process.waitForDeath({ pid, timeOut })
   })
-  
+
   ready.finally( ( err, arg ) =>
   {
     if( err )
@@ -97,13 +97,13 @@ function _form()
     session.loggingSessionEventsForm();
     session.timerForm();
 
-    if( session._cdpPort === null )
-    session._cdpPort = session._CdpPortDefault;
-    
-    if( session._cdpPort === 0 )
-    session._cdpPort = await system._getRandomPort();
+    if( session.sessionPort === null )
+    session.sessionPort = session._CdpPortDefault;
+
+    if( session.sessionPort === 0 )
+    session.sessionPort = await system._getRandomPort();
     else
-    await system._checkIfPortIsOpen( session._cdpPort );
+    await system._checkIfPortIsOpen( session.sessionPort );
 
     if( !session.servlet )
     await session.servletOpen();
@@ -246,13 +246,11 @@ function curratedRunOpen()
   let tempDir = session._tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome`, _.idWithDateAndTime() );
   fileProvider.dirMake( tempDir );
   _.assert( fileProvider.isDir( tempDir ) );
-  
- 
-  
+
   // let opts = Object.create( null );
   // opts.startingUrl = session.entryWithQueryUri;
   // opts.userDataDir = _.path.nativize( tempDir );
-  // opts.port = session._cdpPort
+  // opts.port = session.sessionPort
   // opts.chromeFlags = [];
 
   // if( session.headless )
@@ -263,7 +261,7 @@ function curratedRunOpen()
   let installationPaths = ChromeLauncher.Launcher.getInstallations();
   let args = ChromeDefaultFlags.slice();
 
-  args.push( `--remote-debugging-port=${session._cdpPort}` )
+  args.push( `--remote-debugging-port=${session.sessionPort}` )
   args.push( `--user-data-dir=${_.path.nativize( tempDir )}`)
 
   if( session.headless )
@@ -290,9 +288,9 @@ function curratedRunOpen()
   _.process.start( op )
 
   op.conStart.finally( onStart );
-  op.conTerminate.tap( () => 
+  op.conTerminate.tap( () =>
   {
-    session._tempDirCleanProcess = 
+    session._tempDirCleanProcess =
     {
       execPath : 'node',
       args : [ path.join( __dirname, 'BrowserUserDirClean.s' ), tempDir, process.pid, session.cleanupAfterStarterDeath ],
@@ -324,7 +322,7 @@ function curratedRunOpen()
       _.fileProvider.filesDelete( tempDir );
       return session.errorEncounterEnd( err );
     }
-    
+
     _.process.on( 'exit', async () =>
     {
       await session.unform();
@@ -491,13 +489,16 @@ function _curratedRunPageClose( o )
 
 //
 
-function _CurratedRunWindowIsOpened()
+function _CurratedRunWindowIsOpened( session )
 {
+  _.assert( !session || session instanceof Self );
+
+  let port = session ? session.sessionPort : this._CdpPortDefault;
 
   return _.Consequence.Try( () =>
   {
     let Cdp = require( 'chrome-remote-interface' );
-    return Cdp({ port : this._CdpPortDefault })
+    return Cdp({ port })
   })
   .catch( ( err ) =>
   {
@@ -523,7 +524,7 @@ async function _cdpConnect( o )
   o = _.routineOptions( _cdpConnect, o );
 
   if( o.port === null )
-  o.port = session._cdpPort;
+  o.port = session.sessionPort;
 
   try
   {
@@ -742,7 +743,7 @@ function _waitForRemoteDebuggingPort()
   function isReady()
   {
     let ready = new _.Consequence();
-    Cdp.List({ port : session._cdpPort }, ( err, targets ) =>
+    Cdp.List({ port : session.sessionPort }, ( err, targets ) =>
     {
       if( err )
       ready.error( err );
@@ -761,7 +762,6 @@ let Composes =
 {
 
   // templatePath : null,
-
 }
 
 let InstanceDefaults =
@@ -788,12 +788,11 @@ let Restricts =
 
   cdp : null,
   _cdpPollingPeriod : 250,
-  _cdpPort : null,
   _cdpClosing : 0,
 
   _maxCdpConnectionAttempts : null,
   _maxCdpConnectionWaitTime : 30000,
-  
+
   _tempDir : null,
   _tempDirCleanProcess : null,
   _tempDirCleanProcessWaitTimeOut : 30000
