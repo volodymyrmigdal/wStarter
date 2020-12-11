@@ -292,9 +292,9 @@ function curratedRunOpen()
   {
     session._tempDirCleanProcess =
     {
-      execPath : 'node',
-      args : [ path.join( __dirname, 'BrowserUserDirClean.s' ), tempDir, process.pid, session.cleanupAfterStarterDeath ],
-      mode : 'spawn',
+      execPath : _.strQuote( path.join( __dirname, 'BrowserUserDirClean.s' ) ),
+      args : [ tempDir, process.pid, session.cleanupAfterStarterDeath ],
+      mode : 'fork',
       detaching : 2,
       inputMirroring : 0
     }
