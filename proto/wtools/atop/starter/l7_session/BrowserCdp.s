@@ -54,9 +54,9 @@ function _unform()
     session.entryWithQueryUri = null;
     return arg;
   });
-  
+
   if( !session.cleanupAfterStarterDeath )
-  ready.then( () => 
+  ready.then( () =>
   {
     if( !session._tempDirCleanProcess )
     return true;
@@ -66,7 +66,7 @@ function _unform()
     return true;
     return _.process.waitForDeath({ pid, timeOut })
   })
-  
+
   ready.finally( ( err, arg ) =>
   {
     if( err )
@@ -99,7 +99,7 @@ function _form()
 
     if( session.sessionPort === null )
     session.sessionPort = session._CdpPortDefault;
-    
+
     if( session.sessionPort === 0 )
     session.sessionPort = await system._getRandomPort();
     else
@@ -246,9 +246,7 @@ function curratedRunOpen()
   let tempDir = session._tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome`, _.idWithDateAndTime() );
   fileProvider.dirMake( tempDir );
   _.assert( fileProvider.isDir( tempDir ) );
-  
- 
-  
+
   // let opts = Object.create( null );
   // opts.startingUrl = session.entryWithQueryUri;
   // opts.userDataDir = _.path.nativize( tempDir );
@@ -290,9 +288,9 @@ function curratedRunOpen()
   _.process.start( op )
 
   op.conStart.finally( onStart );
-  op.conTerminate.tap( () => 
+  op.conTerminate.tap( () =>
   {
-    session._tempDirCleanProcess = 
+    session._tempDirCleanProcess =
     {
       execPath : 'node',
       args : [ path.join( __dirname, 'BrowserUserDirClean.s' ), tempDir, process.pid, session.cleanupAfterStarterDeath ],
@@ -324,7 +322,7 @@ function curratedRunOpen()
       _.fileProvider.filesDelete( tempDir );
       return session.errorEncounterEnd( err );
     }
-    
+
     _.process.on( 'exit', async () =>
     {
       await session.unform();
@@ -494,9 +492,9 @@ function _curratedRunPageClose( o )
 function _CurratedRunWindowIsOpened( session )
 {
   _.assert( !session || session instanceof Self );
-  
+
   let port = session ? session.sessionPort : this._CdpPortDefault;
-  
+
   return _.Consequence.Try( () =>
   {
     let Cdp = require( 'chrome-remote-interface' );
@@ -794,7 +792,7 @@ let Restricts =
 
   _maxCdpConnectionAttempts : null,
   _maxCdpConnectionWaitTime : 30000,
-  
+
   _tempDir : null,
   _tempDirCleanProcess : null,
   _tempDirCleanProcessWaitTimeOut : 30000

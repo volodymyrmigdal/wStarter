@@ -257,13 +257,13 @@ function _checkIfPortIsOpen( port )
 {
   if( !Portscanner )
   Portscanner = require( 'portscanner' );
-  
+
   let ready = _.Consequence();
-  Portscanner.checkPortStatus( port, '127.0.0.1', ( error, status ) => 
+  Portscanner.checkPortStatus( port, '127.0.0.1', ( error, status ) =>
   {
     if( error )
     return ready.error( error )
-    
+
     if( status === 'closed' )
     ready.take( true )
     else
@@ -278,16 +278,16 @@ function _getRandomPort()
 {
   if( !Portscanner )
   Portscanner = require( 'portscanner' );
-  
+
   let ready = _.Consequence();
-  Portscanner.findAPortNotInUse( 1024, 65535, '127.0.0.1', ( error, port ) => 
+  Portscanner.findAPortNotInUse( 1024, 65535, '127.0.0.1', ( error, port ) =>
   {
     if( error )
     return ready.error( error )
     ready.take( port );
   })
   return ready;
-  
+
 }
 
 // --
@@ -352,7 +352,7 @@ let Proto =
   htmlForFiles,
   httpOpen,
   start,
-  
+
   _checkIfPortIsOpen,
   _getRandomPort,
 
