@@ -2,15 +2,12 @@ format: outwillfile-2.0
 root:
   - wStarter.out
 consistency:
-  wStarter.out.will.yml: &ref_0
-    hash: 2a92f440b31adb538c0c042fa36d3807
-    size: 59583
-  ../.ex.will.yml: &ref_1
+  ../.ex.will.yml: &ref_0
     hash: bdd67fb796af94560b6f886a8e46c27a
     size: 2266
-  ../.im.will.yml: &ref_2
-    hash: 1f13ff90bf7889f6dce93fb204baaf9e
-    size: 6254
+  ../.im.will.yml: &ref_1
+    hash: c32f35297137639c7bc72cb2fca83425
+    size: 6336
 module:
   wStarter.out:
     about:
@@ -22,24 +19,24 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters:
+      interpreters: &ref_2
         - njs >= 10.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords:
+      keywords: &ref_3
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
+      contributors: &ref_4
         - Kostiantyn Wandalen <wanalen@01.school>
       npm.name: wstarter
-      npm.scripts:
+      npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
         single-process-starter: node proto/wtools/atop/starter/entry/Exec
         debug-starter: node proto/wtools/atop/starter/entry/ExecDebug
         starter: node proto/wtools/atop/starter/entry/ExecUnrestricted
-      npm.bin:
+      npm.bin: &ref_6
         starter: proto/wtools/atop/starter/entry/ExecUnrestricted
         single-process-starter: proto/wtools/atop/starter/entry/Exec
         debug-starter: proto/wtools/atop/starter/entry/ExecDebug
@@ -208,6 +205,7 @@ module:
           - ../proto/wtools/atop/starter/l7/System.s
           - ../proto/wtools/atop/starter/l7_session
           - ../proto/wtools/atop/starter/l7_session/BrowserCdp.s
+          - ../proto/wtools/atop/starter/l7_session/BrowserUserDirClean.s
           - ../proto/wtools/atop/starter/l7_session/Njs.s
           - ../proto/wtools/atop/starter/l8
           - ../proto/wtools/atop/starter/l8/Cui.s
@@ -525,6 +523,10 @@ module:
         enabled: 0
       pretty:
         path: 'npm:///pretty#2.0.0'
+        autoExporting: 0
+        enabled: 0
+      portscanner:
+        path: 'npm:///portscanner#2.2.0'
         autoExporting: 0
         enabled: 0
       wstarter:
@@ -1070,24 +1072,6 @@ module:
           content: prime
         inherit:
           - files.transpile
-      exported.proto.export:
-        opts:
-          filePath: 'reflector::exported.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
-      exported.files.proto.export:
-        opts:
-          filePath: 'reflector::exported.files.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
     build:
       proto.export:
         steps:
@@ -1176,9 +1160,8 @@ module:
           content: proto
           export: 1
     consistency:
-      wStarter.out.will.yml: *ref_0
-      ../.ex.will.yml: *ref_1
-      ../.im.will.yml: *ref_2
+      ../.ex.will.yml: *ref_0
+      ../.im.will.yml: *ref_1
   ../:
     about:
       name: wStarter
@@ -1189,27 +1172,14 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters:
-        - njs >= 10.0.0
-        - chrome >= 60.0.0
-        - firefox >= 60.0.0
-      keywords:
-        - wTools
+      interpreters: *ref_2
+      keywords: *ref_3
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
-        - Kostiantyn Wandalen <wanalen@01.school>
+      contributors: *ref_4
       npm.name: wstarter
-      npm.scripts:
-        test: wtest .run proto/**
-        docgen: wdocgen .build proto
-        single-process-starter: node proto/wtools/atop/starter/entry/Exec
-        debug-starter: node proto/wtools/atop/starter/entry/ExecDebug
-        starter: node proto/wtools/atop/starter/entry/ExecUnrestricted
-      npm.bin:
-        starter: proto/wtools/atop/starter/entry/ExecUnrestricted
-        single-process-starter: proto/wtools/atop/starter/entry/Exec
-        debug-starter: proto/wtools/atop/starter/entry/ExecDebug
+      npm.scripts: *ref_5
+      npm.bin: *ref_6
     path:
       module.willfiles:
         criterion:
@@ -1365,6 +1335,10 @@ module:
         enabled: 0
       pretty:
         path: 'npm:///pretty#2.0.0'
+        autoExporting: 0
+        enabled: 0
+      portscanner:
+        path: 'npm:///portscanner#2.2.0'
         autoExporting: 0
         enabled: 0
       wstarter:
@@ -1938,6 +1912,5 @@ module:
         hash: bdd67fb796af94560b6f886a8e46c27a
         size: 2266
       ../.im.will.yml:
-        hash: 1f13ff90bf7889f6dce93fb204baaf9e
-        size: 6254
-      wStarter.out.will.yml: *ref_0
+        hash: c32f35297137639c7bc72cb2fca83425
+        size: 6336
