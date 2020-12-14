@@ -194,7 +194,6 @@ async function serverForm()
 
   o3.server.on( 'listening', () =>
   {
-    debugger
     servlet.httpServer = o3.server;
     servlet.express = o3.express;
     servlet.serverPath = o3.serverPath;
