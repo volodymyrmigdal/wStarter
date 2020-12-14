@@ -1887,8 +1887,8 @@ function sourcesJoinBrowserOptionRedirectingConsole( test )
     return null;
   })
 
-  a.appStart( `.sources.join inPath:**/*.(js|s) outPath:Out.js entryPath:Index.js interpreter:browser` )
-  a.appStart( `.start Out.js naking:1 withStarter:0 timeOut:15000 headless:1 loggingApplication:1` )
+  a.appStart( `.sources.join inPath:**/*.(js|s) outPath:Out.js entryPath:Index.js interpreter:browser redirectingConsole:1` )
+  a.appStart( `.start Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
@@ -1909,8 +1909,8 @@ function sourcesJoinBrowserOptionRedirectingConsole( test )
     return null;
   })
 
-  a.appStart( `.sources.join inPath:**/*.(js|s) outPath:Out.js entryPath:Index.js interpreter:browser` )
-  a.appStart( `.start Out.js naking:1 withStarter:0 timeOut:15000 headless:1 loggingApplication:0` )
+  a.appStart( `.sources.join inPath:**/*.(js|s) outPath:Out.js entryPath:Index.js interpreter:browser redirectingConsole:0` )
+  a.appStart( `.start Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';

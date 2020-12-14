@@ -560,12 +560,6 @@ async function cdpConnect()
 
   session.cdp = await session._cdpConnect({ throwing : 1 });
 
-  if( session.loggingApplication )
-  {
-    session.cdp.Runtime.consoleAPICalled( ( entry ) => logger[ entry.type ].apply( logger, entry.args.map( ( e ) => e.value ) ) );
-    await session.cdp.Runtime.enable();
-  }
-
   await session.cdp.Page.enable();
   await session.cdp.Page.navigate({ url : session.entryWithQueryUri });
   await session.cdp.Page.loadEventFired();

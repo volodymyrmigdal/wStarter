@@ -106,8 +106,8 @@ async function form()
   if( servlet.serverPath )
   await servlet.serverForm();
 
-  // if( servlet.serverPath && servlet.loggingApplication )//xxx:replaced with cdp
-  // servlet.serverLoggingForm();
+  if( servlet.serverPath && servlet.loggingApplication )
+  servlet.serverLoggingForm();
 
   return servlet;
 }
@@ -190,13 +190,21 @@ async function serverForm()
     serverPath : servlet.serverPath,
   });
 
-  servlet.httpServer = o3.server;
-  servlet.express = o3.express;
-  servlet.serverPath = o3.serverPath;
+  let ready = _.Consequence();
+
+  o3.server.on( 'listening', () =>
+  {
+    debugger
+    servlet.httpServer = o3.server;
+    servlet.express = o3.express;
+    servlet.serverPath = o3.serverPath;
+
+    ready.take( servlet );
+  })
 
   /* - */
 
-  return servlet;
+  return ready;
 }
 
 //

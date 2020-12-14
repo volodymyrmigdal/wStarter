@@ -264,6 +264,7 @@ function sourcesJoinSplits( o )
 `
 
   /* predefined */
+
   debugger
 
   r.predefined =
@@ -723,8 +724,8 @@ sourcesJoinSplits.defaults =
   loggingApplication : 0,
   loggingSourceFiles : 0,
   withServer : null,
-  redirectingConsole : 0, //xxx:remove?
-  loggingPath : null
+  redirectingConsole : 1,
+  loggingPath : 'ws://127.0.0.1:15000/.log/'
 }
 
 //
