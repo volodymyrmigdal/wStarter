@@ -102,7 +102,7 @@ function _Begin()
       return this.state === 'opened';
     }
 
-    function getter( fieldName, onGet )
+    function getter( propName, onGet )
     {
       let property =
       {
@@ -110,7 +110,7 @@ function _Begin()
         configurable : true,
         get : onGet,
       }
-      Object.defineProperty( sourceFile, fieldName, property );
+      Object.defineProperty( sourceFile, propName, property );
     }
 
   }

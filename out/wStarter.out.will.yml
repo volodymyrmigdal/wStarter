@@ -3,14 +3,14 @@ root:
   - wStarter.out
 consistency:
   wStarter.out.will.yml: &ref_0
-    hash: 2a92f440b31adb538c0c042fa36d3807
-    size: 59583
+    hash: 8fa55e8e11223b6c2447a7cc03e96175
+    size: 61204
   ../.ex.will.yml: &ref_1
     hash: bdd67fb796af94560b6f886a8e46c27a
     size: 2266
   ../.im.will.yml: &ref_2
-    hash: 1f13ff90bf7889f6dce93fb204baaf9e
-    size: 6254
+    hash: c32f35297137639c7bc72cb2fca83425
+    size: 6336
 module:
   wStarter.out:
     about:
@@ -208,6 +208,7 @@ module:
           - ../proto/wtools/atop/starter/l7/System.s
           - ../proto/wtools/atop/starter/l7_session
           - ../proto/wtools/atop/starter/l7_session/BrowserCdp.s
+          - ../proto/wtools/atop/starter/l7_session/BrowserUserDirClean.s
           - ../proto/wtools/atop/starter/l7_session/Njs.s
           - ../proto/wtools/atop/starter/l8
           - ../proto/wtools/atop/starter/l8/Cui.s
@@ -525,6 +526,10 @@ module:
         enabled: 0
       pretty:
         path: 'npm:///pretty#2.0.0'
+        autoExporting: 0
+        enabled: 0
+      portscanner:
+        path: 'npm:///portscanner#2.2.0'
         autoExporting: 0
         enabled: 0
       wstarter:
@@ -1367,6 +1372,10 @@ module:
         path: 'npm:///pretty#2.0.0'
         autoExporting: 0
         enabled: 0
+      portscanner:
+        path: 'npm:///portscanner#2.2.0'
+        autoExporting: 0
+        enabled: 0
       wstarter:
         path: 'hd://.'
         autoExporting: 0
@@ -1938,6 +1947,6 @@ module:
         hash: bdd67fb796af94560b6f886a8e46c27a
         size: 2266
       ../.im.will.yml:
-        hash: 1f13ff90bf7889f6dce93fb204baaf9e
-        size: 6254
+        hash: c32f35297137639c7bc72cb2fca83425
+        size: 6336
       wStarter.out.will.yml: *ref_0

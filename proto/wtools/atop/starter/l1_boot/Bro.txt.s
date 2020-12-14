@@ -454,7 +454,7 @@ function _Begin()
       return _starter_.sourcesMap = src;
     }
 
-    function accesor( fieldName, onGet, onSet )
+    function accesor( propName, onGet, onSet )
     {
       let property =
       {
@@ -463,7 +463,7 @@ function _Begin()
         get : onGet,
         set : onSet,
       }
-      Object.defineProperty( result, fieldName, property );
+      Object.defineProperty( result, propName, property );
     }
 
   }

@@ -574,7 +574,6 @@ function sourcesJoinSplits( o )
   ${rou( 'routineOptions' )}
   ${rou( 'mapExtend' )}
   ${rou( 'mapSupplement' )}
-  ${rou( 'routineExtend_' )}
   ${rou( 'routineExtend' )}
   ${rou( 'arrayAppendArray' )}
   ${rou( 'arrayAppendArrays' )}
