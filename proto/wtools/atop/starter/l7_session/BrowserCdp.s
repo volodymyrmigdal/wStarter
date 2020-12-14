@@ -562,7 +562,7 @@ async function cdpConnect()
 
   if( session.loggingApplication )
   {
-    session.cdp.Runtime.consoleAPICalled( ( entry ) => logger[ entry.type ].apply( logger, entry.args.map( e => e.value ) ) );
+    session.cdp.Runtime.consoleAPICalled( ( entry ) => logger[ entry.type ].apply( logger, entry.args.map( ( e ) => e.value ) ) );
     await session.cdp.Runtime.enable();
   }
 
