@@ -295,6 +295,7 @@ function curratedRunOpen()
     {
       execPath : _.strQuote( path.join( __dirname, 'BrowserUserDirClean.s' ) ),
       args : [ tempDir, process.pid, session.cleanupAfterStarterDeath ],
+      currentPath : __dirname,
       mode : 'fork',
       detaching : 2,
       inputMirroring : 0
