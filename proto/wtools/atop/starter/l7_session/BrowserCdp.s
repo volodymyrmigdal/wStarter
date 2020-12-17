@@ -259,6 +259,7 @@ function curratedRunOpen()
   // console.log( 'curratedRunOpen:b' );
 
   let installationPaths = ChromeLauncher.Launcher.getInstallations();
+
   let args = ChromeDefaultFlags.slice();
 
   args.push( `--remote-debugging-port=${session.sessionPort}` )
@@ -268,7 +269,7 @@ function curratedRunOpen()
   args.push( '--headless', '--disable-gpu' );
 
   if( process.platform === 'linux' )
-  args.push( '--disable-setuid-sandbox' );
+  args.push( '--no-sandbox', '--disable-setuid-sandbox' );
 
   // args.push( session.entryWithQueryUri );
 
@@ -292,9 +293,10 @@ function curratedRunOpen()
   {
     session._tempDirCleanProcess =
     {
-      execPath : 'node',
-      args : [ path.join( __dirname, 'BrowserUserDirClean.s' ), tempDir, process.pid, session.cleanupAfterStarterDeath ],
-      mode : 'spawn',
+      execPath : _.strQuote( path.join( __dirname, 'BrowserUserDirClean.s' ) ),
+      args : [ tempDir, process.pid, session.cleanupAfterStarterDeath ],
+      currentPath : __dirname,
+      mode : 'fork',
       detaching : 2,
       inputMirroring : 0
     }
@@ -551,6 +553,7 @@ async function cdpConnect()
 {
   let session = this;
   let system = session.system;
+  let logger = system.logger;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
@@ -791,7 +794,7 @@ let Restricts =
   _cdpClosing : 0,
 
   _maxCdpConnectionAttempts : null,
-  _maxCdpConnectionWaitTime : 30000,
+  _maxCdpConnectionWaitTime : 60000,
 
   _tempDir : null,
   _tempDirCleanProcess : null,
