@@ -794,7 +794,7 @@ let Restricts =
   _cdpClosing : 0,
 
   _maxCdpConnectionAttempts : null,
-  _maxCdpConnectionWaitTime : 30000,
+  _maxCdpConnectionWaitTime : 60000,
 
   _tempDir : null,
   _tempDirCleanProcess : null,
