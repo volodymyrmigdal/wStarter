@@ -288,21 +288,39 @@ function _Begin()
   function _sourceResolveAct( parentSource, basePath, filePath )
   {
 
-    let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
-    let isAbsolute = resolvedFilePath[ 0 ] === '/';
+    // let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
+    // let isAbsolute = resolvedFilePath[ 0 ] === '/';
 
+    // try
+    // {
+    //   if( !isAbsolute )
+    //   throw _.err( 'not tested' );
+    //   if( !isAbsolute )
+    //   resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
+    //   return resolvedFilePath;
+    // }
+    // catch( err )
+    // {
+    //   return null;
+    // }
+    
+    let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
+    resolvedFilePath = this._broPathResolveRemote( resolvedFilePath );
     try
     {
-      if( !isAbsolute )
-      throw _.err( 'not tested' );
-      if( !isAbsolute )
-      resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
+      this._broFileRead
+      ({
+        filePath : resolvedFilePath,
+        encoding : 'json',
+      });
       return resolvedFilePath;
     }
     catch( err )
     {
-      return null;
+      throw _.err( `Can't resolve path: "${filePath}". Reason:`, err );
     }
+    
+    
   }
 
   //
@@ -451,7 +469,12 @@ function _Begin()
 
     function cacheSet( src )
     {
-      return _starter_.sourcesMap = src;
+      _starter_.sourcesMap = src;
+      
+      if( !_starter_.sourcesMap[ 'module' ] )
+      _starter_._sourceMake( 'module', '/', _sourceCodeModule );
+      
+      return _starter_.sourcesMap;
     }
 
     function accesor( propName, onGet, onSet )

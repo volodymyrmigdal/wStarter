@@ -552,7 +552,9 @@ function sourcesJoinSplits( o )
   ${rou( 'strsLikeAll' )}
   ${rou( 'boolLike' )}
   ${rou( 'arrayIs' )}
+  ${rou( 'numberIsFinite' )}
   ${rou( 'numberIs' )}
+  ${rou( 'intIs' )}
   ${rou( 'setIs' )}
   ${rou( 'setLike' )}
   ${rou( 'hashMapIs' )}
@@ -610,9 +612,11 @@ function sourcesJoinSplits( o )
   ${rou( 'bufferTypedIs' )}
   ${rou( 'bufferNodeIs' )}
   ${rou( 'strLinesStrip' )}
+  ${rou( 'strLinesNumber' )}
   ${rou( 'strLinesSplit' )}
   ${rou( 'strLinesJoin' )}
   ${rou( 'strSplitFast' )}
+  ${rou( 'strLinesSelect' )}
   ${rou( '_strLeftSingle_' )}
   ${rou( '_strRightSingle_' )}
   ${rou( 'strIsolate' )}
@@ -643,6 +647,10 @@ function sourcesJoinSplits( o )
   ${rou( 'uri', 'canonize' )}
   ${rou( 'uri', 'canonizeTolerant' )}
   ${fields( 'uri' )}
+  
+  ${rou( 'property', '_ofAct' )}
+  ${rou( 'property', 'fields' )}
+  
 `
 
   }
