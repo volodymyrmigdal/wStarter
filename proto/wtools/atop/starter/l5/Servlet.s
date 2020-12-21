@@ -583,7 +583,7 @@ function remoteResolve( o )
 
   try
   {
-    
+
     _.assert( _.strBegins( o.resourcePath, '/.resolve/' ) );
 
     if( o.realPath === null )
@@ -696,13 +696,15 @@ function statPath( o )
 
   try
   {
-
+    
     if( o.realPath === null )
     o.realPath = o.resourcePath;
-
-    if( _.path.isAbsolute( o.realPath ) || _.path.isDotted( o.realPath ) )
+    
+    if( _.starter.pathVirtualIs( o.realPath ) )
+    o.realPath = servlet.pathVirtualToReal( o.realPath );
+    else if( _.path.isAbsolute( o.realPath ) || _.path.isDotted( o.realPath ) )
     o.realPath = _.path.reroot( servlet.basePath, o.realPath );
-
+    
     _.assert( _.path.isAbsolute( o.realPath ) )
     
     let exists = _.fileProvider.fileExists( o.realPath );
