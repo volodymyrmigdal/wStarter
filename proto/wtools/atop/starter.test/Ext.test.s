@@ -3698,7 +3698,7 @@ Script.js : Global : DedicatedWorkerGlobalScope
     var exp = `. request /Index.js`;
     test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /Script.js`;
-    test.identical( _.strCount( op.output, exp ), 2 );
+    test.identical( _.strCount( op.output, exp ), 4 );
     var exp = `. request /Worker.js`;
     test.identical( _.strCount( op.output, exp ), 1 );
 
@@ -3747,7 +3747,7 @@ Script.js : Global : DedicatedWorkerGlobalScope
     var exp = `. request /proto/Index.js`;
     test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /proto/Script.js`;
-    test.identical( _.strCount( op.output, exp ), 2 );
+    test.identical( _.strCount( op.output, exp ), 4 );
     var exp = `. request /proto/Worker.js`;
     test.identical( _.strCount( op.output, exp ), 1 );
 
@@ -3795,7 +3795,7 @@ Script.js : Global : DedicatedWorkerGlobalScope
     var exp = `. request /Index.js`;
     test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /Script.js`;
-    test.identical( _.strCount( op.output, exp ), 1 );
+    test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /Worker.js`;
     test.identical( _.strCount( op.output, exp ), 1 );
 
@@ -3843,7 +3843,7 @@ Script.js : Global : DedicatedWorkerGlobalScope
     var exp = `. request /proto/Index.js`;
     test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /proto/Script.js`;
-    test.identical( _.strCount( op.output, exp ), 1 );
+    test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /proto/Worker.js`;
     test.identical( _.strCount( op.output, exp ), 1 );
 
