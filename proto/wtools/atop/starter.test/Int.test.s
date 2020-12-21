@@ -1241,7 +1241,7 @@ let Self =
 
   name : 'Tools.Starter.Int',
   silencing : 1,
-  enabled : 1,
+  enabled : 0,
   routineTimeOut : 60000,
   onSuiteBegin,
   onSuiteEnd,
