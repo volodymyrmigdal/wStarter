@@ -583,7 +583,7 @@ function remoteResolve( o )
 
   try
   {
-
+    
     _.assert( _.strBegins( o.resourcePath, '/.resolve/' ) );
 
     if( o.realPath === null )
@@ -631,7 +631,7 @@ function remoteResolve( o )
     }
 
     resolvedFilePath = end( resolvedFilePath );
-
+    
     if( o.response )
     o.response.json( resolvedFilePath );
 
@@ -641,12 +641,14 @@ function remoteResolve( o )
     err = _.err( err, `\nFailed to resolve ${o.resourcePath}` );
     if( o.request && o.response )
     {
-      return _.servlet.errorHandle
-      ({
-        request : o.request,
-        response : o.response,
-        err
-      });
+      // return _.servlet.errorHandle
+      // ({
+      //   request : o.request,
+      //   response : o.response,
+      //   err
+      // });
+      o.response.json({ err : `Failed to resolve ${o.resourcePath}` });
+      
     }
     else
     {
@@ -676,6 +678,63 @@ function remoteResolve( o )
 }
 
 remoteResolve.defaults =
+{
+  resourcePath : null,
+  realPath : null,
+  request : null,
+  response : null,
+}
+
+//
+
+function statPath( o )
+{
+  let servlet = this;
+  let resolvedFilePath;
+
+  _.routineOptions( statPath, arguments );
+
+  try
+  {
+
+    if( o.realPath === null )
+    o.realPath = o.resourcePath;
+
+    if( _.path.isAbsolute( o.realPath ) || _.path.isDotted( o.realPath ) )
+    o.realPath = _.path.reroot( servlet.basePath, o.realPath );
+
+    _.assert( _.path.isAbsolute( o.realPath ) )
+    
+    let exists = _.fileProvider.fileExists( o.realPath );
+
+    if( o.response )
+    o.response.json({ exists });
+
+  }
+  catch( err )
+  {
+    err = _.err( err, `\nFailed to resolve ${o.resourcePath}` );
+    if( o.request && o.response )
+    {
+      return _.servlet.errorHandle
+      ({
+        request : o.request,
+        response : o.response,
+        err
+      });
+    }
+    else
+    {
+      throw err;
+    }
+  }
+
+  return resolvedFilePath;
+
+  /* */
+}
+
+statPath.defaults =
 {
   resourcePath : null,
   realPath : null,
@@ -864,6 +923,16 @@ function scriptWrap_functor( fop )
         request : o.request,
       });
     }
+    else if( o.uri.query && _.strHas( o.uri.query, 'stat' ) )
+    {
+      return servlet.statPath
+      ({
+        resourcePath : o.uri.longPath,
+        realPath : o.realPath,
+        response : o.response,
+        request : o.request,
+      });
+    }
 
     o.realPath = servlet.pathVirtualToReal( o.uri.longPath );
     o.shortName = _.strVarNameFor( _.path.fullName( o.realPath ) );
@@ -877,7 +946,7 @@ function scriptWrap_functor( fop )
         request : o.request,
       });
     }
-
+    
     if( o.query.entry )
     {
       if( o.query.format === 'html' )
@@ -1079,6 +1148,7 @@ let Proto =
   jsSingleForJs,
   jsForJs,
   remoteResolve,
+  statPath,
   starterWareReturn,
 
   surePathAllowed,

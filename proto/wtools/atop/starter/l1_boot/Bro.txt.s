@@ -262,22 +262,26 @@ function _Begin()
 
     if( _.path.isGlob( filePath ) || _.path.isRelative( filePath ) )
     {
-      filePath = starter._broFileRead
+      let result = starter._broFileRead
       ({
         filePath : '/.resolve/' + filePath,
         encoding : 'json',
       });
       try
       {
-        filePath = JSON.parse( filePath );
+        result = JSON.parse( result );
+        
+        if( result.err )
+        throw result.err;
+        
+        return result;
       }
       catch( err )
       {
-        debugger;
-        console.error( filePath );
+        // debugger;
+        // console.error( filePath );
         throw _.err( err );
       }
-      return filePath;
     }
 
     return filePath;
@@ -306,21 +310,18 @@ function _Begin()
     
     let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
     resolvedFilePath = this._broPathResolveRemote( resolvedFilePath );
-    try
-    {
-      this._broFileRead
-      ({
-        filePath : resolvedFilePath,
-        encoding : 'json',
-      });
-      return resolvedFilePath;
-    }
-    catch( err )
-    {
-      throw _.err( `Can't resolve path: "${filePath}". Reason:`, err );
-    }
     
+    let result = this._broFileRead
+    ({
+      filePath : resolvedFilePath + '?stat=1',
+      encoding : 'json',
+    });
+    result = JSON.parse( result );
     
+    if( !result.exists )
+    throw _.err( `Failed to resolve path: "${filePath}, file doesn't exist.`);
+      
+    return resolvedFilePath;
   }
 
   //
