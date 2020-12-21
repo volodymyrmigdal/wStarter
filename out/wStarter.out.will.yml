@@ -391,6 +391,8 @@ module:
           - ../proto/wtools/atop/starter.test/_asset/recursion
           - ../proto/wtools/atop/starter.test/_asset/recursion/F1.js
           - ../proto/wtools/atop/starter.test/_asset/recursion/F2.js
+          - ../proto/wtools/atop/starter.test/_asset/servlet
+          - ../proto/wtools/atop/starter.test/_asset/servlet/F1.js
           - ../proto/wtools/atop/starter.test/_asset/several
           - ../proto/wtools/atop/starter.test/_asset/several/File1.js
           - ../proto/wtools/atop/starter.test/_asset/several/File2.js
