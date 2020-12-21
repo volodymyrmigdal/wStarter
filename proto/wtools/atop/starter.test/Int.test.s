@@ -1153,38 +1153,38 @@ async function servletRemoteResolve( test )
 {
   let context = this;
   let a = context.assetFor( test, 'servlet' );
-  
+
   a.reflect();
-  
+
   let system = new _.starter.System({ verbosity : 7 }).form();
-  
+
   let servlet = new _.starter.Servlet({ basePath : a.routinePath, allowedPath : { '/' : true }, system });
   await servlet.form();
-  
+
   let Needle = require( 'needle' );
-  
+
   test.case = 'glob for existing file'
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/./*.js', { json : 1 });
   test.identical( response.body, [ '/F1.js' ] );
-  
+
   test.case = 'glob for not existing file'
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/./*.txt', { json : 1 });
   test.identical( response.body, [] );
-  
+
   test.case = 'module'
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/wTools', { json : 1 });
   test.true( _.strEnds( response.body, 'Layer1.s' ) );
-  
+
   test.case = 'fail'
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/unknown', { json : 1 });
   test.true( _.strIs( response.body.err ) );
-  
+
   test.case = 'resolvingNpm disabled'
   servlet.resolvingNpm = false;
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/wTools', { json : 1 });
   test.true( _.strIs( response.body.err ) );
   servlet.resolvingNpm = true;
-  
+
   test.case = 'resolvingGlob disabled'
   servlet.resolvingGlob = false;
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/./*.js', { json : 1 });
@@ -1200,36 +1200,36 @@ async function servletRemoteStat( test )
 {
   let context = this;
   let a = context.assetFor( test, 'servlet' );
-  
+
   a.reflect();
-  
+
   let system = new _.starter.System({ verbosity : 7 }).form();
-  
+
   let servlet = new _.starter.Servlet({ basePath : a.routinePath, allowedPath : { '/' : true }, system });
   await servlet.form();
-  
+
   let Needle = require( 'needle' );
-  
+
   test.case = 'absolute exists'
   var response = await Needle( 'get', servlet.serverPath + '/F1.js?stat=1', { json : 1 });
   test.identical( response.body, { exists : true } );
-  
+
   test.case = 'absolute missing'
   var response = await Needle( 'get', servlet.serverPath + '/F2.js?stat=1', { json : 1 });
   test.identical( response.body, { exists : false } );
-  
+
   test.case = 'relative'
   var dirName = a.fileProvider.path.name( a.routinePath )
   var response = await Needle( 'get', servlet.serverPath + `/../${dirName}/F1.js?stat=1`, { json : 1 });
   test.identical( response.body, { exists : true } );
-  
+
   test.case = 'relative missing'
   var dirName = a.fileProvider.path.name( a.routinePath )
   var response = await Needle( 'get', servlet.serverPath + `/../${dirName}/F2.js?stat=1`, { json : 1 });
   test.identical( response.body, { exists : false } );
-  
+
   return servlet.finit();
-  
+
 }
 
 // --
@@ -1305,9 +1305,9 @@ let Self =
     // etc
 
     browserUserTempDirCleanup,
-    
+
     //servlet
-    
+
     servletRemoteResolve,
     servletRemoteStat
 

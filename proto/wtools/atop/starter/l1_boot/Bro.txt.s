@@ -270,10 +270,10 @@ function _Begin()
       try
       {
         result = JSON.parse( result );
-        
+
         if( result.err )
         throw result.err;
-        
+
         return result;
       }
       catch( err )
@@ -307,20 +307,20 @@ function _Begin()
     // {
     //   return null;
     // }
-    
+
     let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
     resolvedFilePath = this._broPathResolveRemote( resolvedFilePath );
-    
+
     let result = this._broFileRead
     ({
       filePath : resolvedFilePath + '?stat=1',
       encoding : 'json',
     });
     result = JSON.parse( result );
-    
+
     if( !result.exists )
     throw _.err( `Failed to resolve path: "${filePath}, file doesn't exist.`);
-      
+
     return resolvedFilePath;
   }
 
@@ -471,10 +471,10 @@ function _Begin()
     function cacheSet( src )
     {
       _starter_.sourcesMap = src;
-      
+
       if( !_starter_.sourcesMap[ 'module' ] )
       _starter_._sourceMake( 'module', '/', _sourceCodeModule );
-      
+
       return _starter_.sourcesMap;
     }
 
