@@ -33,7 +33,7 @@ function _unform()
       if( !session._process.ended && session._process.pnd )
       {
         console.log( 'Terminating process' );
-        return _.process.terminate( session._process.pnd );
+        return _.process.terminate({ pnd : session._process.pnd, ignoringErrorPerm : 0 });
       }
       return null;
     });

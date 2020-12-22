@@ -32,7 +32,7 @@ function _unform()
   ready.then( () =>
   {
     if( _.process.isAlive( session.process.pid ) )
-    return _.process.kill({ pnd : session.process, withChildren : 1 });
+    return _.process.kill({ pnd : session.process, withChildren : 1, ignoringErrorPerm : 0 });
     return null;
   })
 
