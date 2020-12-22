@@ -27,7 +27,6 @@
   },
   "dependencies" :
   {
-    "wprocess": "volodymyrmigdal/wProcess",
     "chrome-launcher" : "0.13.2",
     "express" : "4.17.1",
     "jsdom" : "16.4.0",
