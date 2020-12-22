@@ -29,11 +29,22 @@ function _unform()
   ready.then( () => session.cdpClose() );
 
   if( session.process )
-  ready.then( () =>
+  ready.then( async () =>
   {
-    if( _.process.isAlive( session.process.pid ) )
-    return _.process.kill({ pnd : session.process, withChildren : 1, ignoringErrorPerm : 0 });
+    if( !_.process.isAlive( session.process.pid ) )
     return null;
+
+    let children = await _.process.children({ pid : session.process.pid, format : 'list' });
+    let cons = children.map( ( p ) => _.process.waitForDeath({ pid : p.pid, timeOut : 10000 }) )
+
+    _.process.kill
+    ({
+      pnd : session.process,
+      withChildren : 0,
+      ignoringErrorPerm : 0
+    });
+
+    return _.Consequence.AndKeep( ... cons );
   })
 
   /*
