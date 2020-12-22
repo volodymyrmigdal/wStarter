@@ -29,11 +29,37 @@ function _unform()
   ready.then( () => session.cdpClose() );
 
   if( session.process )
-  ready.then( () =>
+  ready.then( async () =>
   {
-    if( _.process.isAlive( session.process.pid ) )
-    return _.process.kill({ pnd : session.process, withChildren : 1 });
+    if( !_.process.isAlive( session.process.pid ) )
     return null;
+
+    if( process.platform !== 'win32' )
+    return _.process.kill({ pnd : session.process, withChildren : 1 });
+
+    /* Workaround for windows xxx:remove later*/
+
+    let children = await _.process.children({ pid : session.process.pid, format : 'list' });
+    let filtered = children.filter( p => p.name === 'chrome.exe' );
+
+    let childrenCons = filtered.map( ( p ) =>
+    {
+      return _.process.waitForDeath
+      ({
+        pid : p.pid,
+        timeOut : session._waitForDeathTimeout
+      })
+    });
+
+    let mainProcessCon = _.process.kill
+    ({
+      pnd : session.process,
+      withChildren : 0,
+      ignoringErrorPerm : 0,
+      timeOut : session._waitForDeathTimeout
+    })
+
+    return _.Consequence.AndKeep( mainProcessCon, ... childrenCons );
   })
 
   /*
@@ -798,7 +824,9 @@ let Restricts =
 
   _tempDir : null,
   _tempDirCleanProcess : null,
-  _tempDirCleanProcessWaitTimeOut : 30000
+  _tempDirCleanProcessWaitTimeOut : 30000,
+
+  _waitForDeathTimeout : 10000,
 
 }
 
