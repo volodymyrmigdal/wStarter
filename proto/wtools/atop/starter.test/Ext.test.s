@@ -4115,7 +4115,7 @@ let Self =
   name : 'Tools.Starter.Ext',
   silencing : 1,
   enabled : 1,
-  routineTimeOut : 60000,
+  routineTimeOut : 60000 * 3,
   onSuiteBegin,
   onSuiteEnd,
 
