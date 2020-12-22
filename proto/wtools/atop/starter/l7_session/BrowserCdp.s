@@ -35,15 +35,16 @@ function _unform()
     return null;
 
     let children = await _.process.children({ pid : session.process.pid, format : 'list' });
+    let filtered = children.filter( p => p.name === 'chrome.exe' );
 
-    let cons = children.map( ( p ) => _.process.waitForDeath({ pid : p.pid, timeOut : 10000 }) )
+    let cons = filtered.map( ( p ) => _.process.waitForDeath({ pid : p.pid, timeOut : 10000 }) );
 
     _.process.kill
     ({
       pnd : session.process,
       withChildren : 0,
       ignoringErrorPerm : 0
-    });
+    })
 
     return _.Consequence.AndKeep( ... cons );
   })
