@@ -36,11 +36,7 @@ function _unform()
 
     let children = await _.process.children({ pid : session.process.pid, format : 'list' });
 
-    let cons = children.map( ( p ) =>
-    {
-      console.log( p );
-      return _.process.waitForDeath({ pid : p.pid, timeOut : 10000 })
-    })
+    let cons = children.map( ( p ) => _.process.waitForDeath({ pid : p.pid, timeOut : 10000 }) )
 
     _.process.kill
     ({
