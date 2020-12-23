@@ -40,7 +40,7 @@ function _unform()
     /* Workaround for windows xxx:remove later*/
 
     let children = await _.process.children({ pid : session.process.pid, format : 'list' });
-    let filtered = children.filter( p => p.name === 'chrome.exe' );
+    let filtered = children.filter( ( p ) => p.name === 'chrome.exe' );
 
     let childrenCons = filtered.map( ( p ) =>
     {
