@@ -55,8 +55,7 @@ function _unform()
     ({
       pnd : session.process,
       withChildren : 0,
-      ignoringErrorPerm : 0,
-      timeOut : session._waitForDeathTimeout
+      ignoringErrorPerm : 0
     })
 
     return _.Consequence.AndKeep( mainProcessCon, ... childrenCons );
