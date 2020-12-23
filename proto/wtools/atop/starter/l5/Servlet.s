@@ -631,7 +631,7 @@ function remoteResolve( o )
     }
 
     resolvedFilePath = end( resolvedFilePath );
-    
+
     if( o.response )
     o.response.json( resolvedFilePath );
 
@@ -648,7 +648,7 @@ function remoteResolve( o )
       //   err
       // });
       o.response.json({ err : `Failed to resolve ${o.resourcePath}` });
-      
+
     }
     else
     {
@@ -696,17 +696,17 @@ function statPath( o )
 
   try
   {
-    
+
     if( o.realPath === null )
     o.realPath = o.resourcePath;
-    
+
     if( _.starter.pathVirtualIs( o.realPath ) )
     o.realPath = servlet.pathVirtualToReal( o.realPath );
     else if( _.path.isAbsolute( o.realPath ) || _.path.isDotted( o.realPath ) )
     o.realPath = _.path.reroot( servlet.basePath, o.realPath );
-    
+
     _.assert( _.path.isAbsolute( o.realPath ) )
-    
+
     let exists = _.fileProvider.fileExists( o.realPath );
 
     if( o.response )
@@ -948,7 +948,7 @@ function scriptWrap_functor( fop )
         request : o.request,
       });
     }
-    
+
     if( o.query.entry )
     {
       if( o.query.format === 'html' )

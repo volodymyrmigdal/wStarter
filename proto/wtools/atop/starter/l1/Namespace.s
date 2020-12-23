@@ -189,10 +189,10 @@ pathVirtualToReal.defaults =
 function pathVirtualIs( virtualPath )
 {
   let regexp = /^(\/?(_\d+_)\/)/;
-  
+
   _.assert( arguments.length === 1 );
   _.assert( _.strIs( virtualPath ) );
-  
+
   let parsed = regexp.exec( virtualPath );
   return !!parsed;
 }
