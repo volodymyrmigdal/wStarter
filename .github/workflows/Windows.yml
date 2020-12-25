@@ -28,6 +28,6 @@ jobs :
         node-version : ${{ matrix.node-version }}
     - run : npm i
     - name : npm test
-      run : node proto/wtools/atop/starter.test/Int.test.s r:experiment routineTimeOut : 60000 v:10
+      run : "node proto/wtools/atop/starter.test/Int.test.s r:experiment routineTimeOut : 60000 v:10"
       env :
         WTOOLS_BOT_TOKEN : ${{ secrets.WTOOLS_BOT_TOKEN }}
