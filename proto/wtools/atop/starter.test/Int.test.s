@@ -1232,6 +1232,73 @@ async function servletRemoteStat( test )
 
 }
 
+async function experiment( test )
+{
+  let context = this;
+  let a = context.assetFor( test, false );
+
+  let ChromeLauncher = require( 'chrome-launcher' );
+  let ChromeDefaultFlags = require( 'chrome-launcher/dist/flags' ).DEFAULT_FLAGS
+  let Cdp = require( 'chrome-remote-interface' );
+
+  let installationPaths = ChromeLauncher.Launcher.getInstallations();
+  let args = ChromeDefaultFlags.slice();
+
+  args.push( `--remote-debugging-port=9222` )
+  args.push( '--headless', '--disable-gpu' );
+
+  let op =
+  {
+    execPath : _.strQuote( installationPaths[ 0 ] ),
+    mode : 'spawn',
+    detaching : 1,
+    stdio : 'ignore',
+    outputPiping : 0,
+    inputMirroring : 0,
+    throwingExitCode : 0,
+    args
+  }
+
+  _.process.start( op )
+
+  await op.conStart.then( () =>
+  {
+    op.disconnect();
+    return _.time.out( 2000 );
+  })
+
+  let cdp = await Cdp({ port : 9222 });
+
+  await cdp.Page.enable();
+  await cdp.Page.navigate({ url : 'https://pptr.dev/' });
+  await cdp.Page.loadEventFired();
+
+  let cons = []
+
+  let timer = _.time.periodic( 10, () =>
+  {
+    if( !_.process.isAlive( op.pnd.pid ) )
+    return;
+
+    let con = _.process.children({ pid : op.pnd.pid, format : 'list'})
+    con.then( ( children ) =>
+    {
+      let names = children.filter( ( pnd ) => pnd.name !== 'chrome.exe' )
+      test.identical( names.length, 0 )
+      return null;
+    })
+    cons.push( con )
+
+    return true;
+  })
+
+  await _.time.out( 5000 );
+  cdp.Browser.close();
+  await _.process.kill({ pid : op.pnd.pid, withChildren : 1 });
+
+  return _.Consequence.AndKeep( cons )
+}
+
 // --
 // declare
 // --
@@ -1241,7 +1308,7 @@ let Self =
 
   name : 'Tools.Starter.Int',
   silencing : 1,
-  enabled : 0,
+  enabled : 1,
   routineTimeOut : 60000,
   onSuiteBegin,
   onSuiteEnd,
@@ -1309,7 +1376,9 @@ let Self =
     //servlet
 
     servletRemoteResolve,
-    servletRemoteStat
+    servletRemoteStat,
+
+    experiment
 
   }
 
