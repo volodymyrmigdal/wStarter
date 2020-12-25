@@ -1264,7 +1264,7 @@ async function experiment( test )
   await op.conStart.then( () =>
   {
     op.disconnect();
-    return _.time.out( 2000 );
+    return _.time.out( 10000 );
   })
 
   let cdp = await Cdp({ port : 9222 });
