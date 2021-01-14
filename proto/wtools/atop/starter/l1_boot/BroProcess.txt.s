@@ -23,7 +23,7 @@ function _Begin()
   if( _global._starter_ && _global._starter_._inited )
   return;
 
-  let _process = _global.process = _global._starter_.process = Object.create( null );
+  let _process = _global.process = Object.create( null );
 
   //
 
@@ -39,25 +39,6 @@ function _Begin()
       body: JSON.stringify( body )
     }
     fetch( '/.process', op );
-  }
-
-  /* */
-
-  function on( signal, handler )
-  {
-
-  }
-
-  /* */
-
-  function once( signal, handler )
-  {
-  }
-
-  /* */
-
-  function off( signal, handler )
-  {
   }
 
   /* */
@@ -96,6 +77,79 @@ function _Begin()
 
   /* */
 
+  function on( o )
+  {
+    o = _.event.on.head( _.event.on, arguments );
+    return _.event.on( _process._ehandler, o );
+  }
+
+  on.defaults =
+  {
+    callbackMap : null,
+  };
+
+  /* */
+
+  function once( o )
+  {
+    o = _.event.once.head( _.event.once, arguments );
+    return _.event.once( _process._ehandler, o );
+  }
+
+  once.defaults =
+  {
+    callbackMap : null,
+  };
+
+  /* */
+
+  function off( o )
+  {
+    o = _.event.off.head( _.event.off, arguments );
+    return _.event.off( _process._ehandler, o );
+  }
+
+  off.defaults =
+  {
+    callbackMap : null,
+  };
+
+  /* */
+
+  function eventHasHandler( o )
+  {
+    o = _.event.eventHasHandler.head( _.event.eventHasHandler, arguments );
+    return _.event.eventHasHandler( _process._ehandler, o );
+  }
+
+  eventHasHandler.defaults =
+  {
+    eventName : null,
+    eventHandler : null,
+  }
+
+  function eventGive()
+  {
+    return _.event.eventGive( _process._ehandler, ... arguments );
+  }
+
+  eventGive.defaults =
+  {
+    ... _.event.eventGive.defaults,
+  }
+
+  /* */
+
+  _realGlobal_.onerror = function onerror()
+  {
+    _process.eventGive({ event : 'uncaughtException', args : arguments });
+  }
+
+  _realGlobal_.onunhandledrejection = function onunhandledrejection()
+  {
+    _process.eventGive({ event : 'unhandledRejection', args : arguments });
+  }
+
 }
 
 // --
@@ -105,13 +159,29 @@ function _Begin()
 function _End()
 {
 
+  let Events =
+  {
+    'uncaughtError' : [],
+    'uncaughtException' : [],
+    'unhandledRejection' : []
+  }
+
+  let _ehandler =
+  {
+    events : Events,
+  }
+
   let Extension =
   {
+    _ehandler,
+
     exit,
 
     on,
     once,
     off,
+    eventHasHandler,
+    eventGive,
 
     nextTick,
 
@@ -124,7 +194,7 @@ function _End()
 
   }
 
-  Object.assign( _starter_.process, Extension );
+  Object.assign( _global.process, Extension );
 
 }
 

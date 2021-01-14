@@ -63,7 +63,6 @@ function _Begin()
     sourceFile.state = o.nakedCall ? 'preloaded' : 'created';
 
     sourceFile.starter = starter;
-    sourceFile.process = starter.process;
     sourceFile.include = starter._sourceInclude.bind( starter, sourceFile, sourceFile.dirPath );
     sourceFile.resolve = starter._sourceResolve.bind( starter, sourceFile, sourceFile.dirPath );
     sourceFile.include.resolve = sourceFile.resolve;

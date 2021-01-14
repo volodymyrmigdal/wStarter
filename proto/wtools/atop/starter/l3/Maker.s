@@ -590,6 +590,7 @@ function sourcesJoinSplits( o )
   ${rou( 'mapExtend' )}
   ${rou( 'mapSupplement' )}
   ${rou( 'routineExtend' )}
+  ${rou( 'arrayAppend' )}
   ${rou( 'arrayAppendArray' )}
   ${rou( 'arrayAppendArrays' )}
   ${rou( 'arrayAppendedArray' )}
@@ -646,6 +647,26 @@ function sourcesJoinSplits( o )
   ${rou( 'error', '_handleUncaught1' )}
   ${rou( 'error', '_handleUncaughtPromise1' )}
   ${rou( 'error', '_handleUncaught2' )}
+
+  ${rou( 'event', '_chainGenerate' )}
+  ${rou( 'event', '_chainToCallback' )}
+  ${rou( 'event', '_chainValidate' )}
+  ${rou( 'event', '_callbackMapValidate' )}
+  ${rou( 'event', 'nameValueFrom' )}
+  ${rou( 'event', 'nameIs' )}
+  ${rou( 'event', 'chainIs' )}
+  ${rou( 'event', 'Name' )}
+  ${rou( 'event', 'Chain' )}
+  ${rou( 'event', 'on' )}
+  ${rou( 'event', 'once' )}
+  ${rou( 'event', 'off' )}
+  ${rou( 'event', 'off_functor' )}
+  ${rou( 'event', 'eventHasHandler' )}
+  ${rou( 'event', 'eventGive' )}
+  ${fields( 'event' )}
+
+  ${rou( 'each' )}
+
 
   /*
   Uri namespace( parseConsecutive ) is required to make _.include working in a browser

@@ -4006,10 +4006,10 @@ async function loggingError( test )
 
   a.reflect();
 
-  a.appStart( `.start F1.js timeOut:${context.deltaTime3} headless:1` )
+  a.appStart({ execPath : `.start F1.js timeOut:${context.deltaTime3} headless:1`, throwingExitCode : 0 })
   .then( ( op ) =>
   {
-    test.identical( op.exitCode, 0 );
+    test.notIdentical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, 'F1:begin' ), 1 );
     test.identical( _.strCount( op.output, 'F1:end' ), 1 );
     test.identical( _.strCount( op.output, 'uncaught error' ), 2 );
