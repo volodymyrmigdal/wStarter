@@ -566,9 +566,9 @@ function sourcesJoinSplits( o )
   ${rou( 'mapIs' )}
   ${rou( 'sure' )}
   ${rou( 'mapBut' )}
-  ${rou( 'mapHas' )}
+  ${rou( 'mapOwn' )}
   ${rou( '_mapKeys' )}
-  ${rou( 'mapOwnKeys' )}
+  ${rou( 'mapOnlyOwnKeys' )}
   ${rou( 'sureMapHasOnly' )}
   ${rou( 'sureMapHasNoUndefine' )}
   ${rou( 'mapSupplementStructureless' )}
