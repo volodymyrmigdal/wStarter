@@ -37,6 +37,7 @@
     "wloggersocket" : "",
     "chrome-launcher" : "0.13.2",
     "express" : "4.17.1",
+    "body-parser": "1.19.0",
     "jsdom" : "16.4.0",
     "pretty" : "2.0.0",
     "chrome-remote-interface" : "0.28.1",
