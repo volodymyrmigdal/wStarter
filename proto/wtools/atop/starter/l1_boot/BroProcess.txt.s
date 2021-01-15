@@ -145,9 +145,9 @@ function _Begin()
     _process.eventGive({ event : 'uncaughtException', args : arguments });
   }
 
-  _realGlobal_.onunhandledrejection = function onunhandledrejection()
+  _realGlobal_.onunhandledrejection = function onunhandledrejection( e )
   {
-    _process.eventGive({ event : 'unhandledRejection', args : arguments });
+    _process.eventGive({ event : 'unhandledRejection', args : [ e.reason, e.promise ] });
   }
 
 }
