@@ -163,7 +163,17 @@ function _End()
   {
     'uncaughtError' : [],
     'uncaughtException' : [],
-    'unhandledRejection' : []
+    'unhandledRejection' : [],
+
+    'SIGHUP' : [],
+    'SIGQUIT' : [],
+    'SIGINT' : [],
+    'SIGTERM' : [],
+    'SIGUSR1' : [],
+    'SIGUSR2' : [],
+
+    'exit' : [],
+    'beforeExit' : [],
   }
 
   let _ehandler =

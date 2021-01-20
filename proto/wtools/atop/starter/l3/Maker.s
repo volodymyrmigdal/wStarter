@@ -563,6 +563,7 @@ function sourcesJoinSplits( o )
   ${rou( 'mapLike' )}
   ${rou( 'strsLikeAll' )}
   ${rou( 'boolLike' )}
+  ${rou( 'boolLikeTrue' )}
   ${rou( 'arrayIs' )}
   ${rou( 'numberIsFinite' )}
   ${rou( 'numberIs' )}
@@ -629,6 +630,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strLinesSplit' )}
   ${rou( 'strLinesJoin' )}
   ${rou( 'strSplitFast' )}
+  ${rou( 'strStrip' )}
   ${rou( 'strLinesSelect' )}
   ${rou( '_strLeftSingle_' )}
   ${rou( '_strRightSingle_' )}
@@ -683,6 +685,25 @@ function sourcesJoinSplits( o )
 
   ${rou( 'property', '_ofAct' )}
   ${rou( 'property', 'fields' )}
+
+  ${rou( 'color', 'strFg' )}
+  ${rou( 'color', 'strBg' )}
+  ${rou( 'color', 'rgbaHtmlFrom' )}
+  ${rou( 'color', 'rgbaHtmlFromTry' )}
+  ${rou( 'color', 'hslaToRgba' )}
+  ${rou( 'color', '_colorDistance' )}
+  ${rou( 'color', '_rgbByBitmask' )}
+  ${rou( 'color', '_rgbaFromNotName' )}
+  ${rou( 'color', '_colorNameNearest' )}
+  ${rou( 'color', 'colorNameNearest' )}
+  ${rou( 'color', '_fromTable' )}
+  ${rou( 'color', 'fromTable' )}
+  ${rou( 'color', 'hexToColor' )}
+  ${fields( 'color' )}
+  ${field( 'color', 'ColorMap' )}
+
+
+  ${rou( 'Logger', 'TransformCssStylingToDirectives' )}
 
 `
 
