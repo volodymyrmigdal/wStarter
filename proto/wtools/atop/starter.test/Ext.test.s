@@ -3995,6 +3995,71 @@ startExitCode.description =
   - Starter exits with code specified in the browser.
 `
 
+//
+
+function startStyledConsoleOutput( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  let appStart = a.process.starter
+  ({
+    execPath : context.appJsPath,
+    currentPath : a.originalAbs( '.' ),
+    outputCollecting : 1,
+    throwingExitCode : 0,
+    outputGraying : 1,
+    detaching : 0,
+    ready : a.ready,
+    mode : 'fork',
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    // _.fileProvider.filesDelete( a.routinePath );
+    // a.reflect();
+    // _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  appStart
+  ({
+    execPath : `.start`,
+    args :
+    [
+      `wtools/atop/starter.test/_asset/startStyledConsoleOutput/File1.js`,
+      `basePath:../../../../..`,
+      `loggingSessionEvents:0`,
+      `headless:0`,
+      `loggingOptions:1`
+    ]
+  })
+  .then( ( op ) =>
+  {
+    var output =
+`
+xxx
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startStyledConsoleOutput.experimental = 1;
+startStyledConsoleOutput.description =
+`
+- Client-side browser colorful log works on server-side.
+`
+
 // --
 // etc
 // --
@@ -4013,7 +4078,9 @@ async function loggingError( test )
     test.identical( _.strCount( op.output, 'F1:begin' ), 1 );
     test.identical( _.strCount( op.output, 'F1:end' ), 1 );
     test.identical( _.strCount( op.output, 'uncaught error' ), 2 );
+    test.identical( _.strCount( op.output, 'uncaught promise error' ), 2 );
     test.identical( _.strCount( op.output, 'Some Error!' ), 1 );
+    test.identical( _.strCount( op.output, 'Promise Error!' ), 1 );
     return op;
   })
 
@@ -4024,6 +4091,7 @@ loggingError.description =
 `
 - Client-side log appears on server-side.
 - Client-side uncaught errors appears on server side.
+- Client-side unhandled promise rejection error appears on server side.
 `
 
 //
@@ -4245,6 +4313,7 @@ let Self =
     workerEnvironment,
 
     startExitCode,
+    startStyledConsoleOutput,
 
     // logging
 
