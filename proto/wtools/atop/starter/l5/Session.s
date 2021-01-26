@@ -1,4 +1,5 @@
-( function _Session_s_() {
+( function _Session_s_()
+{
 
 'use strict';
 
@@ -597,6 +598,7 @@ let Bools =
   catchingUncaughtErrors : 1, /* qqq : cover */
   naking : 0, /* qqq : cover */
 
+
 }
 
 let Composes =
@@ -614,6 +616,11 @@ let Composes =
   format : null, /* qqq : cover */
   timeOut : null, /* qqq : cover */
   interpreter : 'browser',
+
+  sessionPort : null,
+  serverPath : null,
+
+  cleanupAfterStarterDeath : 1, /* for testing */
 
   ... Bools,
 

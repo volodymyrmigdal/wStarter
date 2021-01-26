@@ -1,9 +1,9 @@
-( function _BrowserCdp_s_() {
+( function _BrowserCdp_s_()
+{
 
 'use strict';
 
-let Open;
-let ChromeLauncher;
+let Open, ChromeLauncher, ChromeDefaultFlags, Net;
 
 let _ = _global_.wTools;
 let Parent = _.starter.session.Abstract;
@@ -28,6 +28,39 @@ function _unform()
   if( session.cdp )
   ready.then( () => session.cdpClose() );
 
+  if( session.process )
+  ready.then( async () =>
+  {
+    if( !_.process.isAlive( session.process.pid ) )
+    return null;
+
+    if( process.platform !== 'win32' )
+    return _.process.kill({ pnd : session.process, withChildren : 1 });
+
+    /* Workaround for windows xxx:remove later*/
+
+    let children = await _.process.children({ pid : session.process.pid, format : 'list' });
+    let filtered = children.filter( ( p ) => p.name === 'chrome.exe' );
+
+    let childrenCons = filtered.map( ( p ) =>
+    {
+      return _.process.waitForDeath
+      ({
+        pid : p.pid,
+        timeOut : session._waitForDeathTimeout
+      })
+    });
+
+    let mainProcessCon = _.process.kill
+    ({
+      pnd : session.process,
+      withChildren : 0,
+      ignoringErrorPerm : 0
+    })
+
+    return _.Consequence.AndKeep( mainProcessCon, ... childrenCons );
+  })
+
   /*
     do not assign null to field curratedRunState in method unform
   */
@@ -46,6 +79,18 @@ function _unform()
     session.entryWithQueryUri = null;
     return arg;
   });
+
+  if( !session.cleanupAfterStarterDeath )
+  ready.then( () =>
+  {
+    if( !session._tempDirCleanProcess )
+    return true;
+    let pid = session._tempDirCleanProcess.pnd.pid;
+    let timeOut = session._tempDirCleanProcessWaitTimeOut;
+    if( !_.process.isAlive( pid ) )
+    return true;
+    return _.process.waitForDeath({ pid, timeOut })
+  })
 
   ready.finally( ( err, arg ) =>
   {
@@ -69,7 +114,7 @@ function _form()
   let logger = system.logger;
   let ready = new _.Consequence().take( null );
 
-  ready.then( () =>
+  ready.then( async () =>
   {
 
     session.fieldsForm();
@@ -77,11 +122,16 @@ function _form()
     session.loggingSessionEventsForm();
     session.timerForm();
 
-    if( session._cdpPort === null )
-    session._cdpPort = session._CdpPortDefault;
+    if( session.sessionPort === null )
+    session.sessionPort = session._CdpPortDefault;
+
+    if( session.sessionPort === 0 )
+    session.sessionPort = await system._getRandomPort();
+    else
+    await system._checkIfPortIsOpen( session.sessionPort );
 
     if( !session.servlet )
-    session.servletOpen();
+    await session.servletOpen();
 
     if( session.entryPath )
     session.entryFind();
@@ -155,7 +205,7 @@ function entryFind()
 
 //
 
-function servletOpen()
+async function servletOpen()
 {
   let session = this;
   let system = session.system;
@@ -165,8 +215,9 @@ function servletOpen()
   _.assert( session.servlet === null );
 
   let o2 = _.mapOnly( session, _.starter.Servlet.FieldsOfCopyableGroups );
+  o2.session = session;
   session.servlet = new _.starter.Servlet( o2 );
-  session.servlet.form();
+  await session.servlet.form();
 
   if( session.servlet && path.isAbsolute( session.entryPath ) && session.format )
   session.entryUriForm();
@@ -213,37 +264,103 @@ function curratedRunOpen()
   session._curatedRunLaunchBegin();
 
   if( !ChromeLauncher )
-  ChromeLauncher = require( 'chrome-launcher' );
+  {
+    ChromeLauncher = require( 'chrome-launcher' );
+    ChromeDefaultFlags = require( 'chrome-launcher/dist/flags' ).DEFAULT_FLAGS
+  }
 
-  let tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome` );
+  let tempDir = session._tempDir = path.resolve( path.dirTemp(), `wStarter/session/chrome`, _.idWithDateAndTime() );
   fileProvider.dirMake( tempDir );
   _.assert( fileProvider.isDir( tempDir ) );
 
-  let opts = Object.create( null );
-  opts.startingUrl = session.entryWithQueryUri;
-  opts.userDataDir = _.path.nativize( tempDir );
-  opts.port = session._cdpPort
-  opts.chromeFlags = [];
+  // let opts = Object.create( null );
+  // opts.startingUrl = session.entryWithQueryUri;
+  // opts.userDataDir = _.path.nativize( tempDir );
+  // opts.port = session.sessionPort
+  // opts.chromeFlags = [];
 
-  if( session.headless )
-  opts.chromeFlags.push( '--headless', '--disable-gpu' );
+  // if( session.headless )
+  // opts.chromeFlags.push( '--headless', '--disable-gpu' );
 
   // console.log( 'curratedRunOpen:b' );
 
-  return _.Consequence.Try( () => ChromeLauncher.launch( opts ) )
-  .finally( ( err, chrome ) =>
+  let installationPaths = ChromeLauncher.Launcher.getInstallations();
+
+  let args = ChromeDefaultFlags.slice();
+
+  args.push( `--remote-debugging-port=${session.sessionPort}` )
+  args.push( `--user-data-dir=${_.path.nativize( tempDir )}`)
+
+  if( session.headless )
+  args.push( '--headless', '--disable-gpu' );
+
+  if( process.platform === 'linux' )
+  args.push( '--no-sandbox', '--disable-setuid-sandbox' );
+
+  // args.push( session.entryWithQueryUri );
+
+  let op =
   {
-    session.process = chrome.process;
-    /* xxx : chrome.process sometimes undefined if headless:1 */
+    execPath : _.strQuote( installationPaths[ 0 ] ),
+    mode : 'spawn',
+    detaching : 1,
+    stdio : 'ignore',
+    outputPiping : 0,
+    inputMirroring : 0,
+    throwingExitCode : 0,
+    args
+  }
+
+  // return _.Consequence.Try( () => ChromeLauncher.launch( opts ) )
+  _.process.start( op )
+
+  op.conStart.finally( onStart );
+  op.conTerminate.tap( () =>
+  {
+    session._tempDirCleanProcess =
+    {
+      execPath : _.strQuote( path.join( __dirname, 'BrowserUserDirClean.s' ) ),
+      args : [ tempDir, process.pid, session.cleanupAfterStarterDeath ],
+      currentPath : __dirname,
+      mode : 'fork',
+      detaching : 2,
+      inputMirroring : 0
+    }
+    _.process.startSingle( session._tempDirCleanProcess );
+  })
+
+  return op.conStart;
+
+  /* */
+
+  function onStart( err, chrome )
+  {
+    // session.process = chrome.process;
+    session.process = chrome.pnd;
+
+    op.disconnect();
+
+    /* xxx : chrome.process sometimes undefined if headless:1 aaa:fixed, used process.start to spawn chrome*/
 
     // console.log( 'curratedRunOpen:c' );
 
     if( err )
-    return session.errorEncounterEnd( err );
+    {
+      _.errAttend( err );
+      _.fileProvider.filesDelete( tempDir );
+      return session.errorEncounterEnd( err );
+    }
+
+    _.process.on( 'exit', async () =>
+    {
+      await session.unform();
+    })
+
     // debugger;
     // session.process.on( 'exit', () =>
     // {
     // });
+
     if( system.verbosity >= 3 )
     {
       if( system.verbosity >= 7 )
@@ -252,13 +369,21 @@ function curratedRunOpen()
       logger.log( `Started ${_.ct.format( session.entryPath, 'path' )}` );
     }
     // session._curatedRunLaunchBegin();
-    return _.time.out( 500, () => /* xxx */
+    // return _.time.out( 500, () => /* xxx aaa:replaced with _waitForRemoteDebuggingPort */
+    // {
+    //   session.cdpConnect();
+    //   // console.log( 'curratedRunOpen:d' );
+    //   // return chrome.process;
+    //   return chrome.pnd;
+    // });
+
+    return session._waitForRemoteDebuggingPort()
+    .then( () =>
     {
       session.cdpConnect();
-      // console.log( 'curratedRunOpen:d' );
-      return chrome.process;
-    });
-  })
+      return chrome.pnd;
+    })
+  }
 }
 
 //
@@ -381,24 +506,27 @@ function _curratedRunPageClose( o )
     if( o.targetId === undefined || o.targetId === null )
     {
       let targets = await cdp.Target.getTargets();
-      let filtered = _.filter( targets.targetInfos, { url : session.entryWithQueryUri } );
+      let filtered = _.filter_( null, targets.targetInfos, { url : session.entryWithQueryUri } );
       _.sure( filtered.length >= 1, `Found no tab with URI::${session.entryWithQueryUri}` );
       _.sure( filtered.length <= 1, `Found ${filtered.length} tabs with URI::${session.entryWithQueryUri}` );
       o.targetId = filtered[ 0 ].targetId;
     }
-    return await cdp.Target.closeTarget( o );
+    return cdp.Target.closeTarget( o );
   });
 }
 
 //
 
-function _CurratedRunWindowIsOpened()
+function _CurratedRunWindowIsOpened( session )
 {
+  _.assert( !session || session instanceof Self );
+
+  let port = session ? session.sessionPort : this._CdpPortDefault;
 
   return _.Consequence.Try( () =>
   {
     let Cdp = require( 'chrome-remote-interface' );
-    return Cdp({ port : this._CdpPortDefault })
+    return Cdp({ port })
   })
   .catch( ( err ) =>
   {
@@ -423,8 +551,8 @@ async function _cdpConnect( o )
 
   o = _.routineOptions( _cdpConnect, o );
 
-  if( o.port == null )
-  o.port = session._cdpPort;
+  if( o.port === null )
+  o.port = session.sessionPort;
 
   try
   {
@@ -451,12 +579,17 @@ async function cdpConnect()
 {
   let session = this;
   let system = session.system;
+  let logger = system.logger;
   let fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   _.assert( session.cdp === null );
 
   session.cdp = await session._cdpConnect({ throwing : 1 });
+
+  await session.cdp.Page.enable();
+  await session.cdp.Page.navigate({ url : session.entryWithQueryUri });
+  await session.cdp.Page.loadEventFired();
 
   session._curatedRunLaunchEnd();
   session.cdp.on( 'close', () => session._curatedRunTerminateEnd() );
@@ -475,6 +608,7 @@ async function cdpConnect()
     }
   });
 
+  return true;
 }
 
 //
@@ -543,7 +677,9 @@ function cdpClose()
   if( session.cdp )
   ready.then( () =>
   {
-    return new _.Consequence().take( null ).or([ browserCloseAttempt( 0 ), browserCloseAttempt( 10 ) ]);
+    return new _.Consequence()
+    .take( null )
+    .or([ browserCloseAttempt( 0 ), browserCloseAttempt( 10 ) ]);
   });
 
   ready.then( () =>
@@ -592,6 +728,61 @@ function cdpClose()
 
 }
 
+//
+
+function _waitForRemoteDebuggingPort()
+{
+  let session = this;
+
+  if( !Net )
+  Net = require( 'net' )
+  let Cdp = require( 'chrome-remote-interface' );
+
+  session._maxCdpConnectionAttempts = Math.floor( session._maxCdpConnectionWaitTime / session._cdpPollingPeriod );
+
+  let tries = 0;
+
+  let debuggerIsReady = _.Consequence().take( false );
+  debuggerIsReady.finally( check )
+
+  return debuggerIsReady;
+
+  /* */
+
+  async function check( err, connected )
+  {
+    if( connected )
+    return true;
+
+    if( err )
+    _.errAttend( err );
+
+    tries++;
+    if( tries > session._maxCdpConnectionAttempts )
+    {
+      err = _.err( `Failed to wait for remote debugging port. Reason:\n`, err );
+      throw session.errorEncounterEnd( err );
+    }
+    await _.time.out( session._cdpPollingPeriod );
+    return isReady().finally( check );
+  }
+
+  /* */
+
+  function isReady()
+  {
+    let ready = new _.Consequence();
+    Cdp.List({ port : session.sessionPort }, ( err, targets ) =>
+    {
+      if( err )
+      ready.error( err );
+      else
+      ready.take( !!targets.length );
+    });
+    return ready;
+  }
+}
+
 // --
 // relations
 // --
@@ -600,7 +791,6 @@ let Composes =
 {
 
   // templatePath : null,
-
 }
 
 let InstanceDefaults =
@@ -627,8 +817,16 @@ let Restricts =
 
   cdp : null,
   _cdpPollingPeriod : 250,
-  _cdpPort : null,
   _cdpClosing : 0,
+
+  _maxCdpConnectionAttempts : null,
+  _maxCdpConnectionWaitTime : 60000,
+
+  _tempDir : null,
+  _tempDirCleanProcess : null,
+  _tempDirCleanProcessWaitTimeOut : 30000,
+
+  _waitForDeathTimeout : 10000,
 
 }
 
@@ -681,6 +879,8 @@ let Proto =
   cdpConnect,
   _cdpReconnectAndClose,
   cdpClose,
+
+  _waitForRemoteDebuggingPort,
 
   // relations
 

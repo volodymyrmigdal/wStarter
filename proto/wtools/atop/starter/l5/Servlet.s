@@ -1,4 +1,5 @@
-( function _Servlet_ss_() {
+( function _Servlet_ss_()
+{
 
 'use strict';
 
@@ -85,7 +86,7 @@ function unform()
 
 //
 
-function form()
+async function form()
 {
   let servlet = this;
   let system = servlet.system;
@@ -98,12 +99,12 @@ function form()
   _.arrayAppendOnceStrictly( system.servletsArray, servlet );
   servlet.formed = 1;
 
-  servlet.pathsForm();
+  await servlet.pathsForm();
 
   servlet._requestScriptWrapHandler = servlet.scriptWrap_functor();
 
   if( servlet.serverPath )
-  servlet.serverForm();
+  await servlet.serverForm();
 
   if( servlet.serverPath && servlet.loggingApplication )
   servlet.serverLoggingForm();
@@ -113,12 +114,14 @@ function form()
 
 //
 
-function serverForm()
+async function serverForm()
 {
   let servlet = this;
   let system = servlet.system;
 
   _.assert( _.routineIs( servlet._requestScriptWrapHandler ) );
+
+  let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
 
   _.assert
   (
@@ -126,10 +129,6 @@ function serverForm()
     `Servlet at ${servlet.serverPath} is already launched`
   );
   system.servletsMap[ servlet.serverPath ] = servlet;
-
-  let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
-  servlet.serverPath = parsedServerPath.full;
-  _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
 
   /* - */
 
@@ -169,8 +168,24 @@ function serverForm()
     express.use( parsedServerPath.resourcePath, ExpressDir( _.path.nativize( servlet.basePath ), directoryOptions ) );
   }
 
+  let bodyParser = require( 'body-parser' );
+  express.post( '/.process', bodyParser.json(), ( request, response ) =>
+  {
+    return servlet.processRequestHandle({ request, response })
+  })
+
   express.use( ( request, response, next ) => servlet.requestPostHandler({ request, response, next }) );
-  express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
+  // express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
+  express.use( function ()
+  {
+    servlet.requestErrorHandler
+    ({
+      request : arguments[ 0 ],
+      response : arguments[ 1 ],
+      next : arguments[ 2 ],
+      // error : arguments[ 0 ],
+    })
+  });
 
   let o3 = _.servlet.controlExpressStart
   ({
@@ -181,13 +196,20 @@ function serverForm()
     serverPath : servlet.serverPath,
   });
 
-  servlet.httpServer = o3.server;
-  servlet.express = o3.express;
-  servlet.serverPath = o3.serverPath;
+  let ready = _.Consequence();
+
+  o3.server.on( 'listening', () =>
+  {
+    servlet.httpServer = o3.server;
+    servlet.express = o3.express;
+    servlet.serverPath = o3.serverPath;
+
+    ready.take( servlet );
+  })
 
   /* - */
 
-  return servlet;
+  return ready;
 }
 
 //
@@ -429,7 +451,7 @@ function jsSingleForJs( o )
       ({
         request : o.request,
         response : o.response,
-        err : err,
+        err,
       });
     }
     else
@@ -625,12 +647,14 @@ function remoteResolve( o )
     err = _.err( err, `\nFailed to resolve ${o.resourcePath}` );
     if( o.request && o.response )
     {
-      return _.servlet.errorHandle
-      ({
-        request : o.request,
-        response : o.response,
-        err : err,
-      });
+      // return _.servlet.errorHandle
+      // ({
+      //   request : o.request,
+      //   response : o.response,
+      //   err
+      // });
+      o.response.json({ err : `Failed to resolve ${o.resourcePath}` });
+
     }
     else
     {
@@ -663,6 +687,119 @@ remoteResolve.defaults =
 {
   resourcePath : null,
   realPath : null,
+  request : null,
+  response : null,
+}
+
+//
+
+function statPath( o )
+{
+  let servlet = this;
+  let resolvedFilePath;
+
+  _.routineOptions( statPath, arguments );
+
+  try
+  {
+
+    if( o.realPath === null )
+    o.realPath = o.resourcePath;
+
+    if( _.starter.pathVirtualIs( o.realPath ) )
+    o.realPath = servlet.pathVirtualToReal( o.realPath );
+    else if( _.path.isAbsolute( o.realPath ) || _.path.isDotted( o.realPath ) )
+    o.realPath = _.path.reroot( servlet.basePath, o.realPath );
+
+    _.assert( _.path.isAbsolute( o.realPath ) )
+
+    let exists = _.fileProvider.fileExists( o.realPath );
+
+    if( o.response )
+    o.response.json({ exists });
+
+  }
+  catch( err )
+  {
+    err = _.err( err, `\nFailed to resolve ${o.resourcePath}` );
+    if( o.request && o.response )
+    {
+      return _.servlet.errorHandle
+      ({
+        request : o.request,
+        response : o.response,
+        err
+      });
+    }
+    else
+    {
+      throw err;
+    }
+  }
+
+  return resolvedFilePath;
+
+  /* */
+}
+
+statPath.defaults =
+{
+  resourcePath : null,
+  realPath : null,
+  request : null,
+  response : null,
+}
+
+//
+
+function processRequestHandle( o )
+{
+  let servlet = this;
+  let session = servlet.session;
+
+  _.routineOptions( processRequestHandle, arguments );
+
+  let routine = o.request.body.routine;
+  let args = o.request.body.arguments;
+
+  try
+  {
+    if( routine === 'exit' )
+    {
+      let result = _.process.exitCode( ... args );
+      o.response.json({ result });
+      session.unform();
+    }
+    else if( routine === 'exitCode' )
+    {
+      let result = _.process.exitCode( ... args );
+      o.response.json({ result });
+    }
+    else
+    {
+      throw _.err( `Unexpected request ${o.request.body}` );
+    }
+  }
+  catch( err )
+  {
+    if( o.request && o.response )
+    {
+      return _.servlet.errorHandle
+      ({
+        request : o.request,
+        response : o.response,
+        err
+      });
+    }
+    else
+    {
+      throw err;
+    }
+  }
+}
+
+processRequestHandle.defaults =
+{
   request : null,
   response : null,
 }
@@ -719,9 +856,10 @@ function pathVirtualToReal( virtualPath )
 
 //
 
-function pathsForm()
+async function pathsForm()
 {
   let servlet = this;
+  let system = servlet.system;
 
   _.assert( servlet.virtualToRealMap === null );
   _.assert( servlet.realToVirtualMap === null );
@@ -744,6 +882,26 @@ function pathsForm()
     }
   }
 
+  /* serverPath */
+
+  if( servlet.serverPath === null )
+  servlet.serverPath = servlet._defaultServerPath;
+
+  let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
+
+  _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
+
+  if( parsedServerPath.port === 0 )
+  {
+    parsedServerPath.port = await system._getRandomPort();
+    parsedServerPath.full = _.uri.str( parsedServerPath );
+  }
+  else
+  {
+    await system._checkIfPortIsOpen( parsedServerPath.port );
+  }
+
+  servlet.serverPath = parsedServerPath.full;
 }
 
 // --
@@ -774,6 +932,12 @@ function scriptWrap_functor( fop )
     o2.interpreter = 'browser';
     o2.libraryName = 'Starter';
     o2.withServer = 1;
+
+    o2.loggingPath = _.uri.parseConsecutive( servlet.serverPath );
+    o2.loggingPath.protocol = 'ws';
+    o2.loggingPath.longPath = _.uri.join( o2.loggingPath.longPath, '.log/' );
+    o2.loggingPath = _.uri.str( o2.loggingPath  );
+
     let splits = system.maker.sourcesJoinSplits( o2 );
     fop.ware = system.maker.sourcesSplitsJoin( splits );
   }
@@ -814,6 +978,16 @@ function scriptWrap_functor( fop )
     else if( _.strBegins( o.uri.longPath, '/.resolve/' ) )
     {
       return servlet.remoteResolve
+      ({
+        resourcePath : o.uri.longPath,
+        realPath : o.realPath,
+        response : o.response,
+        request : o.request,
+      });
+    }
+    else if( o.uri.query && _.strHas( o.uri.query, 'stat' ) )
+    {
+      return servlet.statPath
       ({
         resourcePath : o.uri.longPath,
         realPath : o.realPath,
@@ -966,7 +1140,7 @@ let Composes =
 
   owningHttpServer : 1,
 
-  serverPath : 'http://127.0.0.1:15000',
+  serverPath : null,
   // serverPath : 'http://0.0.0.0:15000',
   basePath : null,
   virtualToRealMap : null,
@@ -985,12 +1159,14 @@ let Associates =
   httpServer : null,
   express : null,
   loggerSocket : null,
+  session : null
 }
 
 let Restricts =
 {
   formed : 0,
   _requestScriptWrapHandler : null,
+  _defaultServerPath : 'http://127.0.0.1:15000'
 }
 
 let Statics =
@@ -1000,7 +1176,7 @@ let Statics =
 
 let Accessors =
 {
-  verbosity : { get : _verbosityGet, readOnly : 1 },
+  verbosity : { get : _verbosityGet, writable : 0 },
 }
 
 let Forbids =
@@ -1035,6 +1211,8 @@ let Proto =
   jsSingleForJs,
   jsForJs,
   remoteResolve,
+  statPath,
+  processRequestHandle,
   starterWareReturn,
 
   surePathAllowed,

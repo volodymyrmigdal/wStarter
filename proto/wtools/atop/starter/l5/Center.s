@@ -1,4 +1,5 @@
-( function _Center_ss_() {
+( function _Center_ss_()
+{
 
 'use strict';
 
@@ -33,7 +34,7 @@ function wStarterCenter( o )
   // }
   // else
   // {
-    return _.workpiece.construct( Self, this, arguments );
+  return _.workpiece.construct( Self, this, arguments );
   // }
 }
 
@@ -49,9 +50,9 @@ function unform()
 
   _.assert( 0, 'not implemented' );
 
-/*
-qqq : implement please
-*/
+  /*
+  qqq : implement please
+  */
 
 }
 

@@ -1,4 +1,5 @@
-( function _BroCode_s_() {
+( function _BroCode_s_()
+{
 
 'use strict';
 
@@ -191,10 +192,12 @@ function _Begin()
       {
 
         let data = getData( this );
-        if( !data ) return;
+        if( !data )
+        return;
         if( !total ) total = this.getResponseHeader( 'Content-Length' );
         total = Number( total ) || 1;
-        if( isNaN( total ) ) return;
+        if( isNaN( total ) )
+        return;
         handleProgress( data.length / total, o );
 
       }
@@ -259,22 +262,26 @@ function _Begin()
 
     if( _.path.isGlob( filePath ) || _.path.isRelative( filePath ) )
     {
-      filePath = starter._broFileRead
+      let result = starter._broFileRead
       ({
         filePath : '/.resolve/' + filePath,
         encoding : 'json',
       });
       try
       {
-        filePath = JSON.parse( filePath );
+        result = JSON.parse( result );
+
+        if( result.err )
+        throw result.err;
+
+        return result;
       }
       catch( err )
       {
-        debugger;
-        console.error( filePath );
+        // debugger;
+        // console.error( filePath );
         throw _.err( err );
       }
-      return filePath;
     }
 
     return filePath;
@@ -285,21 +292,36 @@ function _Begin()
   function _sourceResolveAct( parentSource, basePath, filePath )
   {
 
-    let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
-    let isAbsolute = resolvedFilePath[ 0 ] === '/';
+    // let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
+    // let isAbsolute = resolvedFilePath[ 0 ] === '/';
 
-    try
-    {
-      if( !isAbsolute )
-      throw 'not tested';
-      if( !isAbsolute )
-      resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
-      return resolvedFilePath;
-    }
-    catch( err )
-    {
-      return null;
-    }
+    // try
+    // {
+    //   if( !isAbsolute )
+    //   throw _.err( 'not tested' );
+    //   if( !isAbsolute )
+    //   resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
+    //   return resolvedFilePath;
+    // }
+    // catch( err )
+    // {
+    //   return null;
+    // }
+
+    let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
+    resolvedFilePath = this._broPathResolveRemote( resolvedFilePath );
+
+    let result = this._broFileRead
+    ({
+      filePath : resolvedFilePath + '?stat=1',
+      encoding : 'json',
+    });
+    result = JSON.parse( result );
+
+    if( !result.exists )
+    throw _.err( `Failed to resolve path: "${filePath}, file doesn't exist.`);
+
+    return resolvedFilePath;
   }
 
   //
@@ -351,10 +373,9 @@ function _Begin()
     }
     catch( err )
     {
-      err = _.err( err );
       end();
       debugger;
-      throw err;
+      throw _.err( err );
     }
 
     function end()
@@ -413,18 +434,18 @@ function _Begin()
       let scriptCode = document.createTextNode( read );
       script.appendChild( scriptCode );
 
-      if( resolvedFilePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( resolvedFilePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
 
       document.head.appendChild( script );
 
-      if( resolvedFilePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( resolvedFilePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
 
       let childSource = starter._sourceForPathGet( resolvedFilePath );
       let result = starter._sourceIncludeResolvedCalling( parentSource, childSource, resolvedFilePath );
 
-      if( resolvedFilePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( resolvedFilePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
 
       return result;
@@ -449,18 +470,24 @@ function _Begin()
 
     function cacheSet( src )
     {
-      return _starter_.sourcesMap = src;
+      _starter_.sourcesMap = src;
+
+      if( !_starter_.sourcesMap[ 'module' ] )
+      _starter_._sourceMake( 'module', '/', _sourceCodeModule );
+
+      return _starter_.sourcesMap;
     }
 
-    function accesor( fieldName, onGet, onSet )
+    function accesor( propName, onGet, onSet )
     {
-      Object.defineProperty( result, fieldName,
+      let property =
       {
         enumerable : true,
         configurable : true,
         get : onGet,
         set : onSet,
-      });
+      }
+      Object.defineProperty( result, propName, property );
     }
 
   }
@@ -501,7 +528,6 @@ function _End()
     _includeAct,
     _broIncludeActInWorkerResolved,
     _broIncludeResolved,
-
 
 
     _SetupAct,

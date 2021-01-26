@@ -1,4 +1,5 @@
-( function _BroConsoleCode_s_() {
+( function _BroConsoleCode_s_()
+{
 
 'use strict';
 
@@ -92,7 +93,8 @@ function _Begin()
 
     let response = starter._broSocketWrite
     ({
-      filePath : 'ws://127.0.0.1:15000/.log/',
+      // filePath : 'ws://127.0.0.1:15000/.log/',
+      filePath : _global_._starter_.loggingPath,
       data : o,
     });
 
@@ -176,6 +178,7 @@ function _Begin()
         let args = [];
         for( let i = 0 ; i < arguments.length ; i++ )
         args[ i ] = _.toStr( arguments[ i ] );
+        args = starter.Logger.TransformCssStylingToDirectives( args );
         starter._broLog({ methodName, args });
         return original.apply( console, arguments );
       }

@@ -1,4 +1,5 @@
-( function _StarterCode_s_() {
+( function _StarterCode_s_()
+{
 
 'use strict';
 
@@ -46,7 +47,7 @@ function _Begin()
     o.dirPath = starter.path.canonizeTolerant( o.dirPath );
 
     // debugger;
-    if( o.filePath === '/wtools/atop/tester/l7/TesterTop.s' )
+    if( o.filePath === '/wtools/atop/testing/l7/TesterTop.s' )
     debugger;
 
     sourceFile.filePath = o.filePath;
@@ -101,14 +102,15 @@ function _Begin()
       return this.state === 'opened';
     }
 
-    function getter( fieldName, onGet )
+    function getter( propName, onGet )
     {
-      Object.defineProperty( sourceFile, fieldName,
+      let property =
       {
         enumerable : true,
         configurable : true,
         get : onGet,
-      });
+      }
+      Object.defineProperty( sourceFile, propName, property );
     }
 
   }
@@ -138,9 +140,9 @@ function _Begin()
       if( childSource.state === 'errored' || childSource.state === 'opening' || childSource.state === 'opened' )
       return childSource.exports;
 
-      if( childSource.filePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( childSource.filePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
-      if( parentSource && parentSource.filePath === '/wtools/atop/tester/l7/TesterTop.s' )
+      if( parentSource && parentSource.filePath === '/wtools/atop/testing/l7/TesterTop.s' )
       debugger;
 
       childSource.parent = parentSource || null;
@@ -276,7 +278,7 @@ function _Begin()
     if( !basePath && !sourceFile )
     {
       debugger;
-      throw 'Base path is not specified, neither script file';
+      throw _.err( 'Base path is not specified, neither script file' );
     }
 
     let isAbsolute = filePath[ 0 ] === '/';
@@ -308,8 +310,8 @@ function _Begin()
 
     if( _starter_.catchingUncaughtErrors )
     {
-      _starter_.setup._setupUncaughtErrorHandler2();
-      _starter_.setup._setupUncaughtErrorHandler9();
+      _starter_.error._setupUncaughtErrorHandler2();
+      _starter_.error._setupUncaughtErrorHandler9();
     }
 
     this._SetupAct();

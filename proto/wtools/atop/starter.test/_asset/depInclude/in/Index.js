@@ -17,7 +17,7 @@ console.log( `include : ${typeof include}` );
 if( typeof _starter_ !== 'undefined' )
 console.log( `_starter_.interpreter : ${_starter_.interpreter}` );
 if( typeof wTools !== 'undefined' )
-console.log( `wTools.blueprint.is : ${typeof wTools.blueprint.is}` );
+console.log( `wTools.blueprint.isDefinitive : ${typeof wTools.blueprint.isDefinitive}` );
 console.log( `` );
 
 require( './dep/Dep1.js' );

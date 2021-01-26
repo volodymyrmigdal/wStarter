@@ -1,4 +1,5 @@
-( function _StarterMaker_s_() {
+( function _StarterMaker_s_()
+{
 
 'use strict';
 
@@ -264,6 +265,8 @@ function sourcesJoinSplits( o )
 
   /* predefined */
 
+  debugger
+
   r.predefined =
 `
 /* */  /* begin of predefined */ ( function _predefined_() {
@@ -279,6 +282,7 @@ function sourcesJoinSplits( o )
 /* */  _global_._starter_.loggingSourceFiles = ${o.loggingSourceFiles};
 /* */  _global_._starter_.withServer = ${o.withServer};
 /* */  _global_._starter_.redirectingConsole = ${o.redirectingConsole};
+/* */  _global_._starter_.loggingPath = '${o.loggingPath}';
 
 /* */  _global_.Config.debug = ${o.debug};
 
@@ -374,6 +378,18 @@ function sourcesJoinSplits( o )
   ${_.routineParse( maker.BroConsoleCode.end ).bodyUnwrapped};
 
 /* */  /* end of broConsole */ })();
+
+`
+
+  if( o.interpreter === 'browser' )
+  r.interpreter +=
+`
+/* */  /* begin of broProcess */ ( function _broProcess_() {
+
+  ${_.routineParse( maker.BroProcessCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.BroProcessCode.end ).bodyUnwrapped};
+
+/* */  /* end of broProcess */ })();
 
 `
 
@@ -491,15 +507,14 @@ function sourcesJoinSplits( o )
   ${rou( 'err' )}
   ${rou( '_err' )}
   ${rou( '_errMake' )}
-  ${rou( 'errLogEnd' )}
+  ${rou( 'errLogged' )}
   ${rou( 'errAttend' )}
   ${rou( '_errFields' )}
   ${rou( 'errIsStandard' )}
   ${rou( 'errIsAttended' )}
   ${rou( 'errProcess' )}
   ${rou( 'assert' )}
-  ${field( '_errorCounter' )}
-  ${field( '_errorMaking' )}
+  ${fields( 'error' )}
 
   ${rou( 'introspector', 'code' )}
   ${rou( 'introspector', 'stack' )}
@@ -539,6 +554,7 @@ function sourcesJoinSplits( o )
   ${rou( 'regexpIs' )}
   ${rou( 'longIs' )}
   ${rou( 'primitiveIs' )}
+  ${rou( 'symbolIs' )}
   ${rou( 'strBegins' )}
   ${rou( 'objectIs' )}
   ${rou( 'objectLike' )}
@@ -547,8 +563,11 @@ function sourcesJoinSplits( o )
   ${rou( 'mapLike' )}
   ${rou( 'strsLikeAll' )}
   ${rou( 'boolLike' )}
+  ${rou( 'boolLikeTrue' )}
   ${rou( 'arrayIs' )}
+  ${rou( 'numberIsFinite' )}
   ${rou( 'numberIs' )}
+  ${rou( 'intIs' )}
   ${rou( 'setIs' )}
   ${rou( 'setLike' )}
   ${rou( 'hashMapIs' )}
@@ -560,9 +579,9 @@ function sourcesJoinSplits( o )
   ${rou( 'mapIs' )}
   ${rou( 'sure' )}
   ${rou( 'mapBut' )}
-  ${rou( 'mapHas' )}
+  ${rou( 'mapOwn' )}
   ${rou( '_mapKeys' )}
-  ${rou( 'mapOwnKeys' )}
+  ${rou( 'mapOnlyOwnKeys' )}
   ${rou( 'sureMapHasOnly' )}
   ${rou( 'sureMapHasNoUndefine' )}
   ${rou( 'mapSupplementStructureless' )}
@@ -570,8 +589,9 @@ function sourcesJoinSplits( o )
   ${rou( 'assertMapHasNoUndefine' )}
   ${rou( 'routineOptions' )}
   ${rou( 'mapExtend' )}
-  ${rou( 'routineExtend_' )}
+  ${rou( 'mapSupplement' )}
   ${rou( 'routineExtend' )}
+  ${rou( 'arrayAppend' )}
   ${rou( 'arrayAppendArray' )}
   ${rou( 'arrayAppendArrays' )}
   ${rou( 'arrayAppendedArray' )}
@@ -596,19 +616,24 @@ function sourcesJoinSplits( o )
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
   ${rou( 'strType' )}
+  ${rou( 'strConcat' )}
   ${rou( 'strPrimitiveType' )}
   ${rou( 'strHas' )}
   ${rou( 'strLike' )}
-  ${rou( 'rangeIs' )}
+  ${rou( 'intervalIs' )}
+  ${rou( 'numberDefined' )}
   ${rou( 'numbersAreAll' )}
   ${rou( 'bufferTypedIs' )}
   ${rou( 'bufferNodeIs' )}
   ${rou( 'strLinesStrip' )}
+  ${rou( 'strLinesNumber' )}
   ${rou( 'strLinesSplit' )}
   ${rou( 'strLinesJoin' )}
   ${rou( 'strSplitFast' )}
-  ${rou( '_strLeftSingle' )}
-  ${rou( '_strRightSingle' )}
+  ${rou( 'strStrip' )}
+  ${rou( 'strLinesSelect' )}
+  ${rou( '_strLeftSingle_' )}
+  ${rou( '_strRightSingle_' )}
   ${rou( 'strIsolate' )}
   ${rou( 'strIsolateLeftOrNone' )}
   ${rou( 'strIsolateRightOrNone' )}
@@ -618,11 +643,32 @@ function sourcesJoinSplits( o )
   ${rou( 'numberFromStrMaybe' )}
   ${field( 'TranslatedType' )}
 
-  ${rou( 'setup', '_setupUncaughtErrorHandler2' )}
-  ${rou( 'setup', '_setupUncaughtErrorHandler9' )}
-  ${rou( 'setup', '_errUncaughtPre' )}
-  ${rou( 'setup', '_errUncaughtHandler1' )}
-  ${rou( 'setup', '_errUncaughtHandler2' )}
+  ${rou( 'error', '_setupUncaughtErrorHandler2' )}
+  ${rou( 'error', '_setupUncaughtErrorHandler9' )}
+  ${rou( 'error', '_handleUncaughtHead' )}
+  ${rou( 'error', '_handleUncaught1' )}
+  ${rou( 'error', '_handleUncaughtPromise1' )}
+  ${rou( 'error', '_handleUncaught2' )}
+
+  ${rou( 'event', '_chainGenerate' )}
+  ${rou( 'event', '_chainToCallback' )}
+  ${rou( 'event', '_chainValidate' )}
+  ${rou( 'event', '_callbackMapValidate' )}
+  ${rou( 'event', 'nameValueFrom' )}
+  ${rou( 'event', 'nameIs' )}
+  ${rou( 'event', 'chainIs' )}
+  ${rou( 'event', 'Name' )}
+  ${rou( 'event', 'Chain' )}
+  ${rou( 'event', 'on' )}
+  ${rou( 'event', 'once' )}
+  ${rou( 'event', 'off' )}
+  ${rou( 'event', 'off_functor' )}
+  ${rou( 'event', 'eventHasHandler' )}
+  ${rou( 'event', 'eventGive' )}
+  ${fields( 'event' )}
+
+  ${rou( 'each' )}
+
 
   /*
   Uri namespace( parseConsecutive ) is required to make _.include working in a browser
@@ -636,6 +682,29 @@ function sourcesJoinSplits( o )
   ${rou( 'uri', 'canonize' )}
   ${rou( 'uri', 'canonizeTolerant' )}
   ${fields( 'uri' )}
+
+  ${rou( 'property', '_ofAct' )}
+  ${rou( 'property', 'fields' )}
+
+  ${rou( 'color', 'strFg' )}
+  ${rou( 'color', 'strBg' )}
+  ${rou( 'color', 'rgbaHtmlFrom' )}
+  ${rou( 'color', 'rgbaHtmlFromTry' )}
+  ${rou( 'color', 'hslaToRgba' )}
+  ${rou( 'color', '_colorDistance' )}
+  ${rou( 'color', '_rgbByBitmask' )}
+  ${rou( 'color', '_rgbaFromNotName' )}
+  ${rou( 'color', '_colorNameNearest' )}
+  ${rou( 'color', 'colorNameNearest' )}
+  ${rou( 'color', '_fromTable' )}
+  ${rou( 'color', 'fromTable' )}
+  ${rou( 'color', 'hexToColor' )}
+  ${fields( 'color' )}
+  ${field( 'color', 'ColorMap' )}
+
+
+  ${rou( 'Logger', 'TransformCssStylingToDirectives' )}
+
 `
 
   }
@@ -655,7 +724,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strFindAll' )}
   ${rou( 'strReverse' )}
   ${rou( 'strCount' )}
-  ${rou( 'strLeft' )}
+  ${rou( 'strLeft_' )}
   ${rou( 'tokensSyntaxFrom' )}
   ${rou( '_strReplaceMapPrepare' )}
   ${rou( 'assertMapHasAll' )}
@@ -663,7 +732,7 @@ function sourcesJoinSplits( o )
   ${rou( 'longSlice' )}
   ${rou( 'arrayLikeResizable' )}
   ${rou( 'regexpEscape' )}
-  ${rou( 'filter' )}
+  ${rou( 'filter_' )}
   ${rou( '_filter_functor' )}
   ${rou( 'entityMakeUndefined' )}
   ${rou( 'mapKeys' )}
@@ -717,7 +786,8 @@ sourcesJoinSplits.defaults =
   loggingApplication : 0,
   loggingSourceFiles : 0,
   withServer : null,
-  redirectingConsole : 1
+  redirectingConsole : 1,
+  loggingPath : 'ws://127.0.0.1:15000/.log/'
 }
 
 //
@@ -731,7 +801,7 @@ function sourcesJoin( o )
 
   /* */
 
-  o.filesMap = _.map( o.filesMap, ( fileData, filePath ) =>
+  o.filesMap = _.map_( null, o.filesMap, ( fileData, filePath ) =>
   {
     return maker.sourceWrap
     ({
@@ -993,6 +1063,7 @@ let Statics =
   GlobingCode : require( '../l1_boot/Globing.txt.s' ),
   BroCode : require( '../l1_boot/Bro.txt.s' ),
   BroConsoleCode : require( '../l1_boot/BroConsole.txt.s' ),
+  BroProcessCode : require( '../l1_boot/BroProcess.txt.s' ),
   NjsCode : require( '../l1_boot/Njs.txt.s' ),
   StarterCode : require( '../l1_boot/Starter.txt.s' ),
   InstanceDefaults,

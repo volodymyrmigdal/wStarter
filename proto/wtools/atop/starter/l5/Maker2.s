@@ -1,4 +1,5 @@
-( function _Maker2_s_() {
+( function _Maker2_s_()
+{
 
 'use strict';
 
@@ -79,9 +80,9 @@ function sourcesJoinFiles( o )
       debugger;
       throw _.errBrief
       (
-        'List of source files should have all entry files' +
-        '\nSource files\n' + _.toStrNice( o.inPath, { levels : 2 } ) +
-        '\nEntry files\n' + _.toStrNice( o.entryPath, { levels : 2 } )
+        'List of source files should have all entry files'
+        + '\nSource files\n' + _.toStrNice( o.inPath, { levels : 2 } )
+        + '\nEntry files\n' + _.toStrNice( o.entryPath, { levels : 2 } )
       );
     }
   }
@@ -143,7 +144,7 @@ function sourcesJoinFiles( o )
     fileProvider.fileWrite
     ({
       filePath : o.outPath,
-      data : data,
+      data
     });
   }
 
@@ -243,7 +244,7 @@ function htmlForFiles( o )
     fileProvider.fileWrite
     ({
       filePath : o.outPath,
-      data : data,
+      data
     });
   }
 

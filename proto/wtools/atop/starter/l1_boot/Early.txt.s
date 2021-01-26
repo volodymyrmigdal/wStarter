@@ -1,4 +1,5 @@
-( function _WareCode_s_() {
+( function _WareCode_s_()
+{
 
 'use strict';
 
@@ -20,45 +21,21 @@ function _Begin()
 
   'use strict';
 
-  let _global = undefined;
-  if( !_global && typeof Global !== 'undefined' && Global.Global === Global ) _global = Global;
-  if( !_global && typeof global !== 'undefined' && global.global === global ) _global = global;
-  if( !_global && typeof window !== 'undefined' && window.window === window ) _global = window;
-  if( !_global && typeof self   !== 'undefined' && self.self === self ) _global = self;
-  let _realGlobal = _global._realGlobal_ = _global;
-  let _wasGlobal = _global._global_ || _global;
-  _global = _wasGlobal;
-  _global._global_ = _wasGlobal;
-
-  if( !_global_.Config )
-  _global_.Config = Object.create( null );
-  if( _global_.Config.interpreter === undefined )
-  _global_.Config.interpreter = ( ( typeof module !== 'undefined' ) && ( typeof process !== 'undefined' ) ) ? 'njs' : 'browser';
-  if( _global_.Config.isWorker === undefined )
-  _global_.Config.isWorker = !!( typeof self !== 'undefined' && self.self === self && typeof importScripts !== 'undefined' );
-
-  // if( _global._starter_ && _global._starter_._inited )
-  // return;
-
+  let _global = _global_;
   let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
   let _ = _starter_;
 
   let path = _starter_.path = _starter_.path || Object.create( null );
   let uri = _starter_.uri = _starter_.uri || Object.create( null );
+  let property = _starter_.property = _starter_.property || Object.create( null );
   _starter_.uri.path = _starter_.path;
   let introspector = _starter_.introspector = _starter_.introspector || Object.create( null );
+  let error = _starter_.error = _starter_.error || Object.create( null );
   let setup = _starter_.setup = _starter_.setup || Object.create( null );
+  let event = _starter_.event = _starter_.event || Object.create( null );
   let sourcesMap = _starter_.sourcesMap = _starter_.sourcesMap || Object.create( null );
-
-  // let stackSymbol = Symbol.for( 'stack' );
-  // let _diagnosticCodeExecuting = 0;
-  // let _errorCounter = 0;
-  // let _errorMaking = false;
-  //
-  // let _ArrayIndexOf = Array.prototype.indexOf;
-  // let _ArrayIncludes = Array.prototype.includes;
-  // if( !_ArrayIncludes )
-  // _ArrayIncludes = function( e ){ _ArrayIndexOf.call( this, e ) }
+  let color = _starter_.color = _starter_.color || Object.create( null );
+  let Logger = _starter_.Logger = _starter_.Logger || Object.create( null );
 
   //
 
@@ -67,7 +44,7 @@ function _Begin()
     if( !good )
     {
       debugger;
-      throw 'Something wrong!';
+      throw new Error( 'Something wrong!' );
       return false;
     }
     return true;

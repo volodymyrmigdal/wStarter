@@ -1,11 +1,14 @@
-( function _Ext_test_s_() {
+( function _Ext_test_s_()
+{
 
 'use strict';
+
+let Jsdom;
 
 if( typeof module !== 'undefined' )
 {
 
-  var Jsdom = require( 'jsdom' );
+  Jsdom = require( 'jsdom' );
   let _ = require( '../../../wtools/Tools.s' );
 
   _.include( 'wTesting' );
@@ -113,7 +116,7 @@ function sourcesJoin( test )
     return op;
   })
 
-  a.anotherStart( _.path.nativize( outputPath ) )
+  a.fork( _.path.nativize( outputPath ) )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -319,7 +322,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  a.anotherStart( `out/app0` )
+  a.fork( `out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -327,7 +330,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  a.anotherStart( `app0/File2.js` )
+  a.fork( `app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -382,7 +385,7 @@ app0/File1.js:timeout numberIs:true
     return op;
   })
 
-  a.anotherStart( `ext/RequireApp2File2.js` )
+  a.fork( `ext/RequireApp2File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -437,7 +440,17 @@ app0/File1.js:timeout true
   a.shell( `npm i` )
   a.appStart( `.sources.join ** basePath:app2 outPath:../out/app2` )
   a.appStart( `.sources.join ** basePath:app1 outPath:../out/app1` )
-  a.appStart( `.sources.join ** basePath:app0 outPath:../out/app0 entryPath:File2.js externalBeforePath:[ ../out/app1 ../out/app2 ]` )
+  a.appStart
+  ({
+    execPath : `.sources.join **`,
+    args :
+    [
+      `basePath:app0`,
+      `outPath:../out/app0`,
+      `entryPath:File2.js`,
+      `externalBeforePath:[../out/app1,../out/app2]`
+    ]
+  })
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -449,7 +462,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  a.anotherStart( `out/app0` )
+  a.fork( `out/app0` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -457,7 +470,7 @@ app0/File1.js:timeout true
     return op;
   })
 
-  a.anotherStart( `app0/File2.js` )
+  a.fork( `app0/File2.js` )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
@@ -503,7 +516,7 @@ function sourcesJoinTree( test )
     return op;
   })
 
-  a.anotherStart( `in/app1/dir1/File1.js` )
+  a.fork( `in/app1/dir1/File1.js` )
   .then( ( op ) =>
   {
     var output =
@@ -517,7 +530,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -555,7 +568,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  a.anotherStart( `in/app1/dir1/dir2/File2.js` )
+  a.fork( `in/app1/dir1/dir2/File2.js` )
   .then( ( op ) =>
   {
     var output =
@@ -569,7 +582,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -608,7 +621,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `in/app2/File2.js` )
+  a.fork( `in/app2/File2.js` )
   .then( ( op ) =>
   {
     var output =
@@ -626,7 +639,7 @@ app0/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app2` )
+  a.fork( `out/app2` )
   .then( ( op ) =>
   {
     var output =
@@ -682,7 +695,7 @@ function sourcesJoinCycle( test )
     return op;
   })
 
-  a.anotherStart( `in/app1/File1.js` )
+  a.fork( `in/app1/File1.js` )
   .then( ( op ) =>
   {
     var output =
@@ -697,7 +710,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -736,7 +749,7 @@ app1/File1.js:end main:true
     return op;
   })
 
-  a.anotherStart( `in/app1/File2.js` )
+  a.fork( `in/app1/File2.js` )
   .then( ( op ) =>
   {
     var output =
@@ -751,7 +764,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -790,7 +803,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app1` )
+  a.fork( `out/app1` )
   .then( ( op ) =>
   {
     var output =
@@ -809,7 +822,7 @@ app1/File2.js:end main:true
     return op;
   })
 
-  a.anotherStart( `out/app2` )
+  a.fork( `out/app2` )
   .then( ( op ) =>
   {
     var output =
@@ -866,7 +879,7 @@ function sourcesJoinRecursion( test )
     return op;
   })
 
-  a.anotherStart( `out/Out.js` )
+  a.fork( `out/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
@@ -884,7 +897,7 @@ F1:after
     return op;
   })
 
-  a.anotherStart( `F1.js` )
+  a.fork( `F1.js` )
   .then( ( op ) =>
   {
     test.description = 'F1.js';
@@ -927,7 +940,7 @@ function sourcesJoinOptionInterpreter( test )
     return null;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -984,7 +997,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `out/Out.js` )
+  a.fork( `out/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
@@ -1026,7 +1039,7 @@ Index.js:end
     return op;
   })
 
-// xxx : add case of running built version with starter interpreter:njs
+  // xxx : add case of running built version with starter interpreter:njs
 
   /* */
 
@@ -1165,6 +1178,7 @@ Index.js:end
   return a.ready;
 } /* end of sourcesJoinOptionInterpreter */
 
+sourcesJoinOptionInterpreter.timeOut = 120000;
 sourcesJoinOptionInterpreter.description =
 `
 - joining sources with option intepreter:browser works like interpreter:njs
@@ -1203,7 +1217,7 @@ function sourcesJoinOptionInterpreterOptionBasePath( test )
     return op;
   })
 
-  a.anotherStart( `out1/out2/Out.js` )
+  a.fork( `out1/out2/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out1/out2/Out.js';
@@ -1245,7 +1259,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -1303,7 +1317,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `out1/out2/Out.js` )
+  a.fork( `out1/out2/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out1/out2/Out.js';
@@ -1345,7 +1359,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -1403,7 +1417,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `out1/out2/Out.js` )
+  a.fork( `out1/out2/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out1/out2/Out.js';
@@ -1445,7 +1459,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -1503,7 +1517,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `out1/out2/Out.js` )
+  a.fork( `out1/out2/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out1/out2/Out.js';
@@ -1545,7 +1559,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -1881,7 +1895,7 @@ function sourcesJoinBrowserOptionRedirectingConsole( test )
     var output = 'Message to redirect'
 
     test.identical( op.exitCode, 0 );
-    test.is( _.strHas( op.output, output ) );
+    test.true( _.strHas( op.output, output ) );
     return op;
   })
 
@@ -1903,7 +1917,7 @@ function sourcesJoinBrowserOptionRedirectingConsole( test )
     var output = 'Message to redirect'
 
     test.identical( op.exitCode, 0 );
-    test.is( !_.strHas( op.output, output ) );
+    test.true( !_.strHas( op.output, output ) );
     return op;
   })
 
@@ -1934,7 +1948,7 @@ function sourcesJoinRoutineInclude( test )
     return null;
   })
 
-  a.anotherStart({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
+  a.fork({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
   a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
 
   .then( ( op ) =>
@@ -1947,7 +1961,7 @@ function sourcesJoinRoutineInclude( test )
     return op;
   })
 
-  a.anotherStart( `out/Out.js` )
+  a.fork( `out/Out.js` )
   .then( ( op ) =>
   {
     test.description = 'out/Out.js';
@@ -1980,7 +1994,7 @@ exports : object
 require : function
 include : function
 _starter_.interpreter : njs
-wTools.blueprint.is : function
+wTools.blueprint.isDefinitive : function
 
 Dep1.js:end
 Index.js:end
@@ -1990,7 +2004,7 @@ Index.js:end
     return op;
   })
 
-  a.anotherStart( `in/Index.js` )
+  a.fork( `in/Index.js` )
   .then( ( op ) =>
   {
     test.description = 'in/Index.js';
@@ -2015,7 +2029,7 @@ module : object
 module.parent : object
 exports : object
 require : function
-wTools.blueprint.is : function
+wTools.blueprint.isDefinitive : function
 
 Dep1.js:end
 Index.js:end
@@ -2038,7 +2052,7 @@ Index.js:end
     return null;
   })
 
-  a.anotherStart({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
+  a.fork({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
   a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:browser` )
 
   .then( ( op ) =>
@@ -2086,7 +2100,7 @@ exports : object
 require : function
 include : function
 _starter_.interpreter : browser
-wTools.blueprint.is : function
+wTools.blueprint.isDefinitive : function
 
 Dep1.js:end
 Index.js:end
@@ -2117,134 +2131,134 @@ function sourcesJoinRequireGlob( test )
 
   /* */
 
-//   a.ready.then( () =>
-//   {
-//     test.case = 'interpreter:njs entryPath:in/Index.js';
-//     a.fileProvider.filesDelete( a.abs( '.' ) );
-//     a.reflect();
-//     a.fileProvider.filesDelete( a.abs( 'out' ) );
-//     return null;
-//   })
-//
-//   a.appStart( `.start entryPath:in/Index.js interpreter:njs` )
-//   .then( ( op ) =>
-//   {
-//     test.description = '.start entryPath:in/Index.js interpreter:njs';
-//     var output =
-// `
-// Index.js:begin
-//
-// Index.js
-// __filename : ${a.routinePath}/in/Index.js
-// __dirname : ${a.routinePath}/in
-// module : object
-// module.parent : object
-// exports : object
-// require : function
-//
-// Dep1.js:begin
-//
-// Dep1.js
-// __filename : ${a.routinePath}/in/dep/Dep1.js
-// __dirname : ${a.routinePath}/in/dep
-// module : object
-// module.parent : object
-// exports : object
-// require : function
-// wTools.blueprint.is : function
-//
-// Dep1.js:end
-// Index.js:end
-// `
-//     test.identical( op.exitCode, 0 );
-//     test.equivalent( op.output, output );
-//     return op;
-//   })
-//
-//   /* */
-//
-//   a.ready.then( () =>
-//   {
-//     test.case = 'interpreter:njs entryPath:out/Out.js';
-//     a.fileProvider.filesDelete( a.abs( '.' ) );
-//     a.reflect();
-//     a.fileProvider.filesDelete( a.abs( 'out' ) );
-//     return null;
-//   })
-//
-//   a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
-//
-//   .then( ( op ) =>
-//   {
-//     test.identical( op.exitCode, 0 );
-//     test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
-//     var expected = [ '.', './Out.js' ];
-//     var files = a.find( a.abs( 'out' ) );
-//     test.identical( files, expected );
-//     return op;
-//   })
-//
-//   a.anotherStart( `out/Out.js` )
-//   .then( ( op ) =>
-//   {
-//     test.description = 'out/Out.js';
-//     var output =
-// `
-// Index.js:begin
-// Dep1.js:begin
-//
-// Dep1.js
-// _filePath_ : ${a.routinePath}/out/Out.js/dir/Dep1.js
-// _dirPath_ : ${a.routinePath}/out/Out.js/dir
-// __filename : ${a.routinePath}/out/Out.js/dir/Dep1.js
-// __dirname : ${a.routinePath}/out/Out.js/dir
-// module : object
-// module.parent : object
-// exports : object
-// require : function
-// include : function
-// _starter_.interpreter : njs
-//
-// Dep1.js:end
-// Dep2.js:begin
-//
-// Dep2.js
-// _filePath_ : ${a.routinePath}/out/Out.js/dir/Dep2.js
-// _dirPath_ : ${a.routinePath}/out/Out.js/dir
-// __filename : ${a.routinePath}/out/Out.js/dir/Dep2.js
-// __dirname : ${a.routinePath}/out/Out.js/dir
-// module : object
-// module.parent : object
-// exports : object
-// require : function
-// include : function
-// _starter_.interpreter : njs
-//
-// Dep2.js:end
-//
-// dir.length : 2
-// dir[ 0 ] : Dep1
-// dir[ 1 ] : Dep2
-//
-// Index.js
-// _filePath_ : ${a.routinePath}/out/Out.js/Index.js
-// _dirPath_ : ${a.routinePath}/out/Out.js
-// __filename : ${a.routinePath}/out/Out.js/Index.js
-// __dirname : ${a.routinePath}/out/Out.js
-// module : object
-// module.parent : object
-// exports : object
-// require : function
-// include : function
-// _starter_.interpreter : njs
-//
-// Index.js:end
-// `
-//     test.identical( op.exitCode, 0 );
-//     test.equivalent( op.output, output );
-//     return op;
-//   })
-// xxx : implement
+  //   a.ready.then( () =>
+  //   {
+  //     test.case = 'interpreter:njs entryPath:in/Index.js';
+  //     a.fileProvider.filesDelete( a.abs( '.' ) );
+  //     a.reflect();
+  //     a.fileProvider.filesDelete( a.abs( 'out' ) );
+  //     return null;
+  //   })
+  //
+  //   a.appStart( `.start entryPath:in/Index.js interpreter:njs` )
+  //   .then( ( op ) =>
+  //   {
+  //     test.description = '.start entryPath:in/Index.js interpreter:njs';
+  //     var output =
+  // `
+  // Index.js:begin
+  //
+  // Index.js
+  // __filename : ${a.routinePath}/in/Index.js
+  // __dirname : ${a.routinePath}/in
+  // module : object
+  // module.parent : object
+  // exports : object
+  // require : function
+  //
+  // Dep1.js:begin
+  //
+  // Dep1.js
+  // __filename : ${a.routinePath}/in/dep/Dep1.js
+  // __dirname : ${a.routinePath}/in/dep
+  // module : object
+  // module.parent : object
+  // exports : object
+  // require : function
+  // wTools.blueprint.isDefinitive : function
+  //
+  // Dep1.js:end
+  // Index.js:end
+  // `
+  //     test.identical( op.exitCode, 0 );
+  //     test.equivalent( op.output, output );
+  //     return op;
+  //   })
+  //
+  //   /* */
+  //
+  //   a.ready.then( () =>
+  //   {
+  //     test.case = 'interpreter:njs entryPath:out/Out.js';
+  //     a.fileProvider.filesDelete( a.abs( '.' ) );
+  //     a.reflect();
+  //     a.fileProvider.filesDelete( a.abs( 'out' ) );
+  //     return null;
+  //   })
+  //
+  //   a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
+  //
+  //   .then( ( op ) =>
+  //   {
+  //     test.identical( op.exitCode, 0 );
+  //     test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
+  //     var expected = [ '.', './Out.js' ];
+  //     var files = a.find( a.abs( 'out' ) );
+  //     test.identical( files, expected );
+  //     return op;
+  //   })
+  //
+  //   a.fork( `out/Out.js` )
+  //   .then( ( op ) =>
+  //   {
+  //     test.description = 'out/Out.js';
+  //     var output =
+  // `
+  // Index.js:begin
+  // Dep1.js:begin
+  //
+  // Dep1.js
+  // _filePath_ : ${a.routinePath}/out/Out.js/dir/Dep1.js
+  // _dirPath_ : ${a.routinePath}/out/Out.js/dir
+  // __filename : ${a.routinePath}/out/Out.js/dir/Dep1.js
+  // __dirname : ${a.routinePath}/out/Out.js/dir
+  // module : object
+  // module.parent : object
+  // exports : object
+  // require : function
+  // include : function
+  // _starter_.interpreter : njs
+  //
+  // Dep1.js:end
+  // Dep2.js:begin
+  //
+  // Dep2.js
+  // _filePath_ : ${a.routinePath}/out/Out.js/dir/Dep2.js
+  // _dirPath_ : ${a.routinePath}/out/Out.js/dir
+  // __filename : ${a.routinePath}/out/Out.js/dir/Dep2.js
+  // __dirname : ${a.routinePath}/out/Out.js/dir
+  // module : object
+  // module.parent : object
+  // exports : object
+  // require : function
+  // include : function
+  // _starter_.interpreter : njs
+  //
+  // Dep2.js:end
+  //
+  // dir.length : 2
+  // dir[ 0 ] : Dep1
+  // dir[ 1 ] : Dep2
+  //
+  // Index.js
+  // _filePath_ : ${a.routinePath}/out/Out.js/Index.js
+  // _dirPath_ : ${a.routinePath}/out/Out.js
+  // __filename : ${a.routinePath}/out/Out.js/Index.js
+  // __dirname : ${a.routinePath}/out/Out.js
+  // module : object
+  // module.parent : object
+  // exports : object
+  // require : function
+  // include : function
+  // _starter_.interpreter : njs
+  //
+  // Index.js:end
+  // `
+  //     test.identical( op.exitCode, 0 );
+  //     test.equivalent( op.output, output );
+  //     return op;
+  //   })
+  // xxx : implement
 
   /* */
 
@@ -2425,76 +2439,76 @@ function sourcesJoinRequireGlobAnyAny( test )
   /* */
 
 
-//   a.ready.then( () =>
-//   {
-//     test.case = 'interpreter:browser entryPath:in/Index.js';
-//     a.fileProvider.filesDelete( a.abs( '.' ) );
-//     a.reflect();
-//     a.fileProvider.filesDelete( a.abs( 'out' ) );
-//     return null;
-//   })
-//
-//   a.appStart( `.start basePath:in entryPath:Index.js timeOut:15000 headless:1` )
-//   .then( ( op ) =>
-//   {
-//     test.description = 'out/Out.js';
-//     var output =
-// `
-// Index.js:begin
-// Dep1.js:begin
-//
-// Dep1.js
-// _filePath_ : /dir/Dep1.js
-// _dirPath_ : /dir
-// __filename : /dir/Dep1.js
-// __dirname : /dir
-// module : object
-// module.parent : object
-// exports : object
-// require : function
-// include : function
-// _starter_.interpreter : browser
-//
-// Dep1.js:end
-// Dep2.s:begin
-//
-// Dep2.s
-// _filePath_ : /dir/Dep2.s
-// _dirPath_ : /dir
-// __filename : /dir/Dep2.s
-// __dirname : /dir
-// module : object
-// module.parent : object
-// exports : object
-// require : function
-// include : function
-// _starter_.interpreter : browser
-//
-// Dep2.s:end
-//
-// dir.length : 2
-// dir[ 0 ] : Dep1
-// dir[ 1 ] : Dep2
-//
-// Index.js
-// _filePath_ : /Index.js
-// _dirPath_ : /
-// __filename : /Index.js
-// __dirname : /
-// module : object
-// module.parent : object
-// exports : object
-// require : function
-// include : function
-// _starter_.interpreter : browser
-//
-// Index.js:end
-// `
-//     test.identical( op.exitCode, 0 );
-//     test.equivalent( op.output, output );
-//     return op;
-//   })
-// xxx
+  //   a.ready.then( () =>
+  //   {
+  //     test.case = 'interpreter:browser entryPath:in/Index.js';
+  //     a.fileProvider.filesDelete( a.abs( '.' ) );
+  //     a.reflect();
+  //     a.fileProvider.filesDelete( a.abs( 'out' ) );
+  //     return null;
+  //   })
+  //
+  //   a.appStart( `.start basePath:in entryPath:Index.js timeOut:15000 headless:1` )
+  //   .then( ( op ) =>
+  //   {
+  //     test.description = 'out/Out.js';
+  //     var output =
+  // `
+  // Index.js:begin
+  // Dep1.js:begin
+  //
+  // Dep1.js
+  // _filePath_ : /dir/Dep1.js
+  // _dirPath_ : /dir
+  // __filename : /dir/Dep1.js
+  // __dirname : /dir
+  // module : object
+  // module.parent : object
+  // exports : object
+  // require : function
+  // include : function
+  // _starter_.interpreter : browser
+  //
+  // Dep1.js:end
+  // Dep2.s:begin
+  //
+  // Dep2.s
+  // _filePath_ : /dir/Dep2.s
+  // _dirPath_ : /dir
+  // __filename : /dir/Dep2.s
+  // __dirname : /dir
+  // module : object
+  // module.parent : object
+  // exports : object
+  // require : function
+  // include : function
+  // _starter_.interpreter : browser
+  //
+  // Dep2.s:end
+  //
+  // dir.length : 2
+  // dir[ 0 ] : Dep1
+  // dir[ 1 ] : Dep2
+  //
+  // Index.js
+  // _filePath_ : /Index.js
+  // _dirPath_ : /
+  // __filename : /Index.js
+  // __dirname : /
+  // module : object
+  // module.parent : object
+  // exports : object
+  // require : function
+  // include : function
+  // _starter_.interpreter : browser
+  //
+  // Index.js:end
+  // `
+  //     test.identical( op.exitCode, 0 );
+  //     test.equivalent( op.output, output );
+  //     return op;
+  //   })
+  // xxx
 
   /* */
 
@@ -2812,7 +2826,7 @@ function sourcesJoinExpressServer( test )
     return op;
   })
 
-  a.anotherStart( `out/server.js` )
+  a.fork( `out/server.js` )
   .then( ( op ) =>
   {
     test.description = 'out/server.js';
@@ -3269,7 +3283,19 @@ function startOptionWithModule( test )
   })
 
   // appStart( `.start startOptionWithModule/File1.js timeOut:${context.deltaTime3}0 loggingSessionEvents:1 headless:1 withModule:../../../../wtools/Tools.s withModule:wCopyable` )
-  appStart( `.start startOptionWithModule/File1.js timeOut:${context.deltaTime3}0 loggingSessionEvents:1 headless:1 withModule:wTools withModule:wCopyable` )
+  appStart
+  ({
+    execPath : `.start`,
+    args :
+    [
+      `startOptionWithModule/File1.js`,
+      `timeOut:${context.deltaTime3}0`,
+      `loggingSessionEvents:1`,
+      `headless:1`,
+      `withModule:wTools`,
+      `withModule:wCopyable`
+    ]
+  })
   .then( ( op ) =>
   {
     var output =
@@ -3399,29 +3425,29 @@ function startModuleParent( test )
 
   /* */
 
-// xxx
-//   a.ready.then( () =>
-//   {
-//     test.case = 'native njs';
-//     _.fileProvider.filesDelete( a.routinePath );
-//     a.reflect();
-//     return null;
-//   })
-//
-//   a.shell( `node Main.js` )
-//   .then( ( op ) =>
-//   {
-//     var output =
-// `
-// Main.js: false
-// F1.js: ${ a.abs( 'F1.js' ) }
-// F2.js: ${ a.abs( 'F2.js' ) }
-// F3.js: ${ a.abs( 'F3.js' ) }
-// `
-//     test.identical( op.exitCode, 0 );
-//     test.equivalent( op.output, output );
-//     return op;
-//   })
+  // xxx
+  //   a.ready.then( () =>
+  //   {
+  //     test.case = 'native njs';
+  //     _.fileProvider.filesDelete( a.routinePath );
+  //     a.reflect();
+  //     return null;
+  //   })
+  //
+  //   a.shell( `node Main.js` )
+  //   .then( ( op ) =>
+  //   {
+  //     var output =
+  // `
+  // Main.js: false
+  // F1.js: ${ a.abs( 'F1.js' ) }
+  // F2.js: ${ a.abs( 'F2.js' ) }
+  // F3.js: ${ a.abs( 'F3.js' ) }
+  // `
+  //     test.identical( op.exitCode, 0 );
+  //     test.equivalent( op.output, output );
+  //     return op;
+  //   })
 
   /* */
 
@@ -3439,9 +3465,9 @@ function startModuleParent( test )
     var output =
 `
 Main.js: false
-F1.js: ${ a.abs( 'F1.js' ) }
-F2.js: ${ a.abs( 'F2.js' ) }
-F3.js: ${ a.abs( 'F3.js' ) }
+F1.js: ${ a.path.nativize( a.abs( 'F1.js' ) ) }
+F2.js: ${ a.path.nativize( a.abs( 'F2.js' ) ) }
+F3.js: ${ a.path.nativize( a.abs( 'F3.js' ) ) }
 `
     test.identical( op.exitCode, 0 );
     test.equivalent( op.output, output );
@@ -3450,25 +3476,25 @@ F3.js: ${ a.abs( 'F3.js' ) }
 
   /* */
 
-//   a.ready.then( () =>
-//   {
-//     test.case = 'browser';
-//     _.fileProvider.filesDelete( a.routinePath );
-//     a.reflect();
-//     return null;
-//   })
-//
-//   a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1` )
-//   .then( ( op ) =>
-//   {
-//     var output =
-// `
-// xxx
-// `
-//     test.identical( op.exitCode, 0 );
-//     test.equivalent( op.output, output );
-//     return op;
-//   })
+  //   a.ready.then( () =>
+  //   {
+  //     test.case = 'browser';
+  //     _.fileProvider.filesDelete( a.routinePath );
+  //     a.reflect();
+  //     return null;
+  //   })
+  //
+  //   a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1` )
+  //   .then( ( op ) =>
+  //   {
+  //     var output =
+  // `
+  // xxx
+  // `
+  //     test.identical( op.exitCode, 0 );
+  //     test.equivalent( op.output, output );
+  //     return op;
+  //   })
 
   /* */
 
@@ -3498,18 +3524,17 @@ function startOptionTimeOutImmediateChild( test )
     return null;
   })
 
-  a.appStart( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 interpreter:njs` )
+  a.appStartNonThrowing( `.start Main.js timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 interpreter:njs` )
   .then( ( op ) =>
   {
-    var output =
-`
-Main.js: false
-F1.js: ${ a.abs( 'F1.js' ) }
-F2.js: ${ a.abs( 'F2.js' ) }
-F3.js: ${ a.abs( 'F3.js' ) }
-`
-    test.identical( op.exitCode, 0 );
-    test.equivalent( op.output, output );
+    test.notIdentical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, 'Main.js:begin' ), 1 );
+    test.identical( _.strCount( op.output, `F1.js: ${ a.path.nativize( a.abs( 'F1.js' ) ) }` ), 1 );
+    test.identical( _.strCount( op.output, `F2.js: ${ a.path.nativize( a.abs( 'F2.js' ) ) }` ), 1 );
+    test.identical( _.strCount( op.output, `F3.js: ${ a.path.nativize( a.abs( 'F3.js' ) ) }` ), 1 );
+    test.identical( _.strCount( op.output, 'Terminating process' ), 1 );
+    test.identical( _.strCount( op.output, 'Main.js:end' ), 0 );
+
     return op;
   })
 
@@ -3536,7 +3561,7 @@ function startTestSuite( test )
     execPath : context.appJsPath,
     currentPath : a.originalAbs( '.' ),
     outputCollecting : 1,
-    throwingExitCode : 1,
+    throwingExitCode : 0,
     outputGraying : 1,
     detaching : 0,
     ready : a.ready,
@@ -3554,14 +3579,26 @@ function startTestSuite( test )
     return null;
   })
 
-  appStart( `.start wtools/atop/starter.test/_asset/startTestSuite/Suite1.js basePath:../../../../.. timeOut:${context.deltaTime3} loggingSessionEvents:0 headless:1 loggingOptions:1` )
+  appStart
+  ({
+    execPath : `.start`,
+    args :
+    [
+      `wtools/atop/starter.test/_asset/startTestSuite/Suite1.js`,
+      `basePath:../../../../..`,
+      // `timeOut:${context.deltaTime3}`,
+      `loggingSessionEvents:0`,
+      `headless:1`,
+      `loggingOptions:1`
+    ]
+  })
   .then( ( op ) =>
   {
     var output =
 `
 xxx
 `
-    test.identical( op.exitCode, 0 );
+    test.notIdentical( op.exitCode, 0 );
     test.equivalent( op.output, output );
     return op;
   })
@@ -3661,7 +3698,7 @@ Script.js : Global : DedicatedWorkerGlobalScope
     var exp = `. request /Index.js`;
     test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /Script.js`;
-    test.identical( _.strCount( op.output, exp ), 2 );
+    test.identical( _.strCount( op.output, exp ), 4 );
     var exp = `. request /Worker.js`;
     test.identical( _.strCount( op.output, exp ), 1 );
 
@@ -3710,7 +3747,7 @@ Script.js : Global : DedicatedWorkerGlobalScope
     var exp = `. request /proto/Index.js`;
     test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /proto/Script.js`;
-    test.identical( _.strCount( op.output, exp ), 2 );
+    test.identical( _.strCount( op.output, exp ), 4 );
     var exp = `. request /proto/Worker.js`;
     test.identical( _.strCount( op.output, exp ), 1 );
 
@@ -3758,7 +3795,7 @@ Script.js : Global : DedicatedWorkerGlobalScope
     var exp = `. request /Index.js`;
     test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /Script.js`;
-    test.identical( _.strCount( op.output, exp ), 1 );
+    test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /Worker.js`;
     test.identical( _.strCount( op.output, exp ), 1 );
 
@@ -3806,7 +3843,7 @@ Script.js : Global : DedicatedWorkerGlobalScope
     var exp = `. request /proto/Index.js`;
     test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /proto/Script.js`;
-    test.identical( _.strCount( op.output, exp ), 1 );
+    test.identical( _.strCount( op.output, exp ), 2 );
     var exp = `. request /proto/Worker.js`;
     test.identical( _.strCount( op.output, exp ), 1 );
 
@@ -3900,6 +3937,129 @@ workerEnvironment.description =
 - envioronment in worker set properly
 `
 
+//
+
+function startExitCode( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  let appStart = a.process.starter
+  ({
+    execPath : context.appJsPath,
+    currentPath : a.originalAbs( '.' ),
+    outputCollecting : 1,
+    throwingExitCode : 0,
+    outputGraying : 1,
+    detaching : 0,
+    ready : a.ready,
+    mode : 'fork',
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    // _.fileProvider.filesDelete( a.routinePath );
+    // a.reflect();
+    // _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  appStart
+  ({
+    execPath : `.start`,
+    args :
+    [
+      `File1.js`,
+      `loggingSessionEvents:0`,
+      `headless:1`,
+      `loggingOptions:1`
+    ]
+  })
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 123 );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startExitCode.description =
+`
+  - Starter exits with code specified in the browser.
+`
+
+//
+
+function startStyledConsoleOutput( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  let appStart = a.process.starter
+  ({
+    execPath : context.appJsPath,
+    currentPath : a.originalAbs( '.' ),
+    outputCollecting : 1,
+    throwingExitCode : 0,
+    outputGraying : 1,
+    detaching : 0,
+    ready : a.ready,
+    mode : 'fork',
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    // _.fileProvider.filesDelete( a.routinePath );
+    // a.reflect();
+    // _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  appStart
+  ({
+    execPath : `.start`,
+    args :
+    [
+      `wtools/atop/starter.test/_asset/startStyledConsoleOutput/File1.js`,
+      `basePath:../../../../..`,
+      `loggingSessionEvents:0`,
+      `headless:0`,
+      `loggingOptions:1`
+    ]
+  })
+  .then( ( op ) =>
+  {
+    var output =
+`
+xxx
+`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startStyledConsoleOutput.experimental = 1;
+startStyledConsoleOutput.description =
+`
+- Client-side browser colorful log works on server-side.
+`
+
 // --
 // etc
 // --
@@ -3911,14 +4071,16 @@ async function loggingError( test )
 
   a.reflect();
 
-  a.appStart( `.start F1.js timeOut:${context.deltaTime3} headless:1` )
+  a.appStart({ execPath : `.start F1.js timeOut:${context.deltaTime3} headless:1`, throwingExitCode : 0 })
   .then( ( op ) =>
   {
-    test.identical( op.exitCode, 0 );
+    test.notIdentical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, 'F1:begin' ), 1 );
     test.identical( _.strCount( op.output, 'F1:end' ), 1 );
     test.identical( _.strCount( op.output, 'uncaught error' ), 2 );
+    test.identical( _.strCount( op.output, 'uncaught promise error' ), 2 );
     test.identical( _.strCount( op.output, 'Some Error!' ), 1 );
+    test.identical( _.strCount( op.output, 'Promise Error!' ), 1 );
     return op;
   })
 
@@ -3929,6 +4091,7 @@ loggingError.description =
 `
 - Client-side log appears on server-side.
 - Client-side uncaught errors appears on server side.
+- Client-side unhandled promise rejection error appears on server side.
 `
 
 //
@@ -4008,23 +4171,23 @@ async function loggingErrorInWorkerNoFile( test )
     test.identical( _.strCount( op.output, '= Message of error' ), 1 );
     test.identical( _.strCount( op.output, `Failed to execute 'importScripts' on 'WorkerGlobalScope': The script at 'http://127.0.0.1:15000/W1.js' failed to load.` ), 2 );
 
-//     var exp =
-// `
-// err:end
-// Worker:end
-//  . event::timeOut
-//  . event::curatedRunTerminateEnd
-// `
-//     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
-// xxx : investigate difference on different OS's
+    //     var exp =
+    // `
+    // err:end
+    // Worker:end
+    //  . event::timeOut
+    //  . event::curatedRunTerminateEnd
+    // `
+    //     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    // xxx : investigate difference on different OS's
 
-//     var exp =
-// `
-// Worker:end
-//  . event::timeOut
-//  . event::curatedRunTerminateEnd
-// `
-//     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    //     var exp =
+    // `
+    // Worker:end
+    //  . event::timeOut
+    //  . event::curatedRunTerminateEnd
+    // `
+    //     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
 
     var exp =
 `
@@ -4060,8 +4223,8 @@ function version( test )
   .then( ( op ) =>
   {
     test.identical( op.exitCode, 0 );
-    test.is( _.strHas( op.output, /Current version : .*\..*\..*/ ) );
-    test.is( _.strHas( op.output, /Latest version of wstarter!alpha : .*\..*\..*/ ) );
+    test.true( _.strHas( op.output, /Current version : .*\..*\..*/ ) );
+    test.true( _.strHas( op.output, /Latest version of wstarter!alpha : .*\..*\..*/ ) );
     return op;
   })
 
@@ -4148,6 +4311,9 @@ let Self =
     startWorkerUsingDifferentInclude,
     startWorkerUsingDifferentIncludeSubDir,
     workerEnvironment,
+
+    startExitCode,
+    startStyledConsoleOutput,
 
     // logging
 

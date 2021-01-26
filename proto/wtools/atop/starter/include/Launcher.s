@@ -1,4 +1,5 @@
-( function _Launcher_s_( ) {
+( function _Launcher_s_( )
+{
 
 'use strict';
 

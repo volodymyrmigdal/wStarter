@@ -1,11 +1,14 @@
-( function _Int_test_s_() {
+( function _Int_test_s_()
+{
 
 'use strict';
+
+let Jsdom;
 
 if( typeof module !== 'undefined' )
 {
 
-  var Jsdom = require( 'jsdom' );
+  Jsdom = require( 'jsdom' );
   let _ = require( '../../../wtools/Tools.s' );
 
   _.include( 'wTesting' );
@@ -73,7 +76,24 @@ function assetFor( test, name )
     mode : 'fork',
   })
 
+  let oprogram = a.program;
+  program_body.defaults = a.program.defaults;
+  a.program = _.routineUnite( a.program.head, program_body );
   return a;
+
+  /* */
+
+  function program_body( o )
+  {
+    let locals =
+    {
+      toolsPath : _.module.resolve( 'wTools' ),
+    };
+    o.locals = o.locals || locals;
+    _.mapSupplement( o.locals, locals );
+    let programPath = a.path.nativize( oprogram.body.call( a, o ) ); /* zzz : modify a.program()? */
+    return programPath;
+  }
 }
 
 // --
@@ -95,7 +115,7 @@ function sourcesJoinFiles( test )
     execPath : 'node',
     currentPath : a.routinePath,
     outputCollecting : 1,
-    ready : ready,
+    ready,
   });
 
   starter.sourcesJoinFiles
@@ -315,7 +335,7 @@ async function includeCss( test )
       var style = window.getComputedStyle( document.querySelector( 'body') );
       return style.getPropertyValue( 'background' )
     });
-    test.is( _.strHas( got, 'rgb(192, 192, 192)' ) );
+    test.true( _.strHas( got, 'rgb(192, 192, 192)' ) );
 
     await window.close();
   }
@@ -325,7 +345,7 @@ async function includeCss( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 //
@@ -359,7 +379,7 @@ async function includeExcludingManual( test )
     test.identical( scripts.length, 3 );
     test.identical( scripts[ 0 ], `${parsed.origin}/.starter` );
     test.identical( scripts[ 1 ], `${parsed.origin}/Index.js` );
-    test.is( _.strHas( scripts[ 2 ], './src/File.js' ) );
+    test.true( _.strHas( scripts[ 2 ], './src/File.js' ) );
 
     await window.close();
   }
@@ -369,7 +389,7 @@ async function includeExcludingManual( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 //
@@ -417,7 +437,7 @@ async function includeModule( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 includeModule.timeOut = 300000;
@@ -454,13 +474,13 @@ async function workerWithInclude( test )
     page = await window.pageOpen();
     let output = '';
 
-    page.on( 'console', msg => output += msg.text() + '\n' );
+    page.on( 'console', ( msg ) => output += msg.text() + '\n' );
 
     await page.goto( session.entryWithQueryUri );
     await _.time.out( context.deltaTime2 );
 
-    test.is( _.strHas( output, 'Global : Window' ) )
-    test.is( _.strHas( output, 'Global : DedicatedWorkerGlobalScope' ) )
+    test.true( _.strHas( output, 'Global : Window' ) )
+    test.true( _.strHas( output, 'Global : DedicatedWorkerGlobalScope' ) )
 
     await window.close();
   }
@@ -470,7 +490,7 @@ async function workerWithInclude( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 workerWithInclude.timeOut = 300000;
@@ -505,7 +525,7 @@ async function includeModuleInWorker( test )
     page = await window.pageOpen();
     let output = '';
 
-    page.on( 'console', msg => output += msg.text() + '\n' );
+    page.on( 'console', ( msg ) => output += msg.text() + '\n' );
 
     await page.goto( session.entryWithQueryUri );
 
@@ -514,9 +534,9 @@ async function includeModuleInWorker( test )
     console.log( output )
 
     test.case = 'module was exported and returned object is same as global namespace created in module'
-    test.is( _.strHas( output, `Module was exported: true` ) );
+    test.true( _.strHas( output, `Module was exported: true` ) );
     test.case = 'two includes return same object'
-    test.is( _.strHas( output, `Both includes have same export: true` ) );
+    test.true( _.strHas( output, `Both includes have same export: true` ) );
 
     await window.close();
   }
@@ -526,7 +546,7 @@ async function includeModuleInWorker( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 includeModuleInWorker.timeOut = 300000;
@@ -561,7 +581,7 @@ async function includeModuleInWorkerThrowing( test )
     page = await window.pageOpen();
     let output = '';
 
-    page.on( 'console', msg => output += msg.text() + '\n' );
+    page.on( 'console', ( msg ) => output += msg.text() + '\n' );
 
     await page.goto( session.entryWithQueryUri );
 
@@ -569,9 +589,9 @@ async function includeModuleInWorkerThrowing( test )
 
     // console.log( '!' + output + '!' );
 
-    test.is( !_.strHas( output, `Module was included` ) );
-    test.is( _.strHas( output, `Module error` ) );
-    test.is( _.strHas( output, `Error including source file /Module.js` ) );
+    test.true( !_.strHas( output, `Module was included` ) );
+    test.true( _.strHas( output, `Module error` ) );
+    test.true( _.strHas( output, `Error including source file /Module.js` ) );
 
     await window.close();
   }
@@ -581,7 +601,7 @@ async function includeModuleInWorkerThrowing( test )
     await window.close();
   }
 
-  return await starter.close();
+  return starter.close();
 }
 
 includeModuleInWorkerThrowing.timeOut = 300000;
@@ -610,6 +630,7 @@ async function curatedRunWindowOpenCloseAutomatic( test )
     ({
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     })
 
     test.identical( session.curratedRunState, 'launching' );
@@ -661,6 +682,7 @@ async function curatedRunWindowOpenCloseWindowManually( test )
     ({
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     })
 
     test.identical( session.curratedRunState, 'launching' );
@@ -711,6 +733,7 @@ async function curatedRunWindowOpenClosePageManually( test )
     ({
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     })
 
     test.identical( session.curratedRunState, 'launching' );
@@ -766,6 +789,7 @@ async function curatedRunEventsCloseAutomatic( test )
       system,
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     }
     session = new _.starter.session.BrowserCdp( opts );
 
@@ -834,6 +858,7 @@ async function curatedRunEventsCloseWindowManually( test )
       system,
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     }
     session = new _.starter.session.BrowserCdp( opts );
 
@@ -872,6 +897,8 @@ async function curatedRunEventsCloseWindowManually( test )
     }
     test.identical( encountered, exp );
 
+    await session.eventWaitFor( 'unformed' );
+
   }
   catch( err )
   {
@@ -904,6 +931,7 @@ async function curatedRunEventsClosePageManually( test )
       system,
       entryPath : a.originalAbs( './F1.js' ),
       headless : 1,
+      cleanupAfterStarterDeath : 0
     }
     session = new _.starter.session.BrowserCdp( opts );
 
@@ -944,6 +972,8 @@ async function curatedRunEventsClosePageManually( test )
     }
     test.identical( encountered, exp );
 
+    await session.eventWaitFor( 'unformed' );
+
   }
   catch( err )
   {
@@ -955,6 +985,253 @@ async function curatedRunEventsClosePageManually( test )
 
 curatedRunEventsClosePageManually.timeOut = 300000;
 
+//
+
+async function curatedRunRandomPort( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'minute' );
+  let starter = new _.starter.System({ verbosity : test.suite.verbosity >= 7 ? 3 : 0 }).form();
+  let session;
+
+  try
+  {
+
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
+    test.identical( !!cdp, false );
+
+    // await _.time.out( context.deltaTime3 ); /* xxx : remove later and find fix working for linux */
+    // debugger;
+
+    session = await starter.start
+    ({
+      entryPath : a.originalAbs( './F1.js' ),
+      headless : 1,
+      cleanupAfterStarterDeath : 0,
+      sessionPort : 0,
+      serverPath : 'http://127.0.0.1:0'
+    })
+
+    test.identical( session.curratedRunState, 'launching' );
+
+    await _.time.out( context.deltaTime2 ); /* xxx : remove later and find fix working for linux */
+
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened( session );
+    test.identical( !!cdp, true );
+
+    await _.time.out( context.deltaTime2 );
+
+    test.identical( session.curratedRunState, 'launched' );
+
+    test.notIdentical( session.sessionPort, 0 );
+    let servletPathParsed = _.servlet.serverPathParse({ full : session.servlet.serverPath });
+    test.notIdentical( servletPathParsed.port, 0 );
+    test.identical( session.servlet.httpServer.address().port, servletPathParsed.port );
+
+    await session.unform();
+
+    test.identical( session.curratedRunState, 'terminated' );
+    var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened( session );
+    test.identical( !!cdp, false );
+    test.identical( session.curratedRunState, 'terminated' );
+
+  }
+  catch( err )
+  {
+    if( session )
+    await session.unform();
+  }
+
+}
+
+curatedRunRandomPort.timeOut = 300000;
+
+//
+
+function browserUserTempDirCleanup( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'minute' );
+
+  a.reflect();
+
+  let locals =
+  {
+    toolsPath : _.module.resolve( 'wTools' ),
+    starterPath : a.path.nativize( a.path.join( __dirname, '../starter/entry/Include.s' ) ),
+    context : { deltaTime3 : context.deltaTime3 },
+    opts :
+    {
+      entryPath : a.abs( './F1.js' ),
+      basePath : a.abs( '.'),
+      headless : 1
+    }
+  }
+
+  let execPath = a.program({ routine : program, locals });
+
+  let op = { execPath };
+  let ready = _.Consequence();
+  let ready2 = _.Consequence();
+  let tempDirPath, secondaryProcessPid;
+
+  a.fork( op );
+
+  op.pnd.on( 'message', ( data ) =>
+  {
+    if( data.field === 'tempDirPath' )
+    ready.take( data.val )
+    if( data.field === 'secondaryProcessPid' )
+    ready2.take( data.val )
+  });
+
+  ready.then( ( got ) =>
+  {
+    tempDirPath = got;
+    test.true( a.fileProvider.fileExists( tempDirPath ) );
+    return null;
+  })
+
+  ready2.then( ( got ) =>
+  {
+    secondaryProcessPid = got;
+    test.true( _.process.isAlive( secondaryProcessPid ) );
+    return null;
+  })
+
+  op.ready.then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    return _.time.out( context.deltaTime2 * 2 ) /* 6000 */
+    .then( () =>
+    {
+      test.true( !a.fileProvider.fileExists( tempDirPath ) );
+      test.true( !_.process.isAlive( secondaryProcessPid ) );
+      return null;
+    })
+  })
+
+  return _.Consequence.And( op.ready, ready, ready2 );
+
+  /* */
+
+  function program()
+  {
+    let _ = require( toolsPath );
+    _.include( 'wStarter')
+
+    let starter = new _.starter.System({ verbosity : 7 }).form();
+    let session;
+
+    main();
+
+    async function main()
+    {
+      try
+      {
+        session = await starter.start( opts );
+        process.send({ field : 'tempDirPath', val : session._tempDir });
+        await _.time.out( context.deltaTime3 );
+        await session.unform();
+        process.send({ field : 'secondaryProcessPid', val : session._tempDirCleanProcess.pnd.pid });
+      }
+      catch( err )
+      {
+        if( session )
+        await session.unform();
+        throw _.err( err );
+      }
+    }
+  }
+
+
+}
+
+//
+
+async function servletRemoteResolve( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'servlet' );
+
+  a.reflect();
+
+  let system = new _.starter.System({ verbosity : 7 }).form();
+
+  let servlet = new _.starter.Servlet({ basePath : a.routinePath, allowedPath : { '/' : true }, system });
+  await servlet.form();
+
+  let Needle = require( 'needle' );
+
+  test.case = 'glob for existing file'
+  var response = await Needle( 'get', servlet.serverPath + '/.resolve/./*.js', { json : 1 });
+  test.identical( response.body, [ '/F1.js' ] );
+
+  test.case = 'glob for not existing file'
+  var response = await Needle( 'get', servlet.serverPath + '/.resolve/./*.txt', { json : 1 });
+  test.identical( response.body, [] );
+
+  test.case = 'module'
+  var response = await Needle( 'get', servlet.serverPath + '/.resolve/wTools', { json : 1 });
+  test.true( _.strEnds( response.body, 'Layer1.s' ) );
+
+  test.case = 'fail'
+  var response = await Needle( 'get', servlet.serverPath + '/.resolve/unknown', { json : 1 });
+  test.true( _.strIs( response.body.err ) );
+
+  test.case = 'resolvingNpm disabled'
+  servlet.resolvingNpm = false;
+  var response = await Needle( 'get', servlet.serverPath + '/.resolve/wTools', { json : 1 });
+  test.true( _.strIs( response.body.err ) );
+  servlet.resolvingNpm = true;
+
+  test.case = 'resolvingGlob disabled'
+  servlet.resolvingGlob = false;
+  var response = await Needle( 'get', servlet.serverPath + '/.resolve/./*.js', { json : 1 });
+  test.true( _.strIs( response.body.err ) );
+  servlet.resolvingGlob = true;
+
+  return servlet.finit();
+}
+
+//
+
+async function servletRemoteStat( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'servlet' );
+
+  a.reflect();
+
+  let system = new _.starter.System({ verbosity : 7 }).form();
+
+  let servlet = new _.starter.Servlet({ basePath : a.routinePath, allowedPath : { '/' : true }, system });
+  await servlet.form();
+
+  let Needle = require( 'needle' );
+
+  test.case = 'absolute exists'
+  var response = await Needle( 'get', servlet.serverPath + '/F1.js?stat=1', { json : 1 });
+  test.identical( response.body, { exists : true } );
+
+  test.case = 'absolute missing'
+  var response = await Needle( 'get', servlet.serverPath + '/F2.js?stat=1', { json : 1 });
+  test.identical( response.body, { exists : false } );
+
+  test.case = 'relative'
+  var dirName = a.fileProvider.path.name( a.routinePath )
+  var response = await Needle( 'get', servlet.serverPath + `/../${dirName}/F1.js?stat=1`, { json : 1 });
+  test.identical( response.body, { exists : true } );
+
+  test.case = 'relative missing'
+  var dirName = a.fileProvider.path.name( a.routinePath )
+  var response = await Needle( 'get', servlet.serverPath + `/../${dirName}/F2.js?stat=1`, { json : 1 });
+  test.identical( response.body, { exists : false } );
+
+  return servlet.finit();
+
+}
+
 // --
 // declare
 // --
@@ -964,7 +1241,7 @@ let Self =
 
   name : 'Tools.Starter.Int',
   silencing : 1,
-  enabled : 1,
+  enabled : 0,
   routineTimeOut : 60000,
   onSuiteBegin,
   onSuiteEnd,
@@ -1020,6 +1297,19 @@ let Self =
     curatedRunEventsCloseAutomatic,
     curatedRunEventsCloseWindowManually,
     curatedRunEventsClosePageManually,
+
+    // port
+
+    curatedRunRandomPort,
+
+    // etc
+
+    browserUserTempDirCleanup,
+
+    //servlet
+
+    servletRemoteResolve,
+    servletRemoteStat
 
   }
 

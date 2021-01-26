@@ -1,4 +1,5 @@
-( function _Cui_s_( ) {
+( function _Cui_s_( )
+{
 
 'use strict';
 
@@ -58,7 +59,7 @@ function exec()
 
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
-  let appArgs = _.process.args();
+  let appArgs = _.process.input();
   let ca = cui._commandsMake();
 
   return _.Consequence
@@ -86,7 +87,7 @@ function _commandsMake()
   let starter = cui.starter;
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
-  let appArgs = _.process.args();
+  let appArgs = _.process.input();
 
   _.assert( _.instanceIs( cui ) );
   _.assert( _.instanceIs( starter ) );
@@ -94,19 +95,19 @@ function _commandsMake()
 
   let commands =
   {
-    'help' :              { e : _.routineJoin( cui, cui.commandHelp ),          },
-    'version' :           { e : _.routineJoin( cui, cui.commandVersion ),       },
-    'imply' :             { e : _.routineJoin( cui, cui.commandImply ),         }, /* qqq : remove. ask how */
-    'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor ),       },
-    'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin ),   },
-    'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen ),      },
-    'start' :             { e : _.routineJoin( cui, cui.commandStart )          },
+    'help' :              { e : _.routineJoin( cui, cui.commandHelp )          },
+    'version' :           { e : _.routineJoin( cui, cui.commandVersion )       },
+    'imply' :             { e : _.routineJoin( cui, cui.commandImply )         }, /* qqq : remove. ask how */
+    'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor )       },
+    'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin )   },
+    'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen )      },
+    'start' :             { e : _.routineJoin( cui, cui.commandStart )          }
   }
 
   let ca = _.CommandsAggregator
   ({
     basePath : fileProvider.path.current(),
-    commands : commands,
+    commands,
     commandPrefix : 'node ',
   })
 
@@ -204,11 +205,11 @@ function commandImply( e )
 
   let request = _.strRequestParse( e.commandArgument );
 
-  _.process.argsReadTo
+  _.process.inputReadTo
   ({
     dst : starter,
     propertiesMap : request.map,
-    namesMap : namesMap,
+    namesMap
   });
 
 }

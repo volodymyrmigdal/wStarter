@@ -1,4 +1,5 @@
-( function _Njs_s_() {
+( function _Njs_s_()
+{
 
 'use strict';
 
@@ -26,13 +27,13 @@ function _unform()
   if( session._process )
   {
 
-    if( !session._process.ended && session._process.process )
+    if( !session._process.ended && session._process.pnd )
     ready.then( () =>
     {
-      if( !session._process.ended && session._process.process )
+      if( !session._process.ended && session._process.pnd )
       {
         console.log( 'Terminating process' );
-        return _.process.terminate( session._process.process );
+        return _.process.terminate( session._process.pnd );
       }
       return null;
     });
@@ -76,21 +77,28 @@ function _form()
       execPath : session.entryPath,
       currentPath : session.basePath,
       throwingExitCode : 1,
+      applyingExitCode : 1,
       inputMirroring : 0,
       mode : 'fork',
     }
     _.process.startNjs( session._process );
 
-    session._process.conTerminate( ( err, arg ) =>
+    session._process.conTerminate.finally( ( err, arg ) =>
     {
       debugger;
-      console.log( 'session._process.conTerminate' );
+
+      // console.log( 'session._process.conTerminate' );
+
       session.unform();
+
       if( err )
       {
         // if( err.reason === 'signal' )
         // return null;
-        throw err;
+        if( !_.numberIs( session._process.exitCode ) )
+        _.process.exitCode( -1 )
+
+        throw session.errorEncounterEnd( _.errBrief( err ) );
       }
       return arg;
     });

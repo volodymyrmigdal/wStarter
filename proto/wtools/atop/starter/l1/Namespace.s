@@ -1,4 +1,5 @@
-( function _Namespace_s_( ) {
+( function _Namespace_s_( )
+{
 
 'use strict';
 
@@ -6,10 +7,11 @@ let _ = _global_.wTools;
 let Self = _.starter = _.starter || Object.create( null );
 _.starter.session = _.starter.session || Object.create( null );
 
-let vectorize = _.routineDefaults( null, _.vectorize, { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 } );
-let vectorizeAll = _.routineDefaults( null, _.vectorizeAll, { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 } );
-let vectorizeAny = _.routineDefaults( null, _.vectorizeAny, { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 } );
-let vectorizeNone = _.routineDefaults( null, _.vectorizeNone, { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 } );
+let vectorizeDefaults = { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 };
+let vectorize = _.routineDefaults( null, _.vectorize, vectorizeDefaults );
+let vectorizeAll = _.routineDefaults( null, _.vectorizeAll, vectorizeDefaults );
+let vectorizeAny = _.routineDefaults( null, _.vectorizeAny, vectorizeDefaults );
+let vectorizeNone = _.routineDefaults( null, _.vectorizeNone, vectorizeDefaults );
 
 // --
 // inter
@@ -18,7 +20,7 @@ let vectorizeNone = _.routineDefaults( null, _.vectorizeNone, { vectorizingConta
 async function launch()
 {
   let center = _.starter.System.Center();
-  return await center.form();
+  return center.form();
 }
 
 //
@@ -55,7 +57,7 @@ function pathAllowedFilter( allowedPath, filePath )
   _.assert( _.strIs( filePath ) || _.arrayIs( filePath ) );
   _.assert( arguments.length === 2 );
 
-  let result = _.filter( filePath, ( filePath ) => _pathAllowedIs( filePath ) );
+  let result = _.filter_( null, filePath, ( filePath ) => _pathAllowedIs( filePath ) );
   return result;
 
   function _pathAllowedIs( filePath )
@@ -182,6 +184,19 @@ pathVirtualToReal.defaults =
   verbosity : 0,
 }
 
+//
+
+function pathVirtualIs( virtualPath )
+{
+  let regexp = /^(\/?(_\d+_)\/)/;
+
+  _.assert( arguments.length === 1 );
+  _.assert( _.strIs( virtualPath ) );
+
+  let parsed = regexp.exec( virtualPath );
+  return !!parsed;
+}
+
 // //
 //
 // function pathExcludeNotAllowed( filePath, allowedPath )
@@ -226,6 +241,7 @@ let Extension =
 
   pathRealToVirtual,
   pathVirtualToReal,
+  pathVirtualIs,
 
   // pathExcludeNotAllowed,
 
