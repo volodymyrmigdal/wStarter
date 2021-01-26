@@ -690,6 +690,7 @@ function sourcesJoinSplits( o )
   ${rou( 'color', 'strBg' )}
   ${rou( 'color', 'rgbaHtmlFrom' )}
   ${rou( 'color', 'rgbaHtmlFromTry' )}
+  ${rou( 'color', 'rgbaHtmlToRgba' )}
   ${rou( 'color', 'hslaToRgba' )}
   ${rou( 'color', '_colorDistance' )}
   ${rou( 'color', '_rgbByBitmask' )}
@@ -701,7 +702,6 @@ function sourcesJoinSplits( o )
   ${rou( 'color', 'hexToColor' )}
   ${fields( 'color' )}
   ${field( 'color', 'ColorMap' )}
-
 
   ${rou( 'Logger', 'TransformCssStylingToDirectives' )}
 
