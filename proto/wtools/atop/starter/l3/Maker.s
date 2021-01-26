@@ -606,11 +606,14 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayRemovedElement' )}
   ${rou( 'arrayRemovedElementOnce' )}
   ${rou( 'arrayIsEmpty' )}
+  ${rou( 'arrayLikeResizable' )}
   ${rou( 'longLike' )}
   ${rou( 'longLeft' )}
   ${rou( 'longLeftIndex' )}
   ${rou( 'longLeftDefined' )}
   ${rou( 'longHas' )}
+  ${rou( 'longGrow_' )}
+  ${rou( 'dup' )}
   ${rou( 'routineUnite' )}
   ${rou( 'arrayAs' )}
   ${rou( 'errIs' )}
