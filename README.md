@@ -8,7 +8,7 @@ Collection of tools to generate background service to start and pack application
 git clone https://github.com/Wandalen/wStarter
 cd wStarter
 npm install
-node sample/Sample.s
+node sample/trivial/Sample.s
 ```
 
 ## To add to your project

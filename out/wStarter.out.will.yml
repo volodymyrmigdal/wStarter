@@ -3,14 +3,14 @@ root:
   - wStarter.out
 consistency:
   wStarter.out.will.yml: &ref_0
-    hash: 8fa55e8e11223b6c2447a7cc03e96175
-    size: 61204
+    hash: 20ad6e5d3e496a776471ded8fc7897d8
+    size: 61600
   ../.ex.will.yml: &ref_1
     hash: bdd67fb796af94560b6f886a8e46c27a
     size: 2266
   ../.im.will.yml: &ref_2
-    hash: c32f35297137639c7bc72cb2fca83425
-    size: 6336
+    hash: d431e6a2839661fafd027fb6a2557837
+    size: 6411
 module:
   wStarter.out:
     about:
@@ -189,6 +189,7 @@ module:
           - ../proto/wtools/atop/starter/l1_boot
           - ../proto/wtools/atop/starter/l1_boot/Bro.txt.s
           - ../proto/wtools/atop/starter/l1_boot/BroConsole.txt.s
+          - ../proto/wtools/atop/starter/l1_boot/BroProcess.txt.s
           - ../proto/wtools/atop/starter/l1_boot/Early.txt.s
           - ../proto/wtools/atop/starter/l1_boot/Extract.txt.s
           - ../proto/wtools/atop/starter/l1_boot/Globing.txt.s
@@ -407,6 +408,10 @@ module:
             ../proto/wtools/atop/starter.test/_asset/startChangeModuleCache/F2.js
           - >-
             ../proto/wtools/atop/starter.test/_asset/startChangeModuleCache/Main.js
+          - ../proto/wtools/atop/starter.test/_asset/startExitCode
+          - ../proto/wtools/atop/starter.test/_asset/startExitCode/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/startExitCode copy
+          - ../proto/wtools/atop/starter.test/_asset/startExitCode copy/File1.js
           - ../proto/wtools/atop/starter.test/_asset/startModuleParent
           - ../proto/wtools/atop/starter.test/_asset/startModuleParent/F1.js
           - ../proto/wtools/atop/starter.test/_asset/startModuleParent/F2.js
@@ -520,6 +525,10 @@ module:
         enabled: 0
       express:
         path: npm:///express#4.17.1
+        autoExporting: 0
+        enabled: 0
+      body-parser:
+        path: npm:///express#1.19.0
         autoExporting: 0
         enabled: 0
       jsdom:
@@ -1366,6 +1375,10 @@ module:
         path: npm:///express#4.17.1
         autoExporting: 0
         enabled: 0
+      body-parser:
+        path: npm:///express#1.19.0
+        autoExporting: 0
+        enabled: 0
       jsdom:
         path: npm:///jsdom#16.4.0
         autoExporting: 0
@@ -1949,6 +1962,6 @@ module:
         hash: bdd67fb796af94560b6f886a8e46c27a
         size: 2266
       ../.im.will.yml:
-        hash: c32f35297137639c7bc72cb2fca83425
-        size: 6336
+        hash: d431e6a2839661fafd027fb6a2557837
+        size: 6411
       wStarter.out.will.yml: *ref_0

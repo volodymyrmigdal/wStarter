@@ -34,9 +34,9 @@ function _Begin()
     let body = { routine : 'exit', arguments : [ _process._exitCode ] };
     let op =
     {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify( body )
+      method : 'post',
+      headers : { 'Content-Type' : 'application/json' },
+      body : JSON.stringify( body )
     }
     fetch( '/.process', op );
   }
@@ -57,9 +57,9 @@ function _Begin()
 
     let op =
     {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ routine : 'exitCode', arguments : [ _process._exitCode ] })
+      method : 'post',
+      headers : { 'Content-Type' : 'application/json' },
+      body : JSON.stringify({ routine : 'exitCode', arguments : [ _process._exitCode ] })
     }
     fetch( '/.process', op );
   }
@@ -69,11 +69,15 @@ function _Begin()
     return _process._exitCode;
   }
 
-  Object.defineProperty( _process, 'exitCode',
-  {
-    set : exitCodeSet,
-    get : exitCodeGet,
-  });
+  Object.defineProperty
+  (
+    _process,
+    'exitCode',
+    {
+      set : exitCodeSet,
+      get : exitCodeGet,
+    }
+  );
 
   /* */
 
