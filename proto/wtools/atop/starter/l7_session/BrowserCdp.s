@@ -305,7 +305,7 @@ function curratedRunOpen()
   {
     execPath : _.strQuote( installationPaths[ 0 ] ),
     mode : 'spawn',
-    detaching : 1,
+    detaching : 0,
     stdio : 'inherit',
     outputPiping : 0,
     inputMirroring : 0,
