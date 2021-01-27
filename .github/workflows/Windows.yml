@@ -13,8 +13,7 @@ jobs :
       fail-fast : false
       matrix :
         os : [ windows-latest ]
-        # node-version : [ 10.x, 12.x, 13.x, 14.x, 15.x ]
-        node-version : [ 10.x, 12.9.1, 13.x, 14.x, 15.x, 10.x, 12.9.1, 13.x, 14.x, 15.x, 10.x, 12.9.1, 13.x, 14.x, 15.x ]
+        node-version : [ 13.x ]
     steps :
     - run : git config --global core.autocrlf input
     - run : git config --global user.email "testing@testing.com"
@@ -27,7 +26,9 @@ jobs :
       with :
         node-version : ${{ matrix.node-version }}
     - run : npm i
-    - name : npm test
-      run : "node proto/wtools/atop/starter.test/Int.test.s r:experiment routineTimeOut : 60000 v:10"
-      env :
-        WTOOLS_BOT_TOKEN : ${{ secrets.WTOOLS_BOT_TOKEN }}
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+    # - name : npm test
+    #   run : "node proto/wtools/atop/starter.test/Int.test.s r:experiment routineTimeOut : 60000 v:10"
+    #   env :
+    #     WTOOLS_BOT_TOKEN : ${{ secrets.WTOOLS_BOT_TOKEN }}
