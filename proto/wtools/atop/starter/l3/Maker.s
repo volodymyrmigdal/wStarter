@@ -381,6 +381,18 @@ function sourcesJoinSplits( o )
 
 `
 
+  if( o.interpreter === 'browser' )
+  r.interpreter +=
+`
+/* */  /* begin of broProcess */ ( function _broProcess_() {
+
+  ${_.routineParse( maker.BroProcessCode.begin ).bodyUnwrapped};
+  ${_.routineParse( maker.BroProcessCode.end ).bodyUnwrapped};
+
+/* */  /* end of broProcess */ })();
+
+`
+
 
   /* njs */
 
@@ -551,6 +563,7 @@ function sourcesJoinSplits( o )
   ${rou( 'mapLike' )}
   ${rou( 'strsLikeAll' )}
   ${rou( 'boolLike' )}
+  ${rou( 'boolLikeTrue' )}
   ${rou( 'arrayIs' )}
   ${rou( 'numberIsFinite' )}
   ${rou( 'numberIs' )}
@@ -578,6 +591,7 @@ function sourcesJoinSplits( o )
   ${rou( 'mapExtend' )}
   ${rou( 'mapSupplement' )}
   ${rou( 'routineExtend' )}
+  ${rou( 'arrayAppend' )}
   ${rou( 'arrayAppendArray' )}
   ${rou( 'arrayAppendArrays' )}
   ${rou( 'arrayAppendedArray' )}
@@ -592,11 +606,14 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayRemovedElement' )}
   ${rou( 'arrayRemovedElementOnce' )}
   ${rou( 'arrayIsEmpty' )}
+  ${rou( 'arrayLikeResizable' )}
   ${rou( 'longLike' )}
   ${rou( 'longLeft' )}
   ${rou( 'longLeftIndex' )}
   ${rou( 'longLeftDefined' )}
   ${rou( 'longHas' )}
+  ${rou( 'longGrow_' )}
+  ${rou( 'dup' )}
   ${rou( 'routineUnite' )}
   ${rou( 'arrayAs' )}
   ${rou( 'errIs' )}
@@ -616,6 +633,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strLinesSplit' )}
   ${rou( 'strLinesJoin' )}
   ${rou( 'strSplitFast' )}
+  ${rou( 'strStrip' )}
   ${rou( 'strLinesSelect' )}
   ${rou( '_strLeftSingle_' )}
   ${rou( '_strRightSingle_' )}
@@ -635,6 +653,26 @@ function sourcesJoinSplits( o )
   ${rou( 'error', '_handleUncaughtPromise1' )}
   ${rou( 'error', '_handleUncaught2' )}
 
+  ${rou( 'event', '_chainGenerate' )}
+  ${rou( 'event', '_chainToCallback' )}
+  ${rou( 'event', '_chainValidate' )}
+  ${rou( 'event', '_callbackMapValidate' )}
+  ${rou( 'event', 'nameValueFrom' )}
+  ${rou( 'event', 'nameIs' )}
+  ${rou( 'event', 'chainIs' )}
+  ${rou( 'event', 'Name' )}
+  ${rou( 'event', 'Chain' )}
+  ${rou( 'event', 'on' )}
+  ${rou( 'event', 'once' )}
+  ${rou( 'event', 'off' )}
+  ${rou( 'event', 'off_functor' )}
+  ${rou( 'event', 'eventHasHandler' )}
+  ${rou( 'event', 'eventGive' )}
+  ${fields( 'event' )}
+
+  ${rou( 'each' )}
+
+
   /*
   Uri namespace( parseConsecutive ) is required to make _.include working in a browser
   */
@@ -647,10 +685,29 @@ function sourcesJoinSplits( o )
   ${rou( 'uri', 'canonize' )}
   ${rou( 'uri', 'canonizeTolerant' )}
   ${fields( 'uri' )}
-  
+
   ${rou( 'property', '_ofAct' )}
   ${rou( 'property', 'fields' )}
-  
+
+  ${rou( 'color', 'strFg' )}
+  ${rou( 'color', 'strBg' )}
+  ${rou( 'color', 'rgbaHtmlFrom' )}
+  ${rou( 'color', 'rgbaHtmlFromTry' )}
+  ${rou( 'color', 'rgbaHtmlToRgba' )}
+  ${rou( 'color', 'hslaToRgba' )}
+  ${rou( 'color', '_colorDistance' )}
+  ${rou( 'color', '_rgbByBitmask' )}
+  ${rou( 'color', '_rgbaFromNotName' )}
+  ${rou( 'color', '_colorNameNearest' )}
+  ${rou( 'color', 'colorNameNearest' )}
+  ${rou( 'color', '_fromTable' )}
+  ${rou( 'color', 'fromTable' )}
+  ${rou( 'color', 'hexToColor' )}
+  ${fields( 'color' )}
+  ${field( 'color', 'ColorMap' )}
+
+  ${rou( 'Logger', 'TransformCssStylingToDirectives' )}
+
 `
 
   }
@@ -1009,6 +1066,7 @@ let Statics =
   GlobingCode : require( '../l1_boot/Globing.txt.s' ),
   BroCode : require( '../l1_boot/Bro.txt.s' ),
   BroConsoleCode : require( '../l1_boot/BroConsole.txt.s' ),
+  BroProcessCode : require( '../l1_boot/BroProcess.txt.s' ),
   NjsCode : require( '../l1_boot/Njs.txt.s' ),
   StarterCode : require( '../l1_boot/Starter.txt.s' ),
   InstanceDefaults,

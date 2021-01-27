@@ -168,6 +168,12 @@ async function serverForm()
     express.use( parsedServerPath.resourcePath, ExpressDir( _.path.nativize( servlet.basePath ), directoryOptions ) );
   }
 
+  let bodyParser = require( 'body-parser' );
+  express.post( '/.process', bodyParser.json(), ( request, response ) =>
+  {
+    return servlet.processRequestHandle({ request, response })
+  })
+
   express.use( ( request, response, next ) => servlet.requestPostHandler({ request, response, next }) );
   // express.use( ( error, request, response, next ) => servlet.requestErrorHandler({ error, request, response, next }) );
   express.use( function ()
@@ -746,6 +752,60 @@ statPath.defaults =
 
 //
 
+function processRequestHandle( o )
+{
+  let servlet = this;
+  let session = servlet.session;
+
+  _.routineOptions( processRequestHandle, arguments );
+
+  let routine = o.request.body.routine;
+  let args = o.request.body.arguments;
+
+  try
+  {
+    if( routine === 'exit' )
+    {
+      let result = _.process.exitCode( ... args );
+      o.response.json({ result });
+      session.unform();
+    }
+    else if( routine === 'exitCode' )
+    {
+      let result = _.process.exitCode( ... args );
+      o.response.json({ result });
+    }
+    else
+    {
+      throw _.err( `Unexpected request ${o.request.body}` );
+    }
+  }
+  catch( err )
+  {
+    if( o.request && o.response )
+    {
+      return _.servlet.errorHandle
+      ({
+        request : o.request,
+        response : o.response,
+        err
+      });
+    }
+    else
+    {
+      throw err;
+    }
+  }
+}
+
+processRequestHandle.defaults =
+{
+  request : null,
+  response : null,
+}
+
+//
+
 function starterWareReturn( o )
 {
   let servlet = this;
@@ -1099,6 +1159,7 @@ let Associates =
   httpServer : null,
   express : null,
   loggerSocket : null,
+  session : null
 }
 
 let Restricts =
@@ -1151,6 +1212,7 @@ let Proto =
   jsForJs,
   remoteResolve,
   statPath,
+  processRequestHandle,
   starterWareReturn,
 
   surePathAllowed,

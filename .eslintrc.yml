@@ -389,6 +389,7 @@ rules :
     - args : 'none'
   no-ex-assign : warn
 
+
   # play with this later
 
   func-call-spacing : off
@@ -408,7 +409,7 @@ rules :
     - max : 100
   max-nested-callbacks :
     - error
-    - max : 3
+    - max : 4
   max-depth :
     - error
     - max : 5

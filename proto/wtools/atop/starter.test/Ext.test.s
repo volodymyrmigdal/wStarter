@@ -3561,7 +3561,7 @@ function startTestSuite( test )
     execPath : context.appJsPath,
     currentPath : a.originalAbs( '.' ),
     outputCollecting : 1,
-    throwingExitCode : 1,
+    throwingExitCode : 0,
     outputGraying : 1,
     detaching : 0,
     ready : a.ready,
@@ -3586,7 +3586,7 @@ function startTestSuite( test )
     [
       `wtools/atop/starter.test/_asset/startTestSuite/Suite1.js`,
       `basePath:../../../../..`,
-      `timeOut:${context.deltaTime3}`,
+      // `timeOut:${context.deltaTime3}`,
       `loggingSessionEvents:0`,
       `headless:1`,
       `loggingOptions:1`
@@ -3598,7 +3598,7 @@ function startTestSuite( test )
 `
 xxx
 `
-    test.identical( op.exitCode, 0 );
+    test.notIdentical( op.exitCode, 0 );
     test.equivalent( op.output, output );
     return op;
   })
@@ -3937,6 +3937,136 @@ workerEnvironment.description =
 - envioronment in worker set properly
 `
 
+//
+
+function startExitCode( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  let appStart = a.process.starter
+  ({
+    execPath : context.appJsPath,
+    currentPath : a.originalAbs( '.' ),
+    outputCollecting : 1,
+    throwingExitCode : 0,
+    outputGraying : 1,
+    detaching : 0,
+    ready : a.ready,
+    mode : 'fork',
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    // _.fileProvider.filesDelete( a.routinePath );
+    // a.reflect();
+    // _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  appStart
+  ({
+    execPath : `.start`,
+    args :
+    [
+      `File1.js`,
+      `loggingSessionEvents:0`,
+      `headless:1`,
+      `loggingOptions:1`
+    ]
+  })
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 123 );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startExitCode.description =
+`
+  - Starter exits with code specified in the browser.
+`
+
+//
+
+function startStyledConsoleOutput( test )
+{
+  let context = this;
+  let a = context.assetFor( test );
+  let starter = new _.starter.System().form();
+
+  let appStart = a.process.starter
+  ({
+    execPath : context.appJsPath,
+    currentPath : a.originalAbs( '.' ),
+    outputPiping : 1,
+    outputCollecting : 1,
+    throwingExitCode : 0,
+    outputGraying : 1,
+    detaching : 0,
+    ready : a.ready,
+    mode : 'fork',
+  })
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'basic';
+    // _.fileProvider.filesDelete( a.routinePath );
+    // a.reflect();
+    // _.fileProvider.filesDelete( a.routinePath + '/out' );
+    return null;
+  })
+
+  appStart
+  ({
+    execPath : `.start`,
+    args :
+    [
+      `wtools/atop/starter.test/_asset/startStyledConsoleOutput/File1.js`,
+      `basePath:../../../../..`,
+      `loggingSessionEvents:0`,
+      `timeOut:${context.deltaTime3}`,
+      `headless:1`,
+      `loggingOptions:0`
+    ]
+  })
+  .then( ( op ) =>
+  {
+    var output =
+`a
+a b c
+ab
+a
+%c
+a %b
+a
+a %cb yyy`
+    test.identical( op.exitCode, 0 );
+    test.equivalent( op.output, output );
+    return op;
+  })
+
+  /* */
+
+  return a.ready;
+}
+
+startStyledConsoleOutput.experimental = 1;
+startStyledConsoleOutput.description =
+`
+- Client-side browser colorful log works on server-side.
+`
+
 // --
 // etc
 // --
@@ -3948,14 +4078,16 @@ async function loggingError( test )
 
   a.reflect();
 
-  a.appStart( `.start F1.js timeOut:${context.deltaTime3} headless:1` )
+  a.appStart({ execPath : `.start F1.js timeOut:${context.deltaTime3} headless:1`, throwingExitCode : 0 })
   .then( ( op ) =>
   {
-    test.identical( op.exitCode, 0 );
+    test.notIdentical( op.exitCode, 0 );
     test.identical( _.strCount( op.output, 'F1:begin' ), 1 );
     test.identical( _.strCount( op.output, 'F1:end' ), 1 );
     test.identical( _.strCount( op.output, 'uncaught error' ), 2 );
+    test.identical( _.strCount( op.output, 'uncaught promise error' ), 2 );
     test.identical( _.strCount( op.output, 'Some Error!' ), 1 );
+    test.identical( _.strCount( op.output, 'Promise Error!' ), 1 );
     return op;
   })
 
@@ -3966,6 +4098,7 @@ loggingError.description =
 `
 - Client-side log appears on server-side.
 - Client-side uncaught errors appears on server side.
+- Client-side unhandled promise rejection error appears on server side.
 `
 
 //
@@ -4185,6 +4318,9 @@ let Self =
     startWorkerUsingDifferentInclude,
     startWorkerUsingDifferentIncludeSubDir,
     workerEnvironment,
+
+    startExitCode,
+    startStyledConsoleOutput,
 
     // logging
 

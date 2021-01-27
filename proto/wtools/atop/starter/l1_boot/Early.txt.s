@@ -32,7 +32,10 @@ function _Begin()
   let introspector = _starter_.introspector = _starter_.introspector || Object.create( null );
   let error = _starter_.error = _starter_.error || Object.create( null );
   let setup = _starter_.setup = _starter_.setup || Object.create( null );
+  let event = _starter_.event = _starter_.event || Object.create( null );
   let sourcesMap = _starter_.sourcesMap = _starter_.sourcesMap || Object.create( null );
+  let color = _starter_.color = _starter_.color || Object.create( null );
+  let Logger = _starter_.Logger = _starter_.Logger || Object.create( null );
 
   //
 

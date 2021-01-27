@@ -215,6 +215,7 @@ async function servletOpen()
   _.assert( session.servlet === null );
 
   let o2 = _.mapOnly( session, _.starter.Servlet.FieldsOfCopyableGroups );
+  o2.session = session;
   session.servlet = new _.starter.Servlet( o2 );
   await session.servlet.form();
 

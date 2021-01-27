@@ -32,6 +32,9 @@ submodule :
   express :
     path : npm:///express#4.17.1
     enabled : 0 # submodule
+  body-parser :
+    path : npm:///express#1.19.0
+    enabled : 0 # submodule
   jsdom :
     path : npm:///jsdom#16.4.0
     enabled : 0 # submodule
@@ -40,7 +43,7 @@ submodule :
     enabled : 0 # submodule
   portscanner :
     path : npm:///portscanner#2.2.0
-    enabled : 0 # submodule  
+    enabled : 0 # submodule
 
   wstarter :
     path : hd://.
