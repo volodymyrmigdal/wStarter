@@ -12,7 +12,7 @@ jobs :
     strategy :
       fail-fast : false
       matrix :
-        os : [ windows-latest ]
+        os : [ ubuntu-latest ]
         node-version : [ 13.x ]
     steps :
     - run : git config --global core.autocrlf input
@@ -26,9 +26,9 @@ jobs :
       with :
         node-version : ${{ matrix.node-version }}
     - run : npm i
-    # - name: Setup tmate session
-    #   uses: mxschmitt/action-tmate@v3
-    - name : npm test
-      run : npm test
-      env :
-        WTOOLS_BOT_TOKEN : ${{ secrets.WTOOLS_BOT_TOKEN }}
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+    # - name : npm test
+    #   run : npm test
+    #   env :
+    #     WTOOLS_BOT_TOKEN : ${{ secrets.WTOOLS_BOT_TOKEN }}
