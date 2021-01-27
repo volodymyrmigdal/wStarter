@@ -286,7 +286,7 @@ function curratedRunOpen()
 
   let installationPaths = ChromeLauncher.Launcher.getInstallations();
 
-  console.log( 'installationPaths', installationPaths )
+  console.log( 'installationPaths:', installationPaths )
 
   let args = ChromeDefaultFlags.slice();
 
