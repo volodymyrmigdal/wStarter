@@ -4007,6 +4007,7 @@ function startStyledConsoleOutput( test )
   ({
     execPath : context.appJsPath,
     currentPath : a.originalAbs( '.' ),
+    outputPiping : 1,
     outputCollecting : 1,
     throwingExitCode : 0,
     outputGraying : 1,
@@ -4034,16 +4035,22 @@ function startStyledConsoleOutput( test )
       `wtools/atop/starter.test/_asset/startStyledConsoleOutput/File1.js`,
       `basePath:../../../../..`,
       `loggingSessionEvents:0`,
-      `headless:0`,
-      `loggingOptions:1`
+      `timeOut:${context.deltaTime3}`,
+      `headless:1`,
+      `loggingOptions:0`
     ]
   })
   .then( ( op ) =>
   {
     var output =
-`
-xxx
-`
+`a
+a b c
+ab
+a
+%c
+a %b
+a
+a %cb yyy`
     test.identical( op.exitCode, 0 );
     test.equivalent( op.output, output );
     return op;
