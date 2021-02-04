@@ -21,6 +21,7 @@ function _Begin()
   let stackSymbol = Symbol.for( 'stack' );
   let _diagnosticCodeExecuting = 0;
   let notLongSymbol = Symbol.for( 'notLong' );
+  let iteratorSymbol = Symbol.iterator;
 
   // let _errorCounter = 0;
   // let _errorMaking = false;
