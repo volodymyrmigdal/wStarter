@@ -430,6 +430,9 @@ module:
           - ../proto/wtools/atop/starter.test/_asset/startOptionWithModule
           - >-
             ../proto/wtools/atop/starter.test/_asset/startOptionWithModule/File1.js
+          - ../proto/wtools/atop/starter.test/_asset/startStyledConsoleOutput
+          - >-
+            ../proto/wtools/atop/starter.test/_asset/startStyledConsoleOutput/File1.js
           - ../proto/wtools/atop/starter.test/_asset/startTestSuite
           - ../proto/wtools/atop/starter.test/_asset/startTestSuite/Suite1.js
           - ../proto/wtools/atop/starter.test/_asset/startWithNpmPackage
