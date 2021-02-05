@@ -16,7 +16,8 @@ starter.start
 ({
   entryPath : _.path.join( __dirname, './F1.browser.js' ),
   headless : 1,
-  timeOut : 5000
+  timeOut : 5000,
+  loggingConnectionAttemtps : 1
 })
 
 /* Output:

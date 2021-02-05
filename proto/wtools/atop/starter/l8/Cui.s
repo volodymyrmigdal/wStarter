@@ -408,6 +408,7 @@ commandStart.commandProperties =
   ... commandHttpOpen.commandProperties,
   loggingApplication : 'Enable printing of application output. Default : true',
   loggingRequestsAll : 'Enable logging of request to the server. Default : false',
+  loggingConnectionAttemtps : 'Enable logging of connection attempts to chrome instance. Default : false',
   curating : 'Automatic opening of the application in curated window. Default : true',
   headless : 'Headless mode. Default : false',
 }

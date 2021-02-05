@@ -733,6 +733,8 @@ function cdpClose()
 function _waitForRemoteDebuggingPort()
 {
   let session = this;
+  let system = session.system;
+  let logger = system.logger;
 
   if( !Net )
   Net = require( 'net' )
@@ -751,18 +753,31 @@ function _waitForRemoteDebuggingPort()
 
   async function check( err, connected )
   {
+    tries++;
+
+    if( session.loggingConnectionAttemtps )
+    logger.log( `_waitForRemoteDebuggingPort attempt #${tries}` )
+
     if( connected )
-    return true;
+    {
+      if( session.loggingConnectionAttemtps )
+      logger.log( `_waitForRemoteDebuggingPort ready` )
+      return true;
+    }
 
     if( err )
-    _.errAttend( err );
+    {
+      _.errAttend( err );
+      if( session.loggingConnectionAttemtps )
+      logger.log( `_waitForRemoteDebuggingPort failed, reason:\n`, err );
+    }
 
-    tries++;
     if( tries > session._maxCdpConnectionAttempts )
     {
       err = _.err( `Failed to wait for remote debugging port. Reason:\n`, err );
       throw session.errorEncounterEnd( err );
     }
+
     await _.time.out( session._cdpPollingPeriod );
     return isReady().finally( check );
   }
