@@ -25,6 +25,7 @@ function _Begin()
   let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
   let _ = _starter_;
 
+  let entity = _starter_.entity = _starter_.entity || Object.create( null );
   let path = _starter_.path = _starter_.path || Object.create( null );
   let uri = _starter_.uri = _starter_.uri || Object.create( null );
   let property = _starter_.property = _starter_.property || Object.create( null );

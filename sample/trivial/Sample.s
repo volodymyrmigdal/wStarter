@@ -11,6 +11,7 @@ F1.browser.js calls exported routine
 Starter closes the browser when execution is done
 */
 
+console.log( 'Starting browser...' );
 starter.start
 ({
   entryPath : _.path.join( __dirname, './F1.browser.js' ),

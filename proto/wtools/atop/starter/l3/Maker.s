@@ -524,6 +524,9 @@ function sourcesJoinSplits( o )
   ${rou( 'introspector', 'locationToStack' )}
   ${rou( 'introspector', 'locationNormalize' )}
 
+  ${rou( 'entity', 'makeUndefined' )}
+  ${rou( 'entity', 'methodIteratorOf' )}
+
   ${rou( 'path', 'refine' )}
   ${rou( 'path', '_normalize' )}
   ${rou( 'path', 'normalize' )}
@@ -559,7 +562,6 @@ function sourcesJoinSplits( o )
   ${rou( 'objectIs' )}
   ${rou( 'objectLike' )}
   ${rou( 'arrayLike' )}
-  ${rou( 'methodIteratorOf' )}
   ${rou( 'mapLike' )}
   ${rou( 'strsLikeAll' )}
   ${rou( 'boolLike' )}
