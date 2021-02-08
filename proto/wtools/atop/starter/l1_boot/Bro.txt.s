@@ -48,12 +48,10 @@ function _Begin()
 
     if( typeof XMLHttpRequest !== 'undefined' )
     Reqeust = XMLHttpRequest;
-    else if( typeof ActiveXObject !== 'undefined' )
-    Reqeust = new ActiveXObject( 'Microsoft.XMLHTTP' );
+    else if( typeof ActiveXObject === 'undefined' )
+    throw _.err( 'not implemented' );
     else
-    {
-      throw _.err( 'not implemented' );
-    }
+    Reqeust = new ActiveXObject( 'Microsoft.XMLHTTP' );
 
     /* set */
 
@@ -348,10 +346,10 @@ function _Begin()
           continue;
         }
         let r = starter._sourceInclude( parentSource, basePath, resolvedFilePath[ f ] );
-        if( r !== undefined )
-        _.arrayAppendArrays( result, r );
-        else
+        if( r === undefined )
         result.push( r );
+        else
+        _.arrayAppendArrays( result, r );
       }
       return result;
     }

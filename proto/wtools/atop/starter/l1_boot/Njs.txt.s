@@ -23,8 +23,8 @@ function _Begin()
   // if( _global._starter_ && _global._starter_._inited ) // xxx
   // return;
 
-  let _natInclude = typeof require !== 'undefined' ? require : null;
-  let _natResolve = typeof require !== 'undefined' ? require.resolve : null;
+  let _natInclude = typeof require === 'undefined' ? null : require;
+  let _natResolve = typeof require === 'undefined' ? null : require.resolve;
 
   //
 

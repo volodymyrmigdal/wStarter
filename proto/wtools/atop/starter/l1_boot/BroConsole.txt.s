@@ -29,7 +29,13 @@ function _Begin()
   {
     let socket = _._sockets[ o.filePath ];
 
-    if( !socket )
+    if( socket )
+    {
+      socket.que.push( o.data );
+      if( socket.readyState === WebSocket.OPEN )
+      send();
+    }
+    else
     {
       // console._original.log.call( console, `new socket ${o.filePath}` );
       socket = _._sockets[ o.filePath ] = new WebSocket( o.filePath );
@@ -40,12 +46,6 @@ function _Begin()
         send();
         setTimeout( () => handleTime(), 1000 );
       };
-    }
-    else
-    {
-      socket.que.push( o.data );
-      if( socket.readyState === WebSocket.OPEN )
-      send();
     }
 
     function handleTime()

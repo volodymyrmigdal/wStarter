@@ -185,10 +185,10 @@ function _Begin()
         for( let f = 0 ; f < filePath.length ; f++ )
         {
           let r = starter._sourceInclude( parentSource, basePath, filePath[ f ] );
-          if( r !== undefined )
-          _.arrayAppendArrays( result, r );
-          else
+          if( r === undefined )
           result.push( r );
+          else
+          _.arrayAppendArrays( result, r );
         }
         return result;
       }
