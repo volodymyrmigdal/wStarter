@@ -578,6 +578,8 @@ function sourcesJoinSplits( o )
   ${rou( 'argumentsArrayIs' )}
   ${rou( '_routineIs' )}
   ${rou( 'routineIs' )}
+  ${rou( '_routineLike' )}
+  ${rou( 'routineLike' )}
   ${rou( 'routineIsTrivial' )}
   ${rou( 'lengthOf' )}
   ${rou( 'mapIs' )}
