@@ -556,6 +556,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strRemoveEnd' )}
   ${rou( 'regexpIs' )}
   ${rou( 'longIs' )}
+  ${rou( '_primitiveIs' )}
   ${rou( 'primitiveIs' )}
   ${rou( 'symbolIs' )}
   ${rou( 'strBegins' )}
@@ -575,7 +576,10 @@ function sourcesJoinSplits( o )
   ${rou( 'hashMapIs' )}
   ${rou( 'hashMapLike' )}
   ${rou( 'argumentsArrayIs' )}
+  ${rou( '_routineIs' )}
   ${rou( 'routineIs' )}
+  ${rou( '_routineLike' )}
+  ${rou( 'routineLike' )}
   ${rou( 'routineIsTrivial' )}
   ${rou( 'lengthOf' )}
   ${rou( 'mapIs' )}
