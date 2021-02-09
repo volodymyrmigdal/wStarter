@@ -540,17 +540,19 @@ function jsForJs( o )
 
     stream.on( 'error', function( err )
     {
-      if( !state )
+      if( state )
+      {
+        return _.servlet.errorHandle
+        ({
+          err : _.err( err ),
+          request : o.request,
+          response : o.response,
+        });
+      }
+      else
       {
         o.next();
       }
-      else
-      return _.servlet.errorHandle
-      ({
-        err : _.err( err ),
-        request : o.request,
-        response : o.response,
-      });
       state = 2;
     });
 
