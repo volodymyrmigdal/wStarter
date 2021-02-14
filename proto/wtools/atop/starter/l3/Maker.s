@@ -563,7 +563,7 @@ function sourcesJoinSplits( o )
   ${rou( 'objectIs' )}
   ${rou( 'objectLike' )}
   ${rou( 'arrayLike' )}
-  ${rou( 'mapLike_' )}
+  ${rou( 'mapLike' )}
   ${rou( 'strsLikeAll' )}
   ${rou( 'boolLike' )}
   ${rou( 'boolLikeTrue' )}
