@@ -626,7 +626,7 @@ function sourcesJoinSplits( o )
   ${rou( 'unrollIs' )}
   ${rou( 'strType' )}
   ${rou( 'strConcat' )}
-  ${rou( 'strPrimitiveType' )}
+  ${rou( 'strTypeSecondary' )}
   ${rou( 'strHas' )}
   ${rou( 'strLike' )}
   ${rou( 'intervalIs' )}
