@@ -583,6 +583,8 @@ function sourcesJoinSplits( o )
   ${rou( 'routineIsTrivial' )}
   ${rou( 'lengthOf' )}
   ${rou( 'mapIs' )}
+  ${rou( 'partibleIs' )}
+  ${rou( 'constructibleIs' )}
   ${rou( 'sure' )}
   ${rou( 'mapBut' )}
   ${rou( 'mapOwn' )}
@@ -651,6 +653,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strLinesIndentation' )}
   ${rou( 'numberFromStrMaybe' )}
   ${field( 'TranslatedType' )}
+  ${field( 'StandardTypeSet' )}
 
   ${rou( 'error', '_setupUncaughtErrorHandler2' )}
   ${rou( 'error', '_setupUncaughtErrorHandler9' )}
