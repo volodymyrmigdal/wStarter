@@ -544,6 +544,8 @@ function sourcesJoinSplits( o )
   ${rou( 'path', 'isGlobal' )}
   ${fields( 'path' )}
 
+  ${rou( 'vector', 'is' )}
+
   ${rou( 'strIs' )}
   ${rou( 'strDefined' )}
   ${rou( '_strBeginOf' )}
