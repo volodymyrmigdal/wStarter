@@ -566,7 +566,6 @@ function sourcesJoinSplits( o )
   ${rou( 'objectLike' )}
   ${rou( 'arrayLike' )}
   ${rou( 'mapLike' )}
-  ${rou( 'strsLikeAll' )}
   ${rou( 'boolLike' )}
   ${rou( 'boolLikeTrue' )}
   ${rou( 'arrayIs' )}
@@ -632,7 +631,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strConcat' )}
   ${rou( 'strTypeSecondary' )}
   ${rou( 'strHas' )}
-  ${rou( 'strLike' )}
+  ${rou( 'regexpLike' )}
   ${rou( 'intervalIs' )}
   ${rou( 'numberDefined' )}
   ${rou( 'numbersAreAll' )}
@@ -746,6 +745,8 @@ function sourcesJoinSplits( o )
   ${rou( 'longSlice' )}
   ${rou( 'arrayLikeResizable' )}
   ${rou( 'regexpEscape' )}
+  ${rou( 'regexpLike' )}
+  ${rou( 'regexpLikeAll' )}
   ${rou( 'filter_' )}
   ${rou( '_filter_functor' )}
   ${rou( 'entityMakeUndefined' )}
