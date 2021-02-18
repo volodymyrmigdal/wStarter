@@ -584,7 +584,7 @@ function sourcesJoinSplits( o )
   ${rou( 'routineIsTrivial' )}
   ${rou( 'lengthOf' )}
   ${rou( 'mapIs' )}
-  ${rou( 'partibleIs' )}
+  ${rou( 'countableIs' )}
   ${rou( 'constructibleIs' )}
   ${rou( 'sure' )}
   ${rou( 'mapBut' )}
