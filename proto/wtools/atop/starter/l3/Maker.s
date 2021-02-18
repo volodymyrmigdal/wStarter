@@ -545,6 +545,12 @@ function sourcesJoinSplits( o )
   ${fields( 'path' )}
 
   ${rou( 'vector', 'is' )}
+  ${rou( 'auxiliary', 'is' )}
+  ${rou( 'constructible', 'is' )}
+  ${rou( 'argumentsArray', 'is' )}
+  
+  ${rou( 'vectorIs' )}
+  ${rou( 'vectorLike' )}
 
   ${rou( 'strIs' )}
   ${rou( 'strDefined' )}
@@ -590,6 +596,7 @@ function sourcesJoinSplits( o )
   ${rou( 'mapBut' )}
   ${rou( 'mapOwn' )}
   ${rou( '_mapKeys' )}
+  ${rou( 'mapKeys' )}
   ${rou( 'mapOnlyOwnKeys' )}
   ${rou( 'sureMapHasOnly' )}
   ${rou( 'sureMapHasNoUndefine' )}
