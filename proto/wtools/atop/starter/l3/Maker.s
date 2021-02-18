@@ -753,7 +753,7 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayLikeResizable' )}
   ${rou( 'regexpEscape' )}
   ${rou( 'regexpLike' )}
-  ${rou( 'regexpLikeAll' )}
+  ${rou( 'regexpsLikeAll' )}
   ${rou( 'filter_' )}
   ${rou( '_filter_functor' )}
   ${rou( 'entityMakeUndefined' )}
