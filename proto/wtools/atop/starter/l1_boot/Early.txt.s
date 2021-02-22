@@ -38,7 +38,7 @@ function _Begin()
   let color = _starter_.color = _starter_.color || Object.create( null );
   let Logger = _starter_.Logger = _starter_.Logger || Object.create( null );
   let vector = _starter_.vector = _starter_.vector || Object.create( null );
-  let auxiliary = _starter_.auxiliary = _starter_.auxiliary || Object.create( null );
+  let aux = _starter_.aux = _starter_.aux || Object.create( null );
   let constructible = _starter_.constructible = _starter_.constructible || Object.create( null );
   let argumentsArray = _starter_.argumentsArray = _starter_.argumentsArray || Object.create( null );
 

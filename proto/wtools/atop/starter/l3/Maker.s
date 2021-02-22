@@ -545,7 +545,7 @@ function sourcesJoinSplits( o )
   ${fields( 'path' )}
 
   ${rou( 'vector', 'is' )}
-  ${rou( 'auxiliary', 'is' )}
+  ${rou( 'aux', 'is' )}
   ${rou( 'constructible', 'is' )}
   ${rou( 'argumentsArray', 'is' )}
   
