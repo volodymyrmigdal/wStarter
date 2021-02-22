@@ -511,7 +511,7 @@ function exportString()
   let session = this;
 
   let structure = session.exportStructure();
-  let result = _.toStrNice( structure );
+  let result = _.entity.exportStringNice( structure );
 
   return result;
 }

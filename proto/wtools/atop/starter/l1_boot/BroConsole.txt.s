@@ -177,7 +177,7 @@ function _Begin()
       {
         let args = [];
         for( let i = 0 ; i < arguments.length ; i++ )
-        args[ i ] = _.toStr( arguments[ i ] );
+        args[ i ] = _.entity.exportString( arguments[ i ] );
         args = starter.Logger.TransformCssStylingToDirectives( args );
         starter._broLog({ methodName, args });
         return original.apply( console, arguments );

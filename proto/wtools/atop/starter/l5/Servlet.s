@@ -891,7 +891,7 @@ async function pathsForm()
 
   let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
 
-  _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.toStrShort( parsedServerPath.port ) );
+  _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.entity.exportStringShort( parsedServerPath.port ) );
 
   if( parsedServerPath.port === 0 )
   {

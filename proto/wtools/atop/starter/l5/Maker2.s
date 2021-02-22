@@ -81,8 +81,8 @@ function sourcesJoinFiles( o )
       throw _.errBrief
       (
         'List of source files should have all entry files'
-        + '\nSource files\n' + _.toStrNice( o.inPath, { levels : 2 } )
-        + '\nEntry files\n' + _.toStrNice( o.entryPath, { levels : 2 } )
+        + '\nSource files\n' + _.entity.exportStringNice( o.inPath, { levels : 2 } )
+        + '\nEntry files\n' + _.entity.exportStringNice( o.entryPath, { levels : 2 } )
       );
     }
   }

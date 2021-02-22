@@ -548,7 +548,7 @@ function sourcesJoinSplits( o )
   ${rou( 'aux', 'is' )}
   ${rou( 'constructible', 'is' )}
   ${rou( 'argumentsArray', 'is' )}
-  
+
   ${rou( 'vectorIs' )}
   ${rou( 'vectorLike' )}
 
@@ -660,8 +660,9 @@ function sourcesJoinSplits( o )
   ${rou( 'strIsolateRightOrAll' )}
   ${rou( 'strLinesIndentation' )}
   ${rou( 'numberFromStrMaybe' )}
-  ${field( 'TranslatedType' )}
-  ${field( 'StandardTypeSet' )}
+
+  ${field( 'entity', 'TranslatedTypeMap' )}
+  ${field( 'entity', 'StandardTypeSet' )}
 
   ${rou( 'error', '_setupUncaughtErrorHandler2' )}
   ${rou( 'error', '_setupUncaughtErrorHandler9' )}
