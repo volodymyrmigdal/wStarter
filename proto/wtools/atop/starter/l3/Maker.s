@@ -555,6 +555,7 @@ function sourcesJoinSplits( o )
   ${rou( 'number', 'isFinite' )}
   ${rou( 'number', 'defined' )}
   ${rou( 'number', 'fromStrMaybe' )}
+  ${field( 'number', 's' )}
 
   ${rou( 'aux', 'is' )}
   ${rou( 'aux', 'like' )}
@@ -569,6 +570,8 @@ function sourcesJoinSplits( o )
 
   ${rou( 'hashMap', 'is' )}
   ${rou( 'hashMap', 'like' )}
+
+  ${rou( 'symbol', 'is' )}
 
   ${rou( 'vectorIs' )}
   ${rou( 'vectorLike' )}

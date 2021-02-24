@@ -46,6 +46,7 @@ function _Begin()
   let object = _starter_.object = _starter_.object || Object.create( null );
   let set = _starter_.set = _starter_.set || Object.create( null );
   let hashMap = _starter_.hashMap = _starter_.hashMap || Object.create( null );
+  let symbol = _starter_.symbol = _starter_.symbol || Object.create( null );
 
   //
 
