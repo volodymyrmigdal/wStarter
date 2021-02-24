@@ -524,6 +524,8 @@ function sourcesJoinSplits( o )
   ${rou( 'introspector', 'locationToStack' )}
   ${rou( 'introspector', 'locationNormalize' )}
 
+  ${rou( 'entity', 'strType' )}
+  ${rou( 'entity', 'strTypeSecondary' )}
   ${rou( 'entity', 'makeUndefined' )}
   ${rou( 'entity', 'methodIteratorOf' )}
 
@@ -546,6 +548,7 @@ function sourcesJoinSplits( o )
 
   ${rou( 'vector', 'is' )}
   ${rou( 'aux', 'is' )}
+  ${rou( 'aux', 'like' )}
   ${rou( 'constructible', 'is' )}
   ${rou( 'argumentsArray', 'is' )}
 
@@ -571,7 +574,6 @@ function sourcesJoinSplits( o )
   ${rou( 'objectIs' )}
   ${rou( 'objectLike' )}
   ${rou( 'arrayLike' )}
-  ${rou( 'mapLike' )}
   ${rou( 'boolLike' )}
   ${rou( 'boolLikeTrue' )}
   ${rou( 'arrayIs' )}
@@ -634,9 +636,7 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayAs' )}
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
-  ${rou( 'strType' )}
   ${rou( 'strConcat' )}
-  ${rou( 'strTypeSecondary' )}
   ${rou( 'strHas' )}
   ${rou( 'regexpLike' )}
   ${rou( 'intervalIs' )}
