@@ -547,10 +547,22 @@ function sourcesJoinSplits( o )
   ${fields( 'path' )}
 
   ${rou( 'vector', 'is' )}
+
+  ${rou( 'primitive', 'is' )}
+  ${rou( 'primitive', '_is' )}
+
+  ${rou( 'number', 'is' )}
+  ${rou( 'number', 'isFinite' )}
+  ${rou( 'number', 'defined' )}
+  ${rou( 'number', 'fromStrMaybe' )}
+
   ${rou( 'aux', 'is' )}
   ${rou( 'aux', 'like' )}
   ${rou( 'constructible', 'is' )}
   ${rou( 'argumentsArray', 'is' )}
+
+  ${rou( 'object', 'is' )}
+  ${rou( 'object', 'like' )}
 
   ${rou( 'vectorIs' )}
   ${rou( 'vectorLike' )}
