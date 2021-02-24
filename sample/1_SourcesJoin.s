@@ -25,7 +25,7 @@ o.inPath =
 }
 
 console.log( `Joining files for njs interpreter` );
-console.log( `sourcesJoinFiles options:\n${_.toJs( o )}` )
+console.log( `sourcesJoinFiles options:\n${_.entity.exportJs( o )}` )
 starter.sourcesJoinFiles( o );
 console.log( `Saved out file at:"${o.outPath}"\n` )
 
@@ -46,6 +46,6 @@ o.inPath =
 }
 
 console.log( `Joining files for browser` );
-console.log( `sourcesJoinFiles options:\n${_.toJs( o )}` )
+console.log( `sourcesJoinFiles options:\n${_.entity.exportJs( o )}` )
 starter.sourcesJoinFiles( o );
 console.log( `Saved out file at:"${o.outPath}"` )
