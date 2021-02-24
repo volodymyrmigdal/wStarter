@@ -29,7 +29,7 @@ function onSuiteBegin()
 {
   let context = this;
 
-  context.suiteTempPath = _.path.tempOpen( _.path.join( __dirname, '../..'  ), 'Starter' );
+  context.suiteTempPath = _.path.tempOpen( _.path.join( __dirname, '../..' ), 'Starter' );
   context.assetsOriginalPath = _.path.join( __dirname, '_asset' );
   context.willbeExecPath = _.module.resolve( 'willbe' );
   context.appJsPath = _.module.resolve( 'wStarter' );

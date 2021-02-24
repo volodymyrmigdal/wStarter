@@ -95,13 +95,13 @@ function _commandsMake()
 
   let commands =
   {
-    'help' :              { e : _.routineJoin( cui, cui.commandHelp )          },
-    'version' :           { e : _.routineJoin( cui, cui.commandVersion )       },
-    'imply' :             { e : _.routineJoin( cui, cui.commandImply )         }, /* qqq : remove. ask how */
-    'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor )       },
-    'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin )   },
-    'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen )      },
-    'start' :             { e : _.routineJoin( cui, cui.commandStart )          }
+    'help' :              { e : _.routineJoin( cui, cui.commandHelp ) },
+    'version' :           { e : _.routineJoin( cui, cui.commandVersion ) },
+    'imply' :             { e : _.routineJoin( cui, cui.commandImply ) }, /* qqq : remove. ask how */
+    'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor ) },
+    'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin ) },
+    'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen ) },
+    'start' :             { e : _.routineJoin( cui, cui.commandStart ) }
   }
 
   let ca = _.CommandsAggregator
