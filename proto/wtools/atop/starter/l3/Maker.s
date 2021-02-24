@@ -564,6 +564,12 @@ function sourcesJoinSplits( o )
   ${rou( 'object', 'is' )}
   ${rou( 'object', 'like' )}
 
+  ${rou( 'set', 'is' )}
+  ${rou( 'set', 'like' )}
+
+  ${rou( 'hashMap', 'is' )}
+  ${rou( 'hashMap', 'like' )}
+
   ${rou( 'vectorIs' )}
   ${rou( 'vectorLike' )}
 

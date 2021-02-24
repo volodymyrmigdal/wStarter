@@ -44,6 +44,8 @@ function _Begin()
   let constructible = _starter_.constructible = _starter_.constructible || Object.create( null );
   let argumentsArray = _starter_.argumentsArray = _starter_.argumentsArray || Object.create( null );
   let object = _starter_.object = _starter_.object || Object.create( null );
+  let set = _starter_.set = _starter_.set || Object.create( null );
+  let hashMap = _starter_.hashMap = _starter_.hashMap || Object.create( null );
 
   //
 
