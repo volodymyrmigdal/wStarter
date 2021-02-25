@@ -524,6 +524,8 @@ function sourcesJoinSplits( o )
   ${rou( 'introspector', 'locationToStack' )}
   ${rou( 'introspector', 'locationNormalize' )}
 
+  ${rou( 'entity', 'strType' )}
+  ${rou( 'entity', 'strTypeSecondary' )}
   ${rou( 'entity', 'makeUndefined' )}
   ${rou( 'entity', 'methodIteratorOf' )}
 
@@ -545,9 +547,31 @@ function sourcesJoinSplits( o )
   ${fields( 'path' )}
 
   ${rou( 'vector', 'is' )}
+
+  ${rou( 'primitive', 'is' )}
+  ${rou( 'primitive', '_is' )}
+
+  ${rou( 'number', 'is' )}
+  ${rou( 'number', 'isFinite' )}
+  ${rou( 'number', 'defined' )}
+  ${rou( 'number', 'fromStrMaybe' )}
+  ${field( 'number', 's' )}
+
   ${rou( 'aux', 'is' )}
+  ${rou( 'aux', 'like' )}
   ${rou( 'constructible', 'is' )}
   ${rou( 'argumentsArray', 'is' )}
+
+  ${rou( 'object', 'is' )}
+  ${rou( 'object', 'like' )}
+
+  ${rou( 'set', 'is' )}
+  ${rou( 'set', 'like' )}
+
+  ${rou( 'hashMap', 'is' )}
+  ${rou( 'hashMap', 'like' )}
+
+  ${rou( 'symbol', 'is' )}
 
   ${rou( 'vectorIs' )}
   ${rou( 'vectorLike' )}
@@ -571,7 +595,6 @@ function sourcesJoinSplits( o )
   ${rou( 'objectIs' )}
   ${rou( 'objectLike' )}
   ${rou( 'arrayLike' )}
-  ${rou( 'mapLike' )}
   ${rou( 'boolLike' )}
   ${rou( 'boolLikeTrue' )}
   ${rou( 'arrayIs' )}
@@ -634,9 +657,7 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayAs' )}
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
-  ${rou( 'strType' )}
   ${rou( 'strConcat' )}
-  ${rou( 'strTypeSecondary' )}
   ${rou( 'strHas' )}
   ${rou( 'regexpLike' )}
   ${rou( 'intervalIs' )}
