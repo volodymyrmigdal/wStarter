@@ -938,7 +938,7 @@ function scriptWrap_functor( fop )
     o2.loggingPath = _.uri.parseConsecutive( servlet.serverPath );
     o2.loggingPath.protocol = 'ws';
     o2.loggingPath.longPath = _.uri.join( o2.loggingPath.longPath, '.log/' );
-    o2.loggingPath = _.uri.str( o2.loggingPath  );
+    o2.loggingPath = _.uri.str( o2.loggingPath );
 
     let splits = system.maker.sourcesJoinSplits( o2 );
     fop.ware = system.maker.sourcesSplitsJoin( splits );
