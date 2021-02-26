@@ -1350,44 +1350,44 @@ let Self =
 
     // html for
 
-    // htmlForFilesBasic,
-    // htmlForFilesOptionTitle,
-    // htmlForFilesOptionWithStarter,
-    //
-    // // include
-    //
-    // includeCss,
-    // includeExcludingManual,
-    // includeModule,
-    //
-    // // worker
-    //
-    // workerWithInclude,
-    // includeModuleInWorker,
-    // includeModuleInWorkerThrowing,
-    //
-    // // curated run
-    //
-    // curatedRunWindowOpenCloseAutomatic,
-    // curatedRunWindowOpenCloseWindowManually,
-    // curatedRunWindowOpenClosePageManually,
-    //
-    // curatedRunEventsCloseAutomatic,
-    // curatedRunEventsCloseWindowManually,
-    // curatedRunEventsClosePageManually,
-    //
-    // // port
-    //
-    // curatedRunRandomPort,
-    //
-    // // etc
-    //
-    // browserUserTempDirCleanup,
-    //
-    // //servlet
-    //
-    // servletRemoteResolve,
-    // servletRemoteStat
+    htmlForFilesBasic,
+    htmlForFilesOptionTitle,
+    htmlForFilesOptionWithStarter,
+
+    // include
+
+    includeCss,
+    includeExcludingManual,
+    includeModule,
+
+    // worker
+
+    workerWithInclude,
+    includeModuleInWorker,
+    includeModuleInWorkerThrowing,
+
+    // curated run
+
+    curatedRunWindowOpenCloseAutomatic,
+    curatedRunWindowOpenCloseWindowManually,
+    curatedRunWindowOpenClosePageManually,
+
+    curatedRunEventsCloseAutomatic,
+    curatedRunEventsCloseWindowManually,
+    curatedRunEventsClosePageManually,
+
+    // port
+
+    curatedRunRandomPort,
+
+    // etc
+
+    browserUserTempDirCleanup,
+
+    //servlet
+
+    servletRemoteResolve,
+    servletRemoteStat
 
   }
 
