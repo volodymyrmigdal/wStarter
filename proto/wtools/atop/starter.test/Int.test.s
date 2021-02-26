@@ -156,6 +156,83 @@ function sourcesJoinFiles( test )
 
 //
 
+function sourcesJoinFilesCheckRoutines( test )
+{
+  let context = this;
+  let a = context.assetFor( test, 'several' );
+  let programPath = a.program( checkRoutines );
+
+  /* */
+
+  a.ready.then( () =>
+  {
+    test.case = 'join files';
+    var starter = new _.starter.System();
+    starter.form();
+    var o =
+    {
+      basePath : a.abs( __dirname, '../../../..' ),
+      interpreter : 'njs',
+      inPath : { filePath : a.abs( __dirname, '../../../../node_modules/wTools/**.(s|ss)' ) },
+      outPath : a.abs( 'out/SingleFileTools.ss' ),
+      entryPath : a.abs( __dirname, '../../../../node_modules/wTools/proto/wtools/Tools.s' ),
+      withServer : 0,
+    };
+    starter.sourcesJoinFiles( o );
+    test.true( _.fileProvider.fileExists( a.abs( 'out/SingleFileTools.ss' ) ) );
+    return null;
+  });
+
+  a.shell( `node ${ programPath }` );
+  a.ready.then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.ge( op.output.length, 500 );
+    return null;
+  });
+
+  /* */
+
+  return a.ready;
+
+  /* */
+
+  function checkRoutines()
+  {
+    require( './out/SingleFileTools.ss' );
+    let _ = wTools;
+
+    console.log( `primitiveIs : ${ _.primitiveIs( 1 ) }` );
+    console.log( `set.is : ${ _.set.is( new Set() ) }` );
+    console.log( `argumentsArray.is : ${ _.argumentsArray.is( null ) }` );
+    console.log( `aux.is : ${ _.aux.is( {} ) }` );
+    console.log( `constructible.is : ${ _.constructible.is( {} ) }` );
+    console.log( `hashMap.is : ${ _.hashMap.is( {} ) }` );
+    console.log( `mapIs : ${ _.aux.is( new Set() ) }` );
+    console.log( `strSplit : ${ _.strSplit( 'a b c' ) }` );
+    console.log( `strIsolateLeftOrNone : ${ _.strIsolateLeftOrNone( 'a b c', ' ' ) }` );
+    console.log( `routineIs _.introspector.stack : ${ _.routineIs( _.introspector.stack ) }` );
+    console.log( `_.routineIs _.event.on : ${ _.routineIs( _.event.on ) }` );
+    console.log( `_.errAttend( _.err( 'a' ) ) : ${ _.errAttend( _.err( 'a' ) ).message }` );
+
+    console.log( `_.entity.strType : ${ _.entity.strType( new HashMap( [ [] ] ) ) }` );
+    console.log( `_.entity.makeUndefined : ${ _.entity.makeUndefined( [] ) }` );
+
+    console.log( `_.path.nativize : ${ _.path.nativize( '/c/abc' ) }` );
+    console.log( `_.path.isGlob : ${ _starter_.path.isGlob( '/c/abc' ) }` );
+    console.log( `_.path.refine : ${ _.path.refine( '/c/abc' ) }` );
+
+    console.log( `_.number.isFinite : ${ _.number.isFinite( 1 ) }` );
+    console.log( `_.number.fromStrMaybe : ${ _.number.fromStrMaybe( '1' ) }` );
+
+    console.log( `_.uri.refine : ${ _starter_.uri.refine( '/c/abc' ) }` );
+    console.log( `_.uri.parseConsecutive : ${ _starter_.uri.parseConsecutive( '/c/abc' ).longPath }` );
+    console.log( `_.uri.canonizeTolerant : ${ _starter_.uri.canonizeTolerant( '/c/abc' ) }` );
+  }
+}
+
+//
+
 function htmlForFilesBasic( test )
 {
   let context = this;
@@ -1241,7 +1318,7 @@ let Self =
 
   name : 'Tools.Starter.Int',
   silencing : 1,
-  enabled : 0,
+  enabled : 1,
   routineTimeOut : 60000,
   onSuiteBegin,
   onSuiteEnd,
@@ -1269,47 +1346,48 @@ let Self =
     // sourcesJoinFiles
 
     sourcesJoinFiles,
+    sourcesJoinFilesCheckRoutines,
 
     // html for
 
-    htmlForFilesBasic,
-    htmlForFilesOptionTitle,
-    htmlForFilesOptionWithStarter,
-
-    // include
-
-    includeCss,
-    includeExcludingManual,
-    includeModule,
-
-    // worker
-
-    workerWithInclude,
-    includeModuleInWorker,
-    includeModuleInWorkerThrowing,
-
-    // curated run
-
-    curatedRunWindowOpenCloseAutomatic,
-    curatedRunWindowOpenCloseWindowManually,
-    curatedRunWindowOpenClosePageManually,
-
-    curatedRunEventsCloseAutomatic,
-    curatedRunEventsCloseWindowManually,
-    curatedRunEventsClosePageManually,
-
-    // port
-
-    curatedRunRandomPort,
-
-    // etc
-
-    browserUserTempDirCleanup,
-
-    //servlet
-
-    servletRemoteResolve,
-    servletRemoteStat
+    // htmlForFilesBasic,
+    // htmlForFilesOptionTitle,
+    // htmlForFilesOptionWithStarter,
+    //
+    // // include
+    //
+    // includeCss,
+    // includeExcludingManual,
+    // includeModule,
+    //
+    // // worker
+    //
+    // workerWithInclude,
+    // includeModuleInWorker,
+    // includeModuleInWorkerThrowing,
+    //
+    // // curated run
+    //
+    // curatedRunWindowOpenCloseAutomatic,
+    // curatedRunWindowOpenCloseWindowManually,
+    // curatedRunWindowOpenClosePageManually,
+    //
+    // curatedRunEventsCloseAutomatic,
+    // curatedRunEventsCloseWindowManually,
+    // curatedRunEventsClosePageManually,
+    //
+    // // port
+    //
+    // curatedRunRandomPort,
+    //
+    // // etc
+    //
+    // browserUserTempDirCleanup,
+    //
+    // //servlet
+    //
+    // servletRemoteResolve,
+    // servletRemoteStat
 
   }
 
