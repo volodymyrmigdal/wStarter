@@ -630,6 +630,7 @@ function sourcesJoinSplits( o )
   ${rou( 'mapExtend' )}
   ${rou( 'mapSupplement' )}
   ${rou( 'routineExtend' )}
+  ${rou( 'arrayAs' )}
   ${rou( 'arrayAppend' )}
   ${rou( 'arrayAppendArray' )}
   ${rou( 'arrayAppendArrays' )}
@@ -654,17 +655,17 @@ function sourcesJoinSplits( o )
   ${rou( 'longGrow_' )}
   ${rou( 'dup' )}
   ${rou( 'routineUnite' )}
-  ${rou( 'arrayAs' )}
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
-  ${rou( 'strConcat' )}
-  ${rou( 'strHas' )}
   ${rou( 'regexpLike' )}
   ${rou( 'intervalIs' )}
   ${rou( 'numberDefined' )}
   ${rou( 'numbersAreAll' )}
   ${rou( 'bufferTypedIs' )}
   ${rou( 'bufferNodeIs' )}
+  ${rou( 'strConcat' )}
+  ${rou( 'strHas' )}
+  ${rou( 'strHasAny' )}
   ${rou( 'strLinesStrip' )}
   ${rou( 'strLinesNumber' )}
   ${rou( 'strLinesSplit' )}
@@ -718,6 +719,7 @@ function sourcesJoinSplits( o )
 
   // parseFull maybe?
 
+  ${rou( 'uri', 'isGlobal' )}
   ${rou( 'uri', 'parseConsecutive' )}
   ${rou( 'uri', 'refine' )}
   ${rou( 'uri', '_normalize' )}
