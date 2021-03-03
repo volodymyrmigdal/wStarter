@@ -265,8 +265,6 @@ function sourcesJoinSplits( o )
 
   /* predefined */
 
-  debugger
-
   r.predefined =
 `
 /* */  /* begin of predefined */ ( function _predefined_() {
