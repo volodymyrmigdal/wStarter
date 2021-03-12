@@ -1,6 +1,6 @@
 {
   "name": "wstarter",
-  "version": "0.4.225",
+  "version": "0.4.226",
   "description": "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.",
   "author": "Kostiantyn Wandalen <wanalen@01.school>",
   "license": "MIT",
@@ -36,21 +36,21 @@
     "pretty": "2.0.0",
     "chrome-remote-interface": "0.28.1",
     "portscanner": "2.2.0",
-    "wTools": "alpha",
-    "wCopyable": "alpha",
-    "wFiles": "alpha",
-    "wverbal": "alpha",
-    "wtemplatetreeenvironment": "alpha",
-    "wcommandsaggregator": "alpha",
-    "wservlettools": "alpha",
-    "wloggersocket": "alpha"
+    "wTools": "gamma",
+    "wCopyable": "gamma",
+    "wFiles": "gamma",
+    "wverbal": "gamma",
+    "wtemplatetreeenvironment": "gamma",
+    "wcommandsaggregator": "gamma",
+    "wservlettools": "gamma",
+    "wloggersocket": "gamma"
   },
   "devDependencies": {
     "eslint": "7.1.0",
-    "wTesting": "alpha",
-    "willbe": "alpha",
-    "wmodulefortesting1a": "alpha",
-    "wpuppet": "alpha",
+    "wTesting": "gamma",
+    "willbe": "gamma",
+    "wmodulefortesting1a": "gamma",
+    "wpuppet": "gamma",
     "wstarter": "file:."
   },
   "keywords": [
