@@ -1,7 +1,7 @@
 
 /*
 starter .start proto/experiment/F1.js
-cls && local-starter .start builder/include/experiment/F1.js
+cls && starter .start builder/include/experiment/F1.js
 */
 
 debugger;
