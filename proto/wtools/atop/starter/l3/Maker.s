@@ -652,7 +652,7 @@ function sourcesJoinSplits( o )
   ${rou( 'longHas' )}
   ${rou( 'longGrow_' )}
   ${rou( 'dup' )}
-  ${rou( 'routineUnite' )}
+  ${rou( 'routine.unite' )}
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
   ${rou( 'regexpLike' )}
