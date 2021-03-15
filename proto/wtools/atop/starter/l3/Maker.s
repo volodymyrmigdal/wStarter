@@ -574,6 +574,10 @@ function sourcesJoinSplits( o )
   ${rou( 'vectorIs' )}
   ${rou( 'vectorLike' )}
 
+  ${rou( 'property', '_ofAct' )}
+  ${rou( 'property', 'fields' )}
+  ${rou( 'property', 'own' )}
+
   ${rou( 'strIs' )}
   ${rou( 'strDefined' )}
   ${rou( '_strBeginOf' )}
@@ -594,7 +598,9 @@ function sourcesJoinSplits( o )
   ${rou( 'objectLike' )}
   ${rou( 'arrayLike' )}
   ${rou( 'boolLike' )}
+  ${rou( 'bool', 'like' )}
   ${rou( 'boolLikeTrue' )}
+  ${rou( 'bool', 'likeTrue' )}
   ${rou( 'arrayIs' )}
   ${rou( 'numberIsFinite' )}
   ${rou( 'numberIs' )}
@@ -624,6 +630,9 @@ function sourcesJoinSplits( o )
   ${rou( 'mapSupplementStructureless' )}
   ${rou( 'assertMapHasOnly' )}
   ${rou( 'assertMapHasNoUndefine' )}
+  ${rou( 'map', 'assertHasOnly' )}
+  ${rou( 'map', 'assertHasNoUndefine' )}
+  ${rou( 'map', 'sureHasOnly' )}
   ${rou( 'routineOptions' )}
   ${rou( 'mapExtend' )}
   ${rou( 'mapSupplement' )}
@@ -651,8 +660,16 @@ function sourcesJoinSplits( o )
   ${rou( 'longLeftDefined' )}
   ${rou( 'longHas' )}
   ${rou( 'longGrow_' )}
+  ${rou( 'vectorAdapterIs' )}
   ${rou( 'dup' )}
   ${rou( 'routine.unite' )}
+  ${rou( 'routine.uniteCloning_' )}
+  ${rou( 'routine._amend' )}
+  ${rou( 'routine._is' )}
+  ${rou( 'routine.is' )}
+  ${rou( 'routine.options' )}
+  ${rou( 'routine.assertOptions' )}
+  ${rou( 'routine.isTrivial' )}
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
   ${rou( 'regexpLike' )}
@@ -683,6 +700,18 @@ function sourcesJoinSplits( o )
 
   ${field( 'entity', 'TranslatedTypeMap' )}
   ${field( 'entity', 'StandardTypeSet' )}
+  ${rou( 'entity', '_exportStringIsVisibleElement' )}
+  ${rou( 'entity', '_exportStringFromStr' )}
+  ${rou( 'entity', '_exportStringFromSymbol' )}
+  ${rou( 'entity', '_exportStringFromBufferRaw' )}
+  ${rou( 'entity', '_exportStringFromBufferTyped' )}
+  ${rou( 'entity', '_exportStringFromBufferNode' )}
+  ${rou( 'entity', '_exportStringFromArray' )}
+  ${rou( 'entity', '_exportStringFromObject' )}
+  ${rou( 'entity', '_exportStringFromHashMap' )}
+  ${rou( 'entity', '_exportStringFromSet' )}
+  ${rou( 'entity', '_exportString' )}
+  ${rou( 'entity', 'exportString' )}
 
   ${rou( 'error', '_setupUncaughtErrorHandler2' )}
   ${rou( 'error', '_setupUncaughtErrorHandler9' )}
@@ -724,9 +753,6 @@ function sourcesJoinSplits( o )
   ${rou( 'uri', 'canonize' )}
   ${rou( 'uri', 'canonizeTolerant' )}
   ${fields( 'uri' )}
-
-  ${rou( 'property', '_ofAct' )}
-  ${rou( 'property', 'fields' )}
 
   ${rou( 'color', 'strFg' )}
   ${rou( 'color', 'strBg' )}
