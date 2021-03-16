@@ -633,6 +633,7 @@ function sourcesJoinSplits( o )
   ${rou( 'map', 'assertHasOnly' )}
   ${rou( 'map', 'assertHasNoUndefine' )}
   ${rou( 'map', 'sureHasOnly' )}
+  ${rou( 'map', 'sureHasAll' )}
   ${rou( 'routineOptions' )}
   ${rou( 'mapExtend' )}
   ${rou( 'mapSupplement' )}
@@ -670,6 +671,7 @@ function sourcesJoinSplits( o )
   ${rou( 'routine.options' )}
   ${rou( 'routine.assertOptions' )}
   ${rou( 'routine.isTrivial' )}
+  ${rou( 'routine.extend' )}
   ${rou( 'errIs' )}
   ${rou( 'unrollIs' )}
   ${rou( 'regexpLike' )}
