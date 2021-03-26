@@ -11,9 +11,9 @@ if( typeof module !== 'undefined' )
 
 //
 
-let _ = _global_.wTools;
-let Parent = null;
-let Self = wStarterCenter;
+const _ = _global_.wTools;
+const Parent = null;
+const Self = wStarterCenter;
 function wStarterCenter( o )
 {
   // debugger;

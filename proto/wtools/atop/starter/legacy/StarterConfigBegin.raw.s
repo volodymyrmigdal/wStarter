@@ -1,7 +1,7 @@
 
 // // > StarterConfigBegin
 
-// let _global = undefined;
+// const _global = undefined;
 // if( !_global && typeof Global !== 'undefined' && Global.Global === Global ) _global = Global;
 // if( !_global && typeof global !== 'undefined' && global.global === global ) _global = global;
 // if( !_global && typeof window !== 'undefined' && window.window === window ) _global = window;

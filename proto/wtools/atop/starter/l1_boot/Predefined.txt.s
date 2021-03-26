@@ -3,7 +3,7 @@
 
 'use strict';
 
-let _ = _global_.wTools;
+const _ = _global_.wTools;
 
 // --
 // begin
@@ -14,7 +14,7 @@ function _Begin()
 
   'use strict';
 
-  let _global = undefined;
+  const _global = undefined;
   if( typeof _global_ !== 'undefined' && _global_._global_ === _global_ )
   _global = _global_;
   else if( typeof globalThis !== 'undefined' && globalThis.globalThis === globalThis )
@@ -51,7 +51,7 @@ function _Begin()
 
   let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
   let _ = _starter_;
-  let Self = _starter_;
+  const Self = _starter_;
 
   _realGlobal_.HashMap = Map;
   _realGlobal_.HashMapWeak = WeakMap;
@@ -85,7 +85,7 @@ function _End()
 //
 // --
 
-let Self =
+const Self =
 {
   begin : _Begin,
   end : _End,

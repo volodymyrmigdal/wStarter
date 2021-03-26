@@ -3,9 +3,9 @@
 
 'use strict';
 
-let _ = _global_.wTools;
-let Parent = _.starter.Maker;
-let Self = wStarterMaker2;
+const _ = _global_.wTools;
+const Parent = _.starter.Maker;
+const Self = wStarterMaker2;
 function wStarterMaker2( o )
 {
   return _.workpiece.construct( Self, this, arguments );
@@ -151,7 +151,7 @@ function sourcesJoinFiles( o )
   return data;
 }
 
-var defaults = sourcesJoinFiles.defaults = _.mapBut( _.starter.Maker.prototype.sourcesJoin.defaults, { filesMap : null } );
+var defaults = sourcesJoinFiles.defaults = _.mapBut_( null, _.starter.Maker.prototype.sourcesJoin.defaults, { filesMap : null } );
 defaults.inPath = null;
 defaults.outPath = 'Index.js';
 defaults.withServer = 0;
@@ -234,7 +234,7 @@ function htmlForFiles( o )
   if( _.lengthOf( srcScriptsMap ) > 0 )
   o.title = path.fullName( _.mapKeys( srcScriptsMap )[ 0 ] );
 
-  let o2 = _.mapOnly( o, maker.htmlFor.defaults );
+  let o2 = _.mapOnly_( null, o, maker.htmlFor.defaults );
   o2.srcScriptsMap = srcScriptsMap;
   let data = maker.htmlFor( o2 );
 
@@ -251,7 +251,7 @@ function htmlForFiles( o )
   return data;
 }
 
-var defaults = htmlForFiles.defaults = _.mapBut( _.starter.Maker.prototype.htmlFor.defaults, { srcScriptsMap : null } );
+var defaults = htmlForFiles.defaults = _.mapBut_( null, _.starter.Maker.prototype.htmlFor.defaults, { srcScriptsMap : null } );
 defaults.inPath = null;
 defaults.outPath = 'Index.html';
 defaults.basePath = null;

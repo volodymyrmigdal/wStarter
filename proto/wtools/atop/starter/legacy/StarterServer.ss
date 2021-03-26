@@ -15,8 +15,8 @@
 
 // //
 
-// let _ = _global_.wTools;
-// let Self = _.starter = _.starter || Object.create( null );
+// const _ = _global_.wTools;
+// const Self = _.starter = _.starter || Object.create( null );
 
 // // --
 // // routine
@@ -188,7 +188,7 @@
 // // declare
 // // --
 
-// var Proto =
+// const Proto =
 // {
 
 //   staticRequestHandler_functor : staticRequestHandler_functor,

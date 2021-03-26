@@ -7,9 +7,9 @@ let Express = null;
 let ExpressLogger = null;
 let ExpressDir = null;
 let Querystring = null;
-let _ = _global_.wTools;
-let Parent = null;
-let Self = wStarterServlet;
+const _ = _global_.wTools;
+const Parent = null;
+const Self = wStarterServlet;
 function wStarterServlet( o )
 {
   return _.workpiece.construct( Self, this, arguments );
@@ -418,7 +418,7 @@ function jsSingleForJs( o )
   try
   {
 
-    let o2 = _.mapOnly( servlet, system.maker.sourcesJoinFiles.defaults );
+    let o2 = _.mapOnly_( null, servlet, system.maker.sourcesJoinFiles.defaults );
     o2.entryPath = o.realPath
     o2.inPath = servlet.basePath + '/**';
     o2.basePath = servlet.basePath;
@@ -891,7 +891,7 @@ async function pathsForm()
 
   let parsedServerPath = _.servlet.serverPathParse({ full : servlet.serverPath });
 
-  _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.entity.exportStringShort( parsedServerPath.port ) );
+  _.sure( _.numberIsFinite( parsedServerPath.port ), () => 'Expects number {-port-}, but got ' + _.entity.exportStringShallow( parsedServerPath.port ) );
 
   if( parsedServerPath.port === 0 )
   {
@@ -930,7 +930,7 @@ function scriptWrap_functor( fop )
 
   if( !fop.ware )
   {
-    let o2 = _.mapOnly( servlet, system.maker.sourcesJoinSplits.defaults );
+    let o2 = _.mapOnly_( null, servlet, system.maker.sourcesJoinSplits.defaults );
     o2.interpreter = 'browser';
     o2.libraryName = 'Starter';
     o2.withServer = 1;

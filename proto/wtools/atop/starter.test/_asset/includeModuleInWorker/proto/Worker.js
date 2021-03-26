@@ -2,7 +2,7 @@
 
   include( '/wtools/abase/Layer2.s' );
 
-  let _ = _global_.wTools;
+  const _ = _global_.wTools;
 
   var got1 = _.include( '/Module.js' );
   var got2 = _.include( '/Module.js' );

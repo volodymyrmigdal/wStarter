@@ -3,8 +3,8 @@
 
 'use strict';
 
-let _ = _global_.wTools;
-let Self = _.starter = _.starter || Object.create( null );
+const _ = _global_.wTools;
+const Self = _.starter = _.starter || Object.create( null );
 _.starter.session = _.starter.session || Object.create( null );
 
 let vectorizeDefaults = { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 };

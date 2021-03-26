@@ -3,7 +3,7 @@
 
 'use strict';
 
-let _ = _global_.wTools;
+const _ = _global_.wTools;
 
 // --
 // begin
@@ -14,7 +14,7 @@ function _Begin()
 
   'use strict';
 
-  let _global = _global_;
+  const _global = _global_;
   let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
   let _ = _starter_;
 
@@ -63,7 +63,7 @@ function _End()
 // export
 // --
 
-let Self =
+const Self =
 {
   begin : _Begin,
   end : _End,

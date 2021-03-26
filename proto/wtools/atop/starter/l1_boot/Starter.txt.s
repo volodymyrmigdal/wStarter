@@ -3,7 +3,7 @@
 
 'use strict';
 
-let _ = _global_.wTools;
+const _ = _global_.wTools;
 
 // let wasPrepareStackTrace = Error.prepareStackTrace;
 // Error.prepareStackTrace = function( err, stack )
@@ -19,7 +19,7 @@ function _Begin()
 
   'use strict';
 
-  let _global = _global_;
+  const _global = _global_;
   if( _global._starter_ && _global._starter_._inited )
   return;
 
@@ -366,7 +366,7 @@ function _End()
 // export
 // --
 
-let Self =
+const Self =
 {
   begin : _Begin,
   end : _End,

@@ -3,9 +3,9 @@
 
 'use strict';
 
-let _ = _global_.wTools;
-let Parent = _.starter.session.Abstract;
-let Self = wStarterSessioNjs;
+const _ = _global_.wTools;
+const Parent = _.starter.session.Abstract;
+const Self = wStarterSessioNjs;
 function wStarterSessioNjs( o )
 {
   return _.workpiece.construct( Self, this, arguments );

@@ -8,7 +8,7 @@ if( typeof module !== 'undefined' )
 
   require( './Mid.s' );
 
-  let _ = _global_.wTools;
+  const _ = _global_.wTools;
 
   _.include( 'wCommandsAggregator' );
   // _.include( 'wCommandsConfig' );

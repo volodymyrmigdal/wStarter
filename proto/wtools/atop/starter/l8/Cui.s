@@ -5,9 +5,9 @@
 
 //
 
-let _ = _global_.wTools;
-let Parent = null;
-let Self = wStarterCui;
+const _ = _global_.wTools;
+const Parent = null;
+const Self = wStarterCui;
 function wStarterCui( o )
 {
   return _.workpiece.construct( Self, this, arguments );

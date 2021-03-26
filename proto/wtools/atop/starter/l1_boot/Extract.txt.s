@@ -3,7 +3,7 @@
 
 'use strict';
 
-let _ = _global_.wTools;
+const _ = _global_.wTools;
 
 // --
 // begin
@@ -14,7 +14,7 @@ function _Begin()
 
   'use strict';
 
-  let _global = _global_;
+  const _global = _global_;
   let _starter_ = _global_._starter_;
   let _ = _starter_;
 
@@ -25,8 +25,8 @@ function _Begin()
 
   // let _errorCounter = 0;
   // let _errorMaking = false;
-  let _ArrayIndexOf = Array.prototype.indexOf;
-  let _ArrayIncludes = Array.prototype.includes;
+  const _ArrayIndexOf = Array.prototype.indexOf;
+  const _ArrayIncludes = Array.prototype.includes;
   if( !_ArrayIncludes )
   _ArrayIncludes = function( e ){ _ArrayIndexOf.call( this, e ) }
 
@@ -54,7 +54,7 @@ function _End()
 //
 // --
 
-let Self =
+const Self =
 {
   begin : _Begin,
   end : _End,

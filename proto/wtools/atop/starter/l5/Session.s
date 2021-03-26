@@ -5,9 +5,9 @@
 
 let Open;
 
-let _ = _global_.wTools;
-let Parent = null;
-let Self = wStarterSessionAbstract;
+const _ = _global_.wTools;
+const Parent = null;
+const Self = wStarterSessionAbstract;
 function wStarterSessionAbstract( o )
 {
   return _.workpiece.construct( Self, this, arguments );
@@ -483,7 +483,7 @@ function exportStructure( o )
 
   o = _.routineOptions( exportStructure, arguments );
 
-  let dst = _.mapOnly( session, session.Composes );
+  let dst = _.mapOnly_( null, session, session.Composes );
 
   if( o.contraction )
   for( let k in dst )

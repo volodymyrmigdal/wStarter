@@ -1,7 +1,7 @@
 
 // // > StarterInitBegin
 
-// let _global = undefined;
+// const _global = undefined;
 // if( !_global && typeof Global !== 'undefined' && Global.Global === Global ) _global = Global;
 // if( !_global && typeof global !== 'undefined' && global.global === global ) _global = global;
 // if( !_global && typeof window !== 'undefined' && window.window === window ) _global = window;
@@ -741,7 +741,7 @@
 //     o.resolvingTextLink = 0;
 //     o.filePath = filePath;
 
-//     _.mapSupplement( o, _.mapOnly( scriptFile.include, fileProvider.filesFindRecursive.defaults ) );
+//     _.mapSupplement( o, _.mapOnly_( null, scriptFile.include, fileProvider.filesFindRecursive.defaults ) );
 //     _.mapSupplement( o, _starter_.includeDefaults );
 
 //     let files = fileProvider.filesFindRecursive( o );
@@ -960,7 +960,7 @@
 //     isIncluded : null,
 //   }
 
-//   _.assertMapHasOnly( o.includeHandler, knownFields );
+//   _.map.assertHasOnly( o.includeHandler, knownFields );
 //   _.assert( o.includeHandler.includeAny && o.includeHandler.includeAny.length >= 0 );
 
 //   let moduleOptions = Object.create( null );

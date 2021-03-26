@@ -5,9 +5,9 @@
 
 let Open, ChromeLauncher, ChromeDefaultFlags, Net;
 
-let _ = _global_.wTools;
-let Parent = _.starter.session.Abstract;
-let Self = wStarterSessioBrowserCdp;
+const _ = _global_.wTools;
+const Parent = _.starter.session.Abstract;
+const Self = wStarterSessioBrowserCdp;
 function wStarterSessioBrowserCdp( o )
 {
   return _.workpiece.construct( Self, this, arguments );
@@ -214,7 +214,7 @@ async function servletOpen()
 
   _.assert( session.servlet === null );
 
-  let o2 = _.mapOnly( session, _.starter.Servlet.FieldsOfCopyableGroups );
+  let o2 = _.mapOnly_( null, session, _.starter.Servlet.FieldsOfCopyableGroups );
   o2.session = session;
   session.servlet = new _.starter.Servlet( o2 );
   await session.servlet.form();

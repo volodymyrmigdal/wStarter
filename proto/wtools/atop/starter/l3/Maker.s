@@ -10,9 +10,9 @@
 //
 
 let Jsdom, Pretty;
-let _ = _global_.wTools;
-let Parent = null
-let Self = wStarterMakerLight;
+const _ = _global_.wTools;
+const Parent = null
+const Self = wStarterMakerLight;
 function wStarterMakerLight( o )
 {
   return _.workpiece.construct( Self, this, arguments );
@@ -888,7 +888,7 @@ function sourcesJoin( o )
 
   let result = _.mapVals( o.filesMap ).join( '\n' );
 
-  let o2 = _.mapOnly( o, maker.sourcesJoinSplits.defaults );
+  let o2 = _.mapOnly_( null, o, maker.sourcesJoinSplits.defaults );
   let splits = maker.sourcesJoinSplits( o2 );
 
   splits.files = result;

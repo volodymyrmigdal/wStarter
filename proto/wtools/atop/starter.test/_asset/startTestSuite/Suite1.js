@@ -4,7 +4,7 @@
 'use strict';
 
 let _ = require( '../../../../../wtools/Tools.s' );
-let _global = _global_;
+const _global = _global_;
 
 _.include( 'wTesting' );
 
@@ -22,7 +22,7 @@ function routine1( test )
 // declare
 // --
 
-let Self =
+const Self =
 {
 
   name : 'Tools.Starter.Suite1',

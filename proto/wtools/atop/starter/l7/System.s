@@ -3,10 +3,10 @@
 
 'use strict';
 
-let _ = _global_.wTools;
-let Parent = null;
+const _ = _global_.wTools;
+const Parent = null;
 let Portscanner;
-let Self = wStarterSystem;
+const Self = wStarterSystem;
 function wStarterSystem( o )
 {
   return _.workpiece.construct( Self, this, arguments );
@@ -95,7 +95,7 @@ function formAssociates()
   if( !system.fileProvider )
   system.fileProvider = _.FileProvider.Default();
 
-  let o2 = _.mapOnly( system, _.starter.Maker2.FieldsOfCopyableGroups );
+  let o2 = _.mapOnly_( null, system, _.starter.Maker2.FieldsOfCopyableGroups );
   if( !system.maker )
   system.maker = _.starter.Maker2( o2 );
 
