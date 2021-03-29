@@ -14,7 +14,8 @@ function _Begin()
 
   'use strict';
 
-  const _global = undefined;
+  // const _global = undefined;
+  let _global = undefined;
   if( typeof _global_ !== 'undefined' && _global_._global_ === _global_ )
   _global = _global_;
   else if( typeof globalThis !== 'undefined' && globalThis.globalThis === globalThis )

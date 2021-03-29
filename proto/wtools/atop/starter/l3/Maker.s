@@ -258,6 +258,8 @@ function sourcesJoinSplits( o )
 
   /* prefix */
 
+  debugger;
+
   r.prefix =
 `
 /* */  /* begin of library ${o.libraryName} */ ( function _library_() {
@@ -508,11 +510,15 @@ function sourcesJoinSplits( o )
 
   ${rou( 'error', 'isFormed' )}
   ${rou( 'error', 'isAttended' )}
-  ${rou( 'error', 'originaMessage' )}
+  ${rou( 'error', 'originalMessage' )}
   ${rou( 'error', 'originalStack' )}
-  ${rou( 'error', 'set' )}
+  /* ${rou( 'error', 'set' )} // Dmytro : routine does not exist exposedSet and concealedSet are used instead */
+  ${rou( 'error', 'is' )}
+  ${rou( 'error', 'exposedSet' )}
+  ${rou( 'error', 'concealedSet' )}
   ${rou( 'error', 'fromStr' )}
   ${rou( 'error', '_inStr' )}
+  ${rou( 'error', 'process' )}
   ${fields( 'error' )}
 
   ${rou( 'introspector', 'code' )}
@@ -526,7 +532,8 @@ function sourcesJoinSplits( o )
   ${rou( 'entity', 'strType' )}
   ${rou( 'entity', 'strTypeSecondary' )}
   ${rou( 'entity', 'makeUndefined' )}
-  ${rou( 'entity', 'methodIteratorOf' )}
+
+  ${rou( 'class', 'methodIteratorOf' )}
 
   ${rou( 'path', 'refine' )}
   ${rou( 'path', '_normalize' )}
@@ -617,24 +624,22 @@ function sourcesJoinSplits( o )
   ${rou( 'routineLike' )}
   ${rou( 'routineIsTrivial' )}
   ${rou( 'lengthOf' )}
-  ${rou( 'mapIs' )}
   ${rou( 'countableIs' )}
   ${rou( 'constructibleIs' )}
   ${rou( 'sure' )}
-  ${rou( 'mapBut' )}
+  ${rou( 'mapIs' )}
+  ${rou( 'mapBut_' )}
+  ${rou( 'mapButOld' )} // xxx : remove
   ${rou( 'mapOwn' )}
   ${rou( '_mapKeys' )}
   ${rou( 'mapKeys' )}
   ${rou( 'mapOnlyOwnKeys' )}
-  ${rou( 'sureMapHasOnly' )}
-  ${rou( 'sureMapHasNoUndefine' )}
   ${rou( 'mapSupplementStructureless' )}
-  ${rou( 'assertMapHasOnly' )}
-  ${rou( 'assertMapHasNoUndefine' )}
+  ${rou( 'map', 'sureHasAll' )}
+  ${rou( 'map', 'sureHasOnly' )}
+  ${rou( 'map', 'sureHasNoUndefine' )}
   ${rou( 'map', 'assertHasOnly' )}
   ${rou( 'map', 'assertHasNoUndefine' )}
-  ${rou( 'map', 'sureHasOnly' )}
-  ${rou( 'map', 'sureHasAll' )}
   ${rou( 'routineOptions' )}
   ${rou( 'mapExtend' )}
   ${rou( 'mapSupplement' )}
@@ -679,6 +684,7 @@ function sourcesJoinSplits( o )
   ${rou( 'intervalIs' )}
   ${rou( 'numberDefined' )}
   ${rou( 'numbersAreAll' )}
+  ${rou( 'bufferRawIs' )}
   ${rou( 'bufferTypedIs' )}
   ${rou( 'bufferNodeIs' )}
   ${rou( 'strConcat' )}
@@ -711,6 +717,7 @@ function sourcesJoinSplits( o )
   ${rou( 'entity', '_exportStringFromBufferNode' )}
   ${rou( 'entity', '_exportStringFromArray' )}
   ${rou( 'entity', '_exportStringFromObject' )}
+  ${rou( 'entity', '_exportStringFromObjectKeysFiltered' )}
   ${rou( 'entity', '_exportStringFromHashMap' )}
   ${rou( 'entity', '_exportStringFromSet' )}
   ${rou( 'entity', '_exportString' )}
@@ -798,8 +805,8 @@ function sourcesJoinSplits( o )
   ${rou( 'strLeft_' )}
   ${rou( 'tokensSyntaxFrom' )}
   ${rou( '_strReplaceMapPrepare' )}
-  ${rou( 'assertMapHasAll' )}
-  ${rou( 'sureMapHasAll' )}
+  ${rou( 'map', 'assertHasAll' )}
+  ${rou( 'map', 'sureHasAll' )}
   ${rou( 'longSlice' )}
   ${rou( 'arrayLikeResizable' )}
   ${rou( 'regexpEscape' )}
