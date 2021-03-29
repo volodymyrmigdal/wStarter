@@ -166,7 +166,7 @@ function _form()
 // {
 //   let session = this;
 //   let system = session.system;
-//   let fileProvider = system.fileProvider;
+//   const fileProvider = system.fileProvider;
 //   let path = system.fileProvider.path;
 //   let logger = system.logger;
 //
@@ -183,7 +183,7 @@ function entryFind()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
 
@@ -209,7 +209,7 @@ async function servletOpen()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   _.assert( session.servlet === null );
@@ -230,7 +230,7 @@ function entryUriForm()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   _.assert( _.strDefined( session.format ) );
@@ -256,7 +256,7 @@ function curratedRunOpen()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   // console.log( 'curratedRunOpen:a' );
@@ -392,7 +392,7 @@ function _curatedRunLaunchBegin()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   _.assert( session.curratedRunState === null || session.curratedRunState === 'terminated' || session.curratedRunState === 'launching' );
@@ -412,7 +412,7 @@ function _curatedRunLaunchEnd()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   session.curratedRunState = 'launched';
@@ -426,7 +426,7 @@ function _curatedRunTerminateEnd()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   if( session.curratedRunState === 'terminated' )
@@ -444,7 +444,7 @@ function _curratedRunWindowClose()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let cdp = session._cdpConnect({});
 
@@ -465,7 +465,7 @@ function _curratedRunPageEmptyOpen( o )
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let cdp = session._cdpConnect({});
 
@@ -490,7 +490,7 @@ function _curratedRunPageClose( o )
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let cdp = session._cdpConnect({});
 
@@ -544,7 +544,7 @@ async function _cdpConnect( o )
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let Cdp = require( 'chrome-remote-interface' );
   let cdp;
@@ -580,7 +580,7 @@ async function cdpConnect()
   let session = this;
   let system = session.system;
   let logger = system.logger;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   _.assert( session.cdp === null );
@@ -617,7 +617,7 @@ async function _cdpReconnectAndClose()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   if( session._cdpClosing )
@@ -659,7 +659,7 @@ function cdpClose()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let ready = _.Consequence().take( null );
   let closed = 0;

@@ -258,7 +258,7 @@ function pathsForm()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
 
@@ -352,7 +352,7 @@ function entryFind()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
 
@@ -383,7 +383,7 @@ function loggingSessionEventsForm()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
 
@@ -524,7 +524,7 @@ function timerForm()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   _.assert( session._timeOutTimer === null );
@@ -549,7 +549,7 @@ function timerCancel()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   if( session._timeOutTimer )
@@ -567,7 +567,7 @@ function _timerTimeOutEnd()
 {
   let session = this;
   let system = session.system;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
 
   session._timeOutTimer = null;

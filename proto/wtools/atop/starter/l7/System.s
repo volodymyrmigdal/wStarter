@@ -107,7 +107,7 @@ function formAssociates()
 function close()
 {
   let system = this;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
   let ready = _.after();
@@ -140,7 +140,7 @@ function close()
 function sourcesJoinFiles( o )
 {
   let system = this;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
   let maker = system.maker;
@@ -157,7 +157,7 @@ var defaults = sourcesJoinFiles.defaults = _.mapExtend( null, _.starter.Maker2.p
 function htmlForFiles( o )
 {
   let system = this;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
   let maker = system.maker;
@@ -174,7 +174,7 @@ var defaults = htmlForFiles.defaults = _.mapExtend( null, _.starter.Maker2.proto
 function httpOpen( o )
 {
   let system = this;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
   let maker = system.maker;
@@ -221,7 +221,7 @@ httpOpen.defaults =
 function start( o )
 {
   let system = this;
-  let fileProvider = system.fileProvider;
+  const fileProvider = system.fileProvider;
   let path = system.fileProvider.path;
   let logger = system.logger;
 

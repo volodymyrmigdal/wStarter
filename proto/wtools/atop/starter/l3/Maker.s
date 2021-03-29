@@ -498,20 +498,21 @@ function sourcesJoinSplits( o )
 
     return `
   ${rou( 'strQuote' )}
-  ${rou( 'errInStr' )}
-  ${rou( 'errFromStr' )}
-  ${rou( 'errOriginalMessage' )}
-  ${rou( 'errOriginalStack' )}
   ${rou( 'err' )}
   ${rou( '_err' )}
   ${rou( '_errMake' )}
   ${rou( 'errLogged' )}
   ${rou( 'errAttend' )}
-  ${rou( '_errFields' )}
-  ${rou( 'errIsStandard' )}
-  ${rou( 'errIsAttended' )}
   ${rou( 'errProcess' )}
   ${rou( 'assert' )}
+
+  ${rou( 'error', 'isFormed' )}
+  ${rou( 'error', 'isAttended' )}
+  ${rou( 'error', 'originaMessage' )}
+  ${rou( 'error', 'originalStack' )}
+  ${rou( 'error', 'set' )}
+  ${rou( 'error', 'fromStr' )}
+  ${rou( 'error', '_inStr' )}
   ${fields( 'error' )}
 
   ${rou( 'introspector', 'code' )}

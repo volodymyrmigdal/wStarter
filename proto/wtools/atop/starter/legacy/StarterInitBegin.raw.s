@@ -722,7 +722,7 @@
 // function _includeMature( bound, filePath )
 // {
 //   let scriptFile = bound.scriptFile;
-//   let fileProvider = _starter_.fileProvider;
+//   const fileProvider = _starter_.fileProvider;
 
 //   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 

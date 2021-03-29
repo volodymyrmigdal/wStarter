@@ -20,7 +20,7 @@ Self.shortName = 'Maker2';
 function sourcesJoinFiles( o )
 {
   let maker = this;
-  let fileProvider = maker.fileProvider;
+  const fileProvider = maker.fileProvider;
   let path = maker.fileProvider.path;
   let logger = maker.logger;
 
@@ -161,7 +161,7 @@ defaults.withServer = 0;
 function htmlForFiles( o )
 {
   let maker = this;
-  let fileProvider = maker.fileProvider;
+  const fileProvider = maker.fileProvider;
   let path = maker.fileProvider.path;
   let logger = maker.logger;
 
