@@ -5,7 +5,7 @@
   "author" : "Kostiantyn Wandalen <wanalen@01.school>",
   "license" : "MIT",
   "main" : "proto/wtools/atop/starter/entry/Main.s",
-  "files" : [ "proto/wtools/atop/starter", "proto/wtools/Tools.s" ],
+  "files" : [ "proto/wtools/atop/starter", "proto/wtools/Tools.s", "proto/node_modules" ],
   "scripts" :
   {
     "test" : "wtest .run 'proto/**' rapidity:-3 verbosity:6 silencing:0",
@@ -49,7 +49,6 @@
     "willbe" : "",
     "wpuppet" : "",
     "wmodulefortesting1a" : "",
-    "wstarter" : "file:.",
     "eslint" : "7.1.0"
   },
   "keywords" : [ "wTools" ]
