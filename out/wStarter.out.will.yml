@@ -2,10 +2,13 @@ format: outwillfile-2.0
 root:
   - wStarter.out
 consistency:
-  ../.ex.will.yml: &ref_0
+  wStarter.out.will.yml: &ref_0
+    hash: d09b810d6de2a3eb46e743dc2fce5b81
+    size: 62448
+  ../.ex.will.yml: &ref_1
     hash: bdd67fb796af94560b6f886a8e46c27a
     size: 2266
-  ../.im.will.yml: &ref_1
+  ../.im.will.yml: &ref_2
     hash: a3b0043e3517527c0897ebaf7f1ec3ac
     size: 6167
 module:
@@ -19,24 +22,24 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters: &ref_2
+      interpreters:
         - njs >= 10.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords: &ref_3
+      keywords:
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors: &ref_4
+      contributors:
         - Kostiantyn Wandalen <wanalen@01.school>
       npm.name: wstarter
-      npm.scripts: &ref_5
+      npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
         single-process-starter: node proto/wtools/atop/starter/entry/Exec
         debug-starter: node proto/wtools/atop/starter/entry/ExecDebug
         starter: node proto/wtools/atop/starter/entry/ExecUnrestricted
-      npm.bin: &ref_6
+      npm.bin:
         starter: proto/wtools/atop/starter/entry/ExecUnrestricted
         single-process-starter: proto/wtools/atop/starter/entry/Exec
         debug-starter: proto/wtools/atop/starter/entry/ExecDebug
@@ -1093,6 +1096,24 @@ module:
           content: prime
         inherit:
           - files.transpile
+      exported.proto.export:
+        opts:
+          filePath: 'reflector::exported.proto.export'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
+      exported.files.proto.export:
+        opts:
+          filePath: 'reflector::exported.files.proto.export'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
     build:
       proto.export:
         steps:
@@ -1181,8 +1202,9 @@ module:
           content: proto
           export: 1
     consistency:
-      ../.ex.will.yml: *ref_0
-      ../.im.will.yml: *ref_1
+      wStarter.out.will.yml: *ref_0
+      ../.ex.will.yml: *ref_1
+      ../.im.will.yml: *ref_2
   ../:
     about:
       name: wStarter
@@ -1193,14 +1215,27 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters: *ref_2
-      keywords: *ref_3
+      interpreters:
+        - njs >= 10.0.0
+        - chrome >= 60.0.0
+        - firefox >= 60.0.0
+      keywords:
+        - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors: *ref_4
+      contributors:
+        - Kostiantyn Wandalen <wanalen@01.school>
       npm.name: wstarter
-      npm.scripts: *ref_5
-      npm.bin: *ref_6
+      npm.scripts:
+        test: wtest .run proto/**
+        docgen: wdocgen .build proto
+        single-process-starter: node proto/wtools/atop/starter/entry/Exec
+        debug-starter: node proto/wtools/atop/starter/entry/ExecDebug
+        starter: node proto/wtools/atop/starter/entry/ExecUnrestricted
+      npm.bin:
+        starter: proto/wtools/atop/starter/entry/ExecUnrestricted
+        single-process-starter: proto/wtools/atop/starter/entry/Exec
+        debug-starter: proto/wtools/atop/starter/entry/ExecDebug
     path:
       module.willfiles:
         criterion:
@@ -1944,3 +1979,6 @@ module:
       ../.im.will.yml:
         hash: a3b0043e3517527c0897ebaf7f1ec3ac
         size: 6167
+      wStarter.out.will.yml:
+        hash: d09b810d6de2a3eb46e743dc2fce5b81
+        size: 62448
