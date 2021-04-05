@@ -131,8 +131,8 @@ path:
       raw: compiled
       content: prime
   npm.proto.entry:
-    - /pro/module/wStarter/proto/wtools/atop/starter/entry/Main.s
-    - /pro/module/wStarter/proto/node_modules/wstarter
+    - proto/wtools/atop/starter/entry/Main.s
+    - proto/node_modules/wstarter
 reflector:
   reflect.proto:
     inherit: predefined.*
