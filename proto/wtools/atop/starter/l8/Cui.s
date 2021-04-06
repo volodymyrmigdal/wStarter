@@ -58,7 +58,7 @@ function exec()
   _.assert( arguments.length === 0 );
 
   let logger = starter.logger;
-  const fileProvider = starter.fileProvider;
+  let fileProvider = starter.fileProvider;
   let appArgs = _.process.input();
   let ca = cui._commandsMake();
 
@@ -86,7 +86,7 @@ function _commandsMake()
   let cui = this;
   let starter = cui.starter;
   let logger = starter.logger;
-  const fileProvider = starter.fileProvider;
+  let fileProvider = starter.fileProvider;
   let appArgs = _.process.input();
 
   _.assert( _.instanceIs( cui ) );
@@ -123,7 +123,7 @@ function commandHelp( e )
   let cui = this;
   let starter = cui.starter;
   let ca = e.ca;
-  const fileProvider = starter.fileProvider;
+  let fileProvider = starter.fileProvider;
   let logger = starter.logger;
 
   ca._commandHelp( e );
@@ -154,7 +154,7 @@ commandVersion.hint = 'Get information about version.';
 //
 //   starter.form();
 //
-//   const fileProvider = starter.fileProvider;
+//   let fileProvider = starter.fileProvider;
 //   let path = starter.fileProvider.path;
 //   let logger = starter.logger;
 //
@@ -226,7 +226,7 @@ function commandHtmlFor( e )
   starter.form();
 
   let ca = e.ca;
-  const fileProvider = starter.fileProvider;
+  let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
   let request = _.strRequestParse( e.commandArgument );
@@ -272,7 +272,7 @@ function commandSourcesJoin( e )
   starter.form();
 
   let ca = e.ca;
-  const fileProvider = starter.fileProvider;
+  let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
   let request = _.strRequestParse( e.commandArgument );
@@ -313,7 +313,7 @@ function commandHttpOpen( e )
   starter.form();
 
   let ca = e.ca;
-  const fileProvider = starter.fileProvider;
+  let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
   let request = _.strRequestParse({ src : e.commandArgument, severalValues : 1 });

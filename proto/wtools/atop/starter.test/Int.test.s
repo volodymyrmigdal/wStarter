@@ -9,7 +9,7 @@ if( typeof module !== 'undefined' )
 {
 
   Jsdom = require( 'jsdom' );
-  let _ = require( '../../../wtools/Tools.s' );
+  let _ = require( '../../../node_modules/Tools' );
 
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
@@ -175,7 +175,7 @@ function sourcesJoinFilesCheckRoutines( test )
       interpreter : 'njs',
       inPath : { filePath : a.abs( __dirname, '../../../../node_modules/wTools/**.(s|ss)' ) },
       outPath : a.abs( 'out/SingleFileTools.ss' ),
-      entryPath : a.abs( __dirname, '../../../../node_modules/wTools/proto/wtools/Tools.s' ),
+      entryPath : a.abs( __dirname, '../../../../node_modules/wTools/proto/node_modules/Tools' ),
       withServer : 0,
     };
     starter.sourcesJoinFiles( o );

@@ -3,7 +3,7 @@
 
 'use strict';
 
-let _ = require( '../../../../../wtools/Tools.s' );
+let _ = require( '../../../../../node_modules/Tools' );
 const _global = _global_;
 
 _.include( 'wTesting' );

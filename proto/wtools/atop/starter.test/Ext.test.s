@@ -9,7 +9,7 @@ if( typeof module !== 'undefined' )
 {
 
   Jsdom = require( 'jsdom' );
-  let _ = require( '../../../wtools/Tools.s' );
+  let _ = require( '../../../node_modules/Tools' );
 
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
@@ -3282,7 +3282,7 @@ function startOptionWithModule( test )
     return null;
   })
 
-  // appStart( `.start startOptionWithModule/File1.js timeOut:${context.deltaTime3}0 loggingSessionEvents:1 headless:1 withModule:../../../../wtools/Tools.s withModule:wCopyable` )
+  // appStart( `.start startOptionWithModule/File1.js timeOut:${context.deltaTime3}0 loggingSessionEvents:1 headless:1 withModule:../../../../node_modules/Tools withModule:wCopyable` )
   appStart
   ({
     execPath : `.start`,
