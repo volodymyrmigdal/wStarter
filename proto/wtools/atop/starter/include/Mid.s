@@ -6,7 +6,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  let _ = require( './Base.s' );
+  const _ = require( './Base.s' );
 
   require( '../l1/Namespace.s' );
 

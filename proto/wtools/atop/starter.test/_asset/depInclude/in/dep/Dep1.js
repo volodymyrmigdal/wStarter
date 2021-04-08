@@ -1,6 +1,6 @@
 console.log( 'Dep1.js:begin' );
 
-let _ = require( '../build/node_modules/Tools' );
+const _ = require( '../build/node_modules/Tools' );
 _.include( 'wBlueprint' );
 
 console.log( `` );

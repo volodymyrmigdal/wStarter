@@ -2,7 +2,7 @@
 console.log( 'app0/File1.js:begin main:' + !module.parent );
 
 debugger;
-// let _ = require( 'wTools' );
+// const _ = require( 'wTools' );
 // console.log( 'numberIs:' + _.numberIs( 9 ) );
 
 setTimeout( f, 1000 );

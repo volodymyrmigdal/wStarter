@@ -15,7 +15,7 @@ var o =
   basePath : _.path.join( __dirname, '..' ),
   interpreter : 'njs',
   outPath : _.path.join( __dirname, 'out/SingleFileTools.ss' ),
-  entryPath : _.path.join( __dirname, '../node_modules/wTools/proto/wtools/Tools.s' ),
+  entryPath : _.path.join( __dirname, '../node_modules/wTools/proto/node_modules/Tools' ),
   withServer : 0
 }
 
@@ -36,7 +36,7 @@ var o =
   basePath : _.path.join( __dirname, '..' ),
   interpreter : 'browser',
   outPath : _.path.join( __dirname, 'out/SingleFileTools.js' ),
-  entryPath : _.path.join( __dirname, '../node_modules/wTools/proto/wtools/Tools.s' ),
+  entryPath : _.path.join( __dirname, '../node_modules/wTools/proto/node_modules/Tools' ),
   withServer : 0
 }
 

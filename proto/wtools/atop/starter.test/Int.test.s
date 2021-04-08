@@ -9,7 +9,7 @@ if( typeof module !== 'undefined' )
 {
 
   Jsdom = require( 'jsdom' );
-  let _ = require( '../../../node_modules/Tools' );
+  const _ = require( '../../../node_modules/Tools' );
 
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
@@ -200,7 +200,7 @@ function sourcesJoinFilesCheckRoutines( test )
   function checkRoutines()
   {
     require( './out/SingleFileTools.ss' );
-    let _ = wTools;
+    const _ = _global_.wTools;
 
     console.log( `primitiveIs : ${ _.primitiveIs( 1 ) }` );
     console.log( `set.is : ${ _.set.is( new Set() ) }` );
@@ -1194,7 +1194,7 @@ function browserUserTempDirCleanup( test )
 
   function program()
   {
-    let _ = require( toolsPath );
+    const _ = require( toolsPath );
     _.include( 'wStarter')
 
     let starter = new _.starter.System({ verbosity : 7 }).form();

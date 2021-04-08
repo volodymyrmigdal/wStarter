@@ -5,7 +5,7 @@
 
 if( typeof module !== 'undefined' )
 {
-  let _ = require( '../include/Mid.s' );
+  const _ = require( '../include/Mid.s' );
   module.exports = _;
 }
 

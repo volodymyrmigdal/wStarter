@@ -1,6 +1,6 @@
 console.log( 'Dep1.js:begin' );
 
-let _ = require( 'wTools' );
+const _ = require( 'wTools' );
 _.include( 'wBlueprint' );
 
 console.log( `` );

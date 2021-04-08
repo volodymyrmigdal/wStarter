@@ -1,6 +1,6 @@
 ( function _BrowserUserDirClean_s_()
 {
-let _ = require( 'wTools' );
+const _ = require( 'wTools' );
 _.include( 'wFiles' )
 
 /* */
