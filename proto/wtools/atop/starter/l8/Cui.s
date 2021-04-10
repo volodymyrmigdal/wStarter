@@ -60,12 +60,13 @@ function exec()
   let logger = starter.logger;
   let fileProvider = starter.fileProvider;
   let appArgs = _.process.input();
-  let ca = cui._commandsMake();
+  let aggregator = cui._commandsMake();
 
   return _.Consequence
   .Try( () =>
   {
-    return ca.appArgsPerform({ appArgs });
+    return aggregator.programPerform({ program : appArgs.original });
+    // return aggregator.appArgsPerform({ appArgs });
   })
   .catch( ( err ) =>
   {
@@ -95,25 +96,25 @@ function _commandsMake()
 
   let commands =
   {
-    'help' :              { e : _.routineJoin( cui, cui.commandHelp ) },
-    'version' :           { e : _.routineJoin( cui, cui.commandVersion ) },
-    'imply' :             { e : _.routineJoin( cui, cui.commandImply ) }, /* qqq : remove. ask how */
-    'html for' :          { e : _.routineJoin( cui, cui.commandHtmlFor ) },
-    'sources join' :      { e : _.routineJoin( cui, cui.commandSourcesJoin ) },
-    'http open' :         { e : _.routineJoin( cui, cui.commandHttpOpen ) },
-    'start' :             { e : _.routineJoin( cui, cui.commandStart ) }
+    'help' :              { ro : _.routineJoin( cui, cui.commandHelp ) },
+    'version' :           { ro : _.routineJoin( cui, cui.commandVersion ) },
+    'imply' :             { ro : _.routineJoin( cui, cui.commandImply ) }, /* qqq : remove. ask how */
+    'html for' :          { ro : _.routineJoin( cui, cui.commandHtmlFor ) },
+    'sources join' :      { ro : _.routineJoin( cui, cui.commandSourcesJoin ) },
+    'http open' :         { ro : _.routineJoin( cui, cui.commandHttpOpen ) },
+    'start' :             { ro : _.routineJoin( cui, cui.commandStart ) }
   }
 
-  let ca = _.CommandsAggregator
+  let aggregator = _.CommandsAggregator
   ({
     basePath : fileProvider.path.current(),
     commands,
     commandPrefix : 'node ',
   })
 
-  ca.form();
+  aggregator.form();
 
-  return ca;
+  return aggregator;
 }
 
 //
@@ -122,16 +123,17 @@ function commandHelp( e )
 {
   let cui = this;
   let starter = cui.starter;
-  let ca = e.ca;
+  let aggregator = e.aggregator;
   let fileProvider = starter.fileProvider;
   let logger = starter.logger;
 
-  ca._commandHelp( e );
+  aggregator._commandHelp( e );
 
   return cui;
 }
 
-commandHelp.hint = 'Get help.';
+var command = commandHelp.command = Object.create( null );
+command.hint = 'Get help.';
 
 //
 
@@ -145,7 +147,8 @@ function commandVersion( e )
   });
 }
 
-commandVersion.hint = 'Get information about version.';
+var command = commandVersion.command = Object.create( null );
+command.hint = 'Get information about version.';
 
 // function commandVersion( e ) /* xxx qqq : move to NpmTools */
 // {
@@ -185,7 +188,8 @@ commandVersion.hint = 'Get information about version.';
 //
 // }
 //
-// commandVersion.hint = 'Get information about version.';
+// var command = commandVersion.command = Object.create( null );
+// command.hint = 'Get information about version.';
 
 //
 
@@ -194,7 +198,7 @@ function commandImply( e )
   let cui = this;
   let starter = cui.starter;
 
-  let ca = e.ca;
+  let aggregator = e.aggregator;
   let logger = starter.logger;
 
   let namesMap =
@@ -203,7 +207,7 @@ function commandImply( e )
     verbosity : 'verbosity',
   }
 
-  let request = _.strRequestParse( e.commandArgument );
+  let request = _.strRequestParse( e.instructionArgument );
 
   _.process.inputReadTo
   ({
@@ -214,7 +218,8 @@ function commandImply( e )
 
 }
 
-commandImply.hint = 'Change state or imply value of a variable.';
+var command = commandImply.command = Object.create( null );
+command.hint = 'Change state or imply value of a variable.';
 
 //
 
@@ -225,11 +230,11 @@ function commandHtmlFor( e )
 
   starter.form();
 
-  let ca = e.ca;
+  let aggregator = e.aggregator;
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
-  let request = _.strRequestParse( e.commandArgument );
+  let request = _.strRequestParse( e.instructionArgument );
 
   logger.log( e.propertiesMap )
 
@@ -254,13 +259,13 @@ function commandHtmlFor( e )
   return null;
 }
 
-commandHtmlFor.commandProperties =
+var command = commandHtmlFor.command = Object.create( null );
+command.hint = 'Generate HTML for specified files.';
+command.properties =
 {
   inPath : 'Path to files to include into HTML file to generate.',
   outPath : 'Path to save generated HTML file.',
 }
-
-commandHtmlFor.hint = 'Generate HTML for specified files.';
 
 //
 
@@ -271,11 +276,11 @@ function commandSourcesJoin( e )
 
   starter.form();
 
-  let ca = e.ca;
+  let aggregator = e.aggregator;
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
-  let request = _.strRequestParse( e.commandArgument );
+  let request = _.strRequestParse( e.instructionArgument );
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.inPath = o2.inPath || request.subject;
@@ -295,13 +300,13 @@ function commandSourcesJoin( e )
   return r;
 }
 
-commandSourcesJoin.commandProperties =
+var command = commandSourcesJoin.command = Object.create( null );
+command.hint = 'Join source files found at specified directory.';
+command.properties =
 {
   inPath : 'Path to files to use for merging and wrapping.',
   outPath : 'Path to save merged file.',
 }
-
-commandSourcesJoin.hint = 'Join source files found at specified directory.';
 
 //
 
@@ -312,11 +317,11 @@ function commandHttpOpen( e )
 
   starter.form();
 
-  let ca = e.ca;
+  let aggregator = e.aggregator;
   let fileProvider = starter.fileProvider;
   let path = starter.fileProvider.path;
   let logger = starter.logger;
-  let request = _.strRequestParse({ src : e.commandArgument, severalValues : 1 });
+  let request = _.strRequestParse({ src : e.instructionArgument, severalValues : 1 });
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.basePath = o2.basePath || request.subject;
@@ -344,7 +349,9 @@ function commandHttpOpen( e )
   return null;
 }
 
-commandHttpOpen.commandProperties =
+var command = commandHttpOpen.command = Object.create( null );
+command.hint = 'Run HTTP server to serve files in a specified directory.';
+command.properties =
 {
   basePath : 'Path to make available over HTTP.',
   allowedPath : 'Restrict access of client-side to files in specified directory. Default : same as basePath.',
@@ -367,8 +374,6 @@ commandHttpOpen.commandProperties =
   interpreter : 'Interpreter to use. Alternatives [ browser, njs ]. Default : browser'
 }
 
-commandHttpOpen.hint = 'Run HTTP server to serve files in a specified directory.';
-
 //
 
 function commandStart( e )
@@ -378,9 +383,9 @@ function commandStart( e )
 
   starter.form();
 
-  let ca = e.ca;
+  let aggregator = e.aggregator;
   let logger = starter.logger;
-  let request = _.strRequestParse({ src : e.commandArgument, severalValues : 1 });
+  let request = _.strRequestParse({ src : e.instructionArgument, severalValues : 1 });
 
   let o2 = _.mapExtend( null, e.propertiesMap );
   o2.entryPath = o2.entryPath || request.subject;
@@ -403,17 +408,17 @@ function commandStart( e )
   return null;
 }
 
-commandStart.commandProperties =
+var command = commandStart.command = Object.create( null );
+command.hint = 'Run executable file. By default in browser.';
+command.properties =
 {
-  ... commandHttpOpen.commandProperties,
+  ... commandHttpOpen.command.properties,
   loggingApplication : 'Enable printing of application output. Default : true',
   loggingRequestsAll : 'Enable logging of request to the server. Default : false',
   loggingConnectionAttemtps : 'Enable logging of connection attempts to chrome instance. Default : false',
   curating : 'Automatic opening of the application in curated window. Default : true',
   headless : 'Headless mode. Default : false',
 }
-
-commandStart.hint = 'Run executable file. By default in browser.';
 
 // --
 // relations
