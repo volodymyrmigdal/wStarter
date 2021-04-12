@@ -9,31 +9,41 @@ const _ = _global_.wTools;
 // begin
 // --
 
+/* xxx : include while file Global.s */
 function _Begin()
 {
 
   'use strict';
 
-  // const _global = undefined;
-  let _global = undefined;
-  if( typeof _global_ !== 'undefined' && _global_._global_ === _global_ )
-  _global = _global_;
-  else if( typeof globalThis !== 'undefined' && globalThis.globalThis === globalThis )
-  _global = globalThis;
-  else if( typeof Global !== 'undefined' && Global.Global === Global )
-  _global = Global;
-  else if( typeof global !== 'undefined' && global.global === global )
-  _global = global;
-  else if( typeof window !== 'undefined' && window.window === window )
-  _global = window;
-  else if( typeof self !== 'undefined' && self.self === self )
-  _global = self;
+  /* */
+
+  let _global = get();
   if( !_global._globals_ )
   {
     _global._globals_ = Object.create( null );
-    _global._globals_.real = _global;
+    _global._globals_.real = _global._realGlobal_ || _global;
     _global._realGlobal_ = _global;
     _global._global_ = _global;
+  }
+
+  /* */
+
+  function get()
+  {
+    let _global = undefined;
+    if( typeof _global_ !== 'undefined' && _global_._global_ === _global_ )
+    _global = _global_;
+    else if( typeof globalThis !== 'undefined' && globalThis.globalThis === globalThis )
+    _global = globalThis;
+    else if( typeof Global !== 'undefined' && Global.Global === Global )
+    _global = Global;
+    else if( typeof global !== 'undefined' && global.global === global )
+    _global = global;
+    else if( typeof window !== 'undefined' && window.window === window )
+    _global = window;
+    else if( typeof self   !== 'undefined' && self.self === self )
+    _global = self;
+    return _global;
   }
 
   /* */
