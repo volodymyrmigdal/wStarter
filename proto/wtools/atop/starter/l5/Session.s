@@ -481,7 +481,7 @@ function exportStructure( o )
 {
   let session = this;
 
-  o = _.routineOptions( exportStructure, arguments );
+  o = _.routine.options_( exportStructure, arguments );
 
   let dst = _.mapOnly_( null, session, session.Composes );
 
@@ -493,7 +493,7 @@ function exportStructure( o )
   if( o.dst === null )
   o.dst = dst;
   else
-  _.mapExtend( o.dst, dst );
+  _.props.extend( o.dst, dst );
 
   return o.dst;
 }

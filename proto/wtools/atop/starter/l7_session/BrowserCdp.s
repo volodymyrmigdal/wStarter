@@ -289,7 +289,7 @@ function curratedRunOpen()
   let args = ChromeDefaultFlags.slice();
 
   args.push( `--remote-debugging-port=${session.sessionPort}` )
-  args.push( `--user-data-dir=${_.path.nativize( tempDir )}`)
+  args.push( `--user-data-dir=${_.path.nativize( tempDir )}` )
 
   if( session.headless )
   args.push( '--headless', '--disable-gpu' );
@@ -549,7 +549,7 @@ async function _cdpConnect( o )
   let Cdp = require( 'chrome-remote-interface' );
   let cdp;
 
-  o = _.routineOptions( _cdpConnect, o );
+  o = _.routine.options_( _cdpConnect, o );
 
   if( o.port === null )
   o.port = session.sessionPort;

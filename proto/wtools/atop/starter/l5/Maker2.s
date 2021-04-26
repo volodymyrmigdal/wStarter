@@ -14,7 +14,7 @@ function wStarterMaker2( o )
 Self.shortName = 'Maker2';
 
 // --
-// routines
+// implementation
 // --
 
 function sourcesJoinFiles( o )
@@ -24,7 +24,7 @@ function sourcesJoinFiles( o )
   let path = maker.fileProvider.path;
   let logger = maker.logger;
 
-  o = _.routineOptions( sourcesJoinFiles, arguments );
+  o = _.routine.options_( sourcesJoinFiles, arguments );
 
   /* */
 
@@ -132,7 +132,7 @@ function sourcesJoinFiles( o )
     srcScriptsMap[ srcRelativePath ] = fileProvider.fileRead( inPath );
   });
 
-  let o2 = _.mapExtend( null, o )
+  let o2 = _.props.extend( null, o )
   delete o2.inPath;
   o2.filesMap = srcScriptsMap;
   let data = maker.sourcesJoin( o2 )
@@ -165,7 +165,7 @@ function htmlForFiles( o )
   let path = maker.fileProvider.path;
   let logger = maker.logger;
 
-  o = _.routineOptions( htmlForFiles, arguments );
+  o = _.routine.options_( htmlForFiles, arguments );
 
   /* */
 
@@ -231,8 +231,8 @@ function htmlForFiles( o )
   });
 
   if( o.title === null )
-  if( _.lengthOf( srcScriptsMap ) > 0 )
-  o.title = path.fullName( _.mapKeys( srcScriptsMap )[ 0 ] );
+  if( _.entity.lengthOf( srcScriptsMap ) > 0 )
+  o.title = path.fullName( _.props.keys( srcScriptsMap )[ 0 ] );
 
   let o2 = _.mapOnly_( null, o, maker.htmlFor.defaults );
   o2.srcScriptsMap = srcScriptsMap;

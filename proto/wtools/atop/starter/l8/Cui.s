@@ -245,7 +245,7 @@ function commandHtmlFor( e )
     defaultStructure : 'string',
   })
 
-  let o2 = _.mapExtend( null, e.propertiesMap );
+  let o2 = _.props.extend( null, e.propertiesMap );
   o2.inPath = o2.inPath || request.subject;
 
   let html = starter.htmlForFiles( o2 );
@@ -282,7 +282,7 @@ function commandSourcesJoin( e )
   let logger = starter.logger;
   let request = _.strRequestParse( e.instructionArgument );
 
-  let o2 = _.mapExtend( null, e.propertiesMap );
+  let o2 = _.props.extend( null, e.propertiesMap );
   o2.inPath = o2.inPath || request.subject;
 
   if( !o2.inPath )
@@ -323,7 +323,7 @@ function commandHttpOpen( e )
   let logger = starter.logger;
   let request = _.strRequestParse({ src : e.instructionArgument, severalValues : 1 });
 
-  let o2 = _.mapExtend( null, e.propertiesMap );
+  let o2 = _.props.extend( null, e.propertiesMap );
   o2.basePath = o2.basePath || request.subject;
 
   /* xxx qqq : write option-less test routine */
@@ -387,7 +387,7 @@ function commandStart( e )
   let logger = starter.logger;
   let request = _.strRequestParse({ src : e.instructionArgument, severalValues : 1 });
 
-  let o2 = _.mapExtend( null, e.propertiesMap );
+  let o2 = _.props.extend( null, e.propertiesMap );
   o2.entryPath = o2.entryPath || request.subject;
 
   if( request.subject && request.subject !== o2.entryPath )

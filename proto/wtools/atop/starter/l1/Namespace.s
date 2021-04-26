@@ -45,7 +45,7 @@ function pathAllowedNormalize( allowedPath )
 function pathAllowedIs( allowedPath, filePath )
 {
   let filtered = this.pathAllowedFilter( ... arguments );
-  return _.lengthOf( filtered ) === _.lengthOf( filePath );
+  return _.entity.lengthOf( filtered ) === _.entity.lengthOf( filePath );
 }
 
 //
@@ -106,7 +106,7 @@ function pathRealToVirtual( o )
   if( _.arrayIs( o.realPath ) )
   return o.realPath.map( ( realPath ) => this.pathRealToVirtual({ ... o, realPath }) );
 
-  _.routineOptions( pathRealToVirtual, arguments );
+  _.routine.options_( pathRealToVirtual, arguments );
   _.assert( _.strIs( o.realPath ) );
 
   let relativePath = _.path.relative( o.basePath, o.realPath );
@@ -152,7 +152,7 @@ function pathVirtualToReal( o )
   let virtualPath = o.virtualPath;
   let parsed = regexp.exec( virtualPath );
 
-  _.routineOptions( pathVirtualToReal, arguments );
+  _.routine.options_( pathVirtualToReal, arguments );
   _.assert( arguments.length === 1 );
   _.assert( _.strIs( virtualPath ) );
 
@@ -249,7 +249,7 @@ let Extension =
 
 }
 
-_.mapExtend( Self, Extension );
+_.props.extend( Self, Extension );
 
 //
 

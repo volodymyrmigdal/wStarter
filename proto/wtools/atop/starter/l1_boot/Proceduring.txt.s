@@ -93,14 +93,14 @@ function _Begin()
   function NativeWatchingEnable( o )
   {
 
-    o = _.routineOptions( NativeWatchingEnable, o );
+    o = _.routine.options_( NativeWatchingEnable, o );
     _.assert( !!o.enable );
 
     let original = _.Procedure._OriginalTimeRoutines = _.Procedure._OriginalTimeRoutines || Object.create( null );
 
     if( o.enable )
     {
-      _.assert( _.lengthOf( original ) === 0 );
+      _.assert( _.entity.lengthOf( original ) === 0 );
 
       original.setTimeout = _global_.setTimeout;
       original.clearTimeout = _global_.clearTimeout;

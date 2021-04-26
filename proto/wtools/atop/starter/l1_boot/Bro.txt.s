@@ -32,7 +32,7 @@ function _Begin()
     let self = this;
     let Reqeust, request, total, result, error;
 
-    _.assertRoutineOptions( _broFileReadAct, arguments );
+    _.routine.assertOptions( _broFileReadAct, arguments );
     _.assert( arguments.length === 1, 'Expects single argument' );
     _.assert( _.strIs( o.filePath ), '_broFileReadAct :', 'Expects {-o.filePath-}' );
 
@@ -41,7 +41,7 @@ function _Begin()
 
     /* advanced */
 
-    o.advanced = _.routineOptions( _broFileReadAct, o.advanced, _broFileReadAct.advanced );
+    o.advanced = _.routine.options_( _broFileReadAct, o.advanced, _broFileReadAct.advanced );
     o.advanced.method = o.advanced.method.toUpperCase();
 
     /* http request */
@@ -241,7 +241,7 @@ function _Begin()
   {
     if( _.strIs( o ) )
     o = { filePath : o };
-    _.routineOptions( _broFileRead, o );
+    _.routine.options_( _broFileRead, o );
     return _._broFileReadAct( o );
   }
 
@@ -318,7 +318,7 @@ function _Begin()
     result = JSON.parse( result );
 
     if( !result.exists )
-    throw _.err( `Failed to resolve path: "${filePath}, file doesn't exist.`);
+    throw _.err( `Failed to resolve path: "${filePath}, file doesn't exist.` );
 
     return resolvedFilePath;
   }

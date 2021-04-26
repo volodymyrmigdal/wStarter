@@ -29,7 +29,7 @@ function _Begin()
   let _class = _starter_.class = _starter_.class || Object.create( null );
   let path = _starter_.path = _starter_.path || Object.create( null );
   let uri = _starter_.uri = _starter_.uri || Object.create( null );
-  let property = _starter_.property = _starter_.property || Object.create( null );
+  let property = _starter_.props = _starter_.props || Object.create( null );
   _starter_.uri.path = _starter_.path;
   let introspector = _starter_.introspector = _starter_.introspector || Object.create( null );
   let error = _starter_.error = _starter_.error || Object.create( null );
@@ -143,7 +143,7 @@ function _Begin()
   //   // _.workpiece.initFields( procedure );
   //   // Object.preventExtensions( procedure );
   //   // procedure.copy( o );
-  //   _.mapExtend( procedure, o );
+  //   _.props.extend( procedure, o );
   //
   //   _.assert( _.strIs( procedure._stack ) );
   //   // _.assert( procedure._sourcePath === null );

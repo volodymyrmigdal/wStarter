@@ -269,7 +269,7 @@
 
 //   if( _ )
 //   {
-//     _.assertRoutineOptions( scriptExecBegin, arguments );
+//     _.routine.assertOptions( scriptExecBegin, arguments );
 //     _.assert( !!parentScriptFile || o.filePath === _starter_.initScriptPath );
 //   }
 
@@ -307,7 +307,7 @@
 // {
 
 //   if( _ )
-//   _.assertRoutineOptions( scriptExecEnd, arguments );
+//   _.routine.assertOptions( scriptExecEnd, arguments );
 
 //   // debugger;
 //   // if( o.filePath === '/wtools/atop/testing/zLast.debug.s' )
@@ -741,8 +741,8 @@
 //     o.resolvingTextLink = 0;
 //     o.filePath = filePath;
 
-//     _.mapSupplement( o, _.mapOnly_( null, scriptFile.include, fileProvider.filesFindRecursive.defaults ) );
-//     _.mapSupplement( o, _starter_.includeDefaults );
+//     _.props.supplement( o, _.mapOnly_( null, scriptFile.include, fileProvider.filesFindRecursive.defaults ) );
+//     _.props.supplement( o, _starter_.includeDefaults );
 
 //     let files = fileProvider.filesFindRecursive( o );
 
@@ -915,7 +915,7 @@
 
 // function moduleDeclare( o )
 // {
-//   o = _.routineOptions( moduleDeclare, arguments );
+//   o = _.routine.options_( moduleDeclare, arguments );
 //   _.assert( o.isIncluded === null || _.routineIs( o.isIncluded ) );
 //   _.assert( !_starter_.modulesMap[ o.name ], 'Module', o.name, 'was already declared' );
 
@@ -952,7 +952,7 @@
 
 // function moduleWithIncludeHandlerDeclare( o )
 // {
-//   o = _.routineOptions( moduleWithIncludeHandlerDeclare, arguments );
+//   o = _.routine.options_( moduleWithIncludeHandlerDeclare, arguments );
 
 //   let knownFields =
 //   {
@@ -1140,7 +1140,7 @@
 //     // if( ext === 'less' )
 //     // {
 //     //   debugger;
-//     //   less.render( text, _.mapExtend( null, less.options ), function( err, got )
+//     //   less.render( text, _.props.extend( null, less.options ), function( err, got )
 //     //   {
 //     //     debugger;
 //     //   });
@@ -1305,7 +1305,7 @@
 // }
 
 // // --
-// // routines
+// // implementation
 // // --
 
 // let Routines =

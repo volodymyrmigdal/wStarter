@@ -43,7 +43,7 @@ let LibrarySplits =
 }
 
 // --
-// routines
+// implementation
 // --
 
 function instanceOptions( o )
@@ -76,7 +76,7 @@ function sourceWrapSplits( o )
 {
   let maker = this;
 
-  _.routineOptions( sourceWrapSplits, arguments );
+  _.routine.options_( sourceWrapSplits, arguments );
   _.assert( arguments.length === 1 );
   _.assert( _.longHas( [ 'njs', 'browser' ], o.interpreter ) );
 
@@ -158,7 +158,7 @@ function sourceWrap( o )
 {
   let maker = this;
   _.assert( arguments.length === 1 );
-  _.routineOptions( sourceWrap, arguments );
+  _.routine.options_( sourceWrap, arguments );
   maker.instanceOptions( o );
 
   if( o.removingShellPrologue )
@@ -179,7 +179,7 @@ function sourceWrapSimple( o )
 {
   let maker = this;
   _.assert( arguments.length === 1 );
-  _.routineOptions( sourceWrapSimple, arguments );
+  _.routine.options_( sourceWrapSimple, arguments );
   maker.instanceOptions( o );
 
   if( o.removingShellPrologue )
@@ -232,10 +232,10 @@ function sourceRemoveShellPrologue( fileData )
 function sourcesJoinSplits( o )
 {
   let maker = this;
-  let r = _.mapExtend( null, maker.LibrarySplits );
+  let r = _.props.extend( null, maker.LibrarySplits );
   Object.preventExtensions( r );
 
-  o = _.routineOptions( sourcesJoinSplits, arguments );
+  o = _.routine.options_( sourcesJoinSplits, arguments );
   _.assert( _.longHas( [ 'njs', 'browser' ], o.interpreter ) );
   _.assert( _.boolLike( o.debug ) );
   _.assert( _.boolLike( o.proceduring ) );
@@ -631,10 +631,9 @@ function sourcesJoinSplits( o )
   ${rou( 'mapBut_' )}
   ${rou( 'mapButOld' )} // xxx : remove
   ${rou( 'mapOwn' )}
-  ${rou( '_mapKeys' )}
-  ${rou( 'mapKeys' )}
-  ${rou( 'mapOnlyOwnKeys' )}
-  ${rou( 'mapSupplementStructureless' )}
+  ${rou( 'props._keys' )}
+  ${rou( 'props.keys' )}
+  ${rou( 'props.onlyOwnKeys' )}
   ${rou( 'map', 'sureHasAll' )}
   ${rou( 'map', 'sureHasOnly' )}
   ${rou( 'map', 'sureHasNoUndefine' )}
@@ -670,7 +669,7 @@ function sourcesJoinSplits( o )
   ${rou( 'vectorAdapterIs' )}
   ${rou( 'dup' )}
   ${rou( 'routine.unite' )}
-  ${rou( 'routine.uniteCloning_' )}
+  ${rou( 'routine.uniteCloning_replaceByUnite' )}
   ${rou( 'routine._amend' )}
   ${rou( 'routine._is' )}
   ${rou( 'routine.is' )}
@@ -815,7 +814,7 @@ function sourcesJoinSplits( o )
   ${rou( 'filter_' )}
   ${rou( '_filter_functor' )}
   ${rou( 'entityMakeUndefined' )}
-  ${rou( 'mapKeys' )}
+  ${rou( 'props.keys' )}
 
   ${rou( 'path', 'globShortFilterKeys' )}
   ${rou( 'path', 'globShortSplitsToRegexps' )}
@@ -876,7 +875,7 @@ function sourcesJoin( o )
 {
   let maker = this;
 
-  _.routineOptions( sourcesJoin, arguments );
+  _.routine.options_( sourcesJoin, arguments );
   maker.instanceOptions( o );
 
   /* */
@@ -894,7 +893,7 @@ function sourcesJoin( o )
 
   /* */
 
-  let result = _.mapVals( o.filesMap ).join( '\n' );
+  let result = _.props.vals( o.filesMap ).join( '\n' );
 
   let o2 = _.mapOnly_( null, o, maker.sourcesJoinSplits.defaults );
   let splits = maker.sourcesJoinSplits( o2 );
@@ -917,7 +916,7 @@ function sourcesSplitsJoin( o )
 {
   let maker = this;
 
-  _.routineOptions( sourcesSplitsJoin, arguments );
+  _.routine.options_( sourcesSplitsJoin, arguments );
 
   for( let i in o )
   {
@@ -957,7 +956,7 @@ function htmlSplitsFor( o )
   let maker = this;
   let r = Object.create( null );
 
-  _.routineOptions( htmlSplitsFor, arguments );
+  _.routine.options_( htmlSplitsFor, arguments );
 
   if( o.withScripts === null )
   {
@@ -975,7 +974,7 @@ function htmlSplitsFor( o )
   _.assert( _.longHas( [ 'include', 0, false ], o.withStarter ) );
   _.assert( _.longHas( [ 'single', 'include', 'inline', 0, false ], o.withScripts ) );
   _.assert( _.longHas( [ 'single', 'include' ], o.withScripts ) );
-  _.assert( o.withScripts !== 'single' || _.lengthOf( o.srcScriptsMap ) <= 1, 'not implemented' );
+  _.assert( o.withScripts !== 'single' || _.entity.lengthOf( o.srcScriptsMap ) <= 1, 'not implemented' );
   _.assert( o.withScripts !== 'single' || !o.withStarter, 'If option::withScripts is single then option::withStarter should be off' );
 
   if( o.template === null )
@@ -1083,7 +1082,7 @@ htmlSplitsFor.defaults =
 function htmlFor( o )
 {
   let maker = this;
-  _.routineOptions( htmlFor, arguments );
+  _.routine.options_( htmlFor, arguments );
   let result = maker.htmlSplitsFor( o );
   return result;
 }

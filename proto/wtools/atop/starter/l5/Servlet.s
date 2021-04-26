@@ -330,7 +330,7 @@ function htmlForHtml( o )
   let servlet = this;
   let system = servlet.system;
 
-  _.routineOptions( htmlForHtml, o );
+  _.routine.options_( htmlForHtml, o );
 
   if( o.realPath === null )
   o.realPath = servlet.pathVirtualToReal( o.resourcePath );
@@ -371,7 +371,7 @@ function htmlForJs( o )
   let servlet = this;
   let system = servlet.system;
 
-  _.routineOptions( htmlForJs, o );
+  _.routine.options_( htmlForJs, o );
 
   if( o.realPath === null )
   o.realPath = servlet.pathVirtualToReal( o.resourcePath );
@@ -413,7 +413,7 @@ function jsSingleForJs( o )
   let system = servlet.system;
   let maker = servlet.maker;
 
-  o = _.routineOptions( jsSingleForJs, arguments );
+  o = _.routine.options_( jsSingleForJs, arguments );
 
   try
   {
@@ -476,7 +476,7 @@ function jsForJs( o )
   let servlet = this;
   let system = servlet.system;
 
-  o =_.routineOptions( jsForJs, arguments );
+  o =_.routine.options_( jsForJs, arguments );
 
   try
   {
@@ -587,7 +587,7 @@ function remoteResolve( o )
   let servlet = this;
   let resolvedFilePath;
 
-  _.routineOptions( remoteResolve, arguments );
+  _.routine.options_( remoteResolve, arguments );
 
   try
   {
@@ -700,7 +700,7 @@ function statPath( o )
   let servlet = this;
   let resolvedFilePath;
 
-  _.routineOptions( statPath, arguments );
+  _.routine.options_( statPath, arguments );
 
   try
   {
@@ -759,7 +759,7 @@ function processRequestHandle( o )
   let servlet = this;
   let session = servlet.session;
 
-  _.routineOptions( processRequestHandle, arguments );
+  _.routine.options_( processRequestHandle, arguments );
 
   let routine = o.request.body.routine;
   let args = o.request.body.arguments;
@@ -878,7 +878,7 @@ async function pathsForm()
     let relativePath = _.path.relative( servlet.basePath, absolutePath );
     if( _.path.isDotted( relativePath ) && relativePath !== '.' )
     {
-      let virtualPath = '_' + ( _.lengthOf( servlet.realToVirtualMap ) + 1 ) + '_';
+      let virtualPath = '_' + ( _.entity.lengthOf( servlet.realToVirtualMap ) + 1 ) + '_';
       servlet.virtualToRealMap[ virtualPath ] = absolutePath;
       servlet.realToVirtualMap[ absolutePath ] = virtualPath;
     }
@@ -915,7 +915,7 @@ function scriptWrap_functor( fop )
   let servlet = this;
   let system = servlet.system;
 
-  fop = _.routineOptions( scriptWrap_functor, arguments );
+  fop = _.routine.options_( scriptWrap_functor, arguments );
 
   _.assert( servlet instanceof _.starter.Servlet );
   _.assert( system instanceof _.starter.System );
@@ -956,7 +956,7 @@ function scriptWrap_functor( fop )
   function _scriptWrap( o )
   {
 
-    _.assertRoutineOptions( scriptWrap, arguments );
+    _.routine.assertOptions( scriptWrap, arguments );
     o.fop = fop;
     // console.log( 'o.request.url', o.request.url );
     o.request.url = Querystring.unescape( o.request.url );
@@ -1088,7 +1088,7 @@ var defaults = scriptWrap_functor.defaults = Object.create( null );
 
 function ScriptWrap_functor( o )
 {
-  o = _.routineOptions( ScriptWrap_functor, arguments );
+  o = _.routine.options_( ScriptWrap_functor, arguments );
 
   if( o.servlet === null )
   {

@@ -78,7 +78,7 @@ function assetFor( test, name )
 
   let oprogram = a.program;
   program_body.defaults = a.program.defaults;
-  a.program = _.routine.uniteCloning_( a.program.head, program_body );
+  a.program = _.routine.uniteCloning_replaceByUnite( a.program.head, program_body );
   return a;
 
   /* */
@@ -90,7 +90,7 @@ function assetFor( test, name )
       toolsPath : _.module.resolve( 'wTools' ),
     };
     o.locals = o.locals || locals;
-    _.mapSupplement( o.locals, locals );
+    _.props.supplement( o.locals, locals );
     let programPath = a.path.nativize( oprogram.body.call( a, o ) ); /* zzz : modify a.program()? */
     return programPath;
   }

@@ -24,7 +24,7 @@
 
 // function staticRequestHandler_functor( gen )
 // {
-//   var gen = _.routineOptions( staticRequestHandler_functor, arguments );
+//   var gen = _.routine.options_( staticRequestHandler_functor, arguments );
 
 //   _.assert( _.strDefined( gen.basePath ) );
 
@@ -195,7 +195,7 @@
 
 // }
 
-// _.mapExtend( Self,Proto );
+// _.props.extend( Self,Proto );
 
 // //
 

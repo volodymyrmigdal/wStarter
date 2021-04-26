@@ -193,11 +193,10 @@ function _Begin()
         return result;
       }
 
-      // debugger; /* ttt */
       if( !_starter_.withServer && _.path.isGlob( filePath ) ) /* xxx : workaround */
       {
         let resolvedFilePath = starter._pathResolveLocal( parentSource, basePath, filePath );
-        let filtered = _.mapKeys( _.path.globShortFilterKeys( starter.sourcesMap, resolvedFilePath ) );
+        let filtered = _.props.keys( _.path.globShortFilterKeys( starter.sourcesMap, resolvedFilePath ) );
         if( filtered.length )
         return starter._sourceInclude( parentSource, basePath, filtered );
       }

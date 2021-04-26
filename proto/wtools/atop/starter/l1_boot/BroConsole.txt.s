@@ -120,7 +120,7 @@ function _Begin()
       // 'table', 'time', 'timeEnd', 'timeStamp', 'trace'
     ];
 
-    _.routineOptions( _broConsoleRedirect, o );
+    _.routine.options_( _broConsoleRedirect, o );
 
     if( o.console === null )
     o.console = console;
@@ -129,7 +129,7 @@ function _Begin()
 
     if( o.enable )
     {
-      _.assert( _.lengthOf( original ) === 0 );
+      _.assert( _.entity.lengthOf( original ) === 0 );
 
       for( let n = 0 ; n < MethodsNames.length ; n++ )
       {
@@ -142,7 +142,7 @@ function _Begin()
     }
     else
     {
-      _.assert( _.lengthOf( original ) !== 0 );
+      _.assert( _.entity.lengthOf( original ) !== 0 );
 
       for( let n = 0 ; n < MethodsNames.length ; n++ )
       {

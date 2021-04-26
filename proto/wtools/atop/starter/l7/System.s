@@ -127,8 +127,8 @@ function close()
 
   ready.then( ( arg ) =>
   {
-    _.assert( _.lengthOf( system.servletsMap ) === 0 );
-    _.assert( _.lengthOf( system.sessionArray ) === 0 );
+    _.assert( _.entity.lengthOf( system.servletsMap ) === 0 );
+    _.assert( _.entity.lengthOf( system.sessionArray ) === 0 );
     return arg;
   });
 
@@ -150,7 +150,7 @@ function sourcesJoinFiles( o )
   return data;
 }
 
-var defaults = sourcesJoinFiles.defaults = _.mapExtend( null, _.starter.Maker2.prototype.sourcesJoinFiles.defaults );
+var defaults = sourcesJoinFiles.defaults = _.props.extend( null, _.starter.Maker2.prototype.sourcesJoinFiles.defaults );
 
 //
 
@@ -167,7 +167,7 @@ function htmlForFiles( o )
   return data;
 }
 
-var defaults = htmlForFiles.defaults = _.mapExtend( null, _.starter.Maker2.prototype.htmlForFiles.defaults );
+var defaults = htmlForFiles.defaults = _.props.extend( null, _.starter.Maker2.prototype.htmlForFiles.defaults );
 
 //
 
@@ -179,7 +179,7 @@ function httpOpen( o )
   let logger = system.logger;
   let maker = system.maker;
 
-  _.routineOptions( httpOpen, arguments );
+  _.routine.options_( httpOpen, arguments );
 
   let opts =
   {
@@ -225,7 +225,7 @@ function start( o )
   let path = system.fileProvider.path;
   let logger = system.logger;
 
-  _.routineOptions( start, arguments );
+  _.routine.options_( start, arguments );
 
   let opts =
   {
@@ -239,7 +239,7 @@ function start( o )
   return session.form();
 }
 
-var defaults = start.defaults = _.mapExtend( null, httpOpen.defaults );
+var defaults = start.defaults = _.props.extend( null, httpOpen.defaults );
 
 defaults.loggingApplication = 1;
 defaults.loggingRequestsAll = 0;
