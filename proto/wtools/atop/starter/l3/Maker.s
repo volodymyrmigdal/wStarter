@@ -602,7 +602,7 @@ function sourcesJoinSplits( o )
   ${rou( 'primitiveIs' )}
   ${rou( 'symbolIs' )}
   ${rou( 'strBegins' )}
-  ${rou( 'objectIs' )}
+  ${rou( 'object.isBasic' )}
   ${rou( 'objectLike' )}
   ${rou( 'arrayLike' )}
   ${rou( 'boolLike' )}

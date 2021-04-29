@@ -382,7 +382,7 @@
 //   let scriptFile = _starter_.resourcesMap[ filePath ];
 
 //   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
-//   _.assert( _.objectIs( scriptFile ) );
+//   _.assert( _.object.isBasic( scriptFile ) );
 
 //   _scriptRewrite( filePath, routine );
 // }
@@ -989,7 +989,7 @@
 //   handlers = _global_.ModulesRegistry;
 
 //   _.assert( arguments.length === 0 || arguments.length === 1 );
-//   _.assert( _.objectIs( handlers ) );
+//   _.assert( _.object.isBasic( handlers ) );
 
 //   for( let h in handlers )
 //   {
@@ -1011,7 +1011,7 @@
 // {
 //   let preset = _starter_.presets[ presetName ];
 
-//   _.assert( _.objectIs( preset ), 'unknown preset', presetName );
+//   _.assert( _.object.isBasic( preset ), 'unknown preset', presetName );
 //   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
 //   _.mapExtendAppendingOnceRecursive( scriptFile.include, preset );
@@ -1025,7 +1025,7 @@
 // {
 //   let preset = _starter_.presets[ presetName ];
 
-//   _.assert( _.objectIs( preset ), 'unknown preset', presetName );
+//   _.assert( _.object.isBasic( preset ), 'unknown preset', presetName );
 //   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
 
 //   _.mapSupplementRemovingRecursive( scriptFile.include, preset );
@@ -1039,7 +1039,7 @@
 // {
 //   let preset = _starter_.presets[ presetName ];
 
-//   _.assert( _.objectIs( preset ), 'unknown preset', presetName );
+//   _.assert( _.object.isBasic( preset ), 'unknown preset', presetName );
 //   _.assert( arguments.length === 1, 'Expects single argument' );
 
 //   _.mapExtendAppendingOnceRecursive( _starter_.includeDefaults, preset );
@@ -1053,7 +1053,7 @@
 // {
 //   let preset = _starter_.presets[ presetName ];
 
-//   _.assert( _.objectIs( preset ), 'unknown preset', presetName );
+//   _.assert( _.object.isBasic( preset ), 'unknown preset', presetName );
 //   _.assert( arguments.length === 1, 'Expects single argument' );
 
 //   _.mapSupplementRemovingRecursive( _starter_.includeDefaults, preset );
@@ -1065,9 +1065,9 @@
 
 // function presetRefine( preset )
 // {
-//   _.assert( _.strIs( preset ) || _.objectIs( preset ) );
+//   _.assert( _.strIs( preset ) || _.object.isBasic( preset ) );
 //   _.assert( arguments.length === 1, 'Expects single argument' );
-//   _.assert( _.containerIs( preset ) || _.objectIs( _starter_.presets[ preset ] ), 'unknown preset', preset );
+//   _.assert( _.containerIs( preset ) || _.object.isBasic( _starter_.presets[ preset ] ), 'unknown preset', preset );
 
 //   if( _.strIs( preset ) )
 //   preset = _starter_.presets[ preset ];
