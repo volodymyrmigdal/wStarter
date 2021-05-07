@@ -610,6 +610,9 @@ function sourcesJoinSplits( o )
   ${field( 'number', 's' )}
 
   ${rou( 'aux', 'is' )}
+  ${rou( 'aux', 'isPure' )}
+  ${rou( 'aux', 'isPolluted' )}
+  ${rou( 'aux', 'isPrototyped' )}
   ${rou( 'aux', 'like' )}
   ${rou( 'constructible', 'is' )}
   ${rou( 'constructibleIs' )}
@@ -638,7 +641,7 @@ function sourcesJoinSplits( o )
   ${rou( 'map', 'supplement' )}
   ${bind( 'mapIs', 'map', 'is' )}
   ${bind( 'mapIsPure', 'map', 'isPure' )}
-  ${bind( 'mapIsPolluted', 'map', 'isPure' )}
+  ${bind( 'mapIsPolluted', 'map', 'isPolluted' )}
   ${bind( 'mapExtend', 'map', 'extend' )}
   ${bind( 'mapSupplement', 'map', 'supplement' )}
   /* ${rou( 'mapIs' )} */ /* Dmytro : binded, source code is not available */
@@ -677,6 +680,8 @@ function sourcesJoinSplits( o )
   /* ${rou( 'routineLike' )} */ /* Dmytro : binded, source code is not available */
   /* ${rou( 'routineIsTrivial' )} */ /* Dmytro : binded, source code is not available */
   /* ${rou( 'routineExtend' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'regexp', 'is' )}
 
   ${rou( 'property', '_ofAct' )}
   ${rou( 'property', 'fields' )}

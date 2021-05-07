@@ -64,6 +64,7 @@ function _Begin()
   let set = _starter_.set = _starter_.set || Object.create( null );
 
   let routine = _starter_.routine = _starter_.routine || Object.create( null );
+  let regexp = _starter_.regexp = _starter_.regexp || Object.create( null );
 
   //
 
