@@ -131,6 +131,7 @@ function sourcesJoinFiles( test )
   let read = _.fileProvider.fileRead( outputPath );
   test.identical( _.strCount( read, 'setTimeout( f, 1000 );' ), 2 );
 
+  debugger;
   js( _.path.nativize( outputPath ) )
   .then( ( op ) =>
   {
