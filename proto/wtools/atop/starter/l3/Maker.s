@@ -3,9 +3,7 @@
 
 'use strict';
 
-// debugger;
 // console.log( typeof exports ); /* xxx qqq : write test routine for exports. ask how */
-// debugger;
 
 //
 
@@ -258,8 +256,6 @@ function sourcesJoinSplits( o )
 
   /* prefix */
 
-  debugger;
-
   r.prefix =
 `
 /* */  /* begin of library ${o.libraryName} */ ( function _library_() {
@@ -497,7 +493,6 @@ function sourcesJoinSplits( o )
 
   function extract()
   {
-
     return `
   ${rou( 'strQuote' )}
   ${rou( 'err' )}
@@ -531,7 +526,8 @@ function sourcesJoinSplits( o )
 
   ${rou( 'entity', 'strType' )}
   ${rou( 'entity', 'strTypeSecondary' )}
-  ${rou( 'entity', 'makeUndefined' )}
+  ${bind( 'strType', 'entity', 'strType' )}
+  /* ${rou( 'entity', 'makeUndefined' )} */
 
   ${rou( 'class', 'methodIteratorOf' )}
 
@@ -552,10 +548,60 @@ function sourcesJoinSplits( o )
   ${rou( 'path', 'isGlobal' )}
   ${fields( 'path' )}
 
-  ${rou( 'vector', 'is' )}
+  ${rou( 'long', 'is' )}
+  ${rou( 'long', 'like' )}
+  ${bind( 'longIs', 'long', 'is' )}
+  ${bind( 'longLike', 'long', 'like' )}
+  /* ${rou( 'longIs' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'longLike' )} */ /* Dmytro : binded, source code is not available */
 
-  ${rou( 'primitive', 'is' )}
+  ${rou( 'argumentsArray', 'is' )}
+  ${rou( 'argumentsArray', 'like' )}
+  ${bind( 'argumentsArrayIs', 'argumentsArray', 'is' )}
+  /* ${rou( 'argumentsArrayIs' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'array', 'is' )}
+  ${rou( 'array', 'like' )}
+  ${rou( 'array', 'isEmpty' )}
+  ${rou( 'array', 'likeResizable' )}
+  ${bind( 'arrayIs', 'array', 'is' )}
+  ${bind( 'arrayLike', 'array', 'like' )}
+  ${bind( 'arrayIsEmpty', 'array', 'isEmpty' )}
+  ${bind( 'arrayLikeResizable', 'array', 'likeResizable' )}
+  /* ${rou( 'arrayIs' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'arrayLike' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'arrayIsEmpty' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'arrayLikeResizable' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'unroll', 'is' )}
+  ${bind( 'unrollIs', 'unroll', 'is' )}
+  /* ${rou( 'unrollIs' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'bufferRaw', 'is' )}
+  ${bind( 'bufferRawIs', 'bufferRaw', 'is' )}
+  /* ${rou( 'bufferRawIs' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'bufferTyped', 'is' )}
+  ${bind( 'bufferTypedIs', 'bufferTyped', 'is' )}
+  /* ${rou( 'bufferTypedIs' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'bufferNode', 'is' )}
+  ${bind( 'bufferNodeIs', 'bufferNode', 'is' )}
+  /* ${rou( 'bufferNodeIs' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'vector', 'is' )}
+  ${rou( 'vector', 'like' )}
+  ${bind( 'vectorIs', 'vector', 'is' )}
+  ${bind( 'vectorLike', 'vector', 'like' )}
+  /* ${rou( 'vectorIs' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'vectorLike' )} */ /* Dmytro : binded, source code is not available */
+
   ${rou( 'primitive', '_is' )}
+  ${rou( 'primitive', 'is' )}
+  ${bind( '_primitiveIs', 'primitive', '_is' )}
+  ${bind( 'primitiveIs', 'primitive', 'is' )}
+  /* ${rou( '_primitiveIs' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'primitiveIs' )} */ /* Dmytro : binded, source code is not available */
 
   ${rou( 'number', 'is' )}
   ${rou( 'number', 'isFinite' )}
@@ -566,21 +612,71 @@ function sourcesJoinSplits( o )
   ${rou( 'aux', 'is' )}
   ${rou( 'aux', 'like' )}
   ${rou( 'constructible', 'is' )}
-  ${rou( 'argumentsArray', 'is' )}
+  ${rou( 'constructibleIs' )}
 
   ${rou( 'object', 'is' )}
   ${rou( 'object', 'like' )}
+  ${bind( 'objectLike', 'object', 'like' )}
+  /* ${rou( 'objectLike' )} */ /* Dmytro : binded, source code is not available */
 
   ${rou( 'set', 'is' )}
   ${rou( 'set', 'like' )}
+  ${bind( 'setIs', 'set', 'is' )}
+  ${bind( 'setLike', 'set', 'like' )}
+  /* ${rou( 'setIs' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'setLike' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'map', 'is' )}
+  ${rou( 'map', 'isPure' )}
+  ${rou( 'map', 'isPolluted' )}
+  ${rou( 'map', 'sureHasAll' )}
+  ${rou( 'map', 'sureHasOnly' )}
+  ${rou( 'map', 'sureHasNoUndefine' )}
+  ${rou( 'map', 'assertHasOnly' )}
+  ${rou( 'map', 'assertHasNoUndefine' )}
+  ${rou( 'map', 'extend' )}
+  ${rou( 'map', 'supplement' )}
+  ${bind( 'mapIs', 'map', 'is' )}
+  ${bind( 'mapIsPure', 'map', 'isPure' )}
+  ${bind( 'mapIsPolluted', 'map', 'isPure' )}
+  ${bind( 'mapExtend', 'map', 'extend' )}
+  ${bind( 'mapSupplement', 'map', 'supplement' )}
+  /* ${rou( 'mapIs' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'mapExtend' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'mapSupplement' )} */ /* Dmytro : binded, source code is not available */
 
   ${rou( 'hashMap', 'is' )}
   ${rou( 'hashMap', 'like' )}
+  ${bind( 'hashMapIs', 'hashMap', 'is' )}
+  ${bind( 'hashMapLike', 'hashMap', 'like' )}
+  /* ${rou( 'hashMapIs' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'hashMapLike' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'countable', 'is' )}
+  ${bind( 'countableIs', 'countable', 'is' )}
+  /* ${rou( 'countableIs' )} */
 
   ${rou( 'symbol', 'is' )}
 
-  ${rou( 'vectorIs' )}
-  ${rou( 'vectorLike' )}
+  ${rou( 'routine', '_is' )}
+  ${rou( 'routine', 'is' )}
+  ${rou( 'routine', '_like' )}
+  ${rou( 'routine', 'like' )}
+  ${rou( 'routine', 'optionsWithoutUndefined' )}
+  ${rou( 'routine', 'isTrivial' )}
+  ${rou( 'routine', 'extend' )}
+  ${bind( '_routineIs', 'routine', '_is' )}
+  ${bind( 'routineIs', 'routine', 'is' )}
+  ${bind( '_routineLike', 'routine', '_like' )}
+  ${bind( 'routineLike', 'routine', 'like' )}
+  ${bind( 'routineIsTrivial', 'routine', 'isTrivial' )}
+  ${bind( 'routineExtend', 'routine', 'extend' )}
+  /* ${rou( '_routineIs' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'routineIs' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( '_routineLike' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'routineLike' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'routineIsTrivial' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'routineExtend' )} */ /* Dmytro : binded, source code is not available */
 
   ${rou( 'property', '_ofAct' )}
   ${rou( 'property', 'fields' )}
@@ -597,52 +693,25 @@ function sourcesJoinSplits( o )
   ${rou( 'strRemoveBegin' )}
   ${rou( 'strRemoveEnd' )}
   ${rou( 'regexpIs' )}
-  ${rou( 'longIs' )}
-  ${rou( '_primitiveIs' )}
-  ${rou( 'primitiveIs' )}
   ${rou( 'symbolIs' )}
   ${rou( 'strBegins' )}
   ${rou( 'object.isBasic' )}
-  ${rou( 'objectLike' )}
-  ${rou( 'arrayLike' )}
   ${rou( 'boolLike' )}
   ${rou( 'bool', 'like' )}
   ${rou( 'boolLikeTrue' )}
   ${rou( 'bool', 'likeTrue' )}
-  ${rou( 'arrayIs' )}
   ${rou( 'numberIsFinite' )}
   ${rou( 'numberIs' )}
   ${rou( 'intIs' )}
-  ${rou( 'setIs' )}
-  ${rou( 'setLike' )}
-  ${rou( 'hashMapIs' )}
-  ${rou( 'hashMapLike' )}
-  ${rou( 'argumentsArrayIs' )}
-  ${rou( '_routineIs' )}
-  ${rou( 'routineIs' )}
-  ${rou( '_routineLike' )}
-  ${rou( 'routineLike' )}
-  ${rou( 'routineIsTrivial' )}
   ${rou( 'lengthOf' )}
-  ${rou( 'countableIs' )}
-  ${rou( 'constructibleIs' )}
   ${rou( 'sure' )}
-  ${rou( 'mapIs' )}
   ${rou( 'mapBut_' )}
   ${rou( 'mapButOld' )} // xxx : remove
   ${rou( 'mapOwn' )}
   ${rou( 'props._keys' )}
   ${rou( 'props.keys' )}
   ${rou( 'props.onlyOwnKeys' )}
-  ${rou( 'map', 'sureHasAll' )}
-  ${rou( 'map', 'sureHasOnly' )}
-  ${rou( 'map', 'sureHasNoUndefine' )}
-  ${rou( 'map', 'assertHasOnly' )}
-  ${rou( 'map', 'assertHasNoUndefine' )}
   ${rou( 'routineOptions' )}
-  ${rou( 'mapExtend' )}
-  ${rou( 'mapSupplement' )}
-  ${rou( 'routineExtend' )}
   ${rou( 'arrayAs' )}
   ${rou( 'arrayAppend' )}
   ${rou( 'arrayAppendArray' )}
@@ -658,9 +727,6 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayRemoveElementOnceStrictly' )}
   ${rou( 'arrayRemovedElement' )}
   ${rou( 'arrayRemovedElementOnce' )}
-  ${rou( 'arrayIsEmpty' )}
-  ${rou( 'arrayLikeResizable' )}
-  ${rou( 'longLike' )}
   ${rou( 'longLeft' )}
   ${rou( 'longLeftIndex' )}
   ${rou( 'longLeftDefined' )}
@@ -678,14 +744,10 @@ function sourcesJoinSplits( o )
   ${rou( 'routine.isTrivial' )}
   ${rou( 'routine.extend' )}
   ${rou( 'errIs' )}
-  ${rou( 'unrollIs' )}
   ${rou( 'regexpLike' )}
   ${rou( 'intervalIs' )}
   ${rou( 'numberDefined' )}
   ${rou( 'numbersAreAll' )}
-  ${rou( 'bufferRawIs' )}
-  ${rou( 'bufferTypedIs' )}
-  ${rou( 'bufferNodeIs' )}
   ${rou( 'strConcat' )}
   ${rou( 'strHas' )}
   ${rou( 'strHasAny' )}
@@ -793,8 +855,17 @@ function sourcesJoinSplits( o )
 
     return `
 
-  ${rou( 'mapExtend' )}
-  ${rou( 'mapSupplement' )}
+  ${rou( 'array', 'likeResizable' )}
+  ${bind( 'arrayLikeResizable', 'array', 'likeResizable' )}
+  /* ${rou( 'arrayLikeResizable' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'map', 'extend' )}
+  ${rou( 'map', 'supplement' )}
+  ${bind( 'mapExtend', 'map', 'extend' )}
+  ${bind( 'mapSupplement', 'map', 'supplement' )}
+  /* ${rou( 'mapExtend' )} */ /* Dmytro : binded, source code is not available */
+  /* ${rou( 'mapSupplement' )} */ /* Dmytro : binded, source code is not available */
+
   ${rou( 'vectorize' )}
   ${rou( 'strsAreAll' )}
   ${rou( 'strReplaceAll' )}
@@ -807,7 +878,6 @@ function sourcesJoinSplits( o )
   ${rou( 'map', 'assertHasAll' )}
   ${rou( 'map', 'sureHasAll' )}
   ${rou( 'longSlice' )}
-  ${rou( 'arrayLikeResizable' )}
   ${rou( 'regexpEscape' )}
   ${rou( 'regexpLike' )}
   ${rou( 'regexpsLikeAll' )}
@@ -829,6 +899,13 @@ function sourcesJoinSplits( o )
   function rou()
   {
     return _.introspector.rou( ... arguments );
+  }
+
+  /* */
+
+  function bind( routine, namespace, original )
+  {
+    return `_.${ routine } = _.${ namespace }.${ original }.bind( _.${ namespace } )`
   }
 
   /* */
