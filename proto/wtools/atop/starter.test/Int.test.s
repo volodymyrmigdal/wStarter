@@ -175,7 +175,8 @@ function sourcesJoinFilesCheckRoutines( test )
       interpreter : 'njs',
       inPath : { filePath : a.abs( __dirname, '../../../../node_modules/wTools/**.(s|ss)' ) },
       outPath : a.abs( 'out/SingleFileTools.ss' ),
-      entryPath : a.abs( __dirname, '../../../../node_modules/wTools/proto/node_modules/Tools' ),
+      entryPath : a.abs( __dirname, '../../../../node_modules/wTools/**.(s|ss)' ),
+      // entryPath : a.abs( __dirname, '../../../../node_modules/wTools/proto/node_modules/Tools' ),
       withServer : 0,
     };
     starter.sourcesJoinFiles( o );
@@ -200,7 +201,8 @@ function sourcesJoinFilesCheckRoutines( test )
   function checkRoutines()
   {
     require( './out/SingleFileTools.ss' );
-    const _ = _global_.wTools;
+    const _ = _global_._starter_;
+    // const _ = _global_.wTools;
 
     console.log( `primitiveIs : ${ _.primitiveIs( 1 ) }` );
     console.log( `set.is : ${ _.set.is( new Set() ) }` );
@@ -532,7 +534,6 @@ async function workerWithInclude( test )
 
   a.reflect();
 
-  // debugger;
   // var files = a.fileProvider.dirRead( a.routinePath );
   // logger.log( `files : ${files}` );
 
@@ -701,7 +702,6 @@ async function curatedRunWindowOpenCloseAutomatic( test )
     test.identical( !!cdp, false );
 
     // await _.time.out( context.deltaTime3 ); /* xxx : remove later and find fix working for linux */
-    // debugger;
 
     session = await starter.start
     ({
@@ -716,7 +716,6 @@ async function curatedRunWindowOpenCloseAutomatic( test )
 
     var cdp = await _.starter.session.BrowserCdp._CurratedRunWindowIsOpened();
     test.identical( !!cdp, true );
-    debugger;
 
     await _.time.out( context.deltaTime2 );
 
@@ -1078,7 +1077,6 @@ async function curatedRunRandomPort( test )
     test.identical( !!cdp, false );
 
     // await _.time.out( context.deltaTime3 ); /* xxx : remove later and find fix working for linux */
-    // debugger;
 
     session = await starter.start
     ({

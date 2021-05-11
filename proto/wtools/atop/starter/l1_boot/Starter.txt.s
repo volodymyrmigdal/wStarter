@@ -46,10 +46,6 @@ function _Begin()
     o.dirPath = starter.path.dir( o.filePath );
     o.dirPath = starter.path.canonizeTolerant( o.dirPath );
 
-    // debugger;
-    if( o.filePath === '/wtools/atop/testing/l7/TesterTop.s' )
-    debugger;
-
     sourceFile.filePath = o.filePath;
     sourceFile.dirPath = o.dirPath;
     sourceFile.nakedCall = o.nakedCall;
@@ -140,11 +136,6 @@ function _Begin()
       if( childSource.state === 'errored' || childSource.state === 'opening' || childSource.state === 'opened' )
       return childSource.exports;
 
-      if( childSource.filePath === '/wtools/atop/testing/l7/TesterTop.s' )
-      debugger;
-      if( parentSource && parentSource.filePath === '/wtools/atop/testing/l7/TesterTop.s' )
-      debugger;
-
       childSource.parent = parentSource || null;
 
       childSource.state = 'opening';
@@ -157,7 +148,6 @@ function _Begin()
     }
     catch( err )
     {
-      debugger;
       err = _.err( err, `\nError including source file ${ childSource ? childSource.filePath : sourcePath }` );
       if( childSource )
       {
@@ -211,7 +201,6 @@ function _Begin()
     }
     catch( err )
     {
-      debugger;
       err = _.err( err, `\nError including source file ${ filePath }` );
       throw err;
     }
@@ -276,7 +265,6 @@ function _Begin()
 
     if( !basePath && !sourceFile )
     {
-      debugger;
       throw _.err( 'Base path is not specified, neither script file' );
     }
 
@@ -303,7 +291,6 @@ function _Begin()
 
     if( this._inited )
     {
-      debugger;
       return;
     }
 
