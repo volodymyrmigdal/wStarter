@@ -3682,14 +3682,14 @@ function startWorkerUsingTheSameInclude( test )
 Index.js : scriptPath : /Script.js
 Script.js : Global : Window
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp =
 `
 Worker.js : scriptPath : /Script.js
 Script.js : Global : DedicatedWorkerGlobalScope
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp = `. request /.starter`;
     test.identical( _.strCount( op.output, exp ), 2 );
@@ -3731,14 +3731,14 @@ function startWorkerUsingTheSameIncludeSubDir( test )
 Index.js : scriptPath : /proto/Script.js
 Script.js : Global : Window
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp =
 `
 Worker.js : scriptPath : /proto/Script.js
 Script.js : Global : DedicatedWorkerGlobalScope
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp = `. request /.starter`;
     test.identical( _.strCount( op.output, exp ), 2 );
@@ -3779,14 +3779,14 @@ function startWorkerUsingDifferentInclude( test )
 `
 Index.js : begin
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp =
 `
 Worker.js : scriptPath : /Script.js
 Script.js : Global : DedicatedWorkerGlobalScope
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp = `. request /.starter`;
     test.identical( _.strCount( op.output, exp ), 2 );
@@ -3827,14 +3827,14 @@ function startWorkerUsingDifferentIncludeSubDir( test )
 `
 Index.js : begin
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp =
 `
 Worker.js : scriptPath : /proto/Script.js
 Script.js : Global : DedicatedWorkerGlobalScope
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp = `. request /.starter`;
     test.identical( _.strCount( op.output, exp ), 2 );
@@ -3880,7 +3880,7 @@ require : function
 include : function
 _starter_.interpreter : browser
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp =
 `
@@ -3895,7 +3895,7 @@ require : function
 include : function
 _starter_.interpreter : browser
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     test.identical( _.strCount( op.output, 'error' ), 0 );
     test.identical( _.strCount( op.output, 'Error' ), 0 );
@@ -3913,7 +3913,7 @@ require : function
 include : function
 _starter_.interpreter : browser
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp = `. request /.starter`;
     test.identical( _.strCount( op.output, exp ), 2 );
@@ -4124,7 +4124,7 @@ Worker:begin
 W1:begin
 err:begin
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     test.identical( _.strCount( op.output, 'Some error' ), 1 );
     test.identical( _.strCount( op.output, 'Error including source file /W1.js' ), 1 );
@@ -4137,7 +4137,7 @@ Worker:end
  . event::timeOut
  . event::curatedRunTerminateEnd
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     return op;
   })
@@ -4185,7 +4185,7 @@ async function loggingErrorInWorkerNoFile( test )
     //  . event::timeOut
     //  . event::curatedRunTerminateEnd
     // `
-    //     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    //     test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
     // xxx : investigate difference on different OS's
 
     //     var exp =
@@ -4194,7 +4194,7 @@ async function loggingErrorInWorkerNoFile( test )
     //  . event::timeOut
     //  . event::curatedRunTerminateEnd
     // `
-    //     test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    //     test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     var exp =
 `
@@ -4202,7 +4202,7 @@ async function loggingErrorInWorkerNoFile( test )
  . event::timeOut
  . event::curatedRunTerminateEnd
 `
-    test.identical( _.strCount( _.strLinesStrip( op.output ), _.strLinesStrip( exp ) ), 1 );
+    test.identical( _.strCount( _.str.lines.strip( op.output ), _.str.lines.strip( exp ) ), 1 );
 
     return op;
   })
