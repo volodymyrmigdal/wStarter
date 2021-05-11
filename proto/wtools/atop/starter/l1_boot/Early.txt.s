@@ -60,7 +60,7 @@ function _Begin()
   let object = _starter_.object = _starter_.object || Object.create( null );
   let map = _starter_.map = _starter_.map || Object.create( null );
   let hashMap = _starter_.hashMap = _starter_.hashMap || Object.create( null );
-  let _property = _starter_.property = _starter_.property || Object.create( null );
+  let props = _starter_.props = _starter_.props || Object.create( null );
   let set = _starter_.set = _starter_.set || Object.create( null );
 
   let routine = _starter_.routine = _starter_.routine || Object.create( null );

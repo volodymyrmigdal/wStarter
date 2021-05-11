@@ -93,6 +93,8 @@ function sourceWrapSplits( o )
   relativeDirPath = _.path.dot( relativeDirPath );
 
   let fileName = _.strVarNameFor( _.path.fullName( o.filePath ) );
+  if( /^\d/.test( fileName ) )
+  fileName = `_${ fileName }`;
   let fileNameNaked = fileName + '_naked';
 
   let prefix1 = `/* */  /* begin of file ${fileName} */ ( function ${fileName}() { `;
@@ -527,7 +529,9 @@ function sourcesJoinSplits( o )
   ${rou( 'entity', 'strType' )}
   ${rou( 'entity', 'strTypeSecondary' )}
   ${bind( 'strType', 'entity', 'strType' )}
-  /* ${rou( 'entity', 'makeUndefined' )} */
+  ${rou( 'entity', 'makeUndefined' )}
+  ${field( 'entity', 'TranslatedTypeMap' )}
+  ${field( 'entity', 'StandardTypeSet' )}
 
   ${rou( 'class', 'methodIteratorOf' )}
 
@@ -668,6 +672,13 @@ function sourcesJoinSplits( o )
   ${rou( 'routine', 'optionsWithoutUndefined' )}
   ${rou( 'routine', 'isTrivial' )}
   ${rou( 'routine', 'extend' )}
+  ${rou( 'routine', '__mapButKeys' )}
+  ${rou( 'routine', '__mapUndefinedKeys' )}
+  ${rou( 'routine', '__mapSupplementWithoutUndefined' )}
+  ${rou( 'routine', '__mapSupplementWithUndefined' )}
+  ${rou( 'routine', '__keysQuote' )}
+  ${rou( 'routine', '__strType' )}
+  ${rou( 'routine', '__primitiveLike' )}
   ${bind( '_routineIs', 'routine', '_is' )}
   ${bind( 'routineIs', 'routine', 'is' )}
   ${bind( '_routineLike', 'routine', '_like' )}
@@ -683,9 +694,18 @@ function sourcesJoinSplits( o )
 
   ${rou( 'regexp', 'is' )}
 
-  ${rou( 'property', '_ofAct' )}
-  ${rou( 'property', 'fields' )}
-  ${rou( 'property', 'own' )}
+  ${rou( 'props', 'is' )}
+  ${rou( 'props', 'like' )}
+  ${rou( 'props', '_ofAct' )}
+  ${rou( 'props', 'fields' )}
+  ${rou( 'props', '_keys' )}
+  ${rou( 'props', 'keys' )}
+  ${rou( 'props', 'own' )}
+  ${rou( 'props', 'onlyOwnKeys' )}
+  ${rou( 'props', '_extendWithProps' )}
+  ${rou( 'props', 'extend' )}
+  ${rou( 'props', '_supplementWithProps' )}
+  ${rou( 'props', 'supplement' )}
 
   ${rou( 'strIs' )}
   ${rou( 'strDefined' )}
@@ -713,9 +733,6 @@ function sourcesJoinSplits( o )
   ${rou( 'mapBut_' )}
   ${rou( 'mapButOld' )} // xxx : remove
   ${rou( 'mapOwn' )}
-  ${rou( 'props._keys' )}
-  ${rou( 'props.keys' )}
-  ${rou( 'props.onlyOwnKeys' )}
   ${rou( 'routineOptions' )}
   ${rou( 'arrayAs' )}
   ${rou( 'arrayAppend' )}
@@ -773,8 +790,6 @@ function sourcesJoinSplits( o )
   ${rou( 'strLinesIndentation' )}
   ${rou( 'numberFromStrMaybe' )}
 
-  ${field( 'entity', 'TranslatedTypeMap' )}
-  ${field( 'entity', 'StandardTypeSet' )}
   ${rou( 'entity', '_exportStringIsVisibleElement' )}
   ${rou( 'entity', '_exportStringFromStr' )}
   ${rou( 'entity', '_exportStringFromSymbol' )}
@@ -814,7 +829,6 @@ function sourcesJoinSplits( o )
   ${fields( 'event' )}
 
   ${rou( 'each' )}
-
 
   /*
   Uri namespace( parseConsecutive ) is required to make _.include working in a browser
