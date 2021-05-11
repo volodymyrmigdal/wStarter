@@ -511,10 +511,16 @@ function sourcesJoinSplits( o )
   ${rou( 'error', 'originalStack' )}
   /* ${rou( 'error', 'set' )} // Dmytro : routine does not exist exposedSet and concealedSet are used instead */
   ${rou( 'error', 'is' )}
+  ${rou( 'error', '_make' )}
+  ${rou( 'error', '_sectionAdd' )}
+  ${rou( 'error', '_messageForm' )}
+  ${rou( 'error', '_sectionsJoin' )}
+  ${rou( 'error', '_inStr' )}
+  ${rou( 'error', 'fromStr' )}
+  ${rou( 'error', 'logged' )}
+  ${rou( 'error', 'attend' )}
   ${rou( 'error', 'exposedSet' )}
   ${rou( 'error', 'concealedSet' )}
-  ${rou( 'error', 'fromStr' )}
-  ${rou( 'error', '_inStr' )}
   ${rou( 'error', 'process' )}
   ${fields( 'error' )}
 
@@ -693,6 +699,7 @@ function sourcesJoinSplits( o )
   /* ${rou( 'routineExtend' )} */ /* Dmytro : binded, source code is not available */
 
   ${rou( 'regexp', 'is' )}
+  ${rou( 'regexp', 'like' )}
 
   ${rou( 'props', 'is' )}
   ${rou( 'props', 'like' )}
@@ -777,6 +784,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strLinesNumber' )}
   ${rou( 'strLinesSplit' )}
   ${rou( 'strLinesJoin' )}
+  ${rou( 'strSplit' )}
   ${rou( 'strSplitFast' )}
   ${rou( 'strStrip' )}
   ${rou( 'strLinesSelect' )}

@@ -5,7 +5,6 @@
 
 const _ = _global_.wTools;
 
-// debugger;
 // let wasPrepareStackTrace = Error.prepareStackTrace;
 // Error.prepareStackTrace = function( err, stack )
 // {
@@ -72,7 +71,6 @@ function _Begin()
   {
     if( !good )
     {
-      debugger;
       throw new Error( 'Something wrong!' );
       return false;
     }
@@ -130,7 +128,6 @@ function _Begin()
     }
     catch( err )
     {
-      debugger;
       return '{- UNKNOWN DATA TYPE -}';
     }
   }
@@ -149,10 +146,9 @@ function _Begin()
   //
   // //
   //
-  // debugger;
   // ProcedureInit = function init( o )
   // {
-  //   let procedure = this; debugger;
+  //   let procedure = this;
   //
   //   // _.workpiece.initFields( procedure );
   //   // Object.preventExtensions( procedure );
