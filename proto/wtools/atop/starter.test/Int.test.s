@@ -5,6 +5,13 @@
 
 let Jsdom;
 
+/* xxx :
+
+- implement option to print diagnostic information of run program: time ...
+- add entry file with option to print diagnostic information on
+
+*/
+
 if( typeof module !== 'undefined' )
 {
 
