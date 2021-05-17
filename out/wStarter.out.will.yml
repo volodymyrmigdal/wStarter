@@ -2,12 +2,9 @@ format: outwillfile-2.0
 root:
   - wStarter.out
 consistency:
-  ../.ex.will.yml: &ref_0
-    hash: bdd67fb796af94560b6f886a8e46c27a
-    size: 2266
-  ../.im.will.yml: &ref_1
-    hash: b7838249380b9cabc54a29987db2b0e8
-    size: 6125
+  ../will.yml: &ref_0
+    hash: 77f9c54fbe7b4c19b26c9ff1d71a6c63
+    size: 8076
 module:
   wStarter.out:
     about:
@@ -19,27 +16,27 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters: &ref_2
+      license: MIT
+      npm.name: wstarter
+      npm.bin: &ref_1
+        starter: proto/wtools/atop/starter/entry/ExecUnrestricted
+        single-process-starter: proto/wtools/atop/starter/entry/Exec
+        debug-starter: proto/wtools/atop/starter/entry/ExecDebug
+      author: Kostiantyn Wandalen <wanalen@01.school>
+      keywords: &ref_2
+        - wTools
+      contributors: &ref_3
+        - Kostiantyn Wandalen <wanalen@01.school>
+      interpreters: &ref_4
         - njs >= 10.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords: &ref_3
-        - wTools
-      license: MIT
-      author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors: &ref_4
-        - Kostiantyn Wandalen <wanalen@01.school>
-      npm.name: wstarter
       npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
         single-process-starter: node proto/wtools/atop/starter/entry/Exec
         debug-starter: node proto/wtools/atop/starter/entry/ExecDebug
         starter: node proto/wtools/atop/starter/entry/ExecUnrestricted
-      npm.bin: &ref_6
-        starter: proto/wtools/atop/starter/entry/ExecUnrestricted
-        single-process-starter: proto/wtools/atop/starter/entry/Exec
-        debug-starter: proto/wtools/atop/starter/entry/ExecDebug
     path:
       module.willfiles:
         criterion:
@@ -52,15 +49,11 @@ module:
       module.original.willfiles:
         criterion:
           predefined: 1
-        path:
-          - ../.ex.will.yml
-          - ../.im.will.yml
+        path: ../will.yml
       module.peer.willfiles:
         criterion:
           predefined: 1
-        path:
-          - ../.ex.will.yml
-          - ../.im.will.yml
+        path: ../will.yml
       module.peer.in:
         criterion:
           predefined: 1
@@ -506,19 +499,19 @@ module:
         path: 'npm:///wFiles'
         autoExporting: 0
         enabled: 0
-      wVerbal:
+      wverbal:
         path: 'npm:///wverbal'
         autoExporting: 0
         enabled: 0
-      wTemplateTreeEnvironment:
+      wtemplatetreeenvironment:
         path: 'npm:///wtemplatetreeenvironment'
         autoExporting: 0
         enabled: 0
-      wServletTools:
+      wservlettools:
         path: 'npm:///wservlettools'
         autoExporting: 0
         enabled: 0
-      wLoggerSocket:
+      wloggersocket:
         path: 'npm:///wloggersocket'
         autoExporting: 0
         enabled: 0
@@ -532,10 +525,6 @@ module:
         enabled: 0
       express:
         path: 'npm:///express#4.17.1'
-        autoExporting: 0
-        enabled: 0
-      body-parser:
-        path: 'npm:///express#1.19.0'
         autoExporting: 0
         enabled: 0
       jsdom:
@@ -568,13 +557,13 @@ module:
         enabled: 0
         criterion:
           development: 1
-      wPuppet:
+      wpuppet:
         path: 'npm:///wpuppet'
         autoExporting: 0
         enabled: 0
         criterion:
           development: 1
-      wModuleForTesting1a:
+      wmodulefortesting1a:
         path: 'npm:///wmodulefortesting1a'
         autoExporting: 0
         enabled: 0
@@ -1181,8 +1170,7 @@ module:
           content: proto
           export: 1
     consistency:
-      ../.ex.will.yml: *ref_0
-      ../.im.will.yml: *ref_1
+      ../will.yml: *ref_0
   ../:
     about:
       name: wStarter
@@ -1193,27 +1181,23 @@ module:
         and make code aware wherein the file system is it executed.
       enabled: 1
       version: 0.5.0
-      interpreters: *ref_2
-      keywords: *ref_3
       license: MIT
-      author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors: *ref_4
       npm.name: wstarter
+      npm.bin: *ref_1
+      author: Kostiantyn Wandalen <wanalen@01.school>
+      keywords: *ref_2
+      contributors: *ref_3
+      interpreters: *ref_4
       npm.scripts: *ref_5
-      npm.bin: *ref_6
     path:
       module.willfiles:
         criterion:
           predefined: 1
-        path:
-          - .ex.will.yml
-          - .im.will.yml
+        path: will.yml
       module.original.willfiles:
         criterion:
           predefined: 1
-        path:
-          - .ex.will.yml
-          - .im.will.yml
+        path: will.yml
       module.peer.willfiles:
         criterion:
           predefined: 1
@@ -1327,19 +1311,19 @@ module:
         path: 'npm:///wFiles'
         autoExporting: 0
         enabled: 0
-      wVerbal:
+      wverbal:
         path: 'npm:///wverbal'
         autoExporting: 0
         enabled: 0
-      wTemplateTreeEnvironment:
+      wtemplatetreeenvironment:
         path: 'npm:///wtemplatetreeenvironment'
         autoExporting: 0
         enabled: 0
-      wServletTools:
+      wservlettools:
         path: 'npm:///wservlettools'
         autoExporting: 0
         enabled: 0
-      wLoggerSocket:
+      wloggersocket:
         path: 'npm:///wloggersocket'
         autoExporting: 0
         enabled: 0
@@ -1353,10 +1337,6 @@ module:
         enabled: 0
       express:
         path: 'npm:///express#4.17.1'
-        autoExporting: 0
-        enabled: 0
-      body-parser:
-        path: 'npm:///express#1.19.0'
         autoExporting: 0
         enabled: 0
       jsdom:
@@ -1389,13 +1369,13 @@ module:
         enabled: 0
         criterion:
           development: 1
-      wPuppet:
+      wpuppet:
         path: 'npm:///wpuppet'
         autoExporting: 0
         enabled: 0
         criterion:
           development: 1
-      wModuleForTesting1a:
+      wmodulefortesting1a:
         path: 'npm:///wmodulefortesting1a'
         autoExporting: 0
         enabled: 0
@@ -1938,9 +1918,6 @@ module:
           - 'build::release'
           - 'build::npm'
     consistency:
-      ../.ex.will.yml:
-        hash: bdd67fb796af94560b6f886a8e46c27a
-        size: 2266
-      ../.im.will.yml:
-        hash: b7838249380b9cabc54a29987db2b0e8
-        size: 6125
+      ../will.yml:
+        hash: 77f9c54fbe7b4c19b26c9ff1d71a6c63
+        size: 8076
