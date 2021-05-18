@@ -673,7 +673,7 @@ function remoteResolve( o )
     if( _.arrayIs( resolvedFilePath ) )
     return resolvedFilePath.map( ( p ) => end( p ) );
 
-    // resolvedFilePath = _.arrayAs( resolvedFilePath );
+    // resolvedFilePath = _.array.as( resolvedFilePath );
     // resolvedFilePath.forEach( ( p ) => servlet.surePathAllowed( p ) );
 
     servlet.surePathAllowed( resolvedFilePath );

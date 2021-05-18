@@ -263,7 +263,7 @@ function pathsForm()
   let logger = system.logger;
 
   if( session.withModule !== null )
-  session.withModule = _.arrayAs( session.withModule );
+  session.withModule = _.array.as( session.withModule );
 
   allowedPathDeduce1();
 

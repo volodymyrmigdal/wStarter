@@ -249,7 +249,7 @@ function sourcesJoinSplits( o )
   {
     _.assert( _.strIs( o.basePath ) );
     _.assert( _.strIs( o.entryPath ) || _.arrayIs( o.entryPath ) )
-    o.entryPath = _.arrayAs( o.entryPath );
+    o.entryPath = _.array.as( o.entryPath );
     o.entryPath = _.path.s.join( o.basePath, o.entryPath );
   }
 
