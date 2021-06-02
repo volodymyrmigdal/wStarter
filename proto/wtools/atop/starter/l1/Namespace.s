@@ -4,7 +4,7 @@
 'use strict';
 
 const _ = _global_.wTools;
-const Self = _.starter = _.starter || Object.create( null );
+_.starter = _.starter || Object.create( null );
 _.starter.session = _.starter.session || Object.create( null );
 
 let vectorizeDefaults = { vectorizingContainerAdapter : 1, unwrapingContainerAdapter : 0 };
@@ -249,7 +249,7 @@ let Extension =
 
 }
 
-_.props.extend( Self, Extension );
+/* _.props.extend */Object.assign( _.starter, Extension );
 
 //
 

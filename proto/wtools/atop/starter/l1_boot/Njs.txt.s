@@ -194,11 +194,7 @@ function _Begin()
 function _End()
 {
 
-  let Fields =
-  {
-  }
-
-  let Routines =
+  let Extension =
   {
 
     _natInclude,
@@ -218,8 +214,7 @@ function _End()
 
   }
 
-  Object.assign( _starter_, Routines );
-  Object.assign( _starter_, Fields );
+  Object.assign( _starter_, Extension );
 
 }
 

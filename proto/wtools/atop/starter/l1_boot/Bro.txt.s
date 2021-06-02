@@ -87,7 +87,7 @@ function _Begin()
       handleError( err );
     }
 
-    _.assert( o.sync );
+    _.assert( !!o.sync );
     if( o.sync )
     {
       if( error )

@@ -9,11 +9,11 @@ function routine()
   console.log( `Script.js : Global : ${global.constructor.name}` );
 }
 
-var Routines =
+var Extension =
 {
   routine
 }
 
 global.tools = Object.create( null );
 
-Object.assign( global.tools, Routines );
+Object.assign( global.tools, Extension );
