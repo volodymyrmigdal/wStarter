@@ -831,7 +831,6 @@ function sourcesJoinSplits( o )
   ${rou( 'event', 'on' )}
   ${rou( 'event', 'once' )}
   ${rou( 'event', 'off' )}
-  ${rou( 'event', 'off_functor' )}
   ${rou( 'event', 'eventHasHandler' )}
   ${rou( 'event', 'eventGive' )}
   ${fields( 'event' )}

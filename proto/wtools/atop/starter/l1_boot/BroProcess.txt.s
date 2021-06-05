@@ -83,8 +83,8 @@ function _Begin()
 
   function on( o )
   {
-    o = _.event.on.head( _.event.on, arguments );
-    return _.event.on( _process._ehandler, o );
+    o = _.event.onHead( _.event.on, arguments );
+    return _.event.on( _process._edispatcher, o );
   }
 
   on.defaults =
@@ -97,7 +97,7 @@ function _Begin()
   function once( o )
   {
     o = _.event.once.head( _.event.once, arguments );
-    return _.event.once( _process._ehandler, o );
+    return _.event.once( _process._edispatcher, o );
   }
 
   once.defaults =
@@ -109,8 +109,8 @@ function _Begin()
 
   function off( o )
   {
-    o = _.event.off.head( _.event.off, arguments );
-    return _.event.off( _process._ehandler, o );
+    o = _.event.offHead( _.event.off, arguments );
+    return _.event.off( _process._edispatcher, o );
   }
 
   off.defaults =
@@ -122,8 +122,8 @@ function _Begin()
 
   function eventHasHandler( o )
   {
-    o = _.event.eventHasHandler.head( _.event.eventHasHandler, arguments );
-    return _.event.eventHasHandler( _process._ehandler, o );
+    o = _.event.eventHasHandlerHead( _.event.eventHasHandler, arguments );
+    return _.event.eventHasHandler( _process._edispatcher, o );
   }
 
   eventHasHandler.defaults =
@@ -134,7 +134,9 @@ function _Begin()
 
   function eventGive()
   {
-    return _.event.eventGive( _process._ehandler, ... arguments );
+    let o = _.event.eventGiveHead( this._edispatcher, eventGive, arguments );
+    return _.event.eventGive( this._edispatcher, o );
+    // return _.event.eventGive( _process._edispatcher, ... arguments );
   }
 
   eventGive.defaults =
@@ -180,14 +182,14 @@ function _End()
     'beforeExit' : [],
   }
 
-  let _ehandler =
+  let _edispatcher =
   {
     events : Events,
   }
 
   let Extension =
   {
-    _ehandler,
+    _edispatcher,
 
     exit,
 
