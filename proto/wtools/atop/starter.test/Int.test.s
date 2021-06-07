@@ -98,8 +98,9 @@ function assetFor( test, name )
     };
     o.locals = o.locals || locals;
     _.props.supplement( o.locals, locals );
-    let programPath = a.path.nativize( oprogram.body.call( a, o ) ); /* zzz : modify a.program()? */
-    return programPath;
+    let r = oprogram.body.call( a, o );
+    r.programPath = a.path.nativize( r.programPath );
+    return r;
   }
 }
 
