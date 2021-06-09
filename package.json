@@ -1,11 +1,11 @@
 {
   "name" : "wstarter",
-  "version" : "0.4.260",
+  "version" : "0.4.261",
   "description" : "Collection of tools to generate background service to start and pack application. Use the module to keep files structure of the application and make code aware wherein the file system is it executed.",
   "author" : "Kostiantyn Wandalen <wanalen@01.school>",
   "license" : "MIT",
   "main" : "proto/node_modules/wstarter",
-  "files" : [ "proto/wtools/atop/starter", "proto/node_modules" ],
+  "files" : [ "proto/wtools/atop/starter", "proto/node_modules", "proto/node_modules/Tools", "proto/node_modules/wstarter" ],
   "scripts" :
   {
     "test" : "wtest .run 'proto/**' rapidity:-3 verbosity:6 silencing:0",
