@@ -345,6 +345,9 @@ function _Begin()
     // resolvedFilePath = this._broPathResolveRemote( resolvedFilePath );
     resolvedFilePath = this._broPathResolveRemoteWithModule( parentSource, resolvedFilePath );
 
+    if( _.arrayIs( resolvedFilePath ) )
+    return resolvedFilePath;
+
     let result = this._broFileRead
     ({
       filePath : resolvedFilePath + '?stat=1',
@@ -363,7 +366,7 @@ function _Begin()
   function _includeAct( parentSource, basePath, filePath )
   {
     let starter = this;
-    // let joinedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
+    let joinedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
     // let resolvedFilePath = starter._broPathResolveRemoteWithModule( parentSource, joinedFilePath );
 
     let resolvedFilePath = starter.SourceFile._resolveFilename( filePath, parentSource, false )
