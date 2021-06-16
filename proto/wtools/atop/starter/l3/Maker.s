@@ -532,8 +532,13 @@ function sourcesJoinSplits( o )
   ${rou( 'introspector', 'locationToStack' )}
   ${rou( 'introspector', 'locationNormalize' )}
 
+  ${rou( 'long', '_functor_functor' )}
+
   ${rou( 'entity', 'strType' )}
   ${rou( 'entity', 'strTypeSecondary' )}
+  ${rou( 'entity', 'namespaceOf' )}
+  ${rou( 'entity', 'lengthOf' )}
+  ${bind( 'lengthOf', 'entity', 'lengthOf' )}
   ${bind( 'strType', 'entity', 'strType' )}
   ${rou( 'entity', 'makeUndefined' )}
   ${field( 'entity', 'TranslatedTypeMap' )}
@@ -562,6 +567,7 @@ function sourcesJoinSplits( o )
   ${rou( 'long', 'like' )}
   ${bind( 'longIs', 'long', 'is' )}
   ${bind( 'longLike', 'long', 'like' )}
+
   /* ${rou( 'longIs' )} */ /* Dmytro : binded, source code is not available */
   /* ${rou( 'longLike' )} */ /* Dmytro : binded, source code is not available */
 
@@ -599,6 +605,8 @@ function sourcesJoinSplits( o )
   ${bind( 'bufferNodeIs', 'bufferNode', 'is' )}
   /* ${rou( 'bufferNodeIs' )} */ /* Dmytro : binded, source code is not available */
 
+  ${rou( 'buffer', 'like' )}
+
   ${rou( 'vector', 'is' )}
   ${rou( 'vector', 'like' )}
   ${bind( 'vectorIs', 'vector', 'is' )}
@@ -624,8 +632,15 @@ function sourcesJoinSplits( o )
   ${rou( 'aux', 'isPolluted' )}
   ${rou( 'aux', 'isPrototyped' )}
   ${rou( 'aux', 'like' )}
+  ${rou( 'aux', '_keys' )}
+  ${rou( 'aux', 'keys' )}
+  ${rou( 'aux', 'namespaceOf' )}
+  ${rou( 'aux', '_lengthOf' )}
+  ${rou( 'aux', 'lengthOf' )}
   ${rou( 'constructible', 'is' )}
   ${rou( 'constructibleIs' )}
+
+  ${rou( 'container', '_functor_functor' )}
 
   ${rou( 'object', 'is' )}
   ${rou( 'object', 'like' )}
@@ -735,12 +750,10 @@ function sourcesJoinSplits( o )
   ${rou( 'numberIsFinite' )}
   ${rou( 'numberIs' )}
   ${rou( 'intIs' )}
-  ${rou( 'lengthOf' )}
   ${rou( 'sure' )}
   ${rou( 'mapBut_' )}
   ${rou( 'mapButOld' )} // xxx : remove
   ${rou( 'mapOwn' )}
-  ${rou( 'routineOptions' )}
   ${rou( 'arrayAs' )}
   ${rou( 'arrayAppend' )}
   ${rou( 'arrayAppendArray' )}
@@ -769,6 +782,7 @@ function sourcesJoinSplits( o )
   ${rou( 'routine._is' )}
   ${rou( 'routine.is' )}
   ${rou( 'routine.options' )}
+  ${rou( 'routine.options_' )}
   ${rou( 'routine.assertOptions' )}
   ${rou( 'routine.isTrivial' )}
   ${rou( 'routine.extend' )}
@@ -796,19 +810,28 @@ function sourcesJoinSplits( o )
   ${rou( 'strIsolateLeftOrAll' )}
   ${rou( 'strIsolateRightOrAll' )}
   ${rou( 'strLinesIndentation' )}
+  ${rou( 'strEscape' )}
   ${rou( 'numberFromStrMaybe' )}
 
+  ${rou( 'str', 'lines', 'split' )}
+
+
+
   ${rou( 'entity', '_exportStringIsVisibleElement' )}
+  ${rou( 'entity', '_exportStringIsSimpleElement' )}
   ${rou( 'entity', '_exportStringFromStr' )}
   ${rou( 'entity', '_exportStringFromSymbol' )}
   ${rou( 'entity', '_exportStringFromBufferRaw' )}
   ${rou( 'entity', '_exportStringFromBufferTyped' )}
   ${rou( 'entity', '_exportStringFromBufferNode' )}
   ${rou( 'entity', '_exportStringFromArray' )}
+  ${rou( 'entity', '_exportStringFromArrayFiltered' )}
   ${rou( 'entity', '_exportStringFromObject' )}
   ${rou( 'entity', '_exportStringFromObjectKeysFiltered' )}
   ${rou( 'entity', '_exportStringFromHashMap' )}
   ${rou( 'entity', '_exportStringFromSet' )}
+  ${rou( 'entity', '_exportStringShortAct' )}
+  ${rou( 'entity', '_exportStringFromContainer' )}
   ${rou( 'entity', '_exportString' )}
   ${rou( 'entity', 'exportString' )}
 
@@ -828,11 +851,14 @@ function sourcesJoinSplits( o )
   ${rou( 'event', 'chainIs' )}
   ${rou( 'event', 'Name' )}
   ${rou( 'event', 'Chain' )}
+  ${rou( 'event', '_on' )}
   ${rou( 'event', 'on' )}
+  ${rou( 'event', 'onHead' )}
   ${rou( 'event', 'once' )}
   ${rou( 'event', 'off' )}
   ${rou( 'event', 'eventHasHandler' )}
   ${rou( 'event', 'eventGive' )}
+  ${rou( 'event', 'eventGiveHead' )}
   ${fields( 'event' )}
 
   ${rou( 'each' )}

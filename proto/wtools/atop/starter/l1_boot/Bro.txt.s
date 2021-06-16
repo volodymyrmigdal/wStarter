@@ -41,7 +41,8 @@ function _Begin()
 
     /* advanced */
 
-    o.advanced = _.routine.options_( _broFileReadAct, o.advanced, _broFileReadAct.advanced );
+    // o.advanced = _.routine.options_( _broFileReadAct, o.advanced, _broFileReadAct.advanced );
+    o.advanced = _.props.supplement( o.advanced || Object.create( null ), _broFileReadAct.advanced );
     o.advanced.method = o.advanced.method.toUpperCase();
 
     /* http request */
@@ -288,6 +289,39 @@ function _Begin()
 
   //
 
+  function _broPathResolveRemoteWithModule( parentSource, filePath )
+  {
+    let starter = this;
+
+    if( _.path.isGlob( filePath ) || _.path.isRelative( filePath ) )
+    {
+      let result = starter._broFileRead
+      ({
+        filePath : '/.resolve/' + filePath + `?dirPath=${parentSource.dirPath}`,
+        encoding : 'json',
+      });
+      try
+      {
+        result = JSON.parse( result );
+
+        if( result.err )
+        throw result.err;
+
+        return result;
+      }
+      catch( err )
+      {
+        // debugger;
+        // console.error( filePath );
+        throw _.err( err );
+      }
+    }
+
+    return filePath;
+  }
+
+  //
+
   function _sourceResolveAct( parentSource, basePath, filePath )
   {
 
@@ -329,7 +363,7 @@ function _Begin()
   {
     let starter = this;
     let joinedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
-    let resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
+    let resolvedFilePath = starter._broPathResolveRemoteWithModule( parentSource, joinedFilePath );
 
     if( _.arrayIs( resolvedFilePath ) )
     {
@@ -462,6 +496,11 @@ function _Begin()
 
     this.exports = result;
 
+    result._resolveFilename = function _resolveFilename( request, parent, isMain )
+    {
+      return _starter_._broPathResolveRemoteWithModule( parent, request );
+    }
+
     function cacheGet()
     {
       return _starter_.sourcesMap;
@@ -522,6 +561,7 @@ function _End()
 
     _broSourceFile,
     _broPathResolveRemote,
+    _broPathResolveRemoteWithModule,
     _sourceResolveAct,
 
     _includeAct,
