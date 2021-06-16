@@ -20,6 +20,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
+  _.include( 'willbe' );
 
   require( '../starter/entry/Include.s' );
 
@@ -38,7 +39,7 @@ function onSuiteBegin()
 
   context.suiteTempPath = _.path.tempOpen( _.path.join( __dirname, '../..' ), 'Starter' );
   context.assetsOriginalPath = _.path.join( __dirname, '_asset' );
-  context.willbeExecPath = _.module.resolve( 'willbe' );
+  context.willbeExecPath = _.Will.WillPathGet();
   context.appJsPath = _.module.resolve( 'wStarter' );
 }
 

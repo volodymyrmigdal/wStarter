@@ -524,6 +524,8 @@ function sourcesJoinSplits( o )
   ${rou( 'error', 'process' )}
   ${fields( 'error' )}
 
+  ${rou( 'date', 'is' )}
+
   ${rou( 'introspector', 'code' )}
   ${rou( 'introspector', 'stack' )}
   ${rou( 'introspector', 'stackCondense' )}
@@ -637,6 +639,9 @@ function sourcesJoinSplits( o )
   ${rou( 'aux', 'namespaceOf' )}
   ${rou( 'aux', '_lengthOf' )}
   ${rou( 'aux', 'lengthOf' )}
+  ${rou( 'aux', 'supplement' )}
+  ${rou( 'aux', '_exportStringDiagnosticShallow' )}
+  ${rou( 'aux', 'exportStringDiagnosticShallow' )}
   ${rou( 'constructible', 'is' )}
   ${rou( 'constructibleIs' )}
 
@@ -681,6 +686,7 @@ function sourcesJoinSplits( o )
   /* ${rou( 'hashMapLike' )} */ /* Dmytro : binded, source code is not available */
 
   ${rou( 'countable', 'is' )}
+  ${rou( 'countable', 'like' )}
   ${bind( 'countableIs', 'countable', 'is' )}
   /* ${rou( 'countableIs' )} */
 
@@ -811,6 +817,7 @@ function sourcesJoinSplits( o )
   ${rou( 'strIsolateRightOrAll' )}
   ${rou( 'strLinesIndentation' )}
   ${rou( 'strEscape' )}
+  ${rou( 'strShort_' )}
   ${rou( 'numberFromStrMaybe' )}
 
   ${rou( 'str', 'lines', 'split' )}
@@ -834,6 +841,11 @@ function sourcesJoinSplits( o )
   ${rou( 'entity', '_exportStringFromContainer' )}
   ${rou( 'entity', '_exportString' )}
   ${rou( 'entity', 'exportString' )}
+  ${rou( 'entity', 'namespaceForExporting' )}
+  ${rou( 'entity', '_exportStringShallow' )}
+  ${rou( 'entity', '_exportStringDiagnosticShallow' )}
+  ${rou( 'entity', 'exportStringDiagnosticShallow' )}
+  ${rou( 'entity', '_exportStringFromRoutine' )}
 
   ${rou( 'error', '_setupUncaughtErrorHandler2' )}
   ${rou( 'error', '_setupUncaughtErrorHandler9' )}

@@ -25,6 +25,7 @@ function _Begin()
   let _ = _starter_;
 
   let str = _starter_.str = _starter_.str || Object.create( null );
+  let date = _starter_.date = _starter_.date || Object.create( null );
   let entity = _starter_.entity = _starter_.entity || Object.create( null );
   let _class = _starter_.class = _starter_.class || Object.create( null );
   let path = _starter_.path = _starter_.path || Object.create( null );
