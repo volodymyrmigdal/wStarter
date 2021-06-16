@@ -126,7 +126,8 @@ function sourceWrapSplits( o )
 `
 
   if( o.running )
-  ware += `/* */  _starter_._sourceIncludeResolvedCalling( null, module, module.filePath );`;
+  // ware += `/* */  _starter_._sourceIncludeResolvedCalling( null, module, module.filePath );`;
+  ware += `/* */  module.load( module.filePath );`;
 
   let postfix1 =
 `

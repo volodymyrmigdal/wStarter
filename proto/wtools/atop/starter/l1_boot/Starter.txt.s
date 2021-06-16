@@ -54,12 +54,14 @@ function _Begin()
     sourceFile.filename = o.filePath;
     sourceFile.exports = Object.create( null );
     sourceFile.parent = null;
+    sourceFile.children = [];
     sourceFile.njsModule = o.njsModule;
     sourceFile.error = null;
     sourceFile.state = o.nakedCall ? 'preloaded' : 'created';
 
     sourceFile.starter = starter;
-    sourceFile.include = starter._sourceInclude.bind( starter, sourceFile, sourceFile.dirPath );
+    // sourceFile.include = starter._sourceInclude.bind( starter, sourceFile, sourceFile.dirPath );
+    sourceFile.include = include.bind( sourceFile );
     sourceFile.resolve = starter._sourceResolve.bind( starter, sourceFile, sourceFile.dirPath );
     sourceFile.include.resolve = sourceFile.resolve;
     sourceFile.include.sourceFile = sourceFile;
@@ -83,7 +85,7 @@ function _Begin()
     console.log( ` . SourceFile ${o.filePath}` );
 
     starter.sourcesMap[ o.filePath ] = sourceFile;
-    Object.preventExtensions( sourceFile );
+    // Object.preventExtensions( sourceFile );
     return sourceFile;
 
     /* - */
@@ -109,9 +111,30 @@ function _Begin()
       Object.defineProperty( sourceFile, propName, property );
     }
 
+    function include( id )
+    {
+      let sourceFile = this;
+      return SourceFile._load( id, sourceFile, false );
+    }
+  }
+
+  SourceFile._load = function _load( request, parent, isMain )
+  {
+    return _starter_._sourceInclude( parent, parent.dirPath, request );
+  }
+
+  SourceFile._resolveFilename = function _resolveFilename( request, parent, isMain, options )
+  {
+    return _starter_._sourceResolveAct( parent, parent.dirPath, request );
   }
 
   SourceFile.prototype = Object.create( null );
+
+  SourceFile.prototype.load = function load( filename )
+  {
+    let module = this;
+    return _starter_._sourceIncludeResolvedCalling( null, module, module.filePath )
+  }
 
   //
 
