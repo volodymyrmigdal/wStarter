@@ -275,12 +275,12 @@ function htmlForFilesBasic( test )
 
   test.description = 'scripts';
   var exp = [ '/.starter', './File1.js', './File2.js' ];
-  var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+  var got = _.select( _.array.from( document.querySelectorAll( 'script' ) ), '*/src' );
   test.identical( got, exp );
 
   test.description = 'title';
   var exp = [ 'File1.js' ];
-  var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+  var got = _.select( _.array.from( document.querySelectorAll( 'title' ) ), '*/text' );
   test.identical( got, exp );
 
   var got = document.querySelectorAll( 'html' );
