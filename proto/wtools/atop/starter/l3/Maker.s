@@ -568,6 +568,10 @@ function sourcesJoinSplits( o )
 
   ${rou( 'long', 'is' )}
   ${rou( 'long', 'like' )}
+  ${rou( 'long', '_make' )}
+  ${rou( 'long', 'make' )}
+  ${rou( 'long', '_makeUndefined' )}
+  ${rou( 'long', 'makeUndefined' )}
   ${bind( 'longIs', 'long', 'is' )}
   ${bind( 'longLike', 'long', 'like' )}
 
@@ -583,6 +587,9 @@ function sourcesJoinSplits( o )
   ${rou( 'array', 'like' )}
   ${rou( 'array', 'isEmpty' )}
   ${rou( 'array', 'likeResizable' )}
+  ${rou( 'array', '_make' )}
+  ${rou( 'array', 'make' )}
+  ${rou( 'array', 'as' )}
   ${bind( 'arrayIs', 'array', 'is' )}
   ${bind( 'arrayLike', 'array', 'like' )}
   ${bind( 'arrayIsEmpty', 'array', 'isEmpty' )}
@@ -593,6 +600,12 @@ function sourcesJoinSplits( o )
   /* ${rou( 'arrayLikeResizable' )} */ /* Dmytro : binded, source code is not available */
 
   ${rou( 'unroll', 'is' )}
+  ${rou( 'unroll', 'from' )}
+  ${rou( 'unroll', '_make' )}
+  ${rou( 'unroll', 'make' )}
+  ${rou( 'unroll', 'normalize' )}
+  ${rou( 'unroll', 'append' )}
+  ${bind( 'unrollAppend', 'unroll', 'append' )}
   ${bind( 'unrollIs', 'unroll', 'is' )}
   /* ${rou( 'unrollIs' )} */ /* Dmytro : binded, source code is not available */
 
@@ -761,6 +774,8 @@ function sourcesJoinSplits( o )
   ${rou( 'mapBut_' )}
   ${rou( 'mapButOld' )} // xxx : remove
   ${rou( 'mapOwn' )}
+  ${rou( 'mapOnly_' )}
+  ${rou( '_mapOnly_VerifyMapFields' )}
   ${rou( 'arrayAs' )}
   ${rou( 'arrayAppend' )}
   ${rou( 'arrayAppendArray' )}
@@ -771,6 +786,8 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayAppendOnceStrictly' )}
   ${rou( 'arrayAppendArrayOnce' )}
   ${rou( 'arrayAppendedArrayOnce' )}
+  ${rou( 'arrayAppendedArraysOnce' )}
+  ${rou( 'arrayAppendArraysOnce' )}
   ${rou( 'arrayAppendedOnce' )}
   ${rou( 'arrayRemoveOnceStrictly' )}
   ${rou( 'arrayRemoveElementOnceStrictly' )}
@@ -793,6 +810,8 @@ function sourcesJoinSplits( o )
   ${rou( 'routine.assertOptions' )}
   ${rou( 'routine.isTrivial' )}
   ${rou( 'routine.extend' )}
+  ${rou( 'routine.s.compose' )}
+  ${rou( 'routine.s.are' )}
   ${rou( 'errIs' )}
   ${rou( 'regexpLike' )}
   ${rou( 'intervalIs' )}
@@ -807,6 +826,10 @@ function sourcesJoinSplits( o )
   ${rou( 'strLinesJoin' )}
   ${rou( 'strSplit' )}
   ${rou( 'strSplitFast' )}
+  ${rou( 'strSplitsQuotedRejoin' )}
+  ${rou( 'strSplitsDropDelimeters' )}
+  ${rou( 'strSplitsStrip' )}
+  ${rou( 'strSplitsDropEmpty' )}
   ${rou( 'strStrip' )}
   ${rou( 'strLinesSelect' )}
   ${rou( '_strLeftSingle_' )}
