@@ -1069,8 +1069,9 @@ function scriptWrap_functor( fop )
     if( servlet.naking )
     return o.next();
 
-    // if( !_.longHasAny( servlet.incudingExts, o.exts ) )
-    // return o.next();
+    if( !_.longHasAny( servlet.incudingExts, o.exts ) )
+    if( !isModuleDeclarationFile( o.realPath ) )
+    return o.next();
 
     servlet.surePathAllowed( o.realPath );
 
@@ -1097,6 +1098,14 @@ function scriptWrap_functor( fop )
     {
       throw _.err( err );
     }
+  }
+
+  /* - */
+
+  function isModuleDeclarationFile( realPath )
+  {
+    let parentDir = _.path.name( _.path.dir( realPath ) );
+    return parentDir === 'node_modules';
   }
 
 }
