@@ -319,7 +319,7 @@ function htmlForFilesOptionTitle( test )
 
   test.description = 'title';
   var exp = [ 'File1.js' ];
-  var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+  var got = _.select( _.array.from( document.querySelectorAll( 'title' ) ), '*/text' );
   test.identical( got, exp );
 
   /* */
@@ -341,7 +341,7 @@ function htmlForFilesOptionTitle( test )
 
   test.description = 'title';
   var exp = [ 'Explicit Title' ];
-  var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+  var got = _.select( _.array.from( document.querySelectorAll( 'title' ) ), '*/text' );
   test.identical( got, exp );
 
   /* */
