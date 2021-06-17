@@ -1259,7 +1259,7 @@ async function servletRemoteResolve( test )
 
   test.case = 'module'
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/wTools', { json : 1 });
-  test.true( _.strEnds( response.body, 'Layer1.s' ) );
+  test.true( _.strEnds( response.body, 'node_modules/Tools' ) );
 
   test.case = 'fail'
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/unknown', { json : 1 });
