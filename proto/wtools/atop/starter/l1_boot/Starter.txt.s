@@ -65,6 +65,7 @@ function _Begin()
     sourceFile.resolve = starter._sourceResolve.bind( starter, sourceFile, sourceFile.dirPath );
     sourceFile.include.resolve = sourceFile.resolve;
     sourceFile.include.sourceFile = sourceFile;
+    sourceFile.isModuleDeclareFile = starter.path.name( sourceFile.dirPath ) === 'node_modules';
 
     /* njs compatibility */
 
@@ -84,7 +85,10 @@ function _Begin()
     if( starter.loggingSourceFiles )
     console.log( ` . SourceFile ${o.filePath}` );
 
+
     starter.sourcesMap[ o.filePath ] = sourceFile;
+    if( sourceFile.isModuleDeclareFile )
+    starter.moduleMainFilesMap[ starter.path.name( o.filePath ) ] = sourceFile;
     // Object.preventExtensions( sourceFile );
     return sourceFile;
 
@@ -302,6 +306,15 @@ function _Begin()
       filePath = starter.path.canonizeTolerant( basePath + '/' + filePath );
       if( filePath[ 0 ] !== '/' )
       filePath = './' + filePath;
+    }
+
+    if( !isDotted && !isAbsolute )
+    {
+      if( starter.moduleMainFilesMap[ filePath ] )
+      return starter.moduleMainFilesMap[ filePath ].filePath;
+      let filePathLower = filePath.toLowerCase();
+      if( starter.moduleMainFilesMap[ filePathLower ] )
+      return starter.moduleMainFilesMap[ filePathLower ].filePath;
     }
 
     return filePath;

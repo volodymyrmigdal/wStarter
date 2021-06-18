@@ -572,6 +572,10 @@ function sourcesJoinSplits( o )
   ${rou( 'long', 'make' )}
   ${rou( 'long', '_makeUndefined' )}
   ${rou( 'long', 'makeUndefined' )}
+  ${rou( 'long', '_lengthOf' )}
+  ${rou( 'long', 'lengthOf' )}
+  ${rou( 'long', '_exportStringDiagnosticShallow' )}
+  ${rou( 'long', 'exportStringDiagnosticShallow' )}
   ${bind( 'longIs', 'long', 'is' )}
   ${bind( 'longLike', 'long', 'like' )}
 
@@ -648,6 +652,10 @@ function sourcesJoinSplits( o )
   ${rou( 'aux', 'isPolluted' )}
   ${rou( 'aux', 'isPrototyped' )}
   ${rou( 'aux', 'like' )}
+  ${rou( 'aux', '_make' )}
+  ${rou( 'aux', 'make' )}
+  ${rou( 'aux', '_makeUndefined' )}
+  ${rou( 'aux', 'makeUndefined' )}
   ${rou( 'aux', '_keys' )}
   ${rou( 'aux', 'keys' )}
   ${rou( 'aux', 'namespaceOf' )}
@@ -775,6 +783,7 @@ function sourcesJoinSplits( o )
   ${rou( 'mapButOld' )} // xxx : remove
   ${rou( 'mapOwn' )}
   ${rou( 'mapOnly_' )}
+  ${rou( '_mapBut_VerifyMapFields' )}
   ${rou( '_mapOnly_VerifyMapFields' )}
   ${rou( 'arrayAs' )}
   ${rou( 'arrayAppend' )}
@@ -843,6 +852,8 @@ function sourcesJoinSplits( o )
   ${rou( 'strEscape' )}
   ${rou( 'strShort_' )}
   ${rou( 'numberFromStrMaybe' )}
+
+  ${rou( 'path', 'name' )}
 
   ${rou( 'str', 'lines', 'split' )}
 
@@ -977,7 +988,11 @@ function sourcesJoinSplits( o )
   ${rou( 'path', 'globShortFilterKeys' )}
   ${rou( 'path', 'globShortSplitsToRegexps' )}
   ${rou( 'path', '_globShortSplitToRegexpSource' )}
-
+  ${rou( 'path', 'is' )}
+  ${rou( 'path', 'name' )}
+  ${rou( 'path', 'detrail' )}
+  ${rou( 'path', 'reroot' )}
+  ${rou( 'path', 'traceToRoot' )}
 `
 
   }

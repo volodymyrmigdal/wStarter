@@ -40,7 +40,7 @@ function onSuiteBegin()
   context.suiteTempPath = _.path.tempOpen( _.path.join( __dirname, '../..' ), 'Starter' );
   context.assetsOriginalPath = _.path.join( __dirname, '_asset' );
   context.willbeExecPath = _.Will.WillPathGet();
-  context.appJsPath = _.module.resolve( 'wStarter' );
+  context.appJsPath = _.path.join( __dirname, '../starter/entry/Exec');
 }
 
 //
@@ -426,7 +426,6 @@ async function includeCss( test )
       return style.getPropertyValue( 'background' )
     });
     test.true( _.strHas( got, 'rgb(192, 192, 192)' ) );
-
     await window.close();
   }
   catch( err )
