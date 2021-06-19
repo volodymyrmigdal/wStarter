@@ -41,7 +41,8 @@ function _Begin()
 
     /* advanced */
 
-    o.advanced = _.routine.options_( _broFileReadAct, o.advanced, _broFileReadAct.advanced );
+    // o.advanced = _.routine.options_( _broFileReadAct, o.advanced, _broFileReadAct.advanced );
+    o.advanced = _.props.supplement( o.advanced || Object.create( null ), _broFileReadAct.advanced );
     o.advanced.method = o.advanced.method.toUpperCase();
 
     /* http request */
@@ -255,7 +256,40 @@ function _Begin()
 
   //
 
-  function _broPathResolveRemote( filePath )
+  // function _broPathResolveRemote( filePath )
+  // {
+  //   let starter = this;
+
+  //   if( _.path.isGlob( filePath ) || _.path.isRelative( filePath ) )
+  //   {
+  //     let result = starter._broFileRead
+  //     ({
+  //       filePath : '/.resolve/' + filePath,
+  //       encoding : 'json',
+  //     });
+  //     try
+  //     {
+  //       result = JSON.parse( result );
+
+  //       if( result.err )
+  //       throw result.err;
+
+  //       return result;
+  //     }
+  //     catch( err )
+  //     {
+  //       // debugger;
+  //       // console.error( filePath );
+  //       throw _.err( err );
+  //     }
+  //   }
+
+  //   return filePath;
+  // }
+
+  //
+
+  function _broPathResolveRemoteWithModule( parentSource, filePath )
   {
     let starter = this;
 
@@ -263,7 +297,7 @@ function _Begin()
     {
       let result = starter._broFileRead
       ({
-        filePath : '/.resolve/' + filePath,
+        filePath : '/.resolve/' + filePath + `?dirPath=${parentSource.dirPath}`,
         encoding : 'json',
       });
       try
@@ -308,7 +342,11 @@ function _Begin()
     // }
 
     let resolvedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
-    resolvedFilePath = this._broPathResolveRemote( resolvedFilePath );
+    // resolvedFilePath = this._broPathResolveRemote( resolvedFilePath );
+    resolvedFilePath = this._broPathResolveRemoteWithModule( parentSource, resolvedFilePath );
+
+    if( _.arrayIs( resolvedFilePath ) )
+    return resolvedFilePath;
 
     let result = this._broFileRead
     ({
@@ -329,7 +367,9 @@ function _Begin()
   {
     let starter = this;
     let joinedFilePath = this._pathResolveLocal( parentSource, basePath, filePath );
-    let resolvedFilePath = starter._broPathResolveRemote( joinedFilePath );
+    // let resolvedFilePath = starter._broPathResolveRemoteWithModule( parentSource, joinedFilePath );
+
+    let resolvedFilePath = starter.SourceFile._resolveFilename( filePath, parentSource, false )
 
     if( _.arrayIs( resolvedFilePath ) )
     {
@@ -454,13 +494,54 @@ function _Begin()
 
   //
 
+  // function _sourceCodeModule()
+  // {
+  //   let result = Object.create( null );
+
+  //   accesor( '_cache', cacheGet, cacheSet );
+
+  //   this.exports = result;
+
+  //   function cacheGet()
+  //   {
+  //     return _starter_.sourcesMap;
+  //   }
+
+  //   function cacheSet( src )
+  //   {
+  //     _starter_.sourcesMap = src;
+
+  //     if( !_starter_.sourcesMap[ 'module' ] )
+  //     _starter_._sourceMake( 'module', '/', _sourceCodeModule );
+
+  //     return _starter_.sourcesMap;
+  //   }
+
+  //   function accesor( propName, onGet, onSet )
+  //   {
+  //     let property =
+  //     {
+  //       enumerable : true,
+  //       configurable : true,
+  //       get : onGet,
+  //       set : onSet,
+  //     }
+  //     Object.defineProperty( result, propName, property );
+  //   }
+
+  // }
+
+  //
+
   function _sourceCodeModule()
   {
-    let result = Object.create( null );
+    let SourceFile = _starter_.SourceFile;
 
     accesor( '_cache', cacheGet, cacheSet );
 
-    this.exports = result;
+    this.exports = SourceFile;
+
+    return SourceFile;
 
     function cacheGet()
     {
@@ -486,7 +567,7 @@ function _Begin()
         get : onGet,
         set : onSet,
       }
-      Object.defineProperty( result, propName, property );
+      Object.defineProperty( SourceFile, propName, property );
     }
 
   }
@@ -521,7 +602,8 @@ function _End()
     _broFileRead,
 
     _broSourceFile,
-    _broPathResolveRemote,
+    // _broPathResolveRemote,
+    _broPathResolveRemoteWithModule,
     _sourceResolveAct,
 
     _includeAct,

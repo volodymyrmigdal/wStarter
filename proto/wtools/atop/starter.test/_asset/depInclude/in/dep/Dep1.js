@@ -1,7 +1,11 @@
 console.log( 'Dep1.js:begin' );
 
 const _ = require( '../build/node_modules/Tools' );
+
+if( typeof _starter_ !== 'undefined' )
 _.include( 'wBlueprint' );
+else
+require( '../build/node_modules/wblueprint' )
 
 console.log( `` );
 console.log( `Dep1.js` );

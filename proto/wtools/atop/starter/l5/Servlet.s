@@ -330,7 +330,7 @@ function htmlForHtml( o )
   let servlet = this;
   let system = servlet.system;
 
-  _.routine.options_( htmlForHtml, o );
+  _.routine.optionsWithoutUndefined( htmlForHtml, o );
 
   if( o.realPath === null )
   o.realPath = servlet.pathVirtualToReal( o.resourcePath );
@@ -371,7 +371,7 @@ function htmlForJs( o )
   let servlet = this;
   let system = servlet.system;
 
-  _.routine.options_( htmlForJs, o );
+  _.routine.optionsWithoutUndefined( htmlForJs, o );
 
   if( o.realPath === null )
   o.realPath = servlet.pathVirtualToReal( o.resourcePath );
@@ -413,7 +413,7 @@ function jsSingleForJs( o )
   let system = servlet.system;
   let maker = servlet.maker;
 
-  o = _.routine.options_( jsSingleForJs, arguments );
+  o = _.routine.optionsWithoutUndefined( jsSingleForJs, arguments );
 
   try
   {
@@ -476,7 +476,7 @@ function jsForJs( o )
   let servlet = this;
   let system = servlet.system;
 
-  o =_.routine.options_( jsForJs, arguments );
+  o =_.routine.optionsWithoutUndefined( jsForJs, arguments );
 
   try
   {
@@ -587,7 +587,7 @@ function remoteResolve( o )
   let servlet = this;
   let resolvedFilePath;
 
-  _.routine.options_( remoteResolve, arguments );
+  _.routine.optionsWithoutUndefined( remoteResolve, arguments );
 
   try
   {
@@ -627,15 +627,7 @@ function remoteResolve( o )
     }
     else if( !_.path.isAbsolute( o.realPath ) )
     {
-
-      if( !servlet.resolvingNpm )
-      {
-        let err = _.err( `Cant resolve npm modules. Field {- servlet.resolvingNpm -} is disabled.` );
-        debugger;
-        throw err;
-      }
-
-      resolvedFilePath = _.path.canonize( _.module.resolve( o.realPath ) );
+      resolvedFilePath = forRelative();
     }
 
     resolvedFilePath = end( resolvedFilePath );
@@ -683,6 +675,31 @@ function remoteResolve( o )
 
   /* */
 
+  function forRelative()
+  {
+    if( o.query.dirPath )
+    {
+      let paths = _.path.traceToRoot( o.query.dirPath );
+      for( let i = paths.length - 1; i >= 0; i-- )
+      {
+        let filePath = _.path.reroot( servlet.basePath, paths[ i ], 'node_modules', o.realPath );
+        if( _.fileProvider.fileExists( filePath ) )
+        {
+          return filePath;
+        }
+      }
+    }
+
+    if( !servlet.resolvingNpm )
+    {
+      let err = _.err( `Cant resolve npm modules. Field {- servlet.resolvingNpm -} is disabled.` );
+      debugger;
+      throw err;
+    }
+
+    return _.path.canonize( _.module.resolve( o.realPath ) );
+  }
+
 }
 
 remoteResolve.defaults =
@@ -691,6 +708,7 @@ remoteResolve.defaults =
   realPath : null,
   request : null,
   response : null,
+  query : null
 }
 
 //
@@ -700,7 +718,7 @@ function statPath( o )
   let servlet = this;
   let resolvedFilePath;
 
-  _.routine.options_( statPath, arguments );
+  _.routine.optionsWithoutUndefined( statPath, arguments );
 
   try
   {
@@ -759,7 +777,7 @@ function processRequestHandle( o )
   let servlet = this;
   let session = servlet.session;
 
-  _.routine.options_( processRequestHandle, arguments );
+  _.routine.optionsWithoutUndefined( processRequestHandle, arguments );
 
   let routine = o.request.body.routine;
   let args = o.request.body.arguments;
@@ -915,7 +933,7 @@ function scriptWrap_functor( fop )
   let servlet = this;
   let system = servlet.system;
 
-  fop = _.routine.options_( scriptWrap_functor, arguments );
+  fop = _.routine.optionsWithoutUndefined( scriptWrap_functor, arguments );
 
   _.assert( servlet instanceof _.starter.Servlet );
   _.assert( system instanceof _.starter.System );
@@ -985,6 +1003,7 @@ function scriptWrap_functor( fop )
         realPath : o.realPath,
         response : o.response,
         request : o.request,
+        query : o.query
       });
     }
     else if( o.uri.query && _.strHas( o.uri.query, 'stat' ) )
@@ -1051,6 +1070,7 @@ function scriptWrap_functor( fop )
     return o.next();
 
     if( !_.longHasAny( servlet.incudingExts, o.exts ) )
+    if( !isModuleDeclarationFile( o.realPath ) )
     return o.next();
 
     servlet.surePathAllowed( o.realPath );
@@ -1080,6 +1100,14 @@ function scriptWrap_functor( fop )
     }
   }
 
+  /* - */
+
+  function isModuleDeclarationFile( realPath )
+  {
+    let parentDir = _.path.name( _.path.dir( realPath ) );
+    return parentDir === 'node_modules';
+  }
+
 }
 
 var defaults = scriptWrap_functor.defaults = Object.create( null );
@@ -1088,7 +1116,7 @@ var defaults = scriptWrap_functor.defaults = Object.create( null );
 
 function ScriptWrap_functor( o )
 {
-  o = _.routine.options_( ScriptWrap_functor, arguments );
+  o = _.routine.optionsWithoutUndefined( ScriptWrap_functor, arguments );
 
   if( o.servlet === null )
   {
