@@ -1153,7 +1153,7 @@ function browserUserTempDirCleanup( test )
     }
   }
 
-  let execPath = a.program({ routine : program, locals }).programPath;
+  let execPath = a.program({ entry : program, locals }).programPath;
 
   let op = { execPath };
   let ready = _.Consequence();
