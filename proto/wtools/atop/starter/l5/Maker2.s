@@ -34,7 +34,7 @@ function sourcesJoinFiles( o )
   o.basePath = o.inPath.basePathSimplest()
   if( o.basePath === null )
   o.basePath = path.current();
-  if( o.inPath.prefixPath && path.isRelative( o.inPath.prefixPath ) )
+  if( o.inPath.prefixPath && path.s.areRelative( o.inPath.prefixPath ) )
   o.basePath = path.resolve( o.basePath );
 
   o.inPath.basePathUse( o.basePath );

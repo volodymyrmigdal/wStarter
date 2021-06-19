@@ -77,9 +77,10 @@ function _Begin()
   Self.maybe = Symbol.for( 'maybe' );
   Self.unknown = Symbol.for( 'unknown' );
   Self.dont = Symbol.for( 'dont' );
-  // Self.unroll = Symbol.for( 'unroll' );
   Self.self = Symbol.for( 'self' );
   Self.optional = Symbol.for( 'optional' );
+
+  _realGlobal_.unrollSymbol = Symbol.for( 'unroll' );
 
 }
 

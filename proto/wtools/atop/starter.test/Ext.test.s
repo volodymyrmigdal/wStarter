@@ -13,6 +13,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
+  _.include( 'willbe' );
 
   require( '../starter/entry/Include.s' );
 
@@ -31,8 +32,8 @@ function onSuiteBegin()
 
   context.suiteTempPath = _.path.tempOpen( _.path.join( __dirname, '../..' ), 'Starter' );
   context.assetsOriginalPath = _.path.join( __dirname, '_asset' );
-  context.willbeExecPath = _.module.resolve( 'willbe' );
-  context.appJsPath = _.module.resolve( 'wStarter' );
+  context.willbeExecPath = _.Will.WillPathGet();
+  context.appJsPath = _.path.join( __dirname, '../starter/entry/Exec' );
 
 }
 
@@ -1071,6 +1072,7 @@ Index.js:end
     test.description = '.start default';
     var output =
 `
+Command ".start out/Out.js timeOut:15000 headless:1 naking:0 withStarter:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -1137,6 +1139,7 @@ Index.js:end
     test.description = '.start naking:1 withStarter:0';
     var output =
 `
+Command ".start out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -1623,6 +1626,7 @@ Index.js:end
     test.description = '.start naking:1 withStarter:0';
     var output =
 `
+Command ".start out1/out2/Out.js naking:1 withStarter:0 timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -1689,6 +1693,7 @@ Index.js:end
     test.description = '.start naking:1 withStarter:0';
     var output =
 `
+Command ".start out1/out2/Out.js naking:1 withStarter:0 timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -1755,6 +1760,7 @@ Index.js:end
     test.description = '.start naking:1 withStarter:0';
     var output =
 `
+Command ".start out1/out2/Out.js naking:1 withStarter:0 timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -1821,6 +1827,7 @@ Index.js:end
     test.description = '.start naking:1 withStarter:0';
     var output =
 `
+Command ".start out1/out2/Out.js naking:1 withStarter:0 timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -1948,8 +1955,8 @@ function sourcesJoinRoutineInclude( test )
     return null;
   })
 
-  a.fork({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
-  a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
+  a.fork({ execPath : context.willbeExecPath, args : '.build', currentPath : a.abs( 'in' ) })
+  a.appStart( `.sources.join basePath:in inPath:[**/*.(js|s),build/node_modules/*] outPath:../out/Out.js entryPath:Index.js interpreter:njs` )
 
   .then( ( op ) =>
   {
@@ -1957,6 +1964,7 @@ function sourcesJoinRoutineInclude( test )
     test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
     var expected = [ '.', './Out.js' ];
     var files = a.find( a.abs( 'out' ) );
+    debugger
     test.identical( files, expected );
     return op;
   })
@@ -2052,8 +2060,8 @@ Index.js:end
     return null;
   })
 
-  a.fork({ execPath : _.module.resolve( 'willbe' ), args : '.build', currentPath : a.abs( 'in' ) })
-  a.appStart( `.sources.join basePath:in inPath:**/*.(js|s) outPath:../out/Out.js entryPath:Index.js interpreter:browser` )
+  a.fork({ execPath : context.willbeExecPath, args : '.build', currentPath : a.abs( 'in' ) })
+  a.appStart({ execPath : `.sources.join inPath:[**/*.(js|s),build/node_modules/*] outPath:out/Out.js entryPath:Index.js interpreter:browser`, currentPath : a.abs( 'in' ) })
 
   .then( ( op ) =>
   {
@@ -2061,18 +2069,19 @@ Index.js:end
     test.identical( _.strCount( op.output, '+ sourcesJoin to' ), 1 );
 
     var expected = [ '.', './Out.js' ];
-    var files = a.find( a.abs( 'out' ) );
+    var files = a.find( a.abs( 'in/out' ) );
     test.identical( files, expected );
 
     return op;
   })
 
-  a.appStart( `.start out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1` )
+  a.appStart({ execPath : `.start out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1`, currentPath : a.abs( 'in' ) })
   .then( ( op ) =>
   {
     test.description = '.start naking:1 withStarter:0';
     var output =
 `
+Command ".start out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1"
 Index.js:begin
 
 Index.js
@@ -2277,6 +2286,7 @@ function sourcesJoinRequireGlob( test )
     test.description = 'out/Out.js';
     var output =
 `
+Command ".start basePath:in entryPath:Index.js timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -2361,6 +2371,7 @@ Index.js:end
     test.description = 'out/Out.js';
     var output =
 `
+Command ".start entryPath:out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -2539,6 +2550,7 @@ function sourcesJoinRequireGlobAnyAny( test )
     test.description = 'out/Out.js';
     var output =
 `
+Command ".start entryPath:out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -2631,6 +2643,7 @@ function sourcesJoinRequireGlobAnyExt( test )
     test.description = 'out/Out.js';
     var output =
 `
+Command ".start basePath:in entryPath:Index.js timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -2715,6 +2728,7 @@ Index.js:end
     test.description = 'out/Out.js';
     var output =
 `
+Command ".start entryPath:out/Out.js naking:1 withStarter:0 timeOut:15000 headless:1"
 Index.js:begin
 Dep1.js:begin
 
@@ -2877,7 +2891,7 @@ function htmlForBasic( test )
 
     test.description = 'scripts';
     var exp = [ '/.starter', './File1.js', './File2.js' ];
-    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    var got = _.select( _.array.from( document.querySelectorAll( 'script' ) ), '*/src' );
     test.identical( got, exp );
 
     return op;
@@ -2908,7 +2922,7 @@ function htmlForBasic( test )
 
     test.description = 'scripts';
     var exp = [ '/.starter' ];
-    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    var got = _.select( _.array.from( document.querySelectorAll( 'script' ) ), '*/src' );
     test.identical( got, exp );
 
     return op;
@@ -2953,7 +2967,7 @@ function htmlForOptionTitle( test )
 
     test.description = 'title';
     var exp = [ 'File1.js' ];
-    var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+    var got = _.select( _.array.from( document.querySelectorAll( 'title' ) ), '*/text' );
     test.identical( got, exp );
 
     return op;
@@ -2984,7 +2998,7 @@ function htmlForOptionTitle( test )
 
     test.description = 'title';
     var exp = [ 'Html for test' ];
-    var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+    var got = _.select( _.array.from( document.querySelectorAll( 'title' ) ), '*/text' );
     test.identical( got, exp );
 
     return op;
@@ -3029,7 +3043,7 @@ function htmlForOptionWithStarter( test )
 
     test.description = 'scripts';
     var exp = [ '/.starter', './File1.js', './File2.js' ];
-    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    var got = _.select( _.array.from( document.querySelectorAll( 'script' ) ), '*/src' );
     test.identical( got, exp );
 
     return op;
@@ -3060,7 +3074,7 @@ function htmlForOptionWithStarter( test )
 
     test.description = 'scripts';
     var exp = [ './File1.js', './File2.js' ];
-    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    var got = _.select( _.array.from( document.querySelectorAll( 'script' ) ), '*/src' );
     test.identical( got, exp );
 
     return op;
@@ -3091,7 +3105,7 @@ function htmlForOptionWithStarter( test )
 
     test.description = 'scripts';
     var exp = [];
-    var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+    var got = _.select( _.array.from( document.querySelectorAll( 'script' ) ), '*/src' );
     test.identical( got, exp );
 
     return op;
@@ -3128,6 +3142,7 @@ function startRecursion( test )
   {
     var output =
 `
+Command ".start F1.js timeOut:15000 loggingSessionEvents:0 headless:1"
 F1:before
 F2:before
 F2:object
@@ -3174,6 +3189,7 @@ function startRecursionSingle( test )
   {
     var output =
 `
+Command ".start F1.js timeOut:15000 loggingSessionEvents:0 headless:1 withScripts:single"
 F1:before
 F2:before
 F2:object
@@ -3394,6 +3410,7 @@ function startChangeModuleCache( test )
   {
     var output =
 `
+Command ".start Main.js timeOut:15000 loggingSessionEvents:0 headless:1"
 F1.js
 F1.js
 F2.js
@@ -3464,6 +3481,7 @@ function startModuleParent( test )
   {
     var output =
 `
+Command ".start Main.js timeOut:15000 loggingSessionEvents:0 headless:1 interpreter:njs"
 Main.js: false
 F1.js: ${ a.path.nativize( a.abs( 'F1.js' ) ) }
 F2.js: ${ a.path.nativize( a.abs( 'F2.js' ) ) }
@@ -3638,6 +3656,7 @@ function startHtml( test )
   {
     var output =
 `
+Command ".start F1.html timeOut:15000 loggingSessionEvents:0 headless:1"
 F1:begin
 F1:end
 `
@@ -3924,7 +3943,7 @@ _starter_.interpreter : browser
     var exp = `. request /Worker.js`;
     test.identical( _.strCount( op.output, exp ), 1 );
     var exp = `. request /W1.js`;
-    test.identical( _.strCount( op.output, exp ), 1 );
+    test.identical( _.strCount( op.output, exp ), 2 );
 
     return op;
   })

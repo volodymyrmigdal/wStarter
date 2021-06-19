@@ -20,6 +20,7 @@ if( typeof module !== 'undefined' )
 
   _.include( 'wTesting' );
   _.include( 'wPuppet' );
+  _.include( 'willbe' );
 
   require( '../starter/entry/Include.s' );
 
@@ -38,8 +39,8 @@ function onSuiteBegin()
 
   context.suiteTempPath = _.path.tempOpen( _.path.join( __dirname, '../..' ), 'Starter' );
   context.assetsOriginalPath = _.path.join( __dirname, '_asset' );
-  context.willbeExecPath = _.module.resolve( 'willbe' );
-  context.appJsPath = _.module.resolve( 'wStarter' );
+  context.willbeExecPath = _.Will.WillPathGet();
+  context.appJsPath = _.path.join( __dirname, '../starter/entry/Exec');
 }
 
 //
@@ -274,12 +275,12 @@ function htmlForFilesBasic( test )
 
   test.description = 'scripts';
   var exp = [ '/.starter', './File1.js', './File2.js' ];
-  var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+  var got = _.select( _.array.from( document.querySelectorAll( 'script' ) ), '*/src' );
   test.identical( got, exp );
 
   test.description = 'title';
   var exp = [ 'File1.js' ];
-  var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+  var got = _.select( _.array.from( document.querySelectorAll( 'title' ) ), '*/text' );
   test.identical( got, exp );
 
   var got = document.querySelectorAll( 'html' );
@@ -318,7 +319,7 @@ function htmlForFilesOptionTitle( test )
 
   test.description = 'title';
   var exp = [ 'File1.js' ];
-  var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+  var got = _.select( _.array.from( document.querySelectorAll( 'title' ) ), '*/text' );
   test.identical( got, exp );
 
   /* */
@@ -340,7 +341,7 @@ function htmlForFilesOptionTitle( test )
 
   test.description = 'title';
   var exp = [ 'Explicit Title' ];
-  var got = _.select( document.querySelectorAll( 'title' ), '*/text' );
+  var got = _.select( _.array.from( document.querySelectorAll( 'title' ) ), '*/text' );
   test.identical( got, exp );
 
   /* */
@@ -381,7 +382,7 @@ function htmlForFilesOptionWithStarter( test )
 
   test.description = 'scripts';
   var exp = [ './File1.js', './File2.js' ];
-  var got = _.select( document.querySelectorAll( 'script' ), '*/src' );
+  var got = _.select( _.array.from( document.querySelectorAll( 'script' ) ), '*/src' );
   test.identical( got, exp );
 
   /* */
@@ -425,7 +426,6 @@ async function includeCss( test )
       return style.getPropertyValue( 'background' )
     });
     test.true( _.strHas( got, 'rgb(192, 192, 192)' ) );
-
     await window.close();
   }
   catch( err )
@@ -1258,7 +1258,7 @@ async function servletRemoteResolve( test )
 
   test.case = 'module'
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/wTools', { json : 1 });
-  test.true( _.strEnds( response.body, 'Layer1.s' ) );
+  test.true( _.strEnds( response.body, 'node_modules/Tools' ) );
 
   test.case = 'fail'
   var response = await Needle( 'get', servlet.serverPath + '/.resolve/unknown', { json : 1 });

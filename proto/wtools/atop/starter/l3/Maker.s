@@ -126,7 +126,8 @@ function sourceWrapSplits( o )
 `
 
   if( o.running )
-  ware += `/* */  _starter_._sourceIncludeResolvedCalling( null, module, module.filePath );`;
+  // ware += `/* */  _starter_._sourceIncludeResolvedCalling( null, module, module.filePath );`;
+  ware += `/* */  module.load( module.filePath );`;
 
   let postfix1 =
 `
@@ -524,6 +525,8 @@ function sourcesJoinSplits( o )
   ${rou( 'error', 'process' )}
   ${fields( 'error' )}
 
+  ${rou( 'date', 'is' )}
+
   ${rou( 'introspector', 'code' )}
   ${rou( 'introspector', 'stack' )}
   ${rou( 'introspector', 'stackCondense' )}
@@ -532,8 +535,13 @@ function sourcesJoinSplits( o )
   ${rou( 'introspector', 'locationToStack' )}
   ${rou( 'introspector', 'locationNormalize' )}
 
+  ${rou( 'long', '_functor_functor' )}
+
   ${rou( 'entity', 'strType' )}
   ${rou( 'entity', 'strTypeSecondary' )}
+  ${rou( 'entity', 'namespaceOf' )}
+  ${rou( 'entity', 'lengthOf' )}
+  ${bind( 'lengthOf', 'entity', 'lengthOf' )}
   ${bind( 'strType', 'entity', 'strType' )}
   ${rou( 'entity', 'makeUndefined' )}
   ${field( 'entity', 'TranslatedTypeMap' )}
@@ -560,8 +568,17 @@ function sourcesJoinSplits( o )
 
   ${rou( 'long', 'is' )}
   ${rou( 'long', 'like' )}
+  ${rou( 'long', '_make' )}
+  ${rou( 'long', 'make' )}
+  ${rou( 'long', '_makeUndefined' )}
+  ${rou( 'long', 'makeUndefined' )}
+  ${rou( 'long', '_lengthOf' )}
+  ${rou( 'long', 'lengthOf' )}
+  ${rou( 'long', '_exportStringDiagnosticShallow' )}
+  ${rou( 'long', 'exportStringDiagnosticShallow' )}
   ${bind( 'longIs', 'long', 'is' )}
   ${bind( 'longLike', 'long', 'like' )}
+
   /* ${rou( 'longIs' )} */ /* Dmytro : binded, source code is not available */
   /* ${rou( 'longLike' )} */ /* Dmytro : binded, source code is not available */
 
@@ -574,6 +591,9 @@ function sourcesJoinSplits( o )
   ${rou( 'array', 'like' )}
   ${rou( 'array', 'isEmpty' )}
   ${rou( 'array', 'likeResizable' )}
+  ${rou( 'array', '_make' )}
+  ${rou( 'array', 'make' )}
+  ${rou( 'array', 'as' )}
   ${bind( 'arrayIs', 'array', 'is' )}
   ${bind( 'arrayLike', 'array', 'like' )}
   ${bind( 'arrayIsEmpty', 'array', 'isEmpty' )}
@@ -584,6 +604,12 @@ function sourcesJoinSplits( o )
   /* ${rou( 'arrayLikeResizable' )} */ /* Dmytro : binded, source code is not available */
 
   ${rou( 'unroll', 'is' )}
+  ${rou( 'unroll', 'from' )}
+  ${rou( 'unroll', '_make' )}
+  ${rou( 'unroll', 'make' )}
+  ${rou( 'unroll', 'normalize' )}
+  ${rou( 'unroll', 'append' )}
+  ${bind( 'unrollAppend', 'unroll', 'append' )}
   ${bind( 'unrollIs', 'unroll', 'is' )}
   /* ${rou( 'unrollIs' )} */ /* Dmytro : binded, source code is not available */
 
@@ -598,6 +624,8 @@ function sourcesJoinSplits( o )
   ${rou( 'bufferNode', 'is' )}
   ${bind( 'bufferNodeIs', 'bufferNode', 'is' )}
   /* ${rou( 'bufferNodeIs' )} */ /* Dmytro : binded, source code is not available */
+
+  ${rou( 'buffer', 'like' )}
 
   ${rou( 'vector', 'is' )}
   ${rou( 'vector', 'like' )}
@@ -624,8 +652,22 @@ function sourcesJoinSplits( o )
   ${rou( 'aux', 'isPolluted' )}
   ${rou( 'aux', 'isPrototyped' )}
   ${rou( 'aux', 'like' )}
+  ${rou( 'aux', '_make' )}
+  ${rou( 'aux', 'make' )}
+  ${rou( 'aux', '_makeUndefined' )}
+  ${rou( 'aux', 'makeUndefined' )}
+  ${rou( 'aux', '_keys' )}
+  ${rou( 'aux', 'keys' )}
+  ${rou( 'aux', 'namespaceOf' )}
+  ${rou( 'aux', '_lengthOf' )}
+  ${rou( 'aux', 'lengthOf' )}
+  ${rou( 'aux', 'supplement' )}
+  ${rou( 'aux', '_exportStringDiagnosticShallow' )}
+  ${rou( 'aux', 'exportStringDiagnosticShallow' )}
   ${rou( 'constructible', 'is' )}
   ${rou( 'constructibleIs' )}
+
+  ${rou( 'container', '_functor_functor' )}
 
   ${rou( 'object', 'is' )}
   ${rou( 'object', 'like' )}
@@ -666,6 +708,7 @@ function sourcesJoinSplits( o )
   /* ${rou( 'hashMapLike' )} */ /* Dmytro : binded, source code is not available */
 
   ${rou( 'countable', 'is' )}
+  ${rou( 'countable', 'like' )}
   ${bind( 'countableIs', 'countable', 'is' )}
   /* ${rou( 'countableIs' )} */
 
@@ -735,12 +778,13 @@ function sourcesJoinSplits( o )
   ${rou( 'numberIsFinite' )}
   ${rou( 'numberIs' )}
   ${rou( 'intIs' )}
-  ${rou( 'lengthOf' )}
   ${rou( 'sure' )}
   ${rou( 'mapBut_' )}
   ${rou( 'mapButOld' )} // xxx : remove
   ${rou( 'mapOwn' )}
-  ${rou( 'routineOptions' )}
+  ${rou( 'mapOnly_' )}
+  ${rou( '_mapBut_VerifyMapFields' )}
+  ${rou( '_mapOnly_VerifyMapFields' )}
   ${rou( 'arrayAs' )}
   ${rou( 'arrayAppend' )}
   ${rou( 'arrayAppendArray' )}
@@ -751,6 +795,8 @@ function sourcesJoinSplits( o )
   ${rou( 'arrayAppendOnceStrictly' )}
   ${rou( 'arrayAppendArrayOnce' )}
   ${rou( 'arrayAppendedArrayOnce' )}
+  ${rou( 'arrayAppendedArraysOnce' )}
+  ${rou( 'arrayAppendArraysOnce' )}
   ${rou( 'arrayAppendedOnce' )}
   ${rou( 'arrayRemoveOnceStrictly' )}
   ${rou( 'arrayRemoveElementOnceStrictly' )}
@@ -769,9 +815,12 @@ function sourcesJoinSplits( o )
   ${rou( 'routine._is' )}
   ${rou( 'routine.is' )}
   ${rou( 'routine.options' )}
+  ${rou( 'routine.options_' )}
   ${rou( 'routine.assertOptions' )}
   ${rou( 'routine.isTrivial' )}
   ${rou( 'routine.extend' )}
+  ${rou( 'routine.s.compose' )}
+  ${rou( 'routine.s.are' )}
   ${rou( 'errIs' )}
   ${rou( 'regexpLike' )}
   ${rou( 'intervalIs' )}
@@ -786,6 +835,10 @@ function sourcesJoinSplits( o )
   ${rou( 'strLinesJoin' )}
   ${rou( 'strSplit' )}
   ${rou( 'strSplitFast' )}
+  ${rou( 'strSplitsQuotedRejoin' )}
+  ${rou( 'strSplitsDropDelimeters' )}
+  ${rou( 'strSplitsStrip' )}
+  ${rou( 'strSplitsDropEmpty' )}
   ${rou( 'strStrip' )}
   ${rou( 'strLinesSelect' )}
   ${rou( '_strLeftSingle_' )}
@@ -796,21 +849,38 @@ function sourcesJoinSplits( o )
   ${rou( 'strIsolateLeftOrAll' )}
   ${rou( 'strIsolateRightOrAll' )}
   ${rou( 'strLinesIndentation' )}
+  ${rou( 'strEscape' )}
+  ${rou( 'strShort_' )}
   ${rou( 'numberFromStrMaybe' )}
 
+  ${rou( 'path', 'name' )}
+
+  ${rou( 'str', 'lines', 'split' )}
+
+
+
   ${rou( 'entity', '_exportStringIsVisibleElement' )}
+  ${rou( 'entity', '_exportStringIsSimpleElement' )}
   ${rou( 'entity', '_exportStringFromStr' )}
   ${rou( 'entity', '_exportStringFromSymbol' )}
   ${rou( 'entity', '_exportStringFromBufferRaw' )}
   ${rou( 'entity', '_exportStringFromBufferTyped' )}
   ${rou( 'entity', '_exportStringFromBufferNode' )}
   ${rou( 'entity', '_exportStringFromArray' )}
+  ${rou( 'entity', '_exportStringFromArrayFiltered' )}
   ${rou( 'entity', '_exportStringFromObject' )}
   ${rou( 'entity', '_exportStringFromObjectKeysFiltered' )}
   ${rou( 'entity', '_exportStringFromHashMap' )}
   ${rou( 'entity', '_exportStringFromSet' )}
+  ${rou( 'entity', '_exportStringShortAct' )}
+  ${rou( 'entity', '_exportStringFromContainer' )}
   ${rou( 'entity', '_exportString' )}
   ${rou( 'entity', 'exportString' )}
+  ${rou( 'entity', 'namespaceForExporting' )}
+  ${rou( 'entity', '_exportStringShallow' )}
+  ${rou( 'entity', '_exportStringDiagnosticShallow' )}
+  ${rou( 'entity', 'exportStringDiagnosticShallow' )}
+  ${rou( 'entity', '_exportStringFromRoutine' )}
 
   ${rou( 'error', '_setupUncaughtErrorHandler2' )}
   ${rou( 'error', '_setupUncaughtErrorHandler9' )}
@@ -828,11 +898,14 @@ function sourcesJoinSplits( o )
   ${rou( 'event', 'chainIs' )}
   ${rou( 'event', 'Name' )}
   ${rou( 'event', 'Chain' )}
+  ${rou( 'event', '_on' )}
   ${rou( 'event', 'on' )}
+  ${rou( 'event', 'onHead' )}
   ${rou( 'event', 'once' )}
   ${rou( 'event', 'off' )}
   ${rou( 'event', 'eventHasHandler' )}
   ${rou( 'event', 'eventGive' )}
+  ${rou( 'event', 'eventGiveHead' )}
   ${fields( 'event' )}
 
   ${rou( 'each' )}
@@ -915,7 +988,11 @@ function sourcesJoinSplits( o )
   ${rou( 'path', 'globShortFilterKeys' )}
   ${rou( 'path', 'globShortSplitsToRegexps' )}
   ${rou( 'path', '_globShortSplitToRegexpSource' )}
-
+  ${rou( 'path', 'is' )}
+  ${rou( 'path', 'name' )}
+  ${rou( 'path', 'detrail' )}
+  ${rou( 'path', 'reroot' )}
+  ${rou( 'path', 'traceToRoot' )}
 `
 
   }

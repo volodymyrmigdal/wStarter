@@ -154,9 +154,53 @@ function _Begin()
 
   //
 
+  function _sourceCodeModule()
+  {
+    let SourceFile = _starter_.SourceFile;
+
+    accesor( '_cache', cacheGet, cacheSet );
+
+    this.exports = SourceFile;
+
+    return SourceFile;
+
+    function cacheGet()
+    {
+      return _starter_.sourcesMap;
+    }
+
+    function cacheSet( src )
+    {
+      _starter_.sourcesMap = src;
+
+      if( !_starter_.sourcesMap[ 'module' ] )
+      _starter_._sourceMake( 'module', '/', _sourceCodeModule );
+
+      return _starter_.sourcesMap;
+    }
+
+    function accesor( propName, onGet, onSet )
+    {
+      let property =
+      {
+        enumerable : true,
+        configurable : true,
+        get : onGet,
+        set : onSet,
+      }
+      Object.defineProperty( SourceFile, propName, property );
+    }
+
+  }
+
+  //
+
   function _SetupAct()
   {
     let starter = this;
+
+    starter._sourceMake( 'module', '/', _sourceCodeModule );
+
     let Module = _natInclude( 'module' );
     let NjsResolveFilename = Module._resolveFilename;
     Module._resolveFilename = function _resolveFilename( request, parent, isMain )

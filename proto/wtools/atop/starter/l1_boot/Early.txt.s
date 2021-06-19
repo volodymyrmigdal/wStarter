@@ -24,6 +24,8 @@ function _Begin()
   let _starter_ = _global._starter_ = _global._starter_ || Object.create( null );
   let _ = _starter_;
 
+  let str = _starter_.str = _starter_.str || Object.create( null );
+  let date = _starter_.date = _starter_.date || Object.create( null );
   let entity = _starter_.entity = _starter_.entity || Object.create( null );
   let _class = _starter_.class = _starter_.class || Object.create( null );
   let path = _starter_.path = _starter_.path || Object.create( null );
@@ -35,6 +37,7 @@ function _Begin()
   let setup = _starter_.setup = _starter_.setup || Object.create( null );
   let event = _starter_.event = _starter_.event || Object.create( null );
   let sourcesMap = _starter_.sourcesMap = _starter_.sourcesMap || Object.create( null );
+  let moduleMainFilesMap = _starter_.moduleMainFilesMap = _starter_.moduleMainFilesMap || Object.create( null );
   let color = _starter_.color = _starter_.color || Object.create( null );
   let Logger = _starter_.Logger = _starter_.Logger || Object.create( null );
 
@@ -63,7 +66,10 @@ function _Begin()
   let set = _starter_.set = _starter_.set || Object.create( null );
 
   let routine = _starter_.routine = _starter_.routine || Object.create( null );
+  let routines = _starter_.routine.s = _starter_.routine.s || Object.create( null );
   let regexp = _starter_.regexp = _starter_.regexp || Object.create( null );
+
+  let container = _starter_.container = _starter_.container || Object.create( null );
 
   //
 

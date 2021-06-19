@@ -132,9 +132,9 @@ function _Begin()
     eventHandler : null,
   }
 
-  function eventGive()
+  function eventGive( o )
   {
-    let o = _.event.eventGiveHead( this._edispatcher, eventGive, arguments );
+    // let o = _.event.eventGiveHead( this._edispatcher, eventGive, arguments );
     return _.event.eventGive( this._edispatcher, o );
     // return _.event.eventGive( _process._edispatcher, ... arguments );
   }
