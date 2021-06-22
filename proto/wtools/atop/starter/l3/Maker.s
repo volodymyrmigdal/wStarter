@@ -623,9 +623,12 @@ function sourcesJoinSplits( o )
 
   ${rou( 'bufferNode', 'is' )}
   ${bind( 'bufferNodeIs', 'bufferNode', 'is' )}
+  ${rou( 'bufferNode', 'nodeIs' )}
   /* ${rou( 'bufferNodeIs' )} */ /* Dmytro : binded, source code is not available */
 
+
   ${rou( 'buffer', 'like' )}
+  ${bind( 'buffer.nodeIs', 'bufferNode', 'nodeIs' )}
 
   ${rou( 'vector', 'is' )}
   ${rou( 'vector', 'like' )}
@@ -874,6 +877,7 @@ function sourcesJoinSplits( o )
   ${rou( 'entity', '_exportStringFromSet' )}
   ${rou( 'entity', '_exportStringShortAct' )}
   ${rou( 'entity', '_exportStringFromContainer' )}
+  ${rou( 'entity', '_exportStringFromNumber' )}
   ${rou( 'entity', '_exportString' )}
   ${rou( 'entity', 'exportString' )}
   ${rou( 'entity', 'namespaceForExporting' )}
@@ -929,6 +933,7 @@ function sourcesJoinSplits( o )
   ${rou( 'color', 'rgbaHtmlFrom' )}
   ${rou( 'color', 'rgbaHtmlFromTry' )}
   ${rou( 'color', 'rgbaHtmlToRgba' )}
+  ${rou( 'color.rgba.fromHexStr' )}
   ${rou( 'color', 'hslaToRgba' )}
   ${rou( 'color', '_colorDistance' )}
   ${rou( 'color', '_rgbByBitmask' )}
