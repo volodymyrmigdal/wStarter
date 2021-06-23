@@ -514,6 +514,7 @@ function sourcesJoinSplits( o )
   ${rou( 'error', 'is' )}
   ${rou( 'error', '_make' )}
   ${rou( 'error', '_sectionAdd' )}
+  ${rou( 'error', '_sectionExposedAdd' )}
   ${rou( 'error', '_messageForm' )}
   ${rou( 'error', '_sectionsJoin' )}
   ${rou( 'error', '_inStr' )}
@@ -523,6 +524,7 @@ function sourcesJoinSplits( o )
   ${rou( 'error', 'exposedSet' )}
   ${rou( 'error', 'concealedSet' )}
   ${rou( 'error', 'process' )}
+
   ${fields( 'error' )}
 
   ${rou( 'date', 'is' )}

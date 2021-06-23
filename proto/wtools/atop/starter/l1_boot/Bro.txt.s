@@ -348,17 +348,25 @@ function _Begin()
     if( _.arrayIs( resolvedFilePath ) )
     return resolvedFilePath;
 
-    let result = this._broFileRead
-    ({
-      filePath : resolvedFilePath + '?stat=1',
-      encoding : 'json',
-    });
-    result = JSON.parse( result );
+    if( !_starter_.withServer )
+    {
+      if( _starter_.sourcesMap[ resolvedFilePath ] )
+      return resolvedFilePath;
+    }
+    else
+    {
+      let result = this._broFileRead
+      ({
+        filePath : resolvedFilePath + '?stat=1',
+        encoding : 'json',
+      });
+      result = JSON.parse( result );
 
-    if( !result.exists )
+      if( result.exists )
+      return resolvedFilePath;
+    }
+
     throw _.err( `Failed to resolve path: "${filePath}, file doesn't exist.` );
-
-    return resolvedFilePath;
   }
 
   //
