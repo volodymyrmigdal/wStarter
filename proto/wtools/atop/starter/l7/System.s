@@ -243,7 +243,7 @@ var defaults = start.defaults = _.props.extend( null, httpOpen.defaults );
 
 defaults.loggingApplication = 1;
 defaults.loggingRequestsAll = 0;
-defaults.loggingConnectionAttemtps = 1;
+defaults.loggingConnectionAttemtps = 0;
 defaults.entryPath = null;
 defaults.curating = 1;
 defaults.headless = 0;

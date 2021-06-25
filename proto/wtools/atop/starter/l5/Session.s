@@ -589,7 +589,7 @@ let Bools =
   loggingRequestsAll : 0, /* qqq : cover */ /* xxx : use option loggingApplication instead */
   loggingRequests  : 0, /* qqq : cover */
   loggingSessionEvents : 0, /* qqq : cover */
-  loggingConnectionAttemtps : 1, /* qqq : cover */
+  loggingConnectionAttemtps : 0, /* qqq : cover */
   loggingOptions : 0, /* qqq : cover */
   loggingSourceFiles : 0, /* qqq : cover */
   loggingPathTranslations : 0, /* qqq : cover */
