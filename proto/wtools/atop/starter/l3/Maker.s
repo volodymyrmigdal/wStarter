@@ -859,6 +859,7 @@ function sourcesJoinSplits( o )
   ${rou( 'numberFromStrMaybe' )}
 
   ${rou( 'path', 'name' )}
+  ${rou( 'path', 'fullName' )}
 
   ${rou( 'str', 'lines', 'split' )}
 
@@ -997,6 +998,7 @@ function sourcesJoinSplits( o )
   ${rou( 'path', '_globShortSplitToRegexpSource' )}
   ${rou( 'path', 'is' )}
   ${rou( 'path', 'name' )}
+  ${rou( 'path', 'fullName' )}
   ${rou( 'path', 'detrail' )}
   ${rou( 'path', 'reroot' )}
   ${rou( 'path', 'traceToRoot' )}

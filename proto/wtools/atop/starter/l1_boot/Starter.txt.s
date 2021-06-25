@@ -88,7 +88,7 @@ function _Begin()
 
     starter.sourcesMap[ o.filePath ] = sourceFile;
     if( sourceFile.isModuleDeclareFile )
-    starter.moduleMainFilesMap[ starter.path.name( o.filePath ) ] = sourceFile;
+    starter.moduleMainFilesMap[ starter.path.fullName( o.filePath ) ] = sourceFile;
     // Object.preventExtensions( sourceFile );
     return sourceFile;
 
